@@ -1,0 +1,18 @@
+{
+  "errors": {
+    "notFound": "ไม่พบ",
+    "unauthorized": "ไม่ได้รับอนุญาต",
+    "validation": "การตรวจสอบล้มเหลว"
+  },
+  "users": {
+    "title": "ผู้ใช้",
+    "subtitle": "CRUD · NestJS /users",
+    "create": "สร้าง",
+    "list": "รายการ",
+    "empty": "ไม่มีผู้ใช้",
+    "name": "ชื่อ",
+    "add": "เพิ่ม",
+    "adding": "กำลังสร้าง...",
+    "error": "ข้อผิดพลาด"
+  }
+}
