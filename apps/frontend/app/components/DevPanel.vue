@@ -68,43 +68,23 @@ const backendOnline = computed(() => backendHealth.value?.status === 'ok' && !ba
 
     <div class="panel__section">
       <h2 class="panel__heading">Структура</h2>
-      <div class="tree">
-        <div class="tree__line"><span class="tree__root">template-nest-nuxt/</span></div>
-        <div class="tree__line">├── <span class="tree__dir">apps/</span></div>
-        <div class="tree__line">
-          │&nbsp;&nbsp; ├── <span class="tree__app">backend/</span>
-          <span class="tree__comment">← NestJS BFF</span>
-        </div>
-        <div class="tree__line">│&nbsp;&nbsp; │&nbsp;&nbsp; └── src/</div>
-        <div class="tree__line">
-          │&nbsp;&nbsp; │&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ├── app.module.ts
-        </div>
-        <div class="tree__line">│&nbsp;&nbsp; │&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; └── main.ts</div>
-        <div class="tree__line">
-          │&nbsp;&nbsp; └── <span class="tree__app">frontend/</span>
-          <span class="tree__comment">← Nuxt 4</span>
-        </div>
-        <div class="tree__line">
-          │&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ├── <span class="tree__key">app/</span>
-        </div>
-        <div class="tree__line">│&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; │&nbsp;&nbsp; ├── components/</div>
-        <div class="tree__line">
-          │&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; │&nbsp;&nbsp; ├── composables/
-        </div>
-        <div class="tree__line">│&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; │&nbsp;&nbsp; ├── layouts/</div>
-        <div class="tree__line">│&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; │&nbsp;&nbsp; ├── pages/</div>
-        <div class="tree__line">│&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; │&nbsp;&nbsp; └── app.vue</div>
-        <div class="tree__line">│&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; └── nuxt.config.ts</div>
-        <div class="tree__line">└── <span class="tree__dir">packages/</span></div>
-        <div class="tree__line">
-          &nbsp;&nbsp;&nbsp; ├── <span class="tree__pkg">shared/</span>
-          <span class="tree__comment">← типы, i18n</span>
-        </div>
-        <div class="tree__line">
-          &nbsp;&nbsp;&nbsp; └── <span class="tree__pkg">ui/</span>
-          <span class="tree__comment">← UiButton, UiBadge, UiCard</span>
-        </div>
-      </div>
+      <pre class="tree"><span class="tree__root">template-nest-nuxt/</span>
+├── <span class="tree__dir">apps/</span>
+│   ├── <span class="tree__app">backend/</span> <span class="tree__comment">← NestJS BFF</span>
+│   │   └── src/
+│   │       ├── app.module.ts
+│   │       └── main.ts
+│   └── <span class="tree__app">frontend/</span> <span class="tree__comment">← Nuxt 4</span>
+│       ├── <span class="tree__key">app/</span>
+│       │   ├── components/
+│       │   ├── composables/
+│       │   ├── layouts/
+│       │   ├── pages/
+│       │   └── app.vue
+│       └── nuxt.config.ts
+└── <span class="tree__dir">packages/</span>
+    ├── <span class="tree__pkg">shared/</span> <span class="tree__comment">← типы, i18n</span>
+    └── <span class="tree__pkg">ui/</span> <span class="tree__comment">← UiButton, UiBadge, UiCard</span></pre>
     </div>
   </div>
 </template>
@@ -231,11 +211,7 @@ a.service:hover {
   border: 1px solid #1e293b;
   border-radius: 8px;
   padding: 12px 14px;
-}
-
-.tree__line {
-  white-space: pre;
-  letter-spacing: 0;
+  margin: 0;
 }
 
 .tree__root {

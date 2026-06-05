@@ -31,6 +31,7 @@ defineEmits<{
   padding: 8px 16px;
   border-radius: 8px;
   font-size: 14px;
+  line-height: 1.2;
   font-weight: 500;
   cursor: pointer;
   border: 1px solid transparent;

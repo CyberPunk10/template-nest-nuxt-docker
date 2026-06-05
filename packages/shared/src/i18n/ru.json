@@ -3,5 +3,16 @@
     "notFound": "Не найдено",
     "unauthorized": "Не авторизован",
     "validation": "Ошибка валидации"
+  },
+  "users": {
+    "title": "Пользователи",
+    "subtitle": "CRUD · NestJS /users",
+    "create": "Создать",
+    "list": "Список",
+    "empty": "Нет пользователей",
+    "name": "Имя",
+    "add": "Добавить",
+    "adding": "Создаём...",
+    "error": "Ошибка"
   }
 }

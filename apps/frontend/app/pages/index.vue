@@ -7,6 +7,7 @@ interface User {
   email: string
 }
 
+const { t, locale, locales, setLocale } = useI18n()
 const { get, post, put, del } = useApi()
 const { data: users, refresh } = await get<User[]>('/users')
 
@@ -37,7 +38,7 @@ async function saveEdit(id: string) {
     await refresh()
   } catch (e: unknown) {
     const data = (e as { data?: { message?: string[] } }).data
-    editError.value = data?.message?.join(', ') ?? 'Ошибка'
+    editError.value = data?.message?.join(', ') ?? t('users.error')
   }
 }
 
@@ -51,7 +52,7 @@ async function createUser() {
     await refresh()
   } catch (e: unknown) {
     const data = (e as { data?: { message?: string[] } }).data
-    error.value = data?.message?.join(', ') ?? 'Ошибка'
+    error.value = data?.message?.join(', ') ?? t('users.error')
   } finally {
     creating.value = false
   }
@@ -70,23 +71,36 @@ async function removeUser(id: string) {
     </div>
 
     <div class="col">
-      <h2 class="col__heading">
-        Пользователи <span class="col__heading-sub">← CRUD · NestJS /users</span>
-      </h2>
+      <div class="col__header">
+        <h2 class="col__heading">
+          {{ t('users.title') }} <span class="col__heading-sub">← {{ t('users.subtitle') }}</span>
+        </h2>
+        <div class="locale-switcher">
+          <button
+            v-for="loc in locales"
+            :key="loc.code"
+            class="locale-btn"
+            :class="{ 'locale-btn--active': locale === loc.code }"
+            @click="setLocale(loc.code)"
+          >
+            {{ loc.code.toUpperCase() }}
+          </button>
+        </div>
+      </div>
 
-      <UiCard title="Создать">
+      <UiCard :title="t('users.create')">
         <form class="form" @submit.prevent="createUser">
-          <input v-model="form.name" class="form__input" placeholder="Имя" />
+          <input v-model="form.name" class="form__input" :placeholder="t('users.name')" />
           <input v-model="form.email" class="form__input" placeholder="Email" />
           <p v-if="error" class="form__error">{{ error }}</p>
           <UiButton type="submit" :disabled="creating">
-            {{ creating ? 'Создаём...' : 'Добавить' }}
+            {{ creating ? t('users.adding') : t('users.add') }}
           </UiButton>
         </form>
       </UiCard>
 
-      <UiCard title="Список">
-        <div v-if="!users?.length" class="empty">Нет пользователей</div>
+      <UiCard :title="t('users.list')">
+        <div v-if="!users?.length" class="empty">{{ t('users.empty') }}</div>
         <div v-else class="users">
           <div v-for="user in users" :key="user.id" class="user">
             <template v-if="editingId === user.id">
@@ -94,7 +108,7 @@ async function removeUser(id: string) {
                 <input
                   v-model="editForm.name"
                   class="form__input form__input--sm"
-                  placeholder="Имя"
+                  :placeholder="t('users.name')"
                 />
                 <input
                   v-model="editForm.email"
@@ -151,6 +165,13 @@ async function removeUser(id: string) {
   gap: 16px;
 }
 
+.col__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
 .col__heading {
   font-size: 11px;
   font-weight: 600;
@@ -166,6 +187,35 @@ async function removeUser(id: string) {
   letter-spacing: 0;
   color: #475569;
   font-style: italic;
+}
+
+.locale-switcher {
+  display: flex;
+  gap: 2px;
+}
+
+.locale-btn {
+  background: transparent;
+  border: 1px solid #1e293b;
+  border-radius: 6px;
+  color: #475569;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 6px;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
+}
+
+.locale-btn:hover {
+  border-color: #475569;
+  color: #94a3b8;
+}
+
+.locale-btn--active {
+  border-color: #00dc82;
+  color: #00dc82;
 }
 
 .form {
