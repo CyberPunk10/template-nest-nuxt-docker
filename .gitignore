@@ -25,6 +25,7 @@ pnpm-debug.log*
 .vscode
 *.swp
 *.swo
+template-nest-nuxt.code-workspace
 
 # OS
 .DS_Store
@@ -34,5 +35,6 @@ Thumbs.db
 *.tsbuildinfo
 
 #claude
+CLAUDE.md
 .claude
 /docs/superpowers
