@@ -1,12 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { CreateUserDto } from './dto/create-user.dto'
+import { UpdateUserDto } from './dto/update-user.dto'
 import { User } from './user.entity'
 
 @Injectable()
 export class UsersService {
   private readonly users: User[] = [
-    { id: '1', name: 'Alice', email: 'alice@example.com' },
-    { id: '2', name: 'Bob', email: 'bob@example.com' },
+    { id: crypto.randomUUID(), name: 'Alice', email: 'alice@example.com' },
+    { id: crypto.randomUUID(), name: 'Bob', email: 'bob@example.com' },
   ]
 
   findAll(): User[] {
@@ -14,7 +15,7 @@ export class UsersService {
   }
 
   create(dto: CreateUserDto): User {
-    const user: User = { id: String(this.users.length + 1), ...dto }
+    const user: User = { id: crypto.randomUUID(), ...dto }
     this.users.push(user)
     return user
   }
@@ -25,7 +26,7 @@ export class UsersService {
     return user
   }
 
-  update(id: string, dto: CreateUserDto): User {
+  update(id: string, dto: UpdateUserDto): User {
     const index = this.users.findIndex((u) => u.id === id)
     if (index === -1) throw new NotFoundException(`User ${id} not found`)
     this.users[index] = { ...this.users[index], ...dto }
