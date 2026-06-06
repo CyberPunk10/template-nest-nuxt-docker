@@ -15,7 +15,7 @@
     // Алиас @repo/shared → packages/shared/src/index.ts
     // Путь указан от корня монорепо, где лежит этот файл
     "paths": {
-      "@repo/shared": ["./packages/shared/src/index.ts"]
+      "@repo/shared": ["./packages/shared/dist/index.d.ts"]
     }
   }
 }
