@@ -1,41 +1,34 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
+import { User } from '../../generated/prisma/client'
+import { PrismaService } from '../prisma/prisma.service'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
-import { User } from './user.entity'
 
 @Injectable()
 export class UsersService {
-  private readonly users: User[] = [
-    { id: crypto.randomUUID(), name: 'Alice', email: 'alice@example.com' },
-    { id: crypto.randomUUID(), name: 'Bob', email: 'bob@example.com' },
-  ]
+  constructor(private readonly prisma: PrismaService) {}
 
-  findAll(): User[] {
-    return this.users
+  findAll(): Promise<User[]> {
+    return this.prisma.user.findMany()
   }
 
-  create(dto: CreateUserDto): User {
-    const user: User = { id: crypto.randomUUID(), ...dto }
-    this.users.push(user)
-    return user
+  create(dto: CreateUserDto): Promise<User> {
+    return this.prisma.user.create({ data: dto })
   }
 
-  findOne(id: string): User {
-    const user = this.users.find((u) => u.id === id)
+  async findOne(id: string): Promise<User> {
+    const user = await this.prisma.user.findUnique({ where: { id } })
     if (!user) throw new NotFoundException(`User ${id} not found`)
     return user
   }
 
-  update(id: string, dto: UpdateUserDto): User {
-    const index = this.users.findIndex((u) => u.id === id)
-    if (index === -1) throw new NotFoundException(`User ${id} not found`)
-    this.users[index] = { ...this.users[index], ...dto }
-    return this.users[index]
+  async update(id: string, dto: UpdateUserDto): Promise<User> {
+    await this.findOne(id)
+    return this.prisma.user.update({ where: { id }, data: dto })
   }
 
-  remove(id: string): void {
-    const index = this.users.findIndex((u) => u.id === id)
-    if (index === -1) throw new NotFoundException(`User ${id} not found`)
-    this.users.splice(index, 1)
+  async remove(id: string): Promise<void> {
+    await this.findOne(id)
+    await this.prisma.user.delete({ where: { id } })
   }
 }
