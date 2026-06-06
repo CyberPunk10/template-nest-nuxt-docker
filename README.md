@@ -2,6 +2,13 @@
 
 Монорепо шаблон: **NestJS** (backend) + **Nuxt 4** (frontend).
 
+## Документация
+
+- [Архитектура](docs/architecture.md) — устройство монорепо, tsconfig, Docker, пакеты
+- [База данных](docs/database.md) — PostgreSQL, Prisma, миграции, конфигурация (БД добавлена в отдельной ветке `postgres-prisma`)
+
+---
+
 ## Варианты
 
 | Ветка             | Описание                  |
