@@ -1,75 +1,70 @@
-# Nuxt Minimal Starter
+# @repo/frontend
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Nuxt 4 frontend. Работает на порту `3000`.
 
-## Setup
+## Переменные окружения
 
-Make sure to install dependencies:
+| Переменная             | По умолчанию            | Описание                            |
+| ---------------------- | ----------------------- | ----------------------------------- |
+| `NUXT_PUBLIC_API_BASE` | `/api/backend`          | Префикс API для клиента (публичная) |
+| `BACKEND_URL`          | `http://localhost:3001` | URL бекенда для server-side proxy   |
 
-```bash
-# npm
-npm install
+Скопируй `.env.example` в `.env` и заполни нужные значения.
 
-# pnpm
-pnpm install
+## Запуск
 
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
+### Dev (из корня монорепо)
 
 ```bash
-# npm
-npm run dev
-
-# pnpm
 pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
-
-Build the application for production:
+### Dev (только frontend)
 
 ```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
+pnpm --filter @repo/frontend dev
 ```
 
-Locally preview production build:
+### Production-сборка
 
 ```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
+pnpm --filter @repo/frontend build
+node apps/frontend/.output/server/index.mjs
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+### Предпросмотр prod-сборки (Nuxt preview)
+
+```bash
+pnpm --filter @repo/frontend preview
+```
+
+### Docker
+
+```bash
+# из корня монорепо
+docker build -f apps/frontend/Dockerfile -t my-frontend .
+docker run -p 3000:3000 -e BACKEND_URL=http://localhost:3001 my-frontend
+```
+
+## Структура
+
+```
+app/
+├── components/
+│   └── DevPanel.vue      ← панель разработчика (статус сервисов, стек, команды)
+├── composables/
+│   └── useApi.ts         ← обёртка над useFetch/$fetch с базовым URL
+├── layouts/
+│   └── default.vue       ← основной layout с DevPanel справа
+├── pages/
+│   └── index.vue         ← Users CRUD с i18n
+└── app.vue
+
+i18n/
+└── i18n.config.ts        ← подключает переводы из @repo/shared
+
+server/
+└── api/
+    ├── backend/[...path].ts  ← proxy: /api/backend/* → NestJS
+    └── health.get.ts
+```

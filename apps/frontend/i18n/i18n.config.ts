@@ -1,8 +1,6 @@
-import ru from '@repo/shared/src/i18n/ru.json'
-import en from '@repo/shared/src/i18n/en.json'
-import th from '@repo/shared/src/i18n/th.json'
+import { i18n } from '@repo/shared'
 
 export default defineI18nConfig(() => ({
   legacy: false,
-  messages: { ru, en, th },
+  messages: i18n,
 }))

@@ -1,0 +1,29 @@
+services:
+  # Этот файл предназначен для разработки:
+  # здесь поднимается только инфраструктура (БД, кэш и т.д.),
+  # а приложения (backend, frontend) запускаются локально через pnpm dev.
+  #
+  # Запуск: docker compose -f docker-compose.dev.yml up -d
+  #
+  # После добавления БД сюда добавить сервис postgres/mysql и volume.
+  # Пример для PostgreSQL:
+  #
+  # postgres:
+  #   image: postgres:17-alpine
+  #   ports:
+  #     - '5432:5432'
+  #   environment:
+  #     POSTGRES_USER: app
+  #     POSTGRES_PASSWORD: secret
+  #     POSTGRES_DB: app
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   networks:
+  #     - app
+  #
+  # volumes:
+  #   postgres_data:
+
+networks:
+  app:
+    name: template-nest-nuxt_app

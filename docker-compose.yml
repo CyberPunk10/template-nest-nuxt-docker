@@ -1,0 +1,36 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    ports:
+      - '3001:3001'
+    environment:
+      PORT: 3001
+      CORS_ORIGIN: http://localhost:3000
+    networks:
+      - app
+
+  frontend:
+    build:
+      context: .
+      dockerfile: apps/frontend/Dockerfile
+    ports:
+      - '3000:3000'
+    environment:
+      NUXT_PUBLIC_API_BASE: /api/backend
+      # Внутри Docker сервисы общаются по имени сервиса, а не localhost
+      BACKEND_URL: http://backend:3001
+    depends_on:
+      - backend
+    networks:
+      - app
+
+networks:
+  app:
+    # Явное имя сети — без него Docker генерирует имя из папки проекта.
+    # Фиксированное имя нужно когда к сети нужно подключить контейнеры
+    # из другого compose-файла (например, отдельный compose для БД):
+    #   docker network connect template-nest-nuxt_app <container>
+    # или через external: true в другом compose.
+    name: template-nest-nuxt_app
