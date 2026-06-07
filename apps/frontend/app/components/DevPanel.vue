@@ -60,14 +60,6 @@ const backendOnline = computed(() => backendHealth.value?.status === 'ok' && !ba
         <span class="service__name">Swagger UI</span>
         <code class="service__url">:3001/api/docs</code>
       </a>
-      <div class="service service--muted">
-        <span class="service__dot service__dot--static" style="background: #5a67d8" />
-        <span class="service__name">
-          Prisma Studio
-          <span class="service__badge">postgres-prisma</span>
-        </span>
-        <code class="service__url">динамический порт</code>
-      </div>
     </div>
 
     <div class="panel__section">
