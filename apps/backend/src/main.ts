@@ -1,15 +1,33 @@
 import { NestFactory } from '@nestjs/core'
 import { ConfigService } from '@nestjs/config'
 import { ValidationPipe } from '@nestjs/common'
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { AppModule } from './app.module'
+import { HttpExceptionFilter } from './common/filters/http-exception.filter'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
   const config = app.get(ConfigService)
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }))
+  app.useGlobalFilters(new HttpExceptionFilter())
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true, // удалять поля, которых нет в DTO
+      forbidNonWhitelisted: true, // 400 вместо тихого удаления лишних полей
+      transform: true, // приводить типы (string → number, plain → class)
+    }),
+  )
   app.enableCors({
     origin: config.get<string>('CORS_ORIGIN', 'http://localhost:3000'),
   })
+
+  if (process.env.NODE_ENV !== 'production') {
+    const document = SwaggerModule.createDocument(
+      app,
+      new DocumentBuilder().setTitle('template-nest-nuxt API').setVersion('1.0').build(),
+    )
+    SwaggerModule.setup('api/docs', app, document)
+  }
+
   await app.listen(config.get<number>('PORT', 3001))
 }
 void bootstrap()
