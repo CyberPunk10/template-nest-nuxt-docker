@@ -100,7 +100,7 @@ const backendOnline = computed(() => backendHealth.value?.status === 'ok' && !ba
           ><span class="command__desc">проверить типы</span>
         </div>
       </div>
-      <p class="commands__label" style="color: #5a67d8">postgres-prisma</p>
+      <p class="commands__label">postgres-prisma</p>
       <div class="commands">
         <div class="command">
           <code class="command__cmd">cd apps/backend && pnpm prisma studio</code
