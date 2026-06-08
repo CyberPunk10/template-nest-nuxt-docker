@@ -15,17 +15,34 @@
 
 ## Варианты
 
-| Ветка             | Описание                  |
-| ----------------- | ------------------------- |
-| `main`            | Базовый шаблон — без БД   |
-| `postgres-prisma` | + PostgreSQL + Prisma ORM |
+Шаблон существует в нескольких версиях — каждая хранится в отдельной git-ветке и является самостоятельной точкой старта. Выбери нужную и клонируй сразу с ней.
+
+### `main` — базовый шаблон
+
+NestJS + Nuxt 4 + Docker. Users CRUD in-memory, i18n, Swagger, ESLint, Husky. Без БД.
 
 ```bash
-# базовый вариант
-git clone https://github.com/CyberPunk10/template-nest-nuxt-docker.git
+git clone https://github.com/CyberPunk10/template-nest-nuxt-docker.git my-app
+```
 
-# с PostgreSQL и Prisma
-git clone -b postgres-prisma https://github.com/CyberPunk10/template-nest-nuxt-docker.git
+### `postgres-prisma` — + PostgreSQL + Prisma
+
+Всё из `main`, плюс Prisma 7 + PostgreSQL 17, PrismaModule, миграции, docker-compose с БД.
+
+📖 [Документация по БД](docs/database.md)
+
+```bash
+git clone -b postgres-prisma https://github.com/CyberPunk10/template-nest-nuxt-docker.git my-app
+```
+
+### `auth` — + JWT авторизация
+
+Всё из `postgres-prisma`, плюс Passport.js, email+пароль, httpOnly cookies, сессии в БД, глобальный guard, `@Public()` декоратор.
+
+📖 [Документация по авторизации](docs/auth.md)
+
+```bash
+git clone -b auth https://github.com/CyberPunk10/template-nest-nuxt-docker.git my-app
 ```
 
 ---

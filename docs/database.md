@@ -1,6 +1,6 @@
 # База данных: PostgreSQL + Prisma
 
-[← Главная](../README.md) · [Архитектура](architecture.md)
+[← Главная](../README.md)
 
 > **Ветка:** эта документация актуальна только для ветки `postgres-prisma`.
 
