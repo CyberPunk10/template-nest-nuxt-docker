@@ -7,6 +7,7 @@ const mockUser = {
   id: 'uuid-1',
   name: 'Alice',
   email: 'alice@example.com',
+  passwordHash: 'hash',
   createdAt: new Date(),
   updatedAt: new Date(),
 }
@@ -15,7 +16,6 @@ const prismaMock = {
   user: {
     findMany: jest.fn(),
     findUnique: jest.fn(),
-    create: jest.fn(),
     update: jest.fn(),
     delete: jest.fn(),
   },
@@ -38,15 +38,6 @@ describe('UsersService', () => {
     const result = await service.findAll()
     expect(result).toEqual([mockUser])
     expect(prismaMock.user.findMany).toHaveBeenCalledTimes(1)
-  })
-
-  it('create — создаёт пользователя', async () => {
-    prismaMock.user.create.mockResolvedValue(mockUser)
-    const result = await service.create({ name: 'Alice', email: 'alice@example.com' })
-    expect(result).toEqual(mockUser)
-    expect(prismaMock.user.create).toHaveBeenCalledWith({
-      data: { name: 'Alice', email: 'alice@example.com' },
-    })
   })
 
   it('findOne — возвращает пользователя по id', async () => {

@@ -9,7 +9,7 @@
 ![Docker](https://img.shields.io/badge/Docker-ready-2496ED?style=flat-square&logo=docker&logoColor=white)
 ![Node.js](https://img.shields.io/badge/Node.js-24-339933?style=flat-square&logo=node.js&logoColor=white)
 
-📖 [Архитектура](docs/architecture.md) · 🗄️ [База данных](docs/database.md)
+📖 [Архитектура](docs/architecture.md) · 🗄️ [База данных](docs/database.md) · 🔐 [Авторизация](docs/auth.md)
 
 ![Preview](docs/assets/preview.png)
 
