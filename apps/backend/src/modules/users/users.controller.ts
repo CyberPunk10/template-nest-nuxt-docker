@@ -1,7 +1,6 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put } from '@nestjs/common'
+import { Body, Controller, Delete, Get, HttpCode, Param, Put } from '@nestjs/common'
 import { User } from '../../generated/prisma/client'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
-import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { UsersService } from './users.service'
 
@@ -15,15 +14,6 @@ export class UsersController {
   @Get()
   findAll(): Promise<User[]> {
     return this.usersService.findAll()
-  }
-
-  @ApiOperation({ summary: 'Создать пользователя' })
-  @ApiResponse({ status: 201, description: 'Пользователь создан' })
-  @ApiResponse({ status: 400, description: 'Ошибка валидации' })
-  @Post()
-  @HttpCode(201)
-  create(@Body() dto: CreateUserDto): Promise<User> {
-    return this.usersService.create(dto)
   }
 
   @ApiOperation({ summary: 'Получить пользователя по ID' })
