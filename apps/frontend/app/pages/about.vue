@@ -1,5 +1,5 @@
 <script setup lang="ts">
-definePageMeta({ public: true })
+definePageMeta({ public: true, hideHeader: true })
 
 const copied = ref<string | null>(null)
 
