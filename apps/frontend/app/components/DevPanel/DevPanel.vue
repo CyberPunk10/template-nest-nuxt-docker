@@ -28,6 +28,10 @@ const currentLayout = computed(() => {
   const meta = route.meta as { layout?: string }
   return meta.layout ?? 'default'
 })
+
+function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
+  return isPublicRoute(r.meta as RouteMeta)
+}
 </script>
 
 <template>
@@ -73,6 +77,12 @@ const currentLayout = computed(() => {
       >
         <span class="nav-route__dot" />
         <code class="nav-route__path">{{ r.path }}</code>
+        <span
+          class="nav-route__badge"
+          :class="isPublic(r) ? 'nav-route__badge--public' : 'nav-route__badge--private'"
+        >
+          {{ isPublic(r) ? 'public' : 'private' }}
+        </span>
       </NuxtLink>
     </div>
   </div>
