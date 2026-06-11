@@ -31,7 +31,7 @@ export class AuthService {
     return safeUser
   }
 
-  async register(dto: RegisterDto, res: Response): Promise<SafeUser> {
+  async register(dto: RegisterDto, req: Request, res: Response): Promise<SafeUser> {
     const existing = await this.prisma.user.findUnique({ where: { email: dto.email } })
     if (existing) throw new ConflictException('Email already in use')
 
@@ -40,15 +40,15 @@ export class AuthService {
       data: { name: dto.name, email: dto.email, passwordHash },
     })
 
-    await this.issueTokens(user, res)
+    await this.issueTokens(user, req, res)
 
     const { passwordHash: _, ...safeUser } = user
     return safeUser
   }
 
-  async login(user: SafeUser, res: Response): Promise<SafeUser> {
+  async login(user: SafeUser, req: Request, res: Response): Promise<SafeUser> {
     const fullUser = await this.prisma.user.findUniqueOrThrow({ where: { id: user.id } })
-    await this.issueTokens(fullUser, res)
+    await this.issueTokens(fullUser, req, res)
     return user
   }
 
@@ -58,14 +58,30 @@ export class AuthService {
 
     const tokenHash = this.hmac(token)
     const session = await this.prisma.session.findUnique({
-      where: { refreshTokenHash: tokenHash, expiresAt: { gt: new Date() } },
+      where: { refreshTokenHash: tokenHash },
     })
+
     if (!session) throw new UnauthorizedException()
 
-    const user = await this.prisma.user.findUniqueOrThrow({ where: { id: session.userId } })
+    if (session.isUsed) {
+      // Токен уже был использован — компрометация цепочки, инвалидируем только эту семью
+      await this.prisma.session.deleteMany({ where: { familyId: session.familyId } })
+      this.clearCookies(res)
+      throw new UnauthorizedException()
+    }
 
-    await this.prisma.session.delete({ where: { id: session.id } })
-    await this.issueTokens(user, res)
+    if (session.expiresAt <= new Date()) {
+      await this.prisma.session.delete({ where: { id: session.id } })
+      throw new UnauthorizedException()
+    }
+
+    await this.prisma.session.update({
+      where: { id: session.id },
+      data: { isUsed: true, lastUsedAt: new Date() },
+    })
+
+    const user = await this.prisma.user.findUniqueOrThrow({ where: { id: session.userId } })
+    await this.issueTokens(user, req, res, session.familyId)
   }
 
   async logout(req: Request, res: Response): Promise<void> {
@@ -77,7 +93,12 @@ export class AuthService {
     this.clearCookies(res)
   }
 
-  private async issueTokens(user: User, res: Response): Promise<void> {
+  private async issueTokens(
+    user: User,
+    req: Request,
+    res: Response,
+    familyId?: string,
+  ): Promise<void> {
     const payload: JwtPayload = { sub: user.id, email: user.email }
     const accessToken = this.jwtService.sign(payload)
 
@@ -87,7 +108,14 @@ export class AuthService {
     const expiresAt = new Date(Date.now() + expiresInDays * 24 * 60 * 60 * 1000)
 
     await this.prisma.session.create({
-      data: { userId: user.id, refreshTokenHash, expiresAt },
+      data: {
+        userId: user.id,
+        familyId: familyId ?? randomUUID(),
+        refreshTokenHash,
+        expiresAt,
+        userAgent: req.headers['user-agent'] ?? null,
+        ip: req.ip ?? null,
+      },
     })
 
     const isProd = process.env.NODE_ENV === 'production'

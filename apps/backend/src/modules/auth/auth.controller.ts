@@ -1,5 +1,6 @@
 import { Body, Controller, Get, HttpCode, Post, Req, Res, UseGuards } from '@nestjs/common'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { Throttle } from '@nestjs/throttler'
 import { Request, Response } from 'express'
 import { AuthService } from './auth.service'
 import { RegisterDto } from './dto/register.dto'
@@ -11,6 +12,9 @@ import { UsersService } from '../users/users.service'
 
 type SafeUser = Omit<User, 'passwordHash'>
 
+// 10 запросов в минуту с одного IP — переопределяет глобальный лимит (100).
+// Защита от брутфорса паролей и перебора токенов.
+@Throttle({ default: { ttl: 60_000, limit: 10 } })
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
@@ -25,8 +29,12 @@ export class AuthController {
   @ApiOperation({ summary: 'Регистрация' })
   @ApiResponse({ status: 201 })
   @ApiResponse({ status: 409, description: 'Email уже занят' })
-  register(@Body() dto: RegisterDto, @Res({ passthrough: true }) res: Response) {
-    return this.authService.register(dto, res)
+  register(
+    @Body() dto: RegisterDto,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.authService.register(dto, req, res)
   }
 
   @Public()
@@ -40,7 +48,7 @@ export class AuthController {
     @Req() req: Request & { user: Omit<User, 'passwordHash'> },
     @Res({ passthrough: true }) res: Response,
   ) {
-    return this.authService.login(req.user, res)
+    return this.authService.login(req.user, req, res)
   }
 
   @Public()
