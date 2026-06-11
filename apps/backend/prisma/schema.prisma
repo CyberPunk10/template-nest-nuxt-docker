@@ -21,7 +21,12 @@ model Session {
   id               String   @id @default(uuid())
   userId           String
   user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  familyId         String
   refreshTokenHash String   @unique
+  isUsed           Boolean  @default(false)
+  userAgent        String?
+  ip               String?
+  lastUsedAt       DateTime @default(now())
   expiresAt        DateTime
   createdAt        DateTime @default(now())
 }
