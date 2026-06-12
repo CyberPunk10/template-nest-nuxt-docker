@@ -45,6 +45,30 @@ template-nest-nuxt/
 
 ---
 
+## Конфигурация окружения
+
+Каждое приложение читает **только свой** `.env`:
+
+| Файл                 | Назначение                  |
+| -------------------- | --------------------------- |
+| `apps/backend/.env`  | Локальная разработка NestJS |
+| `apps/frontend/.env` | Локальная разработка Nuxt   |
+
+Если `.env` отсутствует, он автоматически копируется из `.env.example` при первом `pnpm dev`.
+
+### Изменение портов
+
+При изменении портов обнови:
+
+1. `apps/backend/.env` — `PORT` (порт backend), `CORS_ORIGIN` (должен содержать порт frontend)
+2. `apps/frontend/.env` — `PORT` (порт frontend), `BACKEND_URL`, `NUXT_PUBLIC_BACKEND_URL` (оба должны содержать порт backend)
+
+Для Docker порты захардкожены в `docker-compose.yml` — менять там.
+
+> **Запуск из папки приложения:** `pnpm dev` из `apps/backend` или `apps/frontend` работает — каждое приложение читает свой `.env`. Предпочтительный способ — `pnpm dev` из корня монорепо.
+
+---
+
 ## Что настроено
 
 ### Монорепо
@@ -85,6 +109,11 @@ template-nest-nuxt/
 pnpm install
 pnpm dev
 ```
+
+`pnpm dev` автоматически запускает `scripts/predev.mjs` (через npm `pre*` соглашение), который:
+
+- копирует `.env` из `.env.example` если файл отсутствует
+- проверяет порты и предлагает разрешить конфликт если они заняты
 
 - Frontend: http://localhost:3000
 - Backend: http://localhost:3001
