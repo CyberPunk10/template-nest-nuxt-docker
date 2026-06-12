@@ -21,6 +21,10 @@ export default defineNuxtConfig({
     public: {
       // Переопределяется через NUXT_PUBLIC_API_BASE в .env
       apiBase: '/api/backend',
+      // Переопределяется через NUXT_PUBLIC_BACKEND_URL в .env
+      backendUrl: 'http://localhost:3001',
+      // Переопределяется через NUXT_PUBLIC_APP_ENV в .env
+      appEnv: 'development',
     },
   },
 })
