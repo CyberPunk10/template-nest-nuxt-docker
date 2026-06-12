@@ -1,4 +1,4 @@
-# template-nest-nuxt
+# template-nest-nuxt-docker
 
 Переиспользуемый шаблон монорепозитория NestJS + Nuxt 4, завёрнутый в Docker
 
