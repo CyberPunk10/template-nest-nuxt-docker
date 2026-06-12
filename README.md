@@ -35,8 +35,8 @@ git clone -b postgres-prisma https://github.com/CyberPunk10/template-nest-nuxt-d
 ```
 template-nest-nuxt/
 ├── apps/
-│   ├── backend/        ← NestJS API (:3001)
-│   └── frontend/       ← Nuxt 4 (:3000)
+│   ├── backend/        ← NestJS API (порт задаётся в .env)
+│   └── frontend/       ← Nuxt 4 (порт задаётся в .env)
 ├── packages/
 │   ├── shared/         ← @repo/shared — общие типы и i18n переводы
 │   └── ui/             ← @repo/ui — общие Vue компоненты
@@ -112,9 +112,8 @@ cd apps/frontend && node .output/server/index.mjs
 
 ### Docker — оба сервиса
 
-Собрать образы и поднять всё одной командой:
-
 ```bash
+docker network create template-nest-nuxt_app  # только первый раз
 docker compose up --build
 ```
 
