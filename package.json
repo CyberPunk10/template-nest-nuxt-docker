@@ -1,5 +1,5 @@
 {
-  "name": "template-nest-nuxt",
+  "name": "template-nest-nuxt-docker",
   "version": "0.0.1",
   "private": true,
   "type": "module",
