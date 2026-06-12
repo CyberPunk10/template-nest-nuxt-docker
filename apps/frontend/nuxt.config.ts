@@ -14,7 +14,6 @@ export default defineNuxtConfig({
       { code: 'en', language: 'en-US' },
       { code: 'th', language: 'th-TH' },
     ],
-    vueI18n: './i18n.config.ts',
   },
 
   runtimeConfig: {
