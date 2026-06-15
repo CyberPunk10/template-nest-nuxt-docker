@@ -1,20 +1,26 @@
-import { Body, Controller, Get, HttpCode, Post, Req, Res, UseGuards } from '@nestjs/common'
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
-import { Throttle } from '@nestjs/throttler'
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  NotFoundException,
+  Post,
+  Req,
+  Res,
+  UnauthorizedException,
+  UseGuards,
+} from '@nestjs/common'
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { Request, Response } from 'express'
 import { AuthService } from './auth.service'
+import { SafeUser } from '../users/users.service'
+import { LoginDto } from './dto/login.dto'
 import { RegisterDto } from './dto/register.dto'
 import { LocalAuthGuard } from './guards/local-auth.guard'
 import { Public } from './decorators/public.decorator'
 import { JwtPayload } from './strategies/jwt.strategy'
-import { User } from '../../generated/prisma/client'
 import { UsersService } from '../users/users.service'
 
-type SafeUser = Omit<User, 'passwordHash'>
-
-// 10 запросов в минуту с одного IP — переопределяет глобальный лимит (100).
-// Защита от брутфорса паролей и перебора токенов.
-@Throttle({ default: { ttl: 60_000, limit: 10 } })
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
@@ -44,8 +50,10 @@ export class AuthController {
   @ApiOperation({ summary: 'Вход' })
   @ApiResponse({ status: 200 })
   @ApiResponse({ status: 401, description: 'Неверные учётные данные' })
+  @ApiBody({ type: LoginDto })
   login(
-    @Req() req: Request & { user: Omit<User, 'passwordHash'> },
+    @Body() _dto: LoginDto,
+    @Req() req: Request & { user: SafeUser },
     @Res({ passthrough: true }) res: Response,
   ) {
     return this.authService.login(req.user, req, res)
@@ -61,6 +69,7 @@ export class AuthController {
     return this.authService.refresh(req, res)
   }
 
+  @Public()
   @Post('logout')
   @HttpCode(200)
   @ApiOperation({ summary: 'Выход' })
@@ -71,7 +80,11 @@ export class AuthController {
   @Get('me')
   @ApiOperation({ summary: 'Текущий пользователь' })
   async me(@Req() req: Request & { user: JwtPayload }): Promise<SafeUser> {
-    const { passwordHash: _, ...safe } = await this.usersService.findOne(req.user.sub)
-    return safe
+    try {
+      return await this.usersService.findOne(req.user.sub)
+    } catch (e: unknown) {
+      if (e instanceof NotFoundException) throw new UnauthorizedException()
+      throw e
+    }
   }
 }

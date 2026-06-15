@@ -1,6 +1,7 @@
 import Joi from 'joi'
 
 export const envValidationSchema = Joi.object({
+  NODE_ENV: Joi.string().valid('development', 'production', 'test').required(),
   PORT: Joi.number().integer().min(1).max(65535).default(3001),
   CORS_ORIGIN: Joi.string().uri().required(),
 
@@ -11,7 +12,11 @@ export const envValidationSchema = Joi.object({
   POSTGRES_DB: Joi.string().required(),
 
   JWT_SECRET: Joi.string().min(32).required(),
-  JWT_EXPIRES_IN: Joi.string().default('15m'),
+  JWT_EXPIRES_IN: Joi.string()
+    .pattern(/^\d+[smhd]$/)
+    .default('15m'),
   REFRESH_TOKEN_SECRET: Joi.string().min(32).required(),
   REFRESH_TOKEN_EXPIRES_DAYS: Joi.number().integer().min(1).default(7),
+
+  BCRYPT_ROUNDS: Joi.number().integer().min(4).max(20).default(12),
 })

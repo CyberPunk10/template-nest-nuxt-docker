@@ -20,9 +20,10 @@ async function bootstrap() {
   )
   app.enableCors({
     origin: config.get<string>('CORS_ORIGIN', 'http://localhost:3000'),
+    credentials: true,
   })
 
-  if (process.env.NODE_ENV !== 'production') {
+  if (config.get('NODE_ENV') !== 'production') {
     const document = SwaggerModule.createDocument(
       app,
       new DocumentBuilder().setTitle('template-nest-nuxt API').setVersion('1.0').build(),

@@ -8,15 +8,19 @@ export class SessionCleanupService {
 
   constructor(private readonly prisma: PrismaService) {}
 
-  // Каждую ночь в 03:00 удаляем все истёкшие сессии —
+  // Каждую ночь в 03:00 удаляем все сессии с истёкшим expiresAt —
   // как активные (пользователь не заходил), так и isUsed: true (отработавшие ловушки).
   @Cron(CronExpression.EVERY_DAY_AT_3AM)
   async cleanupExpiredSessions(): Promise<void> {
-    const { count } = await this.prisma.session.deleteMany({
-      where: { expiresAt: { lt: new Date() } },
-    })
-    if (count > 0) {
-      this.logger.log(`Deleted ${count} expired sessions`)
+    try {
+      const { count } = await this.prisma.session.deleteMany({
+        where: { expiresAt: { lt: new Date() } },
+      })
+      if (count > 0) {
+        this.logger.log(`Deleted ${count} expired sessions`)
+      }
+    } catch (err) {
+      this.logger.error('Failed to cleanup expired sessions', err)
     }
   }
 }

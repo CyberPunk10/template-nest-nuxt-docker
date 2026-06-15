@@ -1,8 +1,7 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Put } from '@nestjs/common'
-import { User } from '../../generated/prisma/client'
+import { Body, Controller, Delete, Get, HttpCode, Param, ParseUUIDPipe, Put } from '@nestjs/common'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { UpdateUserDto } from './dto/update-user.dto'
-import { UsersService } from './users.service'
+import { SafeUser, UsersService } from './users.service'
 
 @ApiTags('Users')
 @Controller('users')
@@ -12,7 +11,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Получить всех пользователей' })
   @ApiResponse({ status: 200, description: 'Список пользователей' })
   @Get()
-  findAll(): Promise<User[]> {
+  findAll(): Promise<SafeUser[]> {
     return this.usersService.findAll()
   }
 
@@ -20,7 +19,7 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Пользователь найден' })
   @ApiResponse({ status: 404, description: 'Пользователь не найден' })
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<User> {
+  findOne(@Param('id', ParseUUIDPipe) id: string): Promise<SafeUser> {
     return this.usersService.findOne(id)
   }
 
@@ -28,7 +27,7 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Пользователь обновлён' })
   @ApiResponse({ status: 404, description: 'Пользователь не найден' })
   @Put(':id')
-  update(@Param('id') id: string, @Body() dto: UpdateUserDto): Promise<User> {
+  update(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateUserDto): Promise<SafeUser> {
     return this.usersService.update(id, dto)
   }
 
@@ -37,7 +36,7 @@ export class UsersController {
   @ApiResponse({ status: 404, description: 'Пользователь не найден' })
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id') id: string): Promise<void> {
+  remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.usersService.remove(id)
   }
 }

@@ -29,4 +29,8 @@ model Session {
   lastUsedAt       DateTime @default(now())
   expiresAt        DateTime
   createdAt        DateTime @default(now())
+
+  @@index([familyId])   // deleteMany по familyId при reuse detection
+  @@index([expiresAt])  // deleteMany по expiresAt в cleanup cron
+  @@index([userId])     // CASCADE DELETE по userId
 }
