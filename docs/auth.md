@@ -223,6 +223,55 @@ health() {
 
 По умолчанию если вы инжектите `@Res()`, NestJS передаёт управление ответом полностью вам — нужно вызывать `res.send()` вручную. `passthrough: true` говорит NestJS: "я инжектирую `res` только чтобы установить cookies, а сам ответ всё равно отправляй ты". Без этого `return` из метода контроллера ничего не отправит.
 
+## Rate limiting
+
+Приложение защищено от брутфорса через `@nestjs/throttler`.
+
+| ENV              | По умолчанию | Применяется к  |
+| ---------------- | ------------ | -------------- |
+| `THROTTLE_TTL`   | `60000` мс   | Окно подсчёта  |
+| `THROTTLE_LIMIT` | `100`/min    | Всё приложение |
+
+Лимит считается **на каждый IP отдельно**.
+
+### Как ThrottlerGuard применяется к эндпоинтам
+
+`ThrottlerGuard` зарегистрирован как глобальный guard через `APP_GUARD` — **каждый эндпоинт** автоматически защищён (100/min).
+
+`@Throttle({ default: { ttl, limit } })` переопределяет лимит для конкретного эндпоинта:
+
+```
+APP_GUARD: ThrottlerGuard                                      ← 100/min на всё
+
+POST /auth/login     @Throttle({ default: { limit: 10 } })     ← 10/min (перебор паролей)
+POST /auth/register  @Throttle({ default: { limit: 10 } })     ← 10/min (массовая регистрация)
+POST /auth/refresh   @Throttle({ default: { limit: 10 } })     ← 10/min (перебор токенов)
+POST /auth/logout                                              ← 100/min (глобальный)
+GET  /auth/me                                                  ← 100/min (глобальный)
+```
+
+Auth-эндпоинты получают более жёсткий лимит прямо в декораторе — сразу видно какой лимит и почему.
+
+### За reverse proxy
+
+В production приложение обычно стоит за nginx или Cloudflare. В этом случае все запросы приходят на NestJS с одного IP прокси — throttler будет считать лимит для всех пользователей как одного.
+
+Решение — настроить `getTracker` на чтение реального IP из заголовка `X-Forwarded-For`:
+
+```typescript
+ThrottlerModule.forRootAsync({
+  inject: [ConfigService],
+  useFactory: (config: ConfigService) => ({
+    throttlers: [
+      { name: 'default', ttl: config.get('THROTTLE_TTL'), limit: config.get('THROTTLE_LIMIT') },
+    ],
+    getTracker: (req) => req.headers['x-forwarded-for'] ?? req.ip,
+  }),
+})
+```
+
+> **Важно:** доверять `X-Forwarded-For` можно только если он проставляется вашим доверенным прокси. Если заголовок может подделать клиент — это обход rate limiting. Убедитесь что nginx/Cloudflare перезаписывает этот заголовок, а не добавляет к существующему.
+
 ## Очистка истёкших сессий
 
 При каждой ротации старая запись остаётся в таблице `Session` с `isUsed: true`. Если пользователь делает refresh раз в день на протяжении 7 дней — накапливается 7 записей на одну цепочку. Без очистки таблица растёт бесконечно.
@@ -247,6 +296,8 @@ async cleanupExpiredSessions() {
 
 | Переменная                   | Описание                                       | По умолчанию    |
 | ---------------------------- | ---------------------------------------------- | --------------- |
+| `THROTTLE_TTL`               | Окно rate limiting (мс)                        | `60000`         |
+| `THROTTLE_LIMIT`             | Максимум запросов за окно (глобально)          | `100`           |
 | `JWT_SECRET`                 | Секрет для подписи JWT (min 32 символа)        | — (обязательно) |
 | `JWT_EXPIRES_IN`             | Время жизни access token                       | `15m`           |
 | `REFRESH_TOKEN_SECRET`       | Секрет для HMAC refresh token (min 32 символа) | — (обязательно) |

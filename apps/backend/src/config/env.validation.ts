@@ -12,6 +12,9 @@ export const envValidationSchema = Joi.object({
   POSTGRES_PASSWORD: Joi.string().required(),
   POSTGRES_DB: Joi.string().required(),
 
+  THROTTLE_TTL: Joi.number().integer().min(1).default(60_000),
+  THROTTLE_LIMIT: Joi.number().integer().min(1).default(100),
+
   JWT_SECRET: Joi.string().min(32).required(),
   JWT_EXPIRES_IN: Joi.string()
     .pattern(/^\d+[smhd]$/)

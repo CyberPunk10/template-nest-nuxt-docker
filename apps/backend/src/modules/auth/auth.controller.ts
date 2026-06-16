@@ -11,6 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common'
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { Throttle } from '@nestjs/throttler'
 import { Request, Response } from 'express'
 import { AuthService } from './auth.service'
 import { SafeUser } from '../users/users.service'
@@ -30,6 +31,7 @@ export class AuthController {
   ) {}
 
   @Public()
+  @Throttle({ default: { ttl: 60_000, limit: 10 } })
   @Post('register')
   @HttpCode(201)
   @ApiOperation({ summary: 'Регистрация' })
@@ -44,6 +46,7 @@ export class AuthController {
   }
 
   @Public()
+  @Throttle({ default: { ttl: 60_000, limit: 10 } })
   @UseGuards(LocalAuthGuard)
   @Post('login')
   @HttpCode(200)
@@ -60,6 +63,7 @@ export class AuthController {
   }
 
   @Public()
+  @Throttle({ default: { ttl: 60_000, limit: 10 } })
   @Post('refresh')
   @HttpCode(200)
   @ApiOperation({ summary: 'Обновление токенов' })
