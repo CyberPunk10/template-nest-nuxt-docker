@@ -272,6 +272,28 @@ ThrottlerModule.forRootAsync({
 
 > **Важно:** доверять `X-Forwarded-For` можно только если он проставляется вашим доверенным прокси. Если заголовок может подделать клиент — это обход rate limiting. Убедитесь что nginx/Cloudflare перезаписывает этот заголовок, а не добавляет к существующему.
 
+### Тесты
+
+Throttler покрыт двумя наборами e2e тестов с разными конфигурациями:
+
+**`jest-e2e.json`** — основные auth-тесты (`test/default/`). Throttler **отключён** через `skipIf`:
+
+```typescript
+skipIf: () => config.get('APP_ENV') === 'test',
+```
+
+`APP_ENV=test` выставляется в `test/setup-e2e.ts` до загрузки модулей. Без этого тесты падали бы на 429 при создании тестовых пользователей.
+
+**`jest-e2e-throttle.json`** — throttle-тесты (`test/throttle/`). Throttler **включён** (`APP_ENV=production`, `test/setup-e2e-throttle.ts`). Проверяют реальное поведение:
+
+- глобальный лимит (`THROTTLE_LIMIT=12`) срабатывает на `/auth/me` — 13-й запрос возвращает 429
+- локальный лимит (`limit: 10` на auth-роутах) срабатывает раньше глобального — 11-й запрос на `/auth/register` возвращает 429
+
+```bash
+pnpm test:e2e           # основные тесты (throttler выключен)
+pnpm test:e2e:throttle  # throttle-тесты (throttler включён)
+```
+
 ## Очистка истёкших сессий
 
 При каждой ротации старая запись остаётся в таблице `Session` с `isUsed: true`. Если пользователь делает refresh раз в день на протяжении 7 дней — накапливается 7 записей на одну цепочку. Без очистки таблица растёт бесконечно.
@@ -304,6 +326,24 @@ async cleanupExpiredSessions() {
 | `REFRESH_TOKEN_EXPIRES_DAYS` | Время жизни refresh token (дней)               | `7`             |
 | `BCRYPT_ROUNDS`              | Cost-фактор bcrypt для хэширования паролей     | `12`            |
 
+## E2E тесты
+
+**`test/default/auth.e2e-spec.ts`** — механизм авторизации (throttler отключён):
+
+- Регистрация: создание пользователя, установка cookies, конфликт по email, валидация
+- Логин: правильные и неправильные учётные данные
+- `GET /auth/me`: с токеном и без
+- Refresh: ротация токенов, инвалидация старого, новый токен валиден
+- Reuse detection: повторное использование старого токена инвалидирует всю семью; сессии других устройств не затрагиваются
+- Logout: очистка сессии в БД, идемпотентность, работа без токена
+
+**`test/throttle/throttle.e2e-spec.ts`** — rate limiting (throttler включён, подробнее в разделе Rate limiting → Тесты).
+
+```bash
+pnpm test:e2e           # auth-тесты
+pnpm test:e2e:throttle  # throttle-тесты
+```
+
 ## Документация
 
 - [NestJS Authentication](https://docs.nestjs.com/security/authentication) — Guards, `@Public()` паттерн, глобальный guard через `APP_GUARD`
@@ -312,8 +352,11 @@ async cleanupExpiredSessions() {
 - [NestJS Custom Decorators](https://docs.nestjs.com/custom-decorators) — `SetMetadata`, как работает `@Public()`
 - [@nestjs/jwt](https://github.com/nestjs/jwt) — `JwtModule.registerAsync`, `JwtService.sign()`, `JwtModuleOptions`
 - [cookie-parser](https://www.npmjs.com/package/cookie-parser) — middleware для чтения cookies в Express/NestJS
+- [RFC 9700 — OAuth 2.0 Security BCP](https://datatracker.ietf.org/doc/html/rfc9700) — refresh token rotation, reuse detection
 - [@nestjs/throttler](https://docs.nestjs.com/security/rate-limiting) — rate limiting, `ThrottlerGuard`, `@Throttle()`, `getTracker`
 - [@nestjs/schedule](https://docs.nestjs.com/techniques/task-scheduling) — cron-задачи, `@Cron()`, `CronExpression`
+
+---
 
 &nbsp;
 

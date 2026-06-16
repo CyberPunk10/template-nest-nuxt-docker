@@ -14,5 +14,5 @@
     // Не генерировать .js файлы при type-check — иначе артефакты засоряют src/
     "noEmit": true
   },
-  "include": ["src"]
+  "include": ["src", "test"]
 }

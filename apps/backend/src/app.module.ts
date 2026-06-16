@@ -24,6 +24,7 @@ import { envValidationSchema } from './config/env.validation'
             limit: config.get<number>('THROTTLE_LIMIT', 100),
           },
         ],
+        skipIf: () => config.get('APP_ENV') === 'test',
       }),
     }),
     ScheduleModule.forRoot(),
