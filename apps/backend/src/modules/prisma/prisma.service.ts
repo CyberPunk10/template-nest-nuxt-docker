@@ -16,6 +16,10 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
   async onModuleInit() {
     try {
       await this.$connect()
+      // SELECT 1 — стандартный ping для проверки реального TCP-соединения
+      if (process.env.NODE_ENV === 'production') {
+        await this.$queryRaw`SELECT 1`
+      }
       this.logger.log('Connected to PostgreSQL')
     } catch (err) {
       this.logger.error('Failed to connect to PostgreSQL', err)

@@ -17,6 +17,9 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
+    // Серверная переменная — недоступна на клиенте.
+    // Переопределяется через NUXT_BACKEND_URL в .env
+    backendUrl: 'http://localhost:3001',
     public: {
       // Переопределяется через NUXT_PUBLIC_API_BASE
       apiBase: '/api/backend',
