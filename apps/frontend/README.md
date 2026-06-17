@@ -53,7 +53,7 @@ app/
 ├── components/
 │   └── DevPanel.vue      ← панель разработчика (статус сервисов, стек, команды)
 ├── composables/
-│   └── useApi.ts         ← обёртка над useFetch/$fetch с базовым URL
+│   └── myComposable.ts   ← свои composables
 ├── layouts/
 │   └── default.vue       ← основной layout с DevPanel справа
 ├── pages/

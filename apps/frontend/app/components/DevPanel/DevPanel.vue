@@ -1,11 +1,11 @@
 <script setup lang="ts">
-const { get } = useApi()
-const { data: backendHealth, error: backendError } = await get<{ status: string }>('/health')
-const backendOnline = computed(() => backendHealth.value?.status === 'ok' && !backendError.value)
-
 const {
-  public: { backendUrl, appEnv },
+  public: { apiBase, backendUrl, appEnv },
 } = useRuntimeConfig()
+const { data: backendHealth, error: backendError } = await useFetch<{ status: string }>('/health', {
+  baseURL: apiBase,
+})
+const backendOnline = computed(() => backendHealth.value?.status === 'ok' && !backendError.value)
 const requestUrl = useRequestURL()
 const frontendUrl = requestUrl.origin
 const swaggerEnabled = appEnv === 'development'

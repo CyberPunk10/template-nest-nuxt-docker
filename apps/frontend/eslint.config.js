@@ -4,7 +4,7 @@ import withNuxt from './.nuxt/eslint.config.mjs'
 // Добавляем только наши кастомные правила поверх
 export default withNuxt({
   rules: {
-    'no-console': 'warn',
+    'no-console': 'off',
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
   },
 })

@@ -30,12 +30,12 @@ const locales = [
             t('about.hero.titleAccent')
           }}</span>
         </h1>
-        <p class="hero__subtitle">
-          <template v-for="(line, i) in t('about.hero.subtitle').split('\n')" :key="i">
-            <br v-if="i > 0" />{{ line }}
-          </template>
-        </p>
+        <p class="hero__subtitle" v-html="t('about.hero.subtitle').replace('\n', '<br />')" />
         <div class="hero__actions">
+          <NuxtLink class="hero__btn hero__btn--primary" to="/login">
+            <Icon name="lucide:log-in" size="15" />
+            {{ t('about.hero.login') }}
+          </NuxtLink>
           <a
             class="hero__btn hero__btn--ghost"
             href="https://github.com/CyberPunk10/template-nest-nuxt-docker"
