@@ -3,8 +3,9 @@
     <div class="col">
       <NuxtWelcome />
     </div>
-    <div class="col col--users">
-      <HomeUsers />
+    <div class="col col--home-data">
+      <HomeTasks />
+      <HomeDbTables class="home-db-tables" />
     </div>
   </div>
 </template>
@@ -30,11 +31,15 @@
   }
 }
 
-.col--users {
+.col--home-data {
   border-right: none;
   padding: 24px 20px;
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+.home-db-tables {
+  margin-top: 16px;
 }
 </style>

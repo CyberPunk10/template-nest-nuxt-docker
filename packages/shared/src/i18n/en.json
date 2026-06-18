@@ -4,15 +4,22 @@
     "unauthorized": "Unauthorized",
     "validation": "Validation failed"
   },
+  "db": {
+    "title": "Database",
+    "subtitle": "read-only snapshot"
+  },
+  "tasks": {
+    "title": "Tasks",
+    "subtitle": "CRUD · NestJS /tasks",
+    "create": "Create task",
+    "list": "Current user's tasks",
+    "empty": "No tasks",
+    "titleField": "Title",
+    "description": "Description (optional)",
+    "descriptionField": "Description",
+    "add": "Add"
+  },
   "users": {
-    "title": "Users",
-    "subtitle": "CRUD · NestJS /users",
-    "create": "Create",
-    "list": "List",
-    "empty": "No users",
-    "name": "Name",
-    "add": "Add",
-    "adding": "Adding...",
-    "error": "Error"
+    "title": "Users"
   }
 }

@@ -1,45 +1,41 @@
 <script setup lang="ts">
 import { UiCard, UiButton } from '@repo/ui'
 
-interface User {
+interface Task {
   id: string
-  name: string
-  email: string
+  title: string
+  description: string | null
   createdAt: string
   updatedAt: string
 }
 
 const { t } = useI18n()
 const { $api } = useNuxtApp()
-const { user } = useAuth()
 
-const { data: users, refresh } = await useApi<User[]>('/users', {
-  default: () => [],
-})
+const { data: tasks, refresh } = await useApi<Task[]>('/tasks', { default: () => [] })
 
-const form = reactive({ name: '', email: '' })
+const form = reactive({ title: '', description: '' })
 const editingId = ref<string | null>(null)
-const editForm = reactive({ name: '', email: '' })
+const editForm = reactive({ title: '', description: '' })
 
-async function createUser() {
+async function createTask() {
   try {
-    await $api('/auth/register', {
+    await $api('/tasks', {
       method: 'POST',
-      body: { name: form.name, email: form.email, password: 'demo1234' },
+      body: { title: form.title, description: form.description || undefined },
     })
-    user.value = await $api('/auth/me')
-    form.name = ''
-    form.email = ''
-    await refresh()
+    form.title = ''
+    form.description = ''
+    await Promise.all([refresh(), refreshNuxtData(QUERY_KEYS.allTasks)])
   } catch (e) {
-    console.log('createUser error', e)
+    console.log('createTask error', e)
   }
 }
 
-function startEdit(user: User) {
-  editingId.value = user.id
-  editForm.name = user.name
-  editForm.email = user.email
+function startEdit(item: Task) {
+  editingId.value = item.id
+  editForm.title = item.title
+  editForm.description = item.description ?? ''
 }
 
 function cancelEdit() {
@@ -48,59 +44,63 @@ function cancelEdit() {
 
 async function saveEdit(id: string) {
   try {
-    const result = await $api(`/users/${id}`, {
+    await $api(`/tasks/${id}`, {
       method: 'PUT',
-      body: { name: editForm.name, email: editForm.email },
+      body: { title: editForm.title, description: editForm.description || undefined },
     })
-    console.log('saveEdit response', result)
     editingId.value = null
-    await refresh()
+    await Promise.all([refresh(), refreshNuxtData(QUERY_KEYS.allTasks)])
   } catch (e) {
     console.log('saveEdit error', e)
   }
 }
 
-async function removeUser(id: string) {
+async function removeTask(id: string) {
   try {
-    const result = await $api(`/users/${id}`, { method: 'DELETE' })
-    console.log('removeUser response', result)
-    await refresh()
+    await $api(`/tasks/${id}`, { method: 'DELETE' })
+    await Promise.all([refresh(), refreshNuxtData(QUERY_KEYS.allTasks)])
   } catch (e) {
-    console.log('removeUser error', e)
+    console.log('removeTask error', e)
   }
 }
 </script>
 
 <template>
   <h2 class="heading">
-    {{ t('users.title') }} <span class="heading-sub">← {{ t('users.subtitle') }}</span>
+    {{ t('tasks.title') }} <span class="heading-sub">← {{ t('tasks.subtitle') }}</span>
   </h2>
 
-  <UiCard :title="t('users.create')">
-    <form class="form" @submit.prevent="createUser">
-      <input v-model="form.name" class="form__input" :placeholder="t('users.name')" />
-      <input v-model="form.email" class="form__input" placeholder="Email" />
-      <UiButton type="submit">{{ t('users.add') }}</UiButton>
+  <UiCard :title="t('tasks.create')">
+    <form class="form" @submit.prevent="createTask">
+      <input
+        v-model="form.title"
+        class="form__input"
+        :placeholder="t('tasks.titleField')"
+        required
+      />
+      <input v-model="form.description" class="form__input" :placeholder="t('tasks.description')" />
+      <UiButton type="submit">{{ t('tasks.add') }}</UiButton>
     </form>
   </UiCard>
 
-  <UiCard :title="t('users.list')">
-    <div v-if="!users?.length" class="empty">{{ t('users.empty') }}</div>
-    <div v-else class="users">
-      <div v-for="item in users" :key="item.id" class="user">
+  <UiCard :title="t('tasks.list')">
+    <div v-if="!tasks?.length" class="empty">{{ t('tasks.empty') }}</div>
+    <div v-else class="tasks">
+      <div v-for="item in tasks" :key="item.id" class="task">
         <template v-if="editingId === item.id">
-          <form class="user__edit" @submit.prevent="saveEdit(item.id)">
+          <form class="task__edit" @submit.prevent="saveEdit(item.id)">
             <input
-              v-model="editForm.name"
+              v-model="editForm.title"
               class="form__input form__input--sm"
-              :placeholder="t('users.name')"
+              :placeholder="t('tasks.titleField')"
+              required
             />
             <input
-              v-model="editForm.email"
+              v-model="editForm.description"
               class="form__input form__input--sm"
-              placeholder="Email"
+              :placeholder="t('tasks.descriptionField')"
             />
-            <div class="user__edit-actions">
+            <div class="task__edit-actions">
               <UiButton type="submit" variant="ghost">
                 <Icon name="lucide:check" size="14" />
               </UiButton>
@@ -111,11 +111,11 @@ async function removeUser(id: string) {
           </form>
         </template>
         <template v-else>
-          <div class="user__info" @click="startEdit(item)">
-            <span class="user__name">{{ item.name }}</span>
-            <span class="user__email">{{ item.email }}</span>
+          <div class="task__info" @click="startEdit(item)">
+            <span class="task__title">{{ item.title }}</span>
+            <span v-if="item.description" class="task__description">{{ item.description }}</span>
           </div>
-          <UiButton variant="danger" @click="removeUser(item.id)">
+          <UiButton variant="danger" @click="removeTask(item.id)">
             <Icon name="lucide:trash-2" size="14" />
           </UiButton>
         </template>
@@ -173,13 +173,13 @@ async function removeUser(id: string) {
   color: #475569;
 }
 
-.users {
+.tasks {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.user {
+.task {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -188,7 +188,7 @@ async function removeUser(id: string) {
   &__info {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
     min-width: 0;
     flex: 1;
     cursor: pointer;
@@ -214,13 +214,12 @@ async function removeUser(id: string) {
     gap: 4px;
   }
 
-  &__name {
+  &__title {
     font-size: 13px;
     color: #e2e8f0;
-    text-transform: capitalize;
   }
 
-  &__email {
+  &__description {
     font-size: 11px;
     color: #475569;
   }

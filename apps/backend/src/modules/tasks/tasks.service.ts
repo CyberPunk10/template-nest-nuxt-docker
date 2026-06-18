@@ -15,6 +15,13 @@ export class TasksService {
     })
   }
 
+  findAllGlobal(): Promise<(Task & { user: { name: string } })[]> {
+    return this.prisma.task.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: { user: { select: { name: true } } },
+    })
+  }
+
   async findOne(id: string, userId: string): Promise<Task> {
     const task = await this.prisma.task.findUnique({ where: { id } })
     if (!task) throw new NotFoundException(`Task ${id} not found`)

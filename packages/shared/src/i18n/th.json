@@ -4,15 +4,22 @@
     "unauthorized": "ไม่ได้รับอนุญาต",
     "validation": "การตรวจสอบล้มเหลว"
   },
+  "db": {
+    "title": "ฐานข้อมูล",
+    "subtitle": "อ่านอย่างเดียว"
+  },
+  "tasks": {
+    "title": "งาน",
+    "subtitle": "CRUD · NestJS /tasks",
+    "create": "สร้างงาน",
+    "list": "งานของผู้ใช้ปัจจุบัน",
+    "empty": "ไม่มีงาน",
+    "titleField": "ชื่อ",
+    "description": "คำอธิบาย (ไม่บังคับ)",
+    "descriptionField": "คำอธิบาย",
+    "add": "เพิ่ม"
+  },
   "users": {
-    "title": "ผู้ใช้",
-    "subtitle": "CRUD · NestJS /users",
-    "create": "สร้าง",
-    "list": "รายการ",
-    "empty": "ไม่มีผู้ใช้",
-    "name": "ชื่อ",
-    "add": "เพิ่ม",
-    "adding": "กำลังสร้าง...",
-    "error": "ข้อผิดพลาด"
+    "title": "ผู้ใช้"
   }
 }

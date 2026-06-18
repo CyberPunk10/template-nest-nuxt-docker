@@ -22,6 +22,13 @@ import { TasksService } from './tasks.service'
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
+  @ApiOperation({ summary: 'Получить все задачи всех пользователей' })
+  @ApiResponse({ status: 200 })
+  @Get('all')
+  findAllGlobal() {
+    return this.tasksService.findAllGlobal()
+  }
+
   @ApiOperation({ summary: 'Получить задачи текущего пользователя' })
   @ApiResponse({ status: 200 })
   @Get()
