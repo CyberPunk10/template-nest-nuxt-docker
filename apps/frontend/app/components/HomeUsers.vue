@@ -5,18 +5,39 @@ interface User {
   id: string
   name: string
   email: string
+  createdAt: string
+  updatedAt: string
 }
 
-const { t, locale, locales, setLocale } = useI18n()
+const { t } = useI18n()
+const { $api } = useNuxtApp()
+const { user } = useAuth()
 
-const users = ref<User[]>([
-  { id: '1', name: 'Alice', email: 'alice@example.com' },
-  { id: '2', name: 'Bob', email: 'bob@example.com' },
-])
+const { data: users, refresh } = await useApi<User[]>('/users', {
+  default: () => [],
+})
+
+const { data: me } = await useApi('/auth/me')
+console.log('auth/me', me.value)
 
 const form = reactive({ name: '', email: '' })
 const editingId = ref<string | null>(null)
 const editForm = reactive({ name: '', email: '' })
+
+async function createUser() {
+  try {
+    await $api('/auth/register', {
+      method: 'POST',
+      body: { name: form.name, email: form.email, password: 'demo1234' },
+    })
+    user.value = await $api('/auth/me')
+    form.name = ''
+    form.email = ''
+    await refresh()
+  } catch (e) {
+    console.log('createUser error', e)
+  }
+}
 
 function startEdit(user: User) {
   editingId.value = user.id
@@ -28,39 +49,35 @@ function cancelEdit() {
   editingId.value = null
 }
 
-function saveEdit(id: string) {
-  console.log('saveEdit', id, { ...editForm })
-  editingId.value = null
+async function saveEdit(id: string) {
+  try {
+    const result = await $api(`/users/${id}`, {
+      method: 'PUT',
+      body: { name: editForm.name, email: editForm.email },
+    })
+    console.log('saveEdit response', result)
+    editingId.value = null
+    await refresh()
+  } catch (e) {
+    console.log('saveEdit error', e)
+  }
 }
 
-function createUser() {
-  console.log('createUser', { ...form })
-  form.name = ''
-  form.email = ''
-}
-
-function removeUser(id: string) {
-  console.log('removeUser', id)
+async function removeUser(id: string) {
+  try {
+    const result = await $api(`/users/${id}`, { method: 'DELETE' })
+    console.log('removeUser response', result)
+    await refresh()
+  } catch (e) {
+    console.log('removeUser error', e)
+  }
 }
 </script>
 
 <template>
-  <div class="header">
-    <h2 class="heading">
-      {{ t('users.title') }} <span class="heading-sub">← {{ t('users.subtitle') }}</span>
-    </h2>
-    <div class="locale-switcher">
-      <button
-        v-for="loc in locales"
-        :key="loc.code"
-        class="locale-btn"
-        :class="{ 'locale-btn--active': locale === loc.code }"
-        @click="setLocale(loc.code)"
-      >
-        {{ loc.code.toUpperCase() }}
-      </button>
-    </div>
-  </div>
+  <h2 class="heading">
+    {{ t('users.title') }} <span class="heading-sub">← {{ t('users.subtitle') }}</span>
+  </h2>
 
   <UiCard :title="t('users.create')">
     <form class="form" @submit.prevent="createUser">
@@ -71,7 +88,7 @@ function removeUser(id: string) {
   </UiCard>
 
   <UiCard :title="t('users.list')">
-    <div v-if="!users.length" class="empty">{{ t('users.empty') }}</div>
+    <div v-if="!users?.length" class="empty">{{ t('users.empty') }}</div>
     <div v-else class="users">
       <div v-for="user in users" :key="user.id" class="user">
         <template v-if="editingId === user.id">
@@ -111,13 +128,6 @@ function removeUser(id: string) {
 </template>
 
 <style scoped lang="scss">
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
 .heading {
   font-size: 11px;
   font-weight: 600;
@@ -132,35 +142,6 @@ function removeUser(id: string) {
     letter-spacing: 0;
     color: #475569;
     font-style: italic;
-  }
-}
-
-.locale-switcher {
-  display: flex;
-  gap: 2px;
-}
-
-.locale-btn {
-  background: transparent;
-  border: 1px solid #1e293b;
-  border-radius: 6px;
-  color: #475569;
-  font-size: 10px;
-  font-weight: 600;
-  padding: 3px 6px;
-  cursor: pointer;
-  transition:
-    border-color 0.15s,
-    color 0.15s;
-
-  &:hover {
-    border-color: #475569;
-    color: #94a3b8;
-  }
-
-  &--active {
-    border-color: #00dc82;
-    color: #00dc82;
   }
 }
 

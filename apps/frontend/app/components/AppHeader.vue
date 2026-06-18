@@ -1,6 +1,7 @@
 <script setup lang="ts">
-const user = { name: 'John Doe', email: 'john@example.com' }
-const avatar = user.name.charAt(0).toUpperCase()
+const { user, logout } = useAuth()
+const { locale, locales, setLocale } = useI18n()
+const avatar = computed(() => user.value?.name.charAt(0).toUpperCase() ?? '?')
 
 const menuOpen = ref(false)
 const menuRef = ref<HTMLElement | null>(null)
@@ -9,8 +10,12 @@ function toggleMenu() {
   menuOpen.value = !menuOpen.value
 }
 
-function handleLogout() {
-  console.log('logout')
+async function handleLogout() {
+  try {
+    await logout()
+  } catch (e) {
+    console.log('logout error', e)
+  }
 }
 
 function onDocumentClick(e: MouseEvent) {
@@ -25,12 +30,23 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
 
 <template>
   <header class="header">
+    <div class="header__locale">
+      <button
+        v-for="loc in locales"
+        :key="loc.code"
+        class="header__locale-btn"
+        :class="{ 'header__locale-btn--active': locale === loc.code }"
+        @click="setLocale(loc.code)"
+      >
+        {{ loc.code.toUpperCase() }}
+      </button>
+    </div>
     <div ref="menuRef" class="header__user">
       <button class="header__trigger" @click="toggleMenu">
         <div class="header__avatar">{{ avatar }}</div>
         <div class="header__info">
-          <span class="header__name">{{ user.name }}</span>
-          <span class="header__email">{{ user.email }}</span>
+          <span class="header__name">{{ user?.name }}</span>
+          <span class="header__email">{{ user?.email }}</span>
         </div>
         <Icon
           name="lucide:chevron-down"
@@ -64,8 +80,37 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
   border-bottom: 1px solid #1e293b;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   padding: 0 20px;
+
+  &__locale {
+    display: flex;
+    gap: 2px;
+  }
+
+  &__locale-btn {
+    background: transparent;
+    border: 1px solid #1e293b;
+    border-radius: 6px;
+    color: #475569;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 6px;
+    cursor: pointer;
+    transition:
+      border-color 0.15s,
+      color 0.15s;
+
+    &:hover {
+      border-color: #475569;
+      color: #94a3b8;
+    }
+
+    &--active {
+      border-color: #00dc82;
+      color: #00dc82;
+    }
+  }
 
   &__user {
     position: relative;
