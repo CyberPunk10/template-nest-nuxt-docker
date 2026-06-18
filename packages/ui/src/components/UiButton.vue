@@ -3,6 +3,7 @@ defineProps<{
   variant?: 'primary' | 'ghost' | 'danger'
   disabled?: boolean
   type?: 'button' | 'submit' | 'reset'
+  isIcon?: boolean
 }>()
 
 defineEmits<{
@@ -13,7 +14,7 @@ defineEmits<{
 <template>
   <button
     class="ui-button"
-    :class="`ui-button--${variant ?? 'primary'}`"
+    :class="[`ui-button--${variant ?? 'primary'}`, { 'ui-button--icon': isIcon }]"
     :type="type ?? 'button'"
     :disabled="disabled"
     @click="$emit('click', $event)"
@@ -69,14 +70,17 @@ defineEmits<{
   background: transparent;
   border-color: #1e293b;
   color: #475569;
-  padding: 6px;
-  width: 30px;
-  height: 30px;
 }
 
 .ui-button--danger:hover:not(:disabled) {
   border-color: #ef4444;
   color: #ef4444;
   background: rgba(239, 68, 68, 0.15);
+}
+
+.ui-button--icon {
+  padding: 6px;
+  width: 30px;
+  height: 30px;
 }
 </style>

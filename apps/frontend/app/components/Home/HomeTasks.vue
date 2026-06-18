@@ -101,23 +101,28 @@ async function removeTask(id: string) {
               :placeholder="t('tasks.descriptionField')"
             />
             <div class="task__edit-actions">
-              <UiButton type="submit" variant="ghost">
+              <UiButton type="submit" isIcon variant="ghost">
                 <Icon name="lucide:check" size="14" />
               </UiButton>
-              <UiButton variant="ghost" @click="cancelEdit">
+              <UiButton variant="ghost" isIcon @click="cancelEdit">
                 <Icon name="lucide:x" size="14" />
               </UiButton>
             </div>
           </form>
         </template>
         <template v-else>
-          <div class="task__info" @click="startEdit(item)">
+          <div class="task__info">
             <span class="task__title">{{ item.title }}</span>
             <span v-if="item.description" class="task__description">{{ item.description }}</span>
           </div>
-          <UiButton variant="danger" @click="removeTask(item.id)">
-            <Icon name="lucide:trash-2" size="14" />
-          </UiButton>
+          <div class="task__actions">
+            <UiButton variant="ghost" isIcon @click="startEdit(item)">
+              <Icon name="lucide:pencil" size="14" />
+            </UiButton>
+            <UiButton variant="danger" isIcon @click="removeTask(item.id)">
+              <Icon name="lucide:trash-2" size="14" />
+            </UiButton>
+          </div>
         </template>
       </div>
     </div>
@@ -191,15 +196,12 @@ async function removeTask(id: string) {
     gap: 2px;
     min-width: 0;
     flex: 1;
-    cursor: pointer;
-    border-radius: 6px;
-    padding: 4px 6px;
-    margin: -4px -6px;
-    transition: background 0.15s;
+  }
 
-    &:hover {
-      background: rgba(255, 255, 255, 0.04);
-    }
+  &__actions {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
   }
 
   &__edit {

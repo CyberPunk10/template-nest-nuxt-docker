@@ -53,7 +53,7 @@
     },
     "auth": {
       "label": "Auth",
-      "desc": "JWT authentication on top of postgres-prisma: email + password, httpOnly cookies, sessions in DB."
+      "desc": "The perfect starting point for dashboards and admin panels. JWT authentication on top of postgres-prisma: email + password, httpOnly cookies, sessions in DB."
     }
   },
   "stack": {
