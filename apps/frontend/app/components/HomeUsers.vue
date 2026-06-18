@@ -17,9 +17,6 @@ const { data: users, refresh } = await useApi<User[]>('/users', {
   default: () => [],
 })
 
-const { data: me } = await useApi('/auth/me')
-console.log('auth/me', me.value)
-
 const form = reactive({ name: '', email: '' })
 const editingId = ref<string | null>(null)
 const editForm = reactive({ name: '', email: '' })
@@ -90,9 +87,9 @@ async function removeUser(id: string) {
   <UiCard :title="t('users.list')">
     <div v-if="!users?.length" class="empty">{{ t('users.empty') }}</div>
     <div v-else class="users">
-      <div v-for="user in users" :key="user.id" class="user">
-        <template v-if="editingId === user.id">
-          <form class="user__edit" @submit.prevent="saveEdit(user.id)">
+      <div v-for="item in users" :key="item.id" class="user">
+        <template v-if="editingId === item.id">
+          <form class="user__edit" @submit.prevent="saveEdit(item.id)">
             <input
               v-model="editForm.name"
               class="form__input form__input--sm"
@@ -114,11 +111,11 @@ async function removeUser(id: string) {
           </form>
         </template>
         <template v-else>
-          <div class="user__info" @click="startEdit(user)">
-            <span class="user__name">{{ user.name }}</span>
-            <span class="user__email">{{ user.email }}</span>
+          <div class="user__info" @click="startEdit(item)">
+            <span class="user__name">{{ item.name }}</span>
+            <span class="user__email">{{ item.email }}</span>
           </div>
-          <UiButton variant="danger" @click="removeUser(user.id)">
+          <UiButton variant="danger" @click="removeUser(item.id)">
             <Icon name="lucide:trash-2" size="14" />
           </UiButton>
         </template>

@@ -8,6 +8,7 @@ import { AppService } from './app.service'
 import { PrismaModule } from './modules/prisma/prisma.module'
 import { UsersModule } from './modules/users/users.module'
 import { AuthModule } from './modules/auth/auth.module'
+import { TasksModule } from './modules/tasks/tasks.module'
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard'
 import { envValidationSchema } from './config/env.validation'
 
@@ -31,6 +32,7 @@ import { envValidationSchema } from './config/env.validation'
     PrismaModule,
     UsersModule,
     AuthModule,
+    TasksModule,
   ],
   controllers: [AppController],
   providers: [
