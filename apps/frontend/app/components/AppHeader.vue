@@ -30,41 +30,49 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
 
 <template>
   <header class="header">
-    <div class="header__locale">
-      <button
-        v-for="loc in locales"
-        :key="loc.code"
-        class="header__locale-btn"
-        :class="{ 'header__locale-btn--active': locale === loc.code }"
-        @click="setLocale(loc.code)"
+    <NuxtLink class="header__logo" to="/">
+      <span class="header__logo-title"
+        >Monorepo <span class="header__logo-accent">Template</span></span
       >
-        {{ loc.code.toUpperCase() }}
-      </button>
-    </div>
-    <div ref="menuRef" class="header__user">
-      <button class="header__trigger" @click="toggleMenu">
-        <div class="header__avatar">{{ avatar }}</div>
-        <div class="header__info">
-          <span class="header__name">{{ user?.name }}</span>
-          <span class="header__email">{{ user?.email }}</span>
-        </div>
-        <Icon
-          name="lucide:chevron-down"
-          size="14"
-          class="header__chevron"
-          :class="{ 'header__chevron--open': menuOpen }"
-        />
-      </button>
-      <div v-if="menuOpen" class="header__menu">
-        <NuxtLink class="header__menu-item" to="/profile" @click="menuOpen = false">
-          <Icon name="lucide:user" size="14" />
-          Профиль
-        </NuxtLink>
-        <div class="header__menu-divider" />
-        <button class="header__menu-item header__menu-item--danger" @click="handleLogout">
-          <Icon name="lucide:log-out" size="14" />
-          Выйти
+      <span class="header__logo-sub">NestJS + Nuxt 4</span>
+    </NuxtLink>
+    <div class="header__right">
+      <div class="header__locale">
+        <button
+          v-for="loc in locales"
+          :key="loc.code"
+          class="header__locale-btn"
+          :class="{ 'header__locale-btn--active': locale === loc.code }"
+          @click="setLocale(loc.code)"
+        >
+          {{ loc.code.toUpperCase() }}
         </button>
+      </div>
+      <div ref="menuRef" class="header__user">
+        <button class="header__trigger" @click="toggleMenu">
+          <div class="header__avatar">{{ avatar }}</div>
+          <div class="header__info">
+            <span class="header__name">{{ user?.name }}</span>
+            <span class="header__email">{{ user?.email }}</span>
+          </div>
+          <Icon
+            name="lucide:chevron-down"
+            size="14"
+            class="header__chevron"
+            :class="{ 'header__chevron--open': menuOpen }"
+          />
+        </button>
+        <div v-if="menuOpen" class="header__menu">
+          <NuxtLink class="header__menu-item" to="/profile" @click="menuOpen = false">
+            <Icon name="lucide:user" size="14" />
+            Профиль
+          </NuxtLink>
+          <div class="header__menu-divider" />
+          <button class="header__menu-item header__menu-item--danger" @click="handleLogout">
+            <Icon name="lucide:log-out" size="14" />
+            Выйти
+          </button>
+        </div>
       </div>
     </div>
   </header>
@@ -78,10 +86,38 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
   height: 52px;
   background: #0f172a;
   border-bottom: 1px solid #1e293b;
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto;
   align-items: center;
-  justify-content: space-between;
   padding: 0 20px;
+
+  &__logo {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-decoration: none;
+    align-self: center;
+    margin-top: 5px;
+  }
+
+  &__logo-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: #e2e8f0;
+    line-height: 1;
+  }
+
+  &__logo-accent {
+    color: #00dc82;
+  }
+
+  &__logo-sub {
+    font-size: 11px;
+    font-weight: 500;
+    color: #94a3b8;
+    letter-spacing: 0.05em;
+    line-height: 1;
+  }
 
   &__locale {
     display: flex;
@@ -110,6 +146,12 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
       border-color: #00dc82;
       color: #00dc82;
     }
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
 
   &__user {
