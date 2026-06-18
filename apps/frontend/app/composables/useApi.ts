@@ -14,12 +14,8 @@ export const useApi = createUseFetch(() => {
       const url = typeof request === 'string' ? request : request.toString()
       if (url.includes('/auth/')) return
 
-      const refreshed = await $fetch('/auth/refresh', {
-        method: 'POST',
-        baseURL: apiBase as string,
-      })
-        .then(() => true)
-        .catch(() => false)
+      const { refresh } = useRefreshToken()
+      const refreshed = await refresh()
 
       if (!refreshed) {
         // Отменяем retry — повторный запрос всё равно упадёт с 401

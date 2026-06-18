@@ -17,12 +17,8 @@ export default defineNuxtPlugin((nuxtApp) => {
       const url = typeof request === 'string' ? request : request.toString()
       if (url.includes('/auth/')) return
 
-      const refreshed = await $fetch('/auth/refresh', {
-        method: 'POST',
-        baseURL: apiBase as string,
-      })
-        .then(() => true)
-        .catch(() => false)
+      const { refresh } = useRefreshToken()
+      const refreshed = await refresh()
 
       // Refresh провалился — разлогиниваем
       if (!refreshed) {
