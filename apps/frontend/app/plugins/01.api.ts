@@ -13,9 +13,14 @@ export default defineNuxtPlugin((nuxtApp) => {
     async onResponseError({ response, request, options }) {
       if (response.status !== 401) return
 
-      // Исключаем auth-запросы — иначе бесконечный цикл
       const url = typeof request === 'string' ? request : request.toString()
-      if (url.includes('/auth/')) return
+
+      // Исключаем auth-запросы — иначе бесконечный цикл
+      // retry бессмысленен, токена всё равно нет
+      if (url.includes('/auth/')) {
+        options.retry = 0
+        return
+      }
 
       const { refresh } = useRefreshToken()
       const refreshed = await refresh()
