@@ -1,0 +1,7 @@
+:root {
+  --app-sidebar-width: 220px;
+  --app-sidebar-width-collapsed: 48px;
+  --app-sidebar-transition: 0.3s ease;
+
+  --app-header-height: 52px;
+}

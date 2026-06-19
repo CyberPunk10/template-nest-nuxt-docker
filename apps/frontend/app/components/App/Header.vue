@@ -30,12 +30,6 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
 
 <template>
   <header class="header">
-    <NuxtLink class="header__logo" to="/">
-      <span class="header__logo-title"
-        >Monorepo <span class="header__logo-accent">Template</span></span
-      >
-      <span class="header__logo-sub">NestJS + Nuxt 4</span>
-    </NuxtLink>
     <div class="header__right">
       <div class="header__locale">
         <button
@@ -83,40 +77,29 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
   position: sticky;
   top: 0;
   z-index: 10;
-  height: 52px;
+  height: var(--app-header-height);
   background: #0f172a;
   border-bottom: 1px solid #1e293b;
-  display: grid;
-  grid-template-columns: 1fr auto;
+  display: flex;
   align-items: center;
+  justify-content: flex-end;
   padding: 0 20px;
 
-  &__logo {
+  &__sidebar-toggle {
     display: flex;
-    flex-direction: column;
-    gap: 4px;
-    text-decoration: none;
-    align-self: center;
-    margin-top: 5px;
-  }
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    padding: 6px;
+    color: #334155;
+    cursor: pointer;
+    transition: color 0.15s;
 
-  &__logo-title {
-    font-size: 14px;
-    font-weight: 800;
-    color: #e2e8f0;
-    line-height: 1;
-  }
-
-  &__logo-accent {
-    color: #00dc82;
-  }
-
-  &__logo-sub {
-    font-size: 11px;
-    font-weight: 500;
-    color: #94a3b8;
-    letter-spacing: 0.05em;
-    line-height: 1;
+    &:hover {
+      color: #64748b;
+    }
   }
 
   &__locale {

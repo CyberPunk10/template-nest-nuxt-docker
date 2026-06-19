@@ -6,5 +6,6 @@ export default withNuxt({
   rules: {
     'no-console': 'off',
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    'vue/attribute-hyphenation': 'off',
   },
 })
