@@ -48,11 +48,13 @@ function killPort(port) {
     const pids = execSync(`lsof -ti :${port} 2>/dev/null`, { encoding: 'utf8' }).trim()
     if (pids) {
       pids.split('\n').forEach((pid) => {
-        try { execSync(`kill ${pid}`) } catch {}
+        try {
+          execSync(`kill ${pid}`)
+        } catch {}
       })
       return true
     }
-  // eslint-disable-next-line no-empty
+    // eslint-disable-next-line no-empty
   } catch {}
   return false
 }
@@ -72,14 +74,19 @@ async function checkPorts() {
   const busyPorts = [
     !backendFree && `backend=${backendPort}`,
     !frontendFree && `frontend=${frontendPort}`,
-  ].filter(Boolean).join(', ')
+  ]
+    .filter(Boolean)
+    .join(', ')
 
   intro(`Port conflict: ${busyPorts}`)
 
   const answer = await select({
     message: 'What would you like to do?',
     options: [
-      { label: `Kill existing processes and use same ports (${backendPort}, ${frontendPort})`, value: 'kill' },
+      {
+        label: `Kill existing processes and use same ports (${backendPort}, ${frontendPort})`,
+        value: 'kill',
+      },
       { label: 'Abort', value: 'abort' },
     ],
   })

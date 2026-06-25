@@ -2,12 +2,12 @@
 import { MENU_TYPE } from '~/composables/useSidebar'
 import { themeSwither } from '../config/sidebar-menu'
 
-import AsideLink from '~/components/App/Sidebar/ui/core/AsideLink.vue'
-import SubMenu from '~/components/App/Sidebar/ui/core/SubMenu.vue'
+import SidebarLink from '~/components/App/Sidebar/components/core/SidebarLink.vue'
+import SubMenu from '~/components/App/Sidebar/components/core/SubMenu.vue'
 
 export default {
   components: {
-    AsideLink,
+    SidebarLink,
     SubMenu,
   },
   props: {
@@ -73,7 +73,7 @@ export default {
       @click-outside-submenu="onClickOutsideSubMenu"
     />
 
-    <AsideLink
+    <SidebarLink
       class="aside-change-theme"
       :icon="selectedThemeIcon"
       :tooltipText="$t(selectedTheme)"
@@ -81,7 +81,7 @@ export default {
       @click-section="$emit('click-section', themeSwither)"
     >
       {{ $t(selectedTheme) }}
-    </AsideLink>
+    </SidebarLink>
   </div>
 </template>
 

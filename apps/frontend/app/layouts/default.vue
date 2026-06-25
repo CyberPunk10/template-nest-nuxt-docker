@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import AppSidebar from '~/components/App/Sidebar/components/AppSidebar.vue'
+
 const route = useRoute()
 const isShowAppHeader = computed(() => !route.meta.hideHeader)
 const isShowAppSidebar = computed(() => !route.meta.hideSidebar)
@@ -16,7 +18,7 @@ const { isCollapsed } = useSidebar()
     <NuxtRouteAnnouncer />
 
     <ClientOnly>
-      <AppSidebarUiAside v-if="isShowAppSidebar" />
+      <AppSidebar v-if="isShowAppSidebar" />
     </ClientOnly>
 
     <div class="app-page" :class="{ '--has-app-header': isShowAppHeader }">

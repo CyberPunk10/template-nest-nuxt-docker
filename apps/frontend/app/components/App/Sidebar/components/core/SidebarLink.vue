@@ -30,7 +30,7 @@ const props = withDefaults(
     chevron?: boolean
     external?: boolean
     icon?: string
-    levelAsideLink?: number
+    levelSidebarLink?: number
     opened?: boolean
     params?: Record<string, string>
     to?: string
@@ -38,7 +38,7 @@ const props = withDefaults(
     ignoreParams?: boolean
   }>(),
   {
-    levelAsideLink: 1,
+    levelSidebarLink: 1,
   },
 )
 
@@ -146,7 +146,7 @@ const isActive = computed(() => {
 
 const showCheckmark = computed(() => {
   if (!props.icon) return false
-  if (props.levelAsideLink === 1) return false
+  if (props.levelSidebarLink === 1) return false
   const themeSwitherItem = themeSwither.items.find((i) => i.icon === props.icon)
   if (!themeSwitherItem) return false
   return themeSwitherItem.id === colorMode.preference
@@ -168,7 +168,7 @@ function toggleCollapse() {
   emit('toggle-collapse', !props.opened)
 }
 
-function handlerAsideLink() {
+function handlerSidebarLink() {
   toggleCollapse()
 
   if (!props.external) {
@@ -191,12 +191,12 @@ function handlerAsideLink() {
       class="aside-link"
       :class="{
         '--active': isActive,
-        '--collapsed': levelAsideLink === 1 && isCollapsed,
+        '--collapsed': levelSidebarLink === 1 && isCollapsed,
         '--opened': opened,
       }"
       v-bind="linkAttrs"
       data-test-id="link-component"
-      @click="handlerAsideLink"
+      @click="handlerSidebarLink"
     >
       <Icon v-if="icon" :name="resolveIcon(icon)" class="aside-link__icon" />
 
@@ -206,7 +206,7 @@ function handlerAsideLink() {
 
       <span
         v-if="chevron"
-        v-show="levelAsideLink > 1 || !isCollapsed"
+        v-show="levelSidebarLink > 1 || !isCollapsed"
         class="aside-link__chevron"
         data-test-id="chevron"
       >

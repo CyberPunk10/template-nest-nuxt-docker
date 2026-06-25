@@ -15,6 +15,7 @@
     "dev": "node scripts/dev.mjs",
     "build": "pnpm -r build",
     "lint": "pnpm -r lint",
+    "format": "prettier --write .",
     "type-check": "pnpm -r type-check",
     "prepare": "husky",
     "reinstall": "node scripts/reinstall.mjs"

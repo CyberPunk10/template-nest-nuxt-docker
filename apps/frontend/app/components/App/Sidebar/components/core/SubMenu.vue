@@ -1,13 +1,15 @@
 <script>
 import { onClickOutside } from '@vueuse/core'
-import AsideLink from '~/components/App/Sidebar/ui/core/AsideLink.vue'
+import SidebarLink from '~/components/App/Sidebar/components/core/SidebarLink.vue'
 import AppCollapseTransition from '~/components/App/CollapseTransition.vue'
 
 export default {
   name: 'SubMenu',
   components: {
-    SubMenu: defineAsyncComponent(() => import('~/components/App/Sidebar/ui/core/SubMenu.vue')),
-    AsideLink,
+    SubMenu: defineAsyncComponent(
+      () => import('~/components/App/Sidebar/components/core/SubMenu.vue'),
+    ),
+    SidebarLink,
   },
   props: {
     notCollapsedItems: Object,
@@ -90,7 +92,7 @@ export default {
             :data-test-id="`app-spacer-${item.id}`"
           />
 
-          <AsideLink
+          <SidebarLink
             v-else
             :key="`subitem_${item.id}_${index}`"
             :class="subitem.classes"
@@ -108,7 +110,7 @@ export default {
             @toggle-collapse="onToggleCollapse(subitem, !notCollapsedItems[subitem.id])"
           >
             {{ $te(subitem.title) ? $t(subitem.title) : subitem.title }}
-          </AsideLink>
+          </SidebarLink>
 
           <SubMenu
             v-if="subitem.items"

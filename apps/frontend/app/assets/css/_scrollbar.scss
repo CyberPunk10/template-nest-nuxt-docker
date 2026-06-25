@@ -35,7 +35,6 @@ html.dark-ocean {
 }
 
 @mixin scrollbarWrap($selector) {
-
   /* Modern browsers with `scrollbar-*` support */
   @supports (scrollbar-width: auto) {
     // в версии 121 Chrome перестал поддерживаться селектор ::-webkit-scrollbar, поэтому добавлено свойство scrollbar-width
@@ -85,4 +84,3 @@ html.dark-ocean {
 // Чтобы добавить кастомный скролл нужно добавить класс через этот миксин
 // эти includes хранить в одном месте здесь
 @include scrollbarWrap('.--custom-css-scrollbar'); // universal class
-

@@ -32,5 +32,5 @@
   --danger-color: #ef4444;
   --danger-bg-color: rgba(239, 68, 68, 0.1);
 
-  --shadow-popup: 0 8px 24px rgba(0, 0, 0, .12);
+  --shadow-popup: 0 8px 24px rgba(0, 0, 0, 0.12);
 }

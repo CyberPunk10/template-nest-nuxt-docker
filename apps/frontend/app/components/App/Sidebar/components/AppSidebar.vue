@@ -5,19 +5,25 @@ import { useMenu } from '../composables/useMenu'
 import { themeSwither } from '../config/sidebar-menu'
 
 export default defineNuxtComponent({
-  name: 'AppAside',
+  name: 'AppSidebar',
   components: {
-    AsideLink: defineAsyncComponent(() => import('~/components/App/Sidebar/ui/core/AsideLink.vue')),
-    AsideLinkProfile: defineAsyncComponent(
-      () => import('~/components/App/Sidebar/ui/AsideLinkProfile/index.vue'),
+    SidebarLink: defineAsyncComponent(
+      () => import('~/components/App/Sidebar/components/core/SidebarLink.vue'),
     ),
-    AsideLogo: defineAsyncComponent(() => import('~/components/App/Sidebar/ui/AsideLogo.vue')),
-    AsideShadow: defineAsyncComponent(
-      () => import('~/components/App/Sidebar/ui/core/AsideShadow.vue'),
+    LinkProfile: defineAsyncComponent(
+      () => import('~/components/App/Sidebar/components/LinkProfile/index.vue'),
     ),
-    SubMenu: defineAsyncComponent(() => import('~/components/App/Sidebar/ui/core/SubMenu.vue')),
+    SidebarLogo: defineAsyncComponent(
+      () => import('~/components/App/Sidebar/components/SidebarLogo.vue'),
+    ),
+    SidebarShadow: defineAsyncComponent(
+      () => import('~/components/App/Sidebar/components/core/SidebarShadow.vue'),
+    ),
+    SubMenu: defineAsyncComponent(
+      () => import('~/components/App/Sidebar/components/core/SubMenu.vue'),
+    ),
     ToggleMini: defineAsyncComponent(
-      () => import('~/components/App/Sidebar/ui/core/ToggleMini.vue'),
+      () => import('~/components/App/Sidebar/components/core/ToggleMini.vue'),
     ),
   },
   setup() {
@@ -298,7 +304,7 @@ export default defineNuxtComponent({
     }"
     data-test-id="aside-wrapper"
   >
-    <AsideShadow @click="clickByShadow" />
+    <SidebarShadow @click="clickByShadow" />
 
     <ToggleMini
       v-if="isAsideDesktop"
@@ -312,7 +318,7 @@ export default defineNuxtComponent({
       :class="{ '--collapsed': isCollapsed }"
       data-test-id="aside-menu"
     >
-      <AsideLogo />
+      <SidebarLogo />
 
       <app-scroll-shadow
         ref="asideScrollRef"
@@ -329,7 +335,7 @@ export default defineNuxtComponent({
           <app-spacer v-if="item.spacer" :key="`app-spacer-${index}`" :data-spacer-id="item.id" />
 
           <div v-else :key="`aside-item-${index}`" class="aside-menu__item">
-            <AsideLink
+            <SidebarLink
               :to="item.url"
               :params="item.params"
               :ignoreParams="item.ignoreParams"
@@ -342,7 +348,7 @@ export default defineNuxtComponent({
               @click-section="onClickSection(item)"
             >
               {{ $t(item.title) }}
-            </AsideLink>
+            </SidebarLink>
 
             <SubMenu
               v-if="item.items"
@@ -356,7 +362,7 @@ export default defineNuxtComponent({
       </app-scroll-shadow>
 
       <div class="aside-footer">
-        <AsideLinkProfile />
+        <LinkProfile />
       </div>
     </div>
   </div>

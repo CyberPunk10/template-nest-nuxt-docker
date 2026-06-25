@@ -1,21 +1,9 @@
-<script>
+<script setup lang="ts">
 import { MENU_TYPE } from '~/composables/useSidebar'
+import AppLogo from '~/components/App/Logo.vue'
 
-export default {
-  components: {
-    AppLogo: defineAsyncComponent(() => import('~/components/App/Logo.vue')),
-  },
-  setup() {
-    const { isCollapsed, menuType } = useSidebar()
-    const { $globalEvents } = useNuxtApp()
-    return {
-      MENU_TYPE,
-      isCollapsed,
-      menuType,
-      $globalEvents,
-    }
-  },
-}
+const { isCollapsed, menuType } = useSidebar()
+const { $globalEvents } = useNuxtApp()
 </script>
 
 <template>
