@@ -127,7 +127,7 @@ const groups = computed<CommandGroup[]>(() => [
   align-items: center;
   gap: 12px;
   padding: 8px 10px;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   background: #020c18;
   border: 1px solid #0f1f33;
   cursor: pointer;

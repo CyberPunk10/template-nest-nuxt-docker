@@ -78,12 +78,12 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
   top: 0;
   z-index: 10;
   height: var(--app-header-height);
-  background: #0f172a;
-  border-bottom: 1px solid #1e293b;
+  background: var(--background);
+  border-bottom: 1px solid var(--divider-color);
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding: 0 20px;
+  padding: 0 var(--space-5);
 
   &__sidebar-toggle {
     display: flex;
@@ -91,8 +91,8 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
     justify-content: center;
     background: transparent;
     border: none;
-    border-radius: 6px;
-    padding: 6px;
+    border-radius: var(--radius-md);
+    padding: var(--space-1-5);
     color: #334155;
     cursor: pointer;
     transition: color 0.15s;
@@ -109,8 +109,8 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
 
   &__locale-btn {
     background: transparent;
-    border: 1px solid #1e293b;
-    border-radius: 6px;
+    border: 1px solid var(--divider-color);
+    border-radius: var(--radius-md);
     color: #475569;
     font-size: 10px;
     font-weight: 600;
@@ -147,7 +147,7 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
     gap: 10px;
     background: transparent;
     border: 1px solid transparent;
-    border-radius: 8px;
+    border-radius: var(--radius-lg);
     padding: 5px 8px;
     cursor: pointer;
     transition:
@@ -155,17 +155,17 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
       background 0.15s;
 
     &:hover {
-      border-color: #1e293b;
-      background: rgba(255, 255, 255, 0.03);
+      border-color: var(--divider-color);
+      background: var(--control-hover-minor-color);
     }
   }
 
   &__avatar {
     width: 32px;
     height: 32px;
-    border-radius: 50%;
-    background: #00dc82;
-    color: #0f172a;
+    border-radius: var(--radius-full);
+    background: var(--color-accent);
+    color: var(--background);
     font-size: 13px;
     font-weight: 700;
     display: flex;
@@ -183,19 +183,19 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
 
   &__name {
     font-size: 13px;
-    color: #e2e8f0;
+    color: var(--text-primary-color);
     line-height: 1;
   }
 
   &__email {
     font-size: 11px;
-    color: #475569;
+    color: var(--text-tertiary-color);
     line-height: 1;
   }
 
   &__chevron {
-    color: #475569;
-    transition: transform 0.2s;
+    color: var(--text-tertiary-color);
+    transition: transform var(--duration-normal);
     flex-shrink: 0;
 
     &--open {
@@ -205,32 +205,32 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
 
   &__menu {
     position: absolute;
-    top: calc(100% + 6px);
+    top: calc(100% + var(--space-1-5));
     right: 0;
     min-width: 180px;
     background: #1e293b;
     border: 1px solid #334155;
     border-radius: 8px;
-    padding: 4px;
+    padding: var(--space-1);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
   }
 
   &__menu-item {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--space-2);
     width: 100%;
-    padding: 8px 10px;
+    padding: var(--space-2) var(--space-2-5);
     background: transparent;
     border: none;
-    border-radius: 6px;
+    border-radius: var(--radius-md);
     font-size: 13px;
     color: #94a3b8;
     cursor: pointer;
     text-decoration: none;
     transition:
-      background 0.1s,
-      color 0.1s;
+      background var(--duration-fast),
+      color var(--duration-fast);
     text-align: left;
 
     &:hover {
@@ -247,7 +247,7 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
   &__menu-divider {
     height: 1px;
     background: #334155;
-    margin: 4px 0;
+    margin: var(--space-1) 0;
   }
 }
 </style>

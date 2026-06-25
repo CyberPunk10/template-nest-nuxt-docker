@@ -1,0 +1,36 @@
+:root.dark-midnight {
+  --background: #0d1117;
+  --background-secondary: #161b22;
+
+  --text-primary-color: #e6edf3;
+  --text-secondary-color: #7d8590;
+  --text-tertiary-color: #484f58;
+
+  --control-primary-color: #cdd9e5;
+  --control-primary-minor-color: rgba(255, 255, 255, 0.06);
+  --control-secondary-minor-color: #1c2128;
+
+  --leadgid-color: #e6edf3;
+
+  --gradient-shadow-from-color: rgba(0, 0, 0, 0.6);
+  --gradient-shadow-from-color-soft: rgba(0, 0, 0, 0.3);
+  --gradient-shadow-to-color: rgba(13, 17, 23, 0);
+  --gradient-shadow-size: 1.5rem;
+
+  --divider-color: #21262d;
+  --scrollbar-color-border: #21262d;
+  --scrollbar-color: rgba(33, 38, 45, 0.8);
+
+  --color-accent: #39d353;
+  --active-bg-color: rgba(57, 211, 83, 0.08);
+  --active-text-color: var(--color-accent);
+  --control-accent-color: var(--color-accent);
+  --accent-primary-color: var(--color-accent);
+  --hover-accent-color: var(--color-accent);
+
+  --control-hover-minor-color: rgba(255, 255, 255, 0.03);
+  --danger-color: #ef4444;
+  --danger-bg-color: rgba(239, 68, 68, 0.1);
+
+  --shadow-popup: 0 8px 24px rgba(0, 0, 0, .8);
+}

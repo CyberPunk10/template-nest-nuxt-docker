@@ -67,7 +67,7 @@ const locales = [
 
   &__lang-btn {
     padding: 4px 10px;
-    border-radius: 6px;
+    border-radius: var(--radius-md);
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.06em;

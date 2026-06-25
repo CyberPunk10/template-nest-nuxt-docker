@@ -1,0 +1,36 @@
+:root.dark-ocean {
+  --background: #0b1525;
+  --background-secondary: #0f172a;
+
+  --text-primary-color: #e2e8f0;
+  --text-secondary-color: #94a3b8;
+  --text-tertiary-color: #475569;
+
+  --control-primary-color: #e2e8f0;
+  --control-primary-minor-color: rgba(255, 255, 255, 0.06);
+  --control-secondary-minor-color: #192332;
+
+  --leadgid-color: #e2e8f0;
+
+  --gradient-shadow-from-color: rgba(0, 0, 0, 0.2);
+  --gradient-shadow-from-color-soft: rgba(0, 0, 0, 0.1);
+  --gradient-shadow-to-color: rgba(11, 21, 37, 0);
+  --gradient-shadow-size: 1.5rem;
+
+  --divider-color: #1e293b;
+  --scrollbar-color-border: #334155;
+  --scrollbar-color: rgba(51, 65, 85, 0.8);
+
+  --color-accent: #00dc82;
+  --active-bg-color: rgba(0, 220, 130, 0.08);
+  --active-text-color: var(--color-accent);
+  --control-accent-color: var(--color-accent);
+  --accent-primary-color: var(--color-accent);
+  --hover-accent-color: var(--color-accent);
+
+  --control-hover-minor-color: rgba(255, 255, 255, 0.03);
+  --danger-color: #ef4444;
+  --danger-bg-color: rgba(239, 68, 68, 0.1);
+
+  --shadow-popup: 0 8px 24px rgba(0, 0, 0, .8);
+}

@@ -1,0 +1,36 @@
+:root.dark {
+  --background: #0c0c0e;
+  --background-secondary: #18181b;
+
+  --text-primary-color: #f4f4f6;
+  --text-secondary-color: #71717a;
+  --text-tertiary-color: #52525b;
+
+  --control-primary-color: #d4d4d8;
+  --control-primary-minor-color: rgba(255, 255, 255, 0.07);
+  --control-secondary-minor-color: #27272a;
+
+  --leadgid-color: #f4f4f6;
+
+  --gradient-shadow-from-color: rgba(0, 0, 0, 0.6);
+  --gradient-shadow-from-color-soft: rgba(0, 0, 0, 0.3);
+  --gradient-shadow-to-color: rgba(12, 12, 14, 0);
+  --gradient-shadow-size: 1.5rem;
+
+  --divider-color: #27272a;
+  --scrollbar-color-border: #27272a;
+  --scrollbar-color: rgba(39, 39, 42, 0.8);
+
+  --color-accent: #6c47ff;
+  --active-bg-color: rgba(108, 71, 255, 0.1);
+  --active-text-color: var(--color-accent);
+  --control-accent-color: var(--color-accent);
+  --accent-primary-color: var(--color-accent);
+  --hover-accent-color: var(--color-accent);
+
+  --control-hover-minor-color: rgba(255, 255, 255, 0.03);
+  --danger-color: #ef4444;
+  --danger-bg-color: rgba(239, 68, 68, 0.1);
+
+  --shadow-popup: 0 8px 24px rgba(0, 0, 0, .6);
+}

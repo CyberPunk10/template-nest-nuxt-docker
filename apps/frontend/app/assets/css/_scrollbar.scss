@@ -1,0 +1,88 @@
+/* ---- ScrollBar ---- */
+/* за основу взято отсюда: https://habr.com/ru/company/ruvds/blog/468405/ */
+
+:root {
+  --scrollbar-size: 8px;
+  --scrollbar-minlength: 15px;
+  --scrollbar-ff-width: thin;
+  --scrollbar-track-color: transparent;
+}
+
+html.light {
+  color-scheme: light;
+}
+
+html.dark,
+html.dark-green,
+html.dark-midnight,
+html.dark-ocean {
+  color-scheme: dark;
+}
+
+.scrollbar-test {
+  overscroll-behavior: contain; // это свойство комментировать в дочерних блоках с прокруткой
+  overflow: auto;
+  scrollbar-width: var(--scrollbar-ff-width);
+  scroll-behavior: smooth; // плавная прокрутка по якорным ссылкам
+
+  &::-webkit-scrollbar-thumb:vertical {
+    min-height: var(--scrollbar-minlength);
+  }
+
+  &::-webkit-scrollbar-thumb:horizontal {
+    min-width: var(--scrollbar-minlength);
+  }
+}
+
+@mixin scrollbarWrap($selector) {
+
+  /* Modern browsers with `scrollbar-*` support */
+  @supports (scrollbar-width: auto) {
+    // в версии 121 Chrome перестал поддерживаться селектор ::-webkit-scrollbar, поэтому добавлено свойство scrollbar-width
+    // https://developer.chrome.com/docs/css-ui/scrollbar-styling?hl=ru#changing_the_size_of_the_scrollbar_with_scrollbar-width
+
+    .layout-scrollbar-obtrusive #{$selector} {
+      scrollbar-width: thin; // auto , thin и none (нельзя задать в виде числа)
+    }
+  }
+
+  /* Legacy browsers with `::-webkit-scrollbar-*` support */
+  @supports selector(::-webkit-scrollbar) {
+    .layout-scrollbar-obtrusive #{$selector}::-webkit-scrollbar {
+      height: var(--scrollbar-size);
+      width: var(--scrollbar-size);
+    }
+  }
+
+  #{$selector} {
+    scrollbar-color: var(--scrollbar-color) var(--scrollbar-track-color);
+
+    &::-webkit-scrollbar-track {
+      background-color: var(--scrollbar-track-color);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--scrollbar-color);
+      border-radius: 9px;
+      border: 2px solid transparent;
+      min-height: 5rem !important; // минимальная высота/длина ползунка
+    }
+
+    &::-webkit-scrollbar-thumb:vertical {
+      min-height: var(--scrollbar-minlength);
+    }
+
+    &::-webkit-scrollbar-thumb:horizontal {
+      min-width: var(--scrollbar-minlength);
+    }
+
+    &::-webkit-scrollbar-corner {
+      background-color: rgba(0, 0, 0, 0);
+    }
+  }
+}
+
+// Чтобы добавить кастомный скролл нужно добавить класс через этот миксин
+// эти includes хранить в одном месте здесь
+@include scrollbarWrap('.--custom-css-scrollbar'); // universal class
+

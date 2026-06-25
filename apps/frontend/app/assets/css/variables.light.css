@@ -1,0 +1,36 @@
+:root.light {
+  --background: #ffffff;
+  --background-secondary: #f4f4f5;
+
+  --text-primary-color: #09090b;
+  --text-secondary-color: #71717a;
+  --text-tertiary-color: #a1a1aa;
+
+  --control-primary-color: #3f3f46;
+  --control-primary-minor-color: rgba(0, 0, 0, 0.05);
+  --control-secondary-minor-color: #e4e4e7;
+
+  --leadgid-color: #09090b;
+
+  --gradient-shadow-from-color: rgba(104, 109, 112, 0.14);
+  --gradient-shadow-from-color-soft: rgba(104, 109, 112, 0.08);
+  --gradient-shadow-to-color: rgba(255, 255, 255, 0);
+  --gradient-shadow-size: 0.8rem;
+
+  --divider-color: #e4e4e7;
+  --scrollbar-color-border: #c5c5c9;
+  --scrollbar-color: #cbcbd1;
+
+  --color-accent: #5b35e8;
+  --active-bg-color: rgba(91, 53, 232, 0.08);
+  --active-text-color: var(--color-accent);
+  --control-accent-color: var(--color-accent);
+  --accent-primary-color: var(--color-accent);
+  --hover-accent-color: var(--color-accent);
+
+  --control-hover-minor-color: rgba(0, 0, 0, 0.03);
+  --danger-color: #ef4444;
+  --danger-bg-color: rgba(239, 68, 68, 0.1);
+
+  --shadow-popup: 0 8px 24px rgba(0, 0, 0, .12);
+}

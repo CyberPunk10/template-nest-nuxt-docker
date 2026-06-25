@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <div class="col">
-      <NuxtWelcome />
+      <NuxtWelcome class="nuxt-welcome-component" />
     </div>
     <div class="col col--home-data">
       <HomeTasks />
@@ -10,7 +10,7 @@
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 .home {
   display: grid;
   grid-template-columns: 1fr 380px;
@@ -19,27 +19,27 @@
   min-height: 0;
   background: #0f172a;
   color: #fff;
-}
 
-.col {
-  border-right: 1px solid #1e293b;
-  overflow: auto;
-  min-height: 0;
-
-  :deep(.min-h-screen) {
-    min-height: 0;
+  .nuxt-welcome-component {
+    min-height: auto !important;
+    height: 100%;
   }
-}
 
-.col--home-data {
-  border-right: none;
-  padding: 24px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
+  .col {
+    border-right: 1px solid #1e293b;
+    overflow: auto;
+  }
 
-.home-db-tables {
-  margin-top: 16px;
+  .col--home-data {
+    border-right: none;
+    padding: 24px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .home-db-tables {
+    margin-top: 16px;
+  }
 }
 </style>

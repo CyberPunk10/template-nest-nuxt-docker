@@ -8,9 +8,36 @@ const appVersion = rootPkg.version ?? '0.0.0'
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  css: ['~/assets/css/reset.css', '~/assets/css/variables.css'],
+  css: [
+    '~/assets/css/reset.css',
+    '~/assets/css/_scrollbar.scss',
+    '~/assets/css/variables.css',
+    '~/assets/css/variables.layout.css',
+    '~/assets/css/variables.dark.css',
+    '~/assets/css/variables.dark-green.css',
+    '~/assets/css/variables.dark-midnight.css',
+    '~/assets/css/variables.dark-ocean.css',
+    '~/assets/css/variables.light.css',
+  ],
 
-  modules: ['@nuxt/eslint', '@nuxt/icon', '@nuxtjs/i18n'],
+  icon: {
+    serverBundle: {
+      collections: ['lucide'],
+    },
+  },
+
+  modules: [
+    '@nuxt/eslint',
+    '@nuxt/icon',
+    '@nuxtjs/i18n',
+    [
+      '@nuxtjs/color-mode',
+      {
+        preference: 'dark',
+        fallback: 'dark',
+      },
+    ],
+  ],
 
   i18n: {
     strategy: 'no_prefix',
@@ -33,7 +60,6 @@ export default defineNuxtConfig({
       backendUrl: 'http://localhost:3001',
       // Переопределяется через NUXT_PUBLIC_APP_ENV
       appEnv: 'development',
-      branch: 'auth', // ветка в git для наглядности в интерфейсе
       appVersion, // версия приложения для наглядности в интерфейсе
     },
   },

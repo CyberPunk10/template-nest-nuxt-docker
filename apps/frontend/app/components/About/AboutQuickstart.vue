@@ -67,7 +67,7 @@ const activeQs = ref(0)
   align-items: center;
   gap: 5px;
   padding: 5px 12px;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   font-size: 12px;
   font-family: monospace;
   cursor: pointer;
