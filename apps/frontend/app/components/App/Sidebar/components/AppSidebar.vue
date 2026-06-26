@@ -28,7 +28,7 @@ const notCollapsedItems = ref<Record<string, boolean>>({})
 const { leftMenu, rightMenu } = useMenu()
 const menu = computed((): MenuItem[] => [...leftMenu.value, ...rightMenu.value])
 
-watch(width, () => updateSidebarState())
+watch([width, height], () => updateSidebarState())
 
 function updateSidebarState(isInit = false) {
   if (isInit) {
@@ -111,8 +111,6 @@ function onClickSection({ id, value }: { id: string, value?: boolean }) {
     return
   }
 
-  if (!id) return
-
   const resultValue = typeof value === 'boolean' ? value : !notCollapsedItems.value[id]
   resetCollapsed()
 
@@ -156,7 +154,7 @@ function toggleSidebar({ value, type = menuType.value }: { value?: boolean, type
     if (type === MENU_TYPE.MOBILE_RIGHT) {
       direction = 'right'
       // если правое меню закрывается, то сворачиваем themeSwither
-      if (value === false && notCollapsedItems.value[themeSwither.id]) {
+      if (newValue === false && notCollapsedItems.value[themeSwither.id]) {
         notCollapsedItems.value[themeSwither.id] = false
       }
     }
@@ -236,12 +234,12 @@ function toggleSideBarWidth() {
               :params="item.params"
               :ignoreParams="item.ignoreParams"
               :class="item.classes"
-              :opened="notCollapsedItems[item.id]"
+              :opened="notCollapsedItems[item.id!]"
               :tooltipText="$t(item.title)"
               :icon="item.icon"
               :chevron="!!item.items"
               :data-test-id="`sidebar-level-0-${index}`"
-              @click-section="onClickSection(item)"
+              @click-section="onClickSection({ id: item.id! })"
             >
               {{ $t(item.title) }}
             </SidebarLink>
@@ -251,7 +249,7 @@ function toggleSideBarWidth() {
               :item="item"
               :notCollapsedItems="notCollapsedItems"
               @toggle-collapse="onToggleCollapse"
-              @click-section="onClickSection"
+              @click-section="onClickSection({ id: $event.id! })"
             />
           </div>
         </template>

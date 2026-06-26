@@ -7,15 +7,14 @@ import {
   reports,
   settings,
   users,
-  type SidebarMenuChild,
-  type SidebarMenuItem,
+  type SidebarItem,
 } from '../config/sidebar-menu'
 
-export type MenuItem = SidebarMenuItem | SidebarMenuChild | { spacer: true, id: string }
+export type MenuItem = SidebarItem | { spacer: true, id: string }
 
 export function useMenu() {
   const duplicateSpacersFilter = (item: MenuItem, idx: number, arr: MenuItem[]) =>
-    !('spacer' in item && item.spacer && idx > 0 && 'spacer' in arr[idx - 1] && arr[idx - 1])
+    !(!!item.spacer && idx > 0 && !!arr[idx - 1]!.spacer)
 
   function getFilteredItems(items: MenuItem[]): MenuItem[] {
     if (!Array.isArray(items)) return items
@@ -23,17 +22,10 @@ export function useMenu() {
     return items
       .filter(item => !!item)
       .filter(duplicateSpacersFilter)
-      .map((i) => {
-        if (!('items' in i) || !i.items) return i
-        return {
-          ...i,
-          items: getFilteredItems(i.items as MenuItem[]),
-        }
-      })
   }
 
   const leftMenu = computed(() => {
-    const sections: SidebarMenuItem[] = [
+    const sections: SidebarItem[] = [
       dashboard,
       analytics,
       users,

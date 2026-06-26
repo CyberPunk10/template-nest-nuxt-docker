@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { NuxtLink } from '#components'
 import { useSidebar } from '../../composables/useSidebar'
-import { themeSwither } from '../../config/sidebar-menu'
+import { resolveIcon, themeSwither } from '../../config/sidebar-menu'
 
 const props = withDefaults(
   defineProps<{
@@ -25,29 +25,6 @@ const emit = defineEmits<{
   'toggle-collapse': [value: boolean]
   'set-active': [value: boolean]
 }>()
-
-const ICON_MAP: Record<string, string> = {
-  home: 'lucide:house',
-  help: 'lucide:circle-help',
-  out: 'lucide:log-out',
-  'no-photo-avatar': 'lucide:user-round',
-  close: 'lucide:x',
-  'light-theme': 'lucide:sun',
-  'dark-theme': 'lucide:moon',
-  'system-theme': 'lucide:monitor',
-  'dark-green-theme': 'lucide:leaf',
-  'dark-midnight-theme': 'lucide:github',
-  'dark-ocean-theme': 'lucide:waves',
-  chevron: 'lucide:chevron-right',
-  'chevron-back': 'lucide:chevron-left',
-  checkmark: 'lucide:check',
-}
-
-function resolveIcon(type: string): string {
-  if (ICON_MAP[type]) return ICON_MAP[type]
-  if (type.includes(':')) return type
-  return `lucide:${type}`
-}
 
 const $route = useRoute()
 const colorMode = useColorMode()
@@ -89,6 +66,7 @@ const linkAttrs = computed(() => {
 
   if (props.external) {
     attrs.target = '_blank'
+    attrs.rel = 'noopener noreferrer'
   }
 
   return attrs

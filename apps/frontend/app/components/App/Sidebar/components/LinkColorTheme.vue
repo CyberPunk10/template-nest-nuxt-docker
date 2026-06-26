@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { MENU_TYPE, useSidebar } from '../composables/useSidebar'
-import { themeSwither } from '../config/sidebar-menu'
+import { themeSwither, type SidebarItem } from '../config/sidebar-menu'
 import SidebarLink from './core/SidebarLink.vue'
 import SubMenu from './core/SubMenu.vue'
 
-defineProps<{
+withDefaults(defineProps<{
   notCollapsedItems?: Record<string, boolean>
-}>()
+}>(), {
+  notCollapsedItems: () => ({}),
+})
 
 const emit = defineEmits<{
   'toggle-collapse': [item: unknown, val?: boolean]
@@ -35,7 +37,7 @@ function setTheme(value: string) {
   colorMode.preference = newTheme
 }
 
-function onClickOutsideSubMenu(itemWithSubMenu: { id: string }) {
+function onClickOutsideSubMenu(itemWithSubMenu: SidebarItem) {
   if (itemWithSubMenu.id === themeSwither.id) {
     emit('toggle-collapse', itemWithSubMenu, false)
   }

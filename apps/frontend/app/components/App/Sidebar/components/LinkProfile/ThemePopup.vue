@@ -1,18 +1,9 @@
 <script setup lang="ts">
-import { themeSwither } from '../../config/sidebar-menu'
+import { resolveIcon, themeSwither } from '../../config/sidebar-menu'
 
 defineProps<{ show: boolean }>()
 
 defineEmits<{ open: [], close: [] }>()
-
-const ICON_MAP: Record<string, string> = {
-  'light-theme': 'lucide:sun',
-  'dark-theme': 'lucide:moon',
-  'system-theme': 'lucide:monitor',
-  'dark-green-theme': 'lucide:leaf',
-  'dark-midnight-theme': 'lucide:github',
-  'dark-ocean-theme': 'lucide:waves',
-}
 
 const colorMode = useColorMode()
 const { t } = useI18n()
@@ -33,7 +24,7 @@ function setTheme(id: string) {
   >
     <button class="sidebar-profile__menu-item">
       <Icon
-        :name="selectedTheme?.icon ? (ICON_MAP[selectedTheme.icon] ?? 'lucide:sun') : 'lucide:sun'"
+        :name="selectedTheme?.icon ? resolveIcon(selectedTheme.icon) : 'lucide:sun'"
         size="14"
       />
       {{ t('userMenu.appearance') }}
@@ -54,7 +45,7 @@ function setTheme(id: string) {
           @click="setTheme(theme.id!)"
         >
           <Icon
-            :name="theme.icon ? (ICON_MAP[theme.icon] ?? 'lucide:circle') : 'lucide:circle'"
+            :name="theme.icon ? resolveIcon(theme.icon) : 'lucide:circle'"
             size="14"
           />
           {{ t(theme.title) }}

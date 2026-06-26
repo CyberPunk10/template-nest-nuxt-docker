@@ -1,42 +1,31 @@
-export interface SidebarMenuItem {
-  id: string
-  title: string
-  icon: string
-  url?: string
-  classes?: string
-  params?: Record<string, string>
-  ignoreParams?: boolean
-  items?: SidebarMenuChild[]
-}
-
-export interface SidebarMenuChild {
+export interface SidebarItem {
   id?: string
   title: string
   icon?: string
   url?: string
   classes?: string
-  items?: SidebarMenuChild[]
   spacer?: boolean
   params?: Record<string, string>
   ignoreParams?: boolean
   external?: boolean
+  items?: SidebarItem[]
 }
 
-export const dashboard: SidebarMenuItem = {
+export const dashboard = {
   id: 'dashboard',
   title: 'nav.home',
   url: '/',
   icon: 'home',
-}
+} satisfies SidebarItem
 
-export const analytics: SidebarMenuItem = {
+export const analytics = {
   id: 'analytics',
   title: 'nav.analytics',
   url: '/stub/analytics',
   icon: 'lucide:bar-chart-2',
-}
+} satisfies SidebarItem
 
-export const users: SidebarMenuItem = {
+export const users = {
   id: 'users',
   title: 'nav.users',
   icon: 'lucide:users',
@@ -67,9 +56,9 @@ export const users: SidebarMenuItem = {
       icon: 'lucide:mail',
     },
   ],
-}
+} satisfies SidebarItem
 
-export const catalog: SidebarMenuItem = {
+export const catalog = {
   id: 'catalog',
   title: 'nav.catalog',
   icon: 'lucide:layout-grid',
@@ -86,30 +75,30 @@ export const catalog: SidebarMenuItem = {
       icon: 'lucide:folder',
     },
   ],
-}
+} satisfies SidebarItem
 
-export const orders: SidebarMenuItem = {
+export const orders = {
   id: 'orders',
   title: 'nav.orders',
   url: '/stub/orders',
   icon: 'lucide:shopping-cart',
-}
+} satisfies SidebarItem
 
-export const reports: SidebarMenuItem = {
+export const reports = {
   id: 'reports',
   title: 'nav.reports',
   url: '/stub/reports',
   icon: 'lucide:file-text',
-}
+} satisfies SidebarItem
 
-export const settings: SidebarMenuItem = {
+export const settings = {
   id: 'settings',
   title: 'nav.about',
   url: '/about',
   icon: 'lucide:info',
-}
+} satisfies SidebarItem
 
-export const bigSection: SidebarMenuItem = {
+export const bigSection = {
   id: 'big-section',
   title: 'nav.bigSection',
   icon: 'lucide:bar-chart-2',
@@ -145,9 +134,32 @@ export const bigSection: SidebarMenuItem = {
     { title: 'nav.bs29', url: '/stub/bs-audit', icon: 'lucide:shield' },
     { title: 'nav.bs30', url: '/stub/bs-archive', icon: 'lucide:archive' },
   ],
+} satisfies SidebarItem
+
+export const ICON_MAP: Record<string, string> = {
+  home: 'lucide:house',
+  help: 'lucide:circle-help',
+  out: 'lucide:log-out',
+  'no-photo-avatar': 'lucide:user-round',
+  close: 'lucide:x',
+  'light-theme': 'lucide:sun',
+  'dark-theme': 'lucide:moon',
+  'system-theme': 'lucide:monitor',
+  'dark-green-theme': 'lucide:leaf',
+  'dark-midnight-theme': 'lucide:github',
+  'dark-ocean-theme': 'lucide:waves',
+  chevron: 'lucide:chevron-right',
+  'chevron-back': 'lucide:chevron-left',
+  checkmark: 'lucide:check',
 }
 
-export const userMenu: SidebarMenuChild[] = [
+export function resolveIcon(type: string): string {
+  if (ICON_MAP[type]) return ICON_MAP[type]
+  if (type.includes(':')) return type
+  return `lucide:${type}`
+}
+
+export const userMenu: SidebarItem[] = [
   { title: 'userMenu.profile', icon: 'lucide:user', url: '/profile' },
   { title: 'userMenu.settings', icon: 'lucide:settings', url: '/stub/settings' },
   { title: 'userMenu.notifications', icon: 'lucide:bell', url: '/stub/notifications' },
@@ -155,7 +167,7 @@ export const userMenu: SidebarMenuChild[] = [
   { title: 'userMenu.help', icon: 'lucide:circle-help', url: '/stub/help' },
 ]
 
-export const themeSwither: SidebarMenuItem = {
+export const themeSwither = {
   id: 'theme-swither',
   title: 'themes.light',
   icon: 'light-theme',
@@ -191,4 +203,4 @@ export const themeSwither: SidebarMenuItem = {
       icon: 'dark-ocean-theme',
     },
   ],
-}
+} satisfies SidebarItem
