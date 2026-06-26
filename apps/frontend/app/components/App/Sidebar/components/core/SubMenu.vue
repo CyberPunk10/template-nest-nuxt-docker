@@ -1,69 +1,55 @@
-<script>
+<script setup lang="ts">
 import { onClickOutside } from '@vueuse/core'
 import { useSidebar } from '../../composables/useSidebar'
-import SidebarLink from '~/components/App/Sidebar/components/core/SidebarLink.vue'
+import SidebarLink from './SidebarLink.vue'
 import AppCollapseTransition from '~/components/App/CollapseTransition.vue'
+import type { SidebarMenuChild } from '../../config/sidebar-menu'
 
-export default {
-  name: 'SubMenu',
-  components: {
-    SubMenu: defineAsyncComponent(
-      () => import('~/components/App/Sidebar/components/core/SubMenu.vue'),
-    ),
-    SidebarLink,
-  },
-  props: {
-    notCollapsedItems: Object,
-    item: Object,
-    level: {
-      type: Number,
-      default: () => 1,
-    },
-    forcePopup: Boolean,
-  },
-  emits: ['toggle-collapse', 'click-section', 'click-outside-submenu'],
-  setup(props, { emit }) {
-    const { isCollapsed } = useSidebar()
+const props = withDefaults(
+  defineProps<{
+    notCollapsedItems: Record<string, boolean>
+    item: SidebarMenuChild
+    level?: number
+    forcePopup?: boolean
+  }>(),
+  { level: 1 },
+)
 
-    const show = computed(() => !!props.notCollapsedItems[props.item?.id])
-    const isPopup = computed(() => (props.forcePopup || isCollapsed.value) && props.level === 1)
+const emit = defineEmits<{
+  'toggle-collapse': [payload: { id: string, value: boolean }]
+  'click-section': [item: SidebarMenuChild]
+  'click-outside-submenu': [item: SidebarMenuChild]
+}>()
 
-    function onToggleCollapse(item, value) {
-      if (!props.notCollapsedItems[props.item.id] && value && !isCollapsed.value) {
-        emit('toggle-collapse', { id: props.item.id, value: true })
-      }
+const SubMenu = defineAsyncComponent(() => import('./SubMenu.vue'))
 
-      if (!item.id || !item.items) return
-      emit('toggle-collapse', { id: item.id, value })
-    }
+const { isCollapsed } = useSidebar()
 
-    function onClickSection(item) {
-      if (item?.items) return
-      emit('click-section', item)
-    }
+const show = computed(() => !!props.notCollapsedItems[props.item.id!])
+const isPopup = computed(() => (props.forcePopup || isCollapsed.value) && props.level === 1)
 
-    const onClickOutsideRef = ref(null)
+function onToggleCollapse(item: SidebarMenuChild, value: boolean) {
+  if (!props.notCollapsedItems[props.item.id!] && value && !isCollapsed.value) {
+    emit('toggle-collapse', { id: props.item.id!, value: true })
+  }
 
-    onClickOutside(onClickOutsideRef, onClickOutsideSubMenu)
+  if (!item.id || !item.items) return
+  emit('toggle-collapse', { id: item.id, value })
+}
 
-    function onClickOutsideSubMenu() {
-      // если меню не открыто, то сразу выходим
-      if (!props.notCollapsedItems[props.item.id]) return
-      emit('click-outside-submenu', props.item)
-    }
+function onClickSection(item: SidebarMenuChild) {
+  if (item?.items) return
+  emit('click-section', item)
+}
 
-    return {
-      // refs
-      onClickOutsideRef,
+const onClickOutsideRef = ref<HTMLElement | null>(null)
 
-      AppCollapseTransition,
-      isPopup,
-      onClickOutsideSubMenu,
-      onClickSection,
-      onToggleCollapse,
-      show,
-    }
-  },
+onClickOutside(onClickOutsideRef, onClickOutsideSubMenu)
+
+function onClickOutsideSubMenu() {
+  // если меню не открыто, то сразу выходим
+  if (!props.notCollapsedItems[props.item.id!]) return
+  emit('click-outside-submenu', props.item)
 }
 </script>
 
@@ -101,14 +87,14 @@ export default {
             :external="subitem.external"
             :icon="subitem.icon"
             :levelSidebarLink="level + 1"
-            :opened="notCollapsedItems[subitem.id]"
+            :opened="notCollapsedItems[subitem.id!]"
             :params="subitem.params"
             :ignoreParams="subitem.ignoreParams"
             :to="subitem.url"
             data-test-id="link"
             @click-section="onClickSection(subitem)"
             @set-active="onToggleCollapse(subitem, $event)"
-            @toggle-collapse="onToggleCollapse(subitem, !notCollapsedItems[subitem.id])"
+            @toggle-collapse="onToggleCollapse(subitem, !notCollapsedItems[subitem.id!])"
           >
             {{ $te(subitem.title) ? $t(subitem.title) : subitem.title }}
           </SidebarLink>
@@ -122,7 +108,7 @@ export default {
             :notCollapsedItems="notCollapsedItems"
             data-test-id="inner-dropdown"
             @click-section="onClickSection"
-            @toggle-collapse="onToggleCollapse(subitem, !notCollapsedItems[subitem.id])"
+            @toggle-collapse="onToggleCollapse(subitem, !notCollapsedItems[subitem.id!])"
             @click-outside-submenu="$emit('click-outside-submenu', $event)"
           />
         </template>
