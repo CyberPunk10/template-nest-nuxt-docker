@@ -27,11 +27,11 @@ function setTheme(id: string) {
 
 <template>
   <div
-    class="aside-profile__theme-trigger"
+    class="sidebar-profile__theme-trigger"
     @mouseenter="$emit('open')"
     @mouseleave="$emit('close')"
   >
-    <button class="aside-profile__menu-item">
+    <button class="sidebar-profile__menu-item">
       <Icon
         :name="selectedTheme?.icon ? (ICON_MAP[selectedTheme.icon] ?? 'lucide:sun') : 'lucide:sun'"
         size="14"
@@ -40,17 +40,17 @@ function setTheme(id: string) {
       <Icon
         name="lucide:chevron-right"
         size="12"
-        class="aside-profile__menu-check aside-profile__theme-chevron"
+        class="sidebar-profile__menu-check sidebar-profile__theme-chevron"
       />
     </button>
 
-    <div v-if="show" class="aside-profile__theme-popup">
-      <div class="aside-profile__theme-popup-inner">
+    <div v-if="show" class="sidebar-profile__theme-popup">
+      <div class="sidebar-profile__theme-popup-inner">
         <button
           v-for="theme in themeSwither.items"
           :key="theme.id"
-          class="aside-profile__menu-item"
-          :class="{ 'aside-profile__menu-item--active': colorMode.preference === theme.id }"
+          class="sidebar-profile__menu-item"
+          :class="{ 'sidebar-profile__menu-item--active': colorMode.preference === theme.id }"
           @click="setTheme(theme.id!)"
         >
           <Icon
@@ -62,7 +62,7 @@ function setTheme(id: string) {
             v-if="colorMode.preference === theme.id"
             name="lucide:check"
             size="12"
-            class="aside-profile__menu-check"
+            class="sidebar-profile__menu-check"
           />
         </button>
       </div>
@@ -71,7 +71,7 @@ function setTheme(id: string) {
 </template>
 
 <style lang="scss">
-.aside-profile {
+.sidebar-profile {
   &__theme-chevron {
     color: var(--text-tertiary-color);
   }
@@ -79,7 +79,7 @@ function setTheme(id: string) {
   &__theme-trigger {
     position: relative;
 
-    &:hover .aside-profile__menu-item {
+    &:hover .sidebar-profile__menu-item {
       background: var(--control-primary-minor-color);
       color: var(--text-primary-color);
     }

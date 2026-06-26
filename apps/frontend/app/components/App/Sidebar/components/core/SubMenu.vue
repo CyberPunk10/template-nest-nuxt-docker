@@ -57,9 +57,9 @@ function onClickOutsideSubMenu() {
   <component :is="isPopup ? 'div' : AppCollapseTransition" ref="onClickOutsideRef">
     <div
       v-show="isPopup || show"
-      class="aside-dropdown"
+      class="sidebar-dropdown"
       :class="[
-        `--aside-item-id--${item.id}`,
+        `--sidebar-item-id--${item.id}`,
         {
           '--popup': isPopup,
           '--show-sub-menu': show,
@@ -67,11 +67,11 @@ function onClickOutsideSubMenu() {
       ]"
       data-test-id="dropdown"
     >
-      <div v-if="isPopup" class="aside-dropdown__header">
+      <div v-if="isPopup" class="sidebar-dropdown__header">
         {{ $t(item.title) }}
       </div>
 
-      <div class="aside-dropdown__scroll --custom-css-scrollbar" :class="`--level-${level}`">
+      <div class="sidebar-dropdown__scroll --custom-css-scrollbar" :class="`--level-${level}`">
         <template v-for="(subitem, index) in item.items">
           <app-spacer
             v-if="subitem.spacer"
@@ -120,7 +120,7 @@ function onClickOutsideSubMenu() {
 </template>
 
 <style lang="scss">
-.aside-dropdown {
+.sidebar-dropdown {
   &__header {
     font-size: var(--text-xs);
     font-weight: var(--font-semibold);
@@ -129,8 +129,8 @@ function onClickOutsideSubMenu() {
     margin-bottom: var(--space-1);
   }
 
-  .aside-link {
-    height: var(--aside-item-height-sm);
+  .sidebar-link {
+    height: var(--app-sidebar-item-height-sm);
 
     &.--opened {
       background-color: var(--control-primary-minor-color);
@@ -142,24 +142,24 @@ function onClickOutsideSubMenu() {
     }
   }
 
-  .aside-dropdown__scroll {
-    .aside-link__component {
-      .aside-link {
-        height: var(--aside-item-height-xs);
+  .sidebar-dropdown__scroll {
+    .sidebar-link__component {
+      .sidebar-link {
+        height: var(--app-sidebar-item-height-xs);
       }
     }
 
     &.--level-1 {
-      .aside-link__component {
+      .sidebar-link__component {
         padding-left: var(--space-6);
       }
     }
 
     &.--level-2 {
-      .aside-link__component {
+      .sidebar-link__component {
         padding-left: var(--space-12);
 
-        .aside-link {
+        .sidebar-link {
           height: auto;
           padding-top: var(--space-1-5);
           padding-bottom: var(--space-1-5);
@@ -194,32 +194,32 @@ function onClickOutsideSubMenu() {
       transform: translateX(0);
     }
 
-    &.--aside-item-id--users,
-    &.--aside-item-id--big-section {
+    &.--sidebar-item-id--users,
+    &.--sidebar-item-id--big-section {
       min-width: 12.5rem;
     }
 
-    .aside-dropdown__scroll {
+    .sidebar-dropdown__scroll {
       overflow: auto;
 
-      .aside-link__component {
+      .sidebar-link__component {
         padding-left: var(--space-1);
         padding-right: var(--space-1);
       }
 
       &.--level-1 {
-        max-height: var(--aside-dropdown-max-height);
+        max-height: var(--app-sidebar-dropdown-max-height);
       }
 
       &.--level-2 {
-        .aside-link__component {
+        .sidebar-link__component {
           padding-left: var(--space-4);
         }
       }
     }
 
-    .aside-link {
-      min-height: var(--aside-item-height-sm);
+    .sidebar-link {
+      min-height: var(--app-sidebar-item-height-sm);
       height: auto;
       padding: var(--space-2) var(--space-3);
 
@@ -230,14 +230,14 @@ function onClickOutsideSubMenu() {
   }
 }
 
-// делаем кастомный скролл ещё тоньше, special for .aside-dropdown__scroll
+// делаем кастомный скролл ещё тоньше, special for .sidebar-dropdown__scroll
 .layout-scrollbar-obtrusive {
-  .aside-dropdown__scroll.--custom-css-scrollbar::-webkit-scrollbar {
+  .sidebar-dropdown__scroll.--custom-css-scrollbar::-webkit-scrollbar {
     height: 6px;
     width: 6px;
   }
 }
-.aside-dropdown__scroll {
+.sidebar-dropdown__scroll {
   &.--custom-css-scrollbar {
     &::-webkit-scrollbar-thumb {
       border: 1px solid var(--scrollbar-color-border);

@@ -2,15 +2,16 @@
   --app-sidebar-width: 240px;
   --app-sidebar-width-mini: 3.25rem;
   --app-sidebar-width-collapsed: 48px;
+  --app-sidebar-item-height: 2.5rem;
+  --app-sidebar-item-height-xs: 2rem;
+  --app-sidebar-item-height-sm: 2.25rem;
+  --app-sidebar-dropdown-max-height: 48vh;
   --app-sidebar-transition: 0.3s ease;
   --app-sidebar-transition-duration: 0.3s;
+
   --app-header-height: 52px;
   --max-width-content: 75.375rem;
 
-  --aside-item-height: 2.5rem;
-  --aside-item-height-xs: 2rem;
-  --aside-item-height-sm: 2.25rem;
-  --aside-dropdown-max-height: 48vh;
 
   @media (max-width: 500px) {
     --app-sidebar-width: 100%;

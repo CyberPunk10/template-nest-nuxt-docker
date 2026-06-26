@@ -40,7 +40,7 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
 <template>
   <div
     ref="menuRef"
-    class="aside-profile"
+    class="sidebar-profile"
     :class="{ '--collapsed': isCollapsed }"
   >
     <Trigger
@@ -62,7 +62,7 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
 
       <template #logout>
         <button
-          class="aside-profile__menu-item aside-profile__menu-item--danger"
+          class="sidebar-profile__menu-item sidebar-profile__menu-item--danger"
           @click="handleLogout"
         >
           <Icon name="lucide:log-out" size="14" />
@@ -74,7 +74,7 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
 </template>
 
 <style lang="scss">
-.aside-profile {
+.sidebar-profile {
   position: relative;
   padding: var(--space-0-5) var(--space-2) var(--space-1);
 }

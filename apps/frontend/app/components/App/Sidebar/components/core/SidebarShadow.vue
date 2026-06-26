@@ -7,7 +7,7 @@ const { isMobileOpen } = useSidebar()
 
 <template>
   <div
-    class="aside-shadow"
+    class="sidebar-shadow"
     :class="{ '--shadow-mobile-opened': isMobileOpen }"
     data-test-id="shadow"
     @click.self="emit('click')"
@@ -15,7 +15,7 @@ const { isMobileOpen } = useSidebar()
 </template>
 
 <style lang="scss">
-.aside-shadow {
+.sidebar-shadow {
   position: absolute;
   top: 0;
   right: 0;

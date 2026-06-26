@@ -11,17 +11,17 @@ const { $globalEvents } = useNuxtApp()
     оборачиваем в пустой div, т.к. без обертки в мобильной версии в левом меню
     показывается только часть тени, которая автоматически добавляется из app-scroll-shadow
   -->
-  <div class="aside-logo-and-btn-close">
+  <div class="sidebar-logo-and-btn-close">
     <button
       v-if="menuType !== MENU_TYPE.DESKTOP"
-      class="aside-close"
+      class="sidebar-close"
       @click="$globalEvents.emit('toggle-sidebar', { value: false })"
     >
       <Icon name="lucide:x" />
     </button>
 
     <AppLogo
-      class="aside-logo"
+      class="sidebar-logo"
       :collapsed="isCollapsed"
       @click="$globalEvents.emit('toggle-sidebar', { value: false })"
     />
@@ -29,7 +29,7 @@ const { $globalEvents } = useNuxtApp()
 </template>
 
 <style lang="scss">
-.aside-logo-and-btn-close {
+.sidebar-logo-and-btn-close {
   display: flex;
   align-items: center;
   flex-shrink: 0;
@@ -37,26 +37,26 @@ const { $globalEvents } = useNuxtApp()
   padding: 0 var(--space-3-5);
   border-bottom: 1px solid var(--divider-color);
 
-  .aside-close {
+  .sidebar-close {
     font-size: 0.75rem !important;
     z-index: 20;
     color: var(--leadgid-color);
   }
 
-  .aside-close {
+  .sidebar-close {
     margin-left: var(--space-2);
     margin-right: var(--space-1);
   }
 }
 
-.aside-logo {
+.sidebar-logo {
   svg {
     height: 1.5rem;
   }
 }
 
 html.light {
-  .aside-logo-and-btn-close.--app-scroll-shadow-top {
+  .sidebar-logo-and-btn-close.--app-scroll-shadow-top {
     border-color: transparent;
   }
 }

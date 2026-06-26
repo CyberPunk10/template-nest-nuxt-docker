@@ -43,10 +43,10 @@ function onClickOutsideSubMenu(itemWithSubMenu: { id: string }) {
 </script>
 
 <template>
-  <div class="aside-change-theme__wrap">
+  <div class="sidebar-change-theme__wrap">
     <SubMenu
-      class="aside-change-theme__menu"
-      :class="{ '--aside-collapsed': isCollapsed }"
+      class="sidebar-change-theme__menu"
+      :class="{ '--sidebar-collapsed': isCollapsed }"
       :forcePopup="menuType === MENU_TYPE.DESKTOP"
       :item="themeSwither"
       :notCollapsedItems="notCollapsedItems"
@@ -56,10 +56,10 @@ function onClickOutsideSubMenu(itemWithSubMenu: { id: string }) {
     />
 
     <SidebarLink
-      class="aside-change-theme"
+      class="sidebar-change-theme"
       :icon="selectedThemeIcon"
       :tooltipText="$t(selectedTheme)"
-      data-test-id="aside-theme"
+      data-test-id="sidebar-theme"
       @click-section="$emit('click-section', themeSwither)"
     >
       {{ $t(selectedTheme) }}
@@ -68,12 +68,12 @@ function onClickOutsideSubMenu(itemWithSubMenu: { id: string }) {
 </template>
 
 <style lang="scss">
-.app-aside {
-  .aside-change-theme {
+.app-sidebar {
+  .sidebar-change-theme {
     padding-top: 0.25rem;
     padding-bottom: 0.25rem;
 
-    .aside-link__icon {
+    .sidebar-link__icon {
       width: 1.25rem;
       height: 1.25rem;
       flex: 0 0 1.25rem;
@@ -84,7 +84,7 @@ function onClickOutsideSubMenu(itemWithSubMenu: { id: string }) {
     }
 
     &__menu {
-      .aside-link__icon {
+      .sidebar-link__icon {
         width: 1.25rem;
         height: 1.25rem;
         flex: 0 0 1.25rem;
@@ -94,11 +94,11 @@ function onClickOutsideSubMenu(itemWithSubMenu: { id: string }) {
 }
 
 // style for mobile right
-.app-aside__wrapper.--right {
-  .app-aside {
-    .aside-change-theme {
+.app-sidebar__wrapper.--right {
+  .app-sidebar {
+    .sidebar-change-theme {
       &__menu {
-        .aside-link {
+        .sidebar-link {
           padding-left: var(--space-2);
         }
       }
@@ -107,9 +107,9 @@ function onClickOutsideSubMenu(itemWithSubMenu: { id: string }) {
 }
 
 // style for desktop
-.app-aside__wrapper:not(.--right) {
-  .app-aside {
-    .aside-change-theme {
+.app-sidebar__wrapper:not(.--right) {
+  .app-sidebar {
+    .sidebar-change-theme {
       &__menu {
         &.--popup {
           position: fixed;
@@ -121,11 +121,11 @@ function onClickOutsideSubMenu(itemWithSubMenu: { id: string }) {
             transform: scale(1);
           }
 
-          &:not(.--aside-collapsed) {
+          &:not(.--sidebar-collapsed) {
             left: calc(var(--app-sidebar-width) + var(--space-2));
           }
 
-          .aside-dropdown__header {
+          .sidebar-dropdown__header {
             display: none;
           }
         }

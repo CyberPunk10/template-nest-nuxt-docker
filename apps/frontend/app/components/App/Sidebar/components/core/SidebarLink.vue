@@ -186,10 +186,10 @@ function handlerSidebarLink() {
 </script>
 
 <template>
-  <div class="aside-link__component">
+  <div class="sidebar-link__component">
     <component
       :is="linkComponent"
-      class="aside-link"
+      class="sidebar-link"
       :class="{
         '--active': isActive,
         '--collapsed': levelSidebarLink === 1 && isCollapsed,
@@ -202,11 +202,11 @@ function handlerSidebarLink() {
       <Icon
         v-if="icon"
         :name="resolveIcon(icon)"
-        class="aside-link__icon"
+        class="sidebar-link__icon"
       />
 
       <span
-        class="aside-link__text"
+        class="sidebar-link__text"
         :class="{ '--no-icon': !icon }"
         data-test-id="text"
       >
@@ -216,7 +216,7 @@ function handlerSidebarLink() {
       <span
         v-if="chevron"
         v-show="levelSidebarLink > 1 || !isCollapsed"
-        class="aside-link__chevron"
+        class="sidebar-link__chevron"
         data-test-id="chevron"
       >
         <slot name="chevron">
@@ -224,7 +224,7 @@ function handlerSidebarLink() {
         </slot>
       </span>
 
-      <span v-if="showCheckmark" class="aside-link__checkmark">
+      <span v-if="showCheckmark" class="sidebar-link__checkmark">
         <Icon name="lucide:check" />
       </span>
     </component>
@@ -232,7 +232,7 @@ function handlerSidebarLink() {
 </template>
 
 <style lang="scss">
-.aside-link {
+.sidebar-link {
   position: relative;
   width: 100%;
   height: 2.2rem;
@@ -262,7 +262,7 @@ function handlerSidebarLink() {
   }
 
   &.--collapsed {
-    .aside-link {
+    .sidebar-link {
       &__text {
         opacity: 0;
       }
@@ -348,12 +348,12 @@ function handlerSidebarLink() {
     }
   }
 
-  .aside-link__chevron {
+  .sidebar-link__chevron {
     transition: transform var(--duration-normal) var(--ease-default);
   }
 
   &.--opened {
-    .aside-link__chevron {
+    .sidebar-link__chevron {
       transform: rotate(90deg);
     }
   }

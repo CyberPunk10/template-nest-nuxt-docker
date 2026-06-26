@@ -10,23 +10,23 @@ defineEmits<{ click: [] }>()
 </script>
 
 <template>
-  <button class="aside-profile__trigger" @click="$emit('click')">
-    <div class="aside-profile__avatar">{{ avatar }}</div>
-    <div class="aside-profile__info">
-      <span class="aside-profile__name">{{ name }}</span>
-      <span class="aside-profile__email">{{ email }}</span>
+  <button class="sidebar-profile__trigger" @click="$emit('click')">
+    <div class="sidebar-profile__avatar">{{ avatar }}</div>
+    <div class="sidebar-profile__info">
+      <span class="sidebar-profile__name">{{ name }}</span>
+      <span class="sidebar-profile__email">{{ email }}</span>
     </div>
     <Icon
       name="lucide:chevron-up"
       size="14"
-      class="aside-profile__chevron"
-      :class="{ 'aside-profile__chevron--open': open }"
+      class="sidebar-profile__chevron"
+      :class="{ 'sidebar-profile__chevron--open': open }"
     />
   </button>
 </template>
 
 <style lang="scss">
-.aside-profile {
+.sidebar-profile {
   &__trigger {
     display: flex;
     align-items: center;
@@ -104,8 +104,8 @@ defineEmits<{ click: [] }>()
   }
 
   &.--collapsed {
-    .aside-profile__info,
-    .aside-profile__chevron {
+    .sidebar-profile__info,
+    .sidebar-profile__chevron {
       opacity: 0;
     }
   }

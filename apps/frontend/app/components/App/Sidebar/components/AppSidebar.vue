@@ -17,24 +17,24 @@ const { width, height } = useWindowSize({ initialWidth: 0, initialHeight: 0 })
 
 const { isCollapsed, isMobileOpen, menuType } = useSidebar()
 
-const asideRef = ref<HTMLElement | null>(null)
-const asideScrollRef = ref<InstanceType<typeof ScrollShadow> | null>(null)
+const sidebarRef = ref<HTMLElement | null>(null)
+const sidebarScrollRef = ref<InstanceType<typeof ScrollShadow> | null>(null)
 const onClickOutsideRef = ref<HTMLElement | null>(null)
 
-const isAsideDesktop = computed(() => menuType.value === MENU_TYPE.DESKTOP)
+const isSidebarDesktop = computed(() => menuType.value === MENU_TYPE.DESKTOP)
 const triggerScrollHandler = ref(false)
 const notCollapsedItems = ref<Record<string, boolean>>({})
 
 const { leftMenu, rightMenu } = useMenu()
 const menu = computed((): MenuItem[] => [...leftMenu.value, ...rightMenu.value])
 
-watch(width, () => updateAsideState())
+watch(width, () => updateSidebarState())
 
-function updateAsideState(isInit = false) {
+function updateSidebarState(isInit = false) {
   if (isInit) {
-    // при переключении между разными layout повторно происходит загрузка компонента Aside,
+    // при переключении между разными layout повторно происходит загрузка компонента AppSidebar,
     // это закроет открытые меню в мобилке при переключении между layouts
-    toggleAside({ value: false })
+    toggleSidebar({ value: false })
   }
 
   isCollapsed.value = width.value > APP_BREAKPOINTS.tablet
@@ -53,19 +53,19 @@ function updateAsideState(isInit = false) {
 }
 
 onMounted(() => {
-  updateAsideState(true)
-  $globalEvents.on('toggle-sidebar', toggleAside)
+  updateSidebarState(true)
+  $globalEvents.on('toggle-sidebar', toggleSidebar)
   $globalEvents.on('collapse-sidebar', setCollapseFromEventBus)
 })
 
 onBeforeUnmount(() => {
-  $globalEvents.off('toggle-sidebar', toggleAside)
+  $globalEvents.off('toggle-sidebar', toggleSidebar)
   $globalEvents.off('collapse-sidebar', setCollapseFromEventBus)
 })
 
 function setCollapseFromEventBus({ id, value = false }: { id: string, value?: boolean }) {
   if (!id) return
-  if (value) scrollAside()
+  if (value) scrollSidebar()
   onClickSection({ id, value })
 }
 
@@ -75,8 +75,8 @@ function onToggleCollapse({ id, value = false }: { id: string, value?: boolean }
   triggerScrollHandler.value = !triggerScrollHandler.value
 }
 
-function scrollAside({ y = 0 }: { y?: number } = {}) {
-  asideScrollRef.value?.appScrollShadowRef?.scrollTo({ top: y, behavior: 'smooth' })
+function scrollSidebar({ y = 0 }: { y?: number } = {}) {
+  sidebarScrollRef.value?.appScrollShadowRef?.scrollTo({ top: y, behavior: 'smooth' })
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -121,9 +121,9 @@ function onClickSection({ id, value }: { id: string, value?: boolean }) {
   onToggleCollapse({ id, value: resultValue })
 }
 
-onClickOutside(onClickOutsideRef, onClickOutsideAside)
+onClickOutside(onClickOutsideRef, onClickOutsideSidebar)
 
-function onClickOutsideAside() {
+function onClickOutsideSidebar() {
   requestAnimationFrame(() => {
     if (!isCollapsed.value) {
       if (menuType.value === MENU_TYPE.DESKTOP) {
@@ -136,7 +136,7 @@ function onClickOutsideAside() {
 }
 
 function clickByShadow() {
-  toggleAside({ value: false })
+  toggleSidebar({ value: false })
 }
 
 function resetCollapsed() {
@@ -145,13 +145,13 @@ function resetCollapsed() {
   })
 }
 
-function toggleAside({ value, type = menuType.value }: { value?: boolean, type?: MenuType }) {
+function toggleSidebar({ value, type = menuType.value }: { value?: boolean, type?: MenuType }) {
   const newValue = typeof value === 'boolean' ? value : !isMobileOpen.value
 
   $globalEvents.emit('body-overflow', newValue)
   isMobileOpen.value = newValue
 
-  if (!isAsideDesktop.value) {
+  if (!isSidebarDesktop.value) {
     let direction = 'left'
     if (type === MENU_TYPE.MOBILE_RIGHT) {
       direction = 'right'
@@ -161,22 +161,22 @@ function toggleAside({ value, type = menuType.value }: { value?: boolean, type?:
       }
     }
 
-    const appAsideEl = asideRef.value
-    if (!appAsideEl) {
+    const appSidebarEl = sidebarRef.value
+    if (!appSidebarEl) {
       menuType.value = type
     } else if (!newValue) {
-      appAsideEl.style[direction as 'left' | 'right'] = '0'
+      appSidebarEl.style[direction as 'left' | 'right'] = '0'
       // После завершения анимации очищаем установленные стили
       setTimeout(() => {
-        appAsideEl.style[direction as 'left' | 'right'] = ''
+        appSidebarEl.style[direction as 'left' | 'right'] = ''
         menuType.value = type
       }, 400)
     } else {
-      appAsideEl.style[direction as 'left' | 'right'] = 'calc(var(--app-sidebar-width) * -1)'
+      appSidebarEl.style[direction as 'left' | 'right'] = 'calc(var(--app-sidebar-width) * -1)'
       menuType.value = type
       // После завершения анимации очищаем установленные стили
       setTimeout(() => {
-        appAsideEl.style[direction as 'left' | 'right'] = ''
+        appSidebarEl.style[direction as 'left' | 'right'] = ''
       }, 400)
     }
   }
@@ -193,44 +193,44 @@ function toggleSideBarWidth() {
 <template>
   <div
     ref="onClickOutsideRef"
-    class="app-aside__wrapper"
+    class="app-sidebar__wrapper"
     :class="{
       '--shadow-mobile-opened': isMobileOpen,
       '--collapsed': isCollapsed,
     }"
-    data-test-id="aside-wrapper"
+    data-test-id="sidebar-wrapper"
   >
     <SidebarShadow @click="clickByShadow" />
 
     <ToggleMini
-      v-if="isAsideDesktop"
+      v-if="isSidebarDesktop"
       data-test-id="toggle-mini"
       @toggle-sidebar-width="toggleSideBarWidth"
     />
 
     <div
-      ref="asideRef"
-      class="app-aside"
+      ref="sidebarRef"
+      class="app-sidebar"
       :class="{ '--collapsed': isCollapsed }"
-      data-test-id="aside-menu"
+      data-test-id="sidebar-menu"
     >
       <SidebarLogo />
 
       <app-scroll-shadow
-        ref="asideScrollRef"
-        class="aside-menu"
+        ref="sidebarScrollRef"
+        class="sidebar-menu"
         :class="{
           '--collapsed': isCollapsed,
         }"
         :triggerScrollHandler="triggerScrollHandler"
         withoutIgnoreSwipe
-        data-test-id="aside-scroll-menu"
+        data-test-id="sidebar-scroll-menu"
       >
         <!-- Items menu -->
-        <template v-for="(item, index) in menu" :key="`aside-item-${index}`">
+        <template v-for="(item, index) in menu" :key="`sidebar-item-${index}`">
           <app-spacer v-if="'spacer' in item" :data-spacer-id="item.id" />
 
-          <div v-else class="aside-menu__item">
+          <div v-else class="sidebar-menu__item">
             <SidebarLink
               :to="item.url"
               :params="item.params"
@@ -240,7 +240,7 @@ function toggleSideBarWidth() {
               :tooltipText="$t(item.title)"
               :icon="item.icon"
               :chevron="!!item.items"
-              :data-test-id="`aside-level-0-${index}`"
+              :data-test-id="`sidebar-level-0-${index}`"
               @click-section="onClickSection(item)"
             >
               {{ $t(item.title) }}
@@ -257,7 +257,7 @@ function toggleSideBarWidth() {
         </template>
       </app-scroll-shadow>
 
-      <div class="aside-footer">
+      <div class="sidebar-footer">
         <LinkProfile />
       </div>
     </div>
@@ -265,7 +265,7 @@ function toggleSideBarWidth() {
 </template>
 
 <style lang="scss">
-.app-aside__wrapper {
+.app-sidebar__wrapper {
   position: fixed;
   top: 0;
   left: 0;
@@ -280,7 +280,7 @@ function toggleSideBarWidth() {
   }
 }
 
-.app-aside {
+.app-sidebar {
   z-index: 50;
   position: relative;
   height: 100%;
@@ -302,13 +302,13 @@ function toggleSideBarWidth() {
     overflow: visible;
   }
 
-  .aside-footer {
+  .sidebar-footer {
     margin-top: auto;
     border-top: 1px solid var(--divider-color);
     padding-top: var(--space-1);
     padding-bottom: var(--space-0-5);
 
-    .aside-profile {
+    .sidebar-profile {
       padding: var(--space-0-5) var(--space-1-5) var(--space-1);
 
       &__trigger {
@@ -324,7 +324,7 @@ function toggleSideBarWidth() {
   }
 }
 
-.aside-menu {
+.sidebar-menu {
   &__item {
     position: relative;
 
@@ -355,13 +355,13 @@ function toggleSideBarWidth() {
         flex: 0 0 auto;
       }
 
-      .aside-change-theme {
+      .sidebar-change-theme {
         margin-top: auto;
       }
     }
     @media (min-height: 804px) {
       &.--collapsed {
-        .aside-change-theme {
+        .sidebar-change-theme {
           position: absolute;
           bottom: 2.875rem;
         }
@@ -371,7 +371,7 @@ function toggleSideBarWidth() {
 }
 
 @media (max-height: 540px), (max-width: 768px) {
-  .app-aside__wrapper {
+  .app-sidebar__wrapper {
     width: 0;
 
     &.--shadow-mobile-opened {
@@ -379,20 +379,20 @@ function toggleSideBarWidth() {
     }
 
     &:not(.--shadow-mobile-opened) {
-      transition: width 0s ease var(--app-sidebar-transition-duration); // задержка для плавного исчезновения aside-shadow
+      transition: width 0s ease var(--app-sidebar-transition-duration); // задержка для плавного исчезновения sidebar-shadow
     }
 
-    .app-aside {
+    .app-sidebar {
       position: absolute;
       width: var(--app-sidebar-width);
 
-      .aside-link {
+      .sidebar-link {
         &__text {
           font-size: var(--text-sm);
         }
       }
 
-      .aside-manager {
+      .sidebar-manager {
         &__name {
           font-size: var(--text-sm);
           margin-top: var(--space-4);
@@ -404,7 +404,7 @@ function toggleSideBarWidth() {
       }
     }
 
-    @keyframes fadeInAsideLeft {
+    @keyframes fadeInSidebarLeft {
       from {
         left: calc(var(--app-sidebar-width) * -1);
       }
@@ -413,7 +413,7 @@ function toggleSideBarWidth() {
       }
     }
 
-    @keyframes fadeInAsideRight {
+    @keyframes fadeInSidebarRight {
       from {
         right: calc(var(--app-sidebar-width) * -1);
       }
@@ -422,7 +422,7 @@ function toggleSideBarWidth() {
       }
     }
 
-    @keyframes fadeOutAsideLeft {
+    @keyframes fadeOutSidebarLeft {
       from {
         left: 0;
       }
@@ -431,7 +431,7 @@ function toggleSideBarWidth() {
       }
     }
 
-    @keyframes fadeOutAsideRight {
+    @keyframes fadeOutSidebarRight {
       from {
         right: 0;
       }
@@ -442,28 +442,28 @@ function toggleSideBarWidth() {
   }
 }
 
-// делаем кастомный скролл ещё тоньше, special for .aside-menu
+// делаем кастомный скролл ещё тоньше, special for .sidebar-menu
 .layout-scrollbar-obtrusive {
-  .aside-menu.--custom-css-scrollbar::-webkit-scrollbar {
+  .sidebar-menu.--custom-css-scrollbar::-webkit-scrollbar {
     height: 4px;
     width: 4px;
   }
 }
-.aside-menu.--custom-css-scrollbar::-webkit-scrollbar-thumb {
+.sidebar-menu.--custom-css-scrollbar::-webkit-scrollbar-thumb {
   border-radius: 9px;
   border: 0px;
 }
 
 // Если боковое меню свернуто в полоску, то делаем ширину скролла равной 0
 .layout-scrollbar-obtrusive {
-  .aside-menu.--collapsed.--custom-css-scrollbar::-webkit-scrollbar {
+  .sidebar-menu.--collapsed.--custom-css-scrollbar::-webkit-scrollbar {
     height: 0;
     width: 0;
   }
 }
 
 html.light {
-  .aside-footer.--app-scroll-shadow-bottom {
+  .sidebar-footer.--app-scroll-shadow-bottom {
     border-color: transparent;
   }
 }

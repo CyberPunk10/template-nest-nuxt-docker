@@ -6,12 +6,12 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <div class="aside-profile__menu">
+  <div class="sidebar-profile__menu">
     <template v-for="item in userMenu" :key="'divider' in item ? item : item.title">
-      <div v-if="'divider' in item" class="aside-profile__menu-divider" />
+      <div v-if="'divider' in item" class="sidebar-profile__menu-divider" />
       <NuxtLink
         v-else
-        class="aside-profile__menu-item"
+        class="sidebar-profile__menu-item"
         :to="item.url!"
         @click="emit('close')"
       >
@@ -20,18 +20,18 @@ const { t } = useI18n()
       </NuxtLink>
     </template>
 
-    <div class="aside-profile__menu-divider" />
+    <div class="sidebar-profile__menu-divider" />
 
     <slot name="theme" />
 
-    <div class="aside-profile__menu-divider" />
+    <div class="sidebar-profile__menu-divider" />
 
     <slot name="logout" />
   </div>
 </template>
 
 <style lang="scss">
-.aside-profile {
+.sidebar-profile {
   &__menu {
     position: absolute;
     bottom: calc(100% + 4px);
