@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useSidebar } from '../../composables/useSidebar'
 import Trigger from './Trigger.vue'
 import Menu from './Menu.vue'
 import ThemePopup from './ThemePopup.vue'

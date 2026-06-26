@@ -1,5 +1,6 @@
 <script>
 import { onClickOutside } from '@vueuse/core'
+import { useSidebar } from '../../composables/useSidebar'
 import SidebarLink from '~/components/App/Sidebar/components/core/SidebarLink.vue'
 import AppCollapseTransition from '~/components/App/CollapseTransition.vue'
 

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useElementSize } from '@vueuse/core'
 import AppSidebar from '~/components/App/Sidebar/components/AppSidebar.vue'
+import { useSidebar } from '~/components/App/Sidebar/composables/useSidebar'
 
 const route = useRoute()
 const isShowAppHeader = computed(() => !route.meta.hideHeader)

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { MENU_TYPE } from '~/composables/useSidebar'
+import { MENU_TYPE, useSidebar } from '../composables/useSidebar'
 import AppLogo from '~/components/App/Logo.vue'
 
 const { isCollapsed, menuType } = useSidebar()

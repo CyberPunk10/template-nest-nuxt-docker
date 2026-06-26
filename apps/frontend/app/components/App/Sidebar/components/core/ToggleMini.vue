@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useSidebar } from '../../composables/useSidebar'
+
 const emit = defineEmits(['toggle-sidebar-width'])
 const { isCollapsed } = useSidebar()
 </script>

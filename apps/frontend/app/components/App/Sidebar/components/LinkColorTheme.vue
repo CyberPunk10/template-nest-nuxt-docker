@@ -1,62 +1,44 @@
-<script>
-import { MENU_TYPE } from '~/composables/useSidebar'
+<script setup lang="ts">
+import { MENU_TYPE, useSidebar } from '../composables/useSidebar'
 import { themeSwither } from '../config/sidebar-menu'
+import SidebarLink from './core/SidebarLink.vue'
+import SubMenu from './core/SubMenu.vue'
 
-import SidebarLink from '~/components/App/Sidebar/components/core/SidebarLink.vue'
-import SubMenu from '~/components/App/Sidebar/components/core/SubMenu.vue'
+defineProps<{
+  notCollapsedItems?: Record<string, boolean>
+}>()
 
-export default {
-  components: {
-    SidebarLink,
-    SubMenu,
-  },
-  props: {
-    notCollapsedItems: Object,
-  },
-  emits: ['toggle-collapse', 'click-section'],
-  setup(props, { emit }) {
-    const { isCollapsed, menuType } = useSidebar()
-    const colorMode = useColorMode()
+const emit = defineEmits<{
+  'toggle-collapse': [item: unknown, val?: boolean]
+  'click-section': [item: unknown]
+}>()
 
-    const isDarkTheme = computed(() => colorMode.value === 'dark')
-    const selectedTheme = computed(() => {
-      const found = themeSwither.items?.find(i => i.id === colorMode.preference)
-      return found?.title ?? 'themes.light'
-    })
-    const selectedThemeIcon = computed(
-      () => themeSwither.items?.find(i => i.id === colorMode.preference)?.icon ?? 'light-theme',
-    )
+const { isCollapsed, menuType } = useSidebar()
+const colorMode = useColorMode()
 
-    function clickSubSection(subitem) {
-      emit('click-section', subitem)
-      setTheme(subitem.id)
-    }
+const selectedTheme = computed(() => {
+  const found = themeSwither.items?.find(i => i.id === colorMode.preference)
+  return found?.title ?? 'themes.light'
+})
+const selectedThemeIcon = computed(
+  () => themeSwither.items?.find(i => i.id === colorMode.preference)?.icon ?? 'light-theme',
+)
 
-    function setTheme(value) {
-      const newTheme = value || (colorMode.value === 'light' ? 'dark' : 'light')
-      if (colorMode.preference === newTheme) return
-      colorMode.preference = newTheme
-    }
+function clickSubSection(subitem: unknown) {
+  emit('click-section', subitem)
+  setTheme((subitem as { id: string }).id)
+}
 
-    function onClickOutsideSubMenu(itemWithSubMenu) {
-      if (itemWithSubMenu.id === themeSwither.id) {
-        emit('toggle-collapse', itemWithSubMenu, false)
-      }
-    }
+function setTheme(value: string) {
+  const newTheme = value || (colorMode.value === 'light' ? 'dark' : 'light')
+  if (colorMode.preference === newTheme) return
+  colorMode.preference = newTheme
+}
 
-    return {
-      MENU_TYPE,
-      isCollapsed,
-      menuType,
-      clickSubSection,
-      isDarkTheme,
-      onClickOutsideSubMenu,
-      selectedTheme,
-      selectedThemeIcon,
-      setTheme,
-      themeSwither,
-    }
-  },
+function onClickOutsideSubMenu(itemWithSubMenu: { id: string }) {
+  if (itemWithSubMenu.id === themeSwither.id) {
+    emit('toggle-collapse', itemWithSubMenu, false)
+  }
 }
 </script>
 

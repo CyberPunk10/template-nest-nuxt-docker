@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onClickOutside, useWindowSize } from '@vueuse/core'
 import { APP_BREAKPOINTS } from '~/composables/useAppBreakpoints'
-import { MENU_TYPE, useSidebar, type MenuType } from '~/composables/useSidebar'
+import { MENU_TYPE, useSidebar, type MenuType } from '../composables/useSidebar'
 import { useMenu, type MenuItem } from '../composables/useMenu'
 import { themeSwither } from '../config/sidebar-menu'
 import type ScrollShadow from '~/components/App/ScrollShadow.vue'

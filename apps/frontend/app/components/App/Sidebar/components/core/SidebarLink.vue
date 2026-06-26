@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { NuxtLink } from '#components'
+import { useSidebar } from '../../composables/useSidebar'
 import { themeSwither } from '../../config/sidebar-menu'
 
 const ICON_MAP: Record<string, string> = {
