@@ -11,7 +11,7 @@ import {
   type SidebarMenuItem,
 } from '../config/sidebar-menu'
 
-type MenuItem = SidebarMenuItem | SidebarMenuChild | { spacer: true; id: string }
+export type MenuItem = SidebarMenuItem | SidebarMenuChild | { spacer: true, id: string }
 
 export function useMenu() {
   const duplicateSpacersFilter = (item: MenuItem, idx: number, arr: MenuItem[]) =>
@@ -21,7 +21,7 @@ export function useMenu() {
     if (!Array.isArray(items)) return items
 
     return items
-      .filter((item) => !!item)
+      .filter(item => !!item)
       .filter(duplicateSpacersFilter)
       .map((i) => {
         if (!('items' in i) || !i.items) return i

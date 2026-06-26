@@ -56,12 +56,12 @@ const ICON_MAP: Record<string, string> = {
 }
 
 defineProps<{ show: boolean }>()
-defineEmits<{ open: []; close: [] }>()
+defineEmits<{ open: [], close: [] }>()
 
 const colorMode = useColorMode()
 const { t } = useI18n()
 
-const selectedTheme = computed(() => themeSwither.items?.find((i) => i.id === colorMode.preference))
+const selectedTheme = computed(() => themeSwither.items?.find(i => i.id === colorMode.preference))
 
 function setTheme(id: string) {
   if (colorMode.preference === id) return

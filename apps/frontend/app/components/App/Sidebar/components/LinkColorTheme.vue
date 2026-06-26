@@ -20,11 +20,11 @@ export default {
 
     const isDarkTheme = computed(() => colorMode.value === 'dark')
     const selectedTheme = computed(() => {
-      const found = themeSwither.items?.find((i) => i.id === colorMode.preference)
+      const found = themeSwither.items?.find(i => i.id === colorMode.preference)
       return found?.title ?? 'themes.light'
     })
     const selectedThemeIcon = computed(
-      () => themeSwither.items?.find((i) => i.id === colorMode.preference)?.icon ?? 'light-theme',
+      () => themeSwither.items?.find(i => i.id === colorMode.preference)?.icon ?? 'light-theme',
     )
 
     function clickSubSection(subitem) {

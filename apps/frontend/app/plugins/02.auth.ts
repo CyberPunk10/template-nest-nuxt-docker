@@ -5,7 +5,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   const { user } = useAuth()
 
   const apiFetch = $fetch.create({ baseURL: apiBase as string })
-  type AuthUser = { id: string; name: string; email: string; createdAt: string; updatedAt: string }
+  type AuthUser = { id: string, name: string, email: string, createdAt: string, updatedAt: string }
 
   if (import.meta.server) {
     // К этому моменту server/middleware/auth.ts уже обновил куки если нужно —

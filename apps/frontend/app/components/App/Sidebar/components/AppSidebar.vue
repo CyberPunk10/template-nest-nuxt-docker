@@ -1,297 +1,193 @@
-<script>
-import { onClickOutside } from '@vueuse/core'
-import { MENU_TYPE, useSidebar } from '~/composables/useSidebar'
-import { useMenu } from '../composables/useMenu'
+<script setup lang="ts">
+import { onClickOutside, useWindowSize } from '@vueuse/core'
+import { APP_BREAKPOINTS } from '~/composables/useAppBreakpoints'
+import { MENU_TYPE, useSidebar, type MenuType } from '~/composables/useSidebar'
+import { useMenu, type MenuItem } from '../composables/useMenu'
 import { themeSwither } from '../config/sidebar-menu'
+import type ScrollShadow from '~/components/App/ScrollShadow.vue'
+import SidebarLink from './core/SidebarLink.vue'
+import LinkProfile from './LinkProfile/index.vue'
+import SidebarLogo from './SidebarLogo.vue'
+import SidebarShadow from './core/SidebarShadow.vue'
+import SubMenu from './core/SubMenu.vue'
+import ToggleMini from './core/ToggleMini.vue'
 
-export default defineNuxtComponent({
-  name: 'AppSidebar',
-  components: {
-    SidebarLink: defineAsyncComponent(
-      () => import('~/components/App/Sidebar/components/core/SidebarLink.vue'),
-    ),
-    LinkProfile: defineAsyncComponent(
-      () => import('~/components/App/Sidebar/components/LinkProfile/index.vue'),
-    ),
-    SidebarLogo: defineAsyncComponent(
-      () => import('~/components/App/Sidebar/components/SidebarLogo.vue'),
-    ),
-    SidebarShadow: defineAsyncComponent(
-      () => import('~/components/App/Sidebar/components/core/SidebarShadow.vue'),
-    ),
-    SubMenu: defineAsyncComponent(
-      () => import('~/components/App/Sidebar/components/core/SubMenu.vue'),
-    ),
-    ToggleMini: defineAsyncComponent(
-      () => import('~/components/App/Sidebar/components/core/ToggleMini.vue'),
-    ),
-  },
-  setup() {
-    const { $globalEvents, $windowSize } = useNuxtApp()
-    const { isCollapsed, isMobileOpen, menuType } = useSidebar()
+const { $globalEvents } = useNuxtApp()
+const { width, height } = useWindowSize({ initialWidth: 0, initialHeight: 0 })
 
-    const asideRef = ref(null)
-    const asideScrollRef = ref(null)
-    const onClickOutsideRef = ref(null)
+const { isCollapsed, isMobileOpen, menuType } = useSidebar()
 
-    const isAsideDesktop = computed(() => menuType.value === MENU_TYPE.DESKTOP)
+const asideRef = ref<HTMLElement | null>(null)
+const asideScrollRef = ref<InstanceType<typeof ScrollShadow> | null>(null)
+const onClickOutsideRef = ref<HTMLElement | null>(null)
 
-    const isIgnoreClickOutsideVal = ref(false)
-    const triggerScrollHandler = ref(false)
-    const notCollapsedItems = ref({})
+const isAsideDesktop = computed(() => menuType.value === MENU_TYPE.DESKTOP)
+const triggerScrollHandler = ref(false)
+const notCollapsedItems = ref<Record<string, boolean>>({})
 
-    watch(() => $windowSize.width, updateAsideState)
+const { leftMenu, rightMenu } = useMenu()
+const menu = computed((): MenuItem[] => [...leftMenu.value, ...rightMenu.value])
 
-    const { leftMenu, rightMenu } = useMenu()
+watch(width, () => updateAsideState())
 
-    const menu = computed(() => [...leftMenu.value, ...rightMenu.value])
+function updateAsideState(isInit = false) {
+  if (isInit) {
+    // при переключении между разными layout повторно происходит загрузка компонента Aside,
+    // это закроет открытые меню в мобилке при переключении между layouts
+    toggleAside({ value: false })
+  }
 
-    function initAsideState() {
-      // при переключении между разными layout повторно происходит загрузка компонента Aside,
-      // это строка закроет открытые меню в мобилке, при переключении между layouts
-      toggleAside({ value: false })
+  isCollapsed.value = width.value > APP_BREAKPOINTS.tablet
+    && width.value <= APP_BREAKPOINTS.desktop
+    && height.value > APP_BREAKPOINTS.mobile
 
-      const { width, height } = $windowSize
-      isCollapsed.value = width > 768 && width <= 900 && height > 540
+  if (width.value > APP_BREAKPOINTS.tablet && height.value > APP_BREAKPOINTS.mobile) {
+    menuType.value = MENU_TYPE.DESKTOP
+    isMobileOpen.value = false
+    $globalEvents.emit('body-overflow', false)
+  } else {
+    menuType.value = menuType.value === MENU_TYPE.MOBILE_RIGHT
+      ? MENU_TYPE.MOBILE_RIGHT
+      : MENU_TYPE.MOBILE_LEFT
+  }
+}
 
-      if (width > 768 && height > 540) {
-        menuType.value = MENU_TYPE.DESKTOP
-        isMobileOpen.value = false
-
-        $globalEvents.emit('body-overflow', false)
-      } else {
-        menuType.value =
-          menuType.value === MENU_TYPE.MOBILE_RIGHT ? MENU_TYPE.MOBILE_RIGHT : MENU_TYPE.MOBILE_LEFT
-      }
-    }
-
-    function updateAsideState() {
-      const { width, height } = $windowSize
-      isCollapsed.value = width > 768 && width <= 900 && height > 540
-
-      if (width > 768 && height > 540) {
-        menuType.value = MENU_TYPE.DESKTOP
-        isMobileOpen.value = false
-
-        $globalEvents.emit('body-overflow', false)
-      } else {
-        menuType.value =
-          menuType.value === MENU_TYPE.MOBILE_RIGHT ? MENU_TYPE.MOBILE_RIGHT : MENU_TYPE.MOBILE_LEFT
-      }
-    }
-
-    onMounted(() => {
-      initAsideState()
-
-      $globalEvents.on('toggle-sidebar', toggleAside)
-      $globalEvents.on('collapse-sidebar', setCollapseFromEventBus)
-      $globalEvents.on('scroll-sidebar', scrollAside)
-    })
-    onBeforeUnmount(() => {
-      $globalEvents.off('toggle-sidebar', toggleAside)
-      $globalEvents.off('collapse-sidebar', setCollapseFromEventBus)
-      $globalEvents.off('scroll-sidebar', scrollAside)
-    })
-
-    function setCollapseFromEventBus({ id, value = false }) {
-      if (!id) return
-
-      if (value) {
-        scrollAside({ y: 0 })
-      }
-
-      onClickSection({ id, value })
-    }
-
-    function onToggleCollapse({ id, value = false }) {
-      if (!id) return
-
-      notCollapsedItems.value[id] = value
-
-      triggerScrollHandler.value = !triggerScrollHandler.value
-    }
-
-    function scrollAside({ y = 0, speed = 0 }) {
-      asideScrollRef.value.$el?.scrollTo({ y }, speed)
-    }
-
-    function getMenuItemById(id, items = menu.value, parent = null) {
-      for (const item of items) {
-        if (item.id === id) {
-          return { ...item, parent }
-        }
-        if (item?.items?.length) {
-          const nestedItem = getMenuItemById(id, item.items, item)
-          if (nestedItem) return nestedItem
-        }
-      }
-      return null
-    }
-
-    function getSectionById(id) {
-      let section
-      if (id === themeSwither.id) section = themeSwither
-      else section = getMenuItemById(id)
-      if (!section) {
-        section = getMenuItemById(id, themeSwither.items, themeSwither)
-      }
-      return section
-    }
-
-    function onClickSection({ id, value }) {
-      const section = getSectionById(id)
-
-      if (!section?.items?.length) {
-        const isThemeSwither = section?.parent?.id === themeSwither.id
-
-        $globalEvents.emit('toggle-sidebar', { value: false })
-
-        if (isCollapsed.value || isThemeSwither) {
-          resetCollapsed()
-        }
-        return
-      }
-
-      if (!id) return
-
-      const resultValue = typeof value === 'boolean' ? value : !notCollapsedItems.value[id]
-      resetCollapsed()
-
-      // если меню вложенное, сначала раскрыть родительское
-      if (section?.parent) {
-        onToggleCollapse({ id: section?.parent.id, value: true })
-      }
-      onToggleCollapse({ id, value: resultValue })
-    }
-
-    onClickOutside(onClickOutsideRef, onClickOutsideAside)
-
-    function onClickOutsideAside() {
-      if (isIgnoreClickOutsideVal.value) {
-        isIgnoreClickOutsideVal.value = false
-        return
-      }
-      requestAnimationFrame(() => {
-        if (!isCollapsed.value) {
-          if (menuType.value === MENU_TYPE.DESKTOP) {
-            notCollapsedItems.value[themeSwither.id] = false
-          }
-          return
-        }
-        closeSubMenu()
-      })
-    }
-
-    function clickByShadow() {
-      toggleAside({ value: false })
-    }
-
-    function closeSubMenu() {
-      resetCollapsed()
-    }
-
-    function resetCollapsed() {
-      Object.keys(notCollapsedItems.value).forEach((collapseId) => {
-        notCollapsedItems.value[collapseId] = false
-      })
-    }
-
-    function toggleAside({ value, type = menuType.value }) {
-      const isBooleanValue = typeof value === 'boolean'
-      const newValue = isBooleanValue ? value : !isMobileOpen.value
-
-      $globalEvents.emit('body-overflow', newValue)
-
-      isMobileOpen.value = newValue
-
-      if (!isAsideDesktop.value) {
-        let direction = 'left'
-
-        if (type === MENU_TYPE.MOBILE_LEFT) direction = 'left'
-        if (type === MENU_TYPE.MOBILE_RIGHT) {
-          direction = 'right'
-
-          // если правое меню закрывается, то сворачиваем themeSwither
-          if (value === false && notCollapsedItems.value[themeSwither.id]) {
-            notCollapsedItems.value[themeSwither.id] = false
-          }
-        }
-
-        const appAsideEl = asideRef.value
-
-        if (!appAsideEl) {
-          menuType.value = type
-        } else if (!newValue) {
-          if (direction === 'right') {
-            appAsideEl.style.right = 0
-          } else if (direction === 'left') {
-            appAsideEl.style.left = 0
-          }
-
-          // После завершения анимации очищаем установленные стили
-          setTimeout(() => {
-            if (direction === 'right') {
-              appAsideEl.style.right = ''
-            } else if (direction === 'left') {
-              appAsideEl.style.left = ''
-            }
-
-            menuType.value = type
-          }, 400)
-        } else {
-          if (direction === 'right') {
-            appAsideEl.style.right = 'calc(var(--app-sidebar-width) * -1)'
-          } else if (direction === 'left') {
-            appAsideEl.style.left = 'calc(var(--app-sidebar-width) * -1)'
-          }
-
-          menuType.value = type
-
-          // После завершения анимации очищаем установленные стили
-          setTimeout(() => {
-            if (direction === 'right') {
-              appAsideEl.style.right = ''
-            } else if (direction === 'left') {
-              appAsideEl.style.left = ''
-            }
-          }, 400)
-        }
-      }
-    }
-
-    function toggleSideBarWidth() {
-      closeSubMenu()
-      requestAnimationFrame(() => {
-        isCollapsed.value = !isCollapsed.value
-      })
-    }
-
-    return {
-      // refs
-      asideRef,
-      asideScrollRef,
-      onClickOutsideRef,
-
-      // sidebar state
-      isCollapsed,
-      isMobileOpen,
-
-      clickByShadow,
-      isAsideDesktop,
-      menu,
-      notCollapsedItems,
-      onClickOutsideAside,
-      onClickSection,
-      onToggleCollapse,
-      resetCollapsed,
-      scrollAside,
-      setCollapseFromEventBus,
-      toggleAside,
-      toggleSideBarWidth,
-      triggerScrollHandler,
-    }
-  },
+onMounted(() => {
+  updateAsideState(true)
+  $globalEvents.on('toggle-sidebar', toggleAside)
+  $globalEvents.on('collapse-sidebar', setCollapseFromEventBus)
 })
+
+onBeforeUnmount(() => {
+  $globalEvents.off('toggle-sidebar', toggleAside)
+  $globalEvents.off('collapse-sidebar', setCollapseFromEventBus)
+})
+
+function setCollapseFromEventBus({ id, value = false }: { id: string, value?: boolean }) {
+  if (!id) return
+  if (value) scrollAside()
+  onClickSection({ id, value })
+}
+
+function onToggleCollapse({ id, value = false }: { id: string, value?: boolean }) {
+  if (!id) return
+  notCollapsedItems.value[id] = value
+  triggerScrollHandler.value = !triggerScrollHandler.value
+}
+
+function scrollAside({ y = 0 }: { y?: number } = {}) {
+  asideScrollRef.value?.appScrollShadowRef?.scrollTo({ top: y, behavior: 'smooth' })
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getMenuItemById(id: string, items = menu.value, parent: any = null): any {
+  for (const item of items) {
+    if (item.id === id) return { ...item, parent }
+    if ('items' in item && item.items?.length) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const nested = getMenuItemById(id, item.items as any, item)
+      if (nested) return nested
+    }
+  }
+  return null
+}
+
+function getSectionById(id: string) {
+  let section
+  if (id === themeSwither.id) section = themeSwither
+  else section = getMenuItemById(id)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  if (!section) section = getMenuItemById(id, themeSwither.items as any, themeSwither)
+  return section
+}
+
+function onClickSection({ id, value }: { id: string, value?: boolean }) {
+  const section = getSectionById(id)
+
+  if (!section?.items?.length) {
+    const isThemeSwitherChild = section?.parent?.id === themeSwither.id
+    $globalEvents.emit('toggle-sidebar', { value: false })
+    if (isCollapsed.value || isThemeSwitherChild) resetCollapsed()
+    return
+  }
+
+  if (!id) return
+
+  const resultValue = typeof value === 'boolean' ? value : !notCollapsedItems.value[id]
+  resetCollapsed()
+
+  // если меню вложенное, сначала раскрыть родительское
+  if (section?.parent) onToggleCollapse({ id: section.parent.id, value: true })
+  onToggleCollapse({ id, value: resultValue })
+}
+
+onClickOutside(onClickOutsideRef, onClickOutsideAside)
+
+function onClickOutsideAside() {
+  requestAnimationFrame(() => {
+    if (!isCollapsed.value) {
+      if (menuType.value === MENU_TYPE.DESKTOP) {
+        notCollapsedItems.value[themeSwither.id] = false
+      }
+      return
+    }
+    resetCollapsed()
+  })
+}
+
+function clickByShadow() {
+  toggleAside({ value: false })
+}
+
+function resetCollapsed() {
+  Object.keys(notCollapsedItems.value).forEach((id) => {
+    notCollapsedItems.value[id] = false
+  })
+}
+
+function toggleAside({ value, type = menuType.value }: { value?: boolean, type?: MenuType }) {
+  const newValue = typeof value === 'boolean' ? value : !isMobileOpen.value
+
+  $globalEvents.emit('body-overflow', newValue)
+  isMobileOpen.value = newValue
+
+  if (!isAsideDesktop.value) {
+    let direction = 'left'
+    if (type === MENU_TYPE.MOBILE_RIGHT) {
+      direction = 'right'
+      // если правое меню закрывается, то сворачиваем themeSwither
+      if (value === false && notCollapsedItems.value[themeSwither.id]) {
+        notCollapsedItems.value[themeSwither.id] = false
+      }
+    }
+
+    const appAsideEl = asideRef.value
+    if (!appAsideEl) {
+      menuType.value = type
+    } else if (!newValue) {
+      appAsideEl.style[direction as 'left' | 'right'] = '0'
+      // После завершения анимации очищаем установленные стили
+      setTimeout(() => {
+        appAsideEl.style[direction as 'left' | 'right'] = ''
+        menuType.value = type
+      }, 400)
+    } else {
+      appAsideEl.style[direction as 'left' | 'right'] = 'calc(var(--app-sidebar-width) * -1)'
+      menuType.value = type
+      // После завершения анимации очищаем установленные стили
+      setTimeout(() => {
+        appAsideEl.style[direction as 'left' | 'right'] = ''
+      }, 400)
+    }
+  }
+}
+
+function toggleSideBarWidth() {
+  resetCollapsed()
+  requestAnimationFrame(() => {
+    isCollapsed.value = !isCollapsed.value
+  })
+}
 </script>
 
 <template>
@@ -331,10 +227,10 @@ export default defineNuxtComponent({
         data-test-id="aside-scroll-menu"
       >
         <!-- Items menu -->
-        <template v-for="(item, index) in menu">
-          <app-spacer v-if="item.spacer" :key="`app-spacer-${index}`" :data-spacer-id="item.id" />
+        <template v-for="(item, index) in menu" :key="`aside-item-${index}`">
+          <app-spacer v-if="'spacer' in item" :data-spacer-id="item.id" />
 
-          <div v-else :key="`aside-item-${index}`" class="aside-menu__item">
+          <div v-else class="aside-menu__item">
             <SidebarLink
               :to="item.url"
               :params="item.params"

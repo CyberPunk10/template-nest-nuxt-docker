@@ -23,8 +23,18 @@ async function submit() {
   <div class="auth">
     <form class="auth__form" @submit.prevent="submit">
       <h1 class="auth__title">Вход</h1>
-      <input v-model="email" class="auth__input" type="email" placeholder="Email" />
-      <input v-model="password" class="auth__input" type="password" placeholder="Пароль" />
+      <input
+        v-model="email"
+        class="auth__input"
+        type="email"
+        placeholder="Email"
+      >
+      <input
+        v-model="password"
+        class="auth__input"
+        type="password"
+        placeholder="Пароль"
+      >
       <p v-if="error" class="auth__error">{{ error }}</p>
       <button class="auth__btn" type="submit">Войти</button>
       <NuxtLink class="auth__link" to="/register">Нет аккаунта? Зарегистрироваться</NuxtLink>

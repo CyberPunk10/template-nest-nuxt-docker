@@ -77,8 +77,8 @@ async function removeTask(id: string) {
         class="form__input"
         :placeholder="t('tasks.titleField')"
         required
-      />
-      <input v-model="form.description" class="form__input" :placeholder="t('tasks.description')" />
+      >
+      <input v-model="form.description" class="form__input" :placeholder="t('tasks.description')">
       <UiButton type="submit">{{ t('tasks.add') }}</UiButton>
     </form>
   </UiCard>
@@ -94,12 +94,12 @@ async function removeTask(id: string) {
               class="form__input form__input--sm"
               :placeholder="t('tasks.titleField')"
               required
-            />
+            >
             <input
               v-model="editForm.description"
               class="form__input form__input--sm"
               :placeholder="t('tasks.descriptionField')"
-            />
+            >
             <div class="task__edit-actions">
               <UiButton type="submit" isIcon variant="ghost">
                 <Icon name="lucide:check" size="14" />

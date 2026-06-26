@@ -65,7 +65,7 @@ const excludedParams = [
 ]
 
 const url = computed(() => {
-  const params = Object.entries(props.params || {}).map((data) => data.join('='))
+  const params = Object.entries(props.params || {}).map(data => data.join('='))
   return `${props.to || ''}${props.params ? '?' : ''}${params.join('&')}`
 })
 
@@ -113,8 +113,8 @@ const isActive = computed(() => {
 
         const arChecked = value.split(',').filter(excludeCol)
         const routeChecked = ($route.query.checked as string).split(',').filter(excludeCol)
-        const notInRoute = arChecked.filter((col) => !routeChecked.includes(col))
-        const notChecked = routeChecked.filter((col) => !arChecked.includes(col))
+        const notInRoute = arChecked.filter(col => !routeChecked.includes(col))
+        const notChecked = routeChecked.filter(col => !arChecked.includes(col))
 
         return !notInRoute.length && !notChecked.length
       }
@@ -128,15 +128,15 @@ const isActive = computed(() => {
     // если в двух одинаковых отчетах в одном есть валюта, а в другом нет
     // и выбран отчет с валютой, не выделять отчет без валюты
     if (
-      linkHasAllParams &&
-      withoutExcluded.includes('stats_currency') &&
-      !props.params.stats_currency
+      linkHasAllParams
+      && withoutExcluded.includes('stats_currency')
+      && !props.params.stats_currency
     ) {
       return false
     }
 
-    const linkParamsKeys = Object.keys(props.params).filter((key) => !excludedParams.includes(key))
-    const isSameParams = withoutExcluded.every((queryKey) => linkParamsKeys.includes(queryKey))
+    const linkParamsKeys = Object.keys(props.params).filter(key => !excludedParams.includes(key))
+    const isSameParams = withoutExcluded.every(queryKey => linkParamsKeys.includes(queryKey))
 
     return linkHasAllParams && isSamePath && isSameParams
   }
@@ -147,14 +147,14 @@ const isActive = computed(() => {
 const showCheckmark = computed(() => {
   if (!props.icon) return false
   if (props.levelSidebarLink === 1) return false
-  const themeSwitherItem = themeSwither.items.find((i) => i.icon === props.icon)
+  const themeSwitherItem = themeSwither.items.find(i => i.icon === props.icon)
   if (!themeSwitherItem) return false
   return themeSwitherItem.id === colorMode.preference
 })
 
 watch(
   () => isActive.value,
-  (val) => emit('set-active', val),
+  val => emit('set-active', val),
 )
 
 onMounted(() => {

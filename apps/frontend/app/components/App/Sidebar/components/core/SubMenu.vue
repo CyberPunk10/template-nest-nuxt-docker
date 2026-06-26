@@ -99,7 +99,7 @@ export default {
             :chevron="!!subitem.items"
             :external="subitem.external"
             :icon="subitem.icon"
-            :levelAsideLink="level + 1"
+            :levelSidebarLink="level + 1"
             :opened="notCollapsedItems[subitem.id]"
             :params="subitem.params"
             :ignoreParams="subitem.ignoreParams"

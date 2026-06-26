@@ -2,7 +2,12 @@
   <div class="aside-profile__menu">
     <template v-for="item in userMenu" :key="'divider' in item ? item : item.title">
       <div v-if="'divider' in item" class="aside-profile__menu-divider" />
-      <NuxtLink v-else class="aside-profile__menu-item" :to="item.url!" @click="emit('close')">
+      <NuxtLink
+        v-else
+        class="aside-profile__menu-item"
+        :to="item.url!"
+        @click="emit('close')"
+      >
         <Icon :name="item.icon ?? 'lucide:circle'" size="14" />
         {{ t(item.title) }}
       </NuxtLink>

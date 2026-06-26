@@ -17,7 +17,7 @@ function normalizeCookies(raw: unknown): string[] {
 
 function getCookie(raw: unknown, name: string): string | undefined {
   return normalizeCookies(raw)
-    .find((h) => h.startsWith(`${name}=`))
+    .find(h => h.startsWith(`${name}=`))
     ?.split(';')[0]
 }
 
@@ -35,7 +35,7 @@ function refreshCookieOnly(raw: unknown): string {
 
 // Извлекает refresh_token из уже собранного Cookie-заголовка запроса ("k=v; k2=v2").
 function extractRefreshFromHeader(cookieHeader: string): string {
-  return cookieHeader.split('; ').find((c) => c.startsWith('refresh_token=')) ?? ''
+  return cookieHeader.split('; ').find(c => c.startsWith('refresh_token=')) ?? ''
 }
 
 describe('Auth (e2e)', () => {

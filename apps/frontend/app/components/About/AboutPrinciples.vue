@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { principles } from './about.data'
+
 const { t } = useI18n()
 </script>
 

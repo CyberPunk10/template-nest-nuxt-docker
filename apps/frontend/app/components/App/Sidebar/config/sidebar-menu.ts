@@ -4,6 +4,8 @@ export interface SidebarMenuItem {
   icon: string
   url?: string
   classes?: string
+  params?: Record<string, string>
+  ignoreParams?: boolean
   items?: SidebarMenuChild[]
 }
 

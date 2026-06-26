@@ -17,7 +17,7 @@ const form = reactive({ name: 'John Doe', email: 'john@example.com' })
           v-model="form.name"
           class="field__input"
           :placeholder="t('profile.info.namePlaceholder')"
-        />
+        >
       </div>
       <div class="field">
         <label class="field__label">{{ t('profile.info.email') }}</label>
@@ -26,15 +26,15 @@ const form = reactive({ name: 'John Doe', email: 'john@example.com' })
           class="field__input"
           type="email"
           :placeholder="t('profile.info.emailPlaceholder')"
-        />
+        >
       </div>
       <div class="field">
         <label class="field__label">{{ t('profile.info.position') }}</label>
-        <input class="field__input field__input--muted" value="Backend Developer" disabled />
+        <input class="field__input field__input--muted" value="Backend Developer" disabled>
       </div>
       <div class="field">
         <label class="field__label">{{ t('profile.info.organization') }}</label>
-        <input class="field__input field__input--muted" value="Acme Corp" disabled />
+        <input class="field__input field__input--muted" value="Acme Corp" disabled>
       </div>
       <div class="form__footer">
         <button class="btn btn--primary" type="submit">

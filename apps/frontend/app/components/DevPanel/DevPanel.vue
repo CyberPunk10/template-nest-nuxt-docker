@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import DevPanelViewport from './DevPanelViewport.vue'
+
 const {
   public: { apiBase, backendUrl, appEnv },
 } = useRuntimeConfig()
@@ -13,7 +15,7 @@ const swaggerEnabled = appEnv === 'development'
 const route = useRoute()
 const router = useRouter()
 
-type RouteMeta = { public?: boolean; guestOnly?: boolean }
+type RouteMeta = { public?: boolean, guestOnly?: boolean }
 
 function isPublicRoute(meta: RouteMeta) {
   return !!(meta?.public || meta?.guestOnly)
@@ -22,7 +24,7 @@ function isPublicRoute(meta: RouteMeta) {
 const routes = computed(() =>
   router
     .getRoutes()
-    .filter((r) => r.path && !r.path.includes(':') && !r.name?.toString().startsWith('_'))
+    .filter(r => r.path && !r.path.includes(':') && !r.name?.toString().startsWith('_'))
     .sort((a, b) => {
       const aPublic = isPublicRoute(a.meta as RouteMeta)
       const bPublic = isPublicRoute(b.meta as RouteMeta)
@@ -110,6 +112,11 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
           {{ isPublic(r) ? 'public' : 'private' }}
         </span>
       </NuxtLink>
+    </div>
+
+    <div class="panel__section">
+      <h2 class="panel__heading">Viewport</h2>
+      <DevPanelViewport />
     </div>
   </div>
 </template>

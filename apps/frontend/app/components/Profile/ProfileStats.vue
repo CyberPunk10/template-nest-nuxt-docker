@@ -1,6 +1,6 @@
 <script setup lang="ts">
 defineProps<{
-  stats: { label: string; value: string }[]
+  stats: { label: string, value: string }[]
 }>()
 </script>
 

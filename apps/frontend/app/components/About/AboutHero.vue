@@ -26,7 +26,7 @@ const locales = [
       <div class="hero__inner">
         <span class="hero__badge">{{ t('about.hero.badge') }}</span>
         <h1 class="hero__title">
-          {{ t('about.hero.title') }}<br /><span class="hero__title-accent">{{
+          {{ t('about.hero.title') }}<br><span class="hero__title-accent">{{
             t('about.hero.titleAccent')
           }}</span>
         </h1>

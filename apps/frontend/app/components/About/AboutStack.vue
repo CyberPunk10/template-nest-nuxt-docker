@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { branches, layers, type Layer } from './about.data'
+
 const { t } = useI18n()
 
 function getChips(branchIndex: number, layer: Layer) {
   const current = branches[branchIndex]?.stack[layer] ?? []
   const prev = branchIndex > 0 ? (branches[branchIndex - 1]?.stack[layer] ?? []) : []
-  return current.filter((item) => !prev.includes(item))
+  return current.filter(item => !prev.includes(item))
 }
 </script>
 

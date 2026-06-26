@@ -1,10 +1,22 @@
 <script setup lang="ts">
+import { useElementSize } from '@vueuse/core'
 import AppSidebar from '~/components/App/Sidebar/components/AppSidebar.vue'
 
 const route = useRoute()
 const isShowAppHeader = computed(() => !route.meta.hideHeader)
 const isShowAppSidebar = computed(() => !route.meta.hideSidebar)
 const { isCollapsed } = useSidebar()
+
+// размер .app-page меняется динамически (AppSidebar collapse/mobile) — синхронизируем в usePageSize()
+const pageRef = ref<HTMLElement | null>(null)
+const { width, height } = useElementSize(pageRef)
+const { pageWidth, pageHeight } = usePageSize()
+watch(width, (v) => {
+  pageWidth.value = v
+})
+watch(height, (v) => {
+  pageHeight.value = v
+})
 </script>
 
 <template>
@@ -21,7 +33,7 @@ const { isCollapsed } = useSidebar()
       <AppSidebar v-if="isShowAppSidebar" />
     </ClientOnly>
 
-    <div class="app-page" :class="{ '--has-app-header': isShowAppHeader }">
+    <div ref="pageRef" class="app-page" :class="{ '--has-app-header': isShowAppHeader }">
       <AppHeader v-if="isShowAppHeader" />
 
       <div class="app-page__content">

@@ -60,7 +60,7 @@ class GlobalEvents {
   }
 
   findByName(eventName) {
-    return this.eventStack.find((event) => event.name === eventName)
+    return this.eventStack.find(event => event.name === eventName)
   }
 
   parse(val) {
