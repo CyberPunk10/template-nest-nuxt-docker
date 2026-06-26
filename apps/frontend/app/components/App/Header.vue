@@ -57,7 +57,11 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
           />
         </button>
         <div v-if="menuOpen" class="header__menu">
-          <NuxtLink class="header__menu-item" to="/profile" @click="menuOpen = false">
+          <NuxtLink
+            class="header__menu-item"
+            to="/profile"
+            @click="menuOpen = false"
+          >
             <Icon name="lucide:user" size="14" />
             Профиль
           </NuxtLink>

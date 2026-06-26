@@ -35,16 +35,28 @@ function getChips(branchIndex: number, layer: Layer) {
             </div>
           </div>
         </div>
-        <div v-for="layer in layers" :key="layer" class="variants__row">
+        <div
+          v-for="layer in layers"
+          :key="layer"
+          class="variants__row"
+        >
           <div class="variants__layer-col">
             <span class="variants__layer">{{ layer }}</span>
           </div>
-          <div v-for="(b, bi) in branches" :key="b.name" class="variants__branch-col">
+          <div
+            v-for="(b, bi) in branches"
+            :key="b.name"
+            class="variants__branch-col"
+          >
             <div class="variants__cell">
               <template v-if="getChips(bi, layer).length">
-                <span v-for="item in getChips(bi, layer)" :key="item" class="stack__chip">{{
-                  item
-                }}</span>
+                <span
+                  v-for="item in getChips(bi, layer)"
+                  :key="item"
+                  class="stack__chip"
+                >
+                  {{ item }}
+                </span>
               </template>
               <span v-else class="variants__cell-empty">—</span>
             </div>

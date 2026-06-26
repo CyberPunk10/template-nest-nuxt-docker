@@ -7,7 +7,11 @@ const {
 
 <template>
   <NuxtLink class="logo" to="/">
-    <Icon class="logo__icon" name="lucide:layers" size="24" />
+    <Icon
+      class="logo__icon"
+      name="lucide:layers"
+      size="24"
+    />
     <span class="logo__text" :class="{ 'logo__text--hidden': collapsed }">
       <span class="logo__title">
         Monorepo <span class="logo__accent">Template</span>

@@ -1,3 +1,30 @@
+<script setup lang="ts">
+import { themeSwither } from '../../config/sidebar-menu'
+
+defineProps<{ show: boolean }>()
+
+defineEmits<{ open: [], close: [] }>()
+
+const ICON_MAP: Record<string, string> = {
+  'light-theme': 'lucide:sun',
+  'dark-theme': 'lucide:moon',
+  'system-theme': 'lucide:monitor',
+  'dark-green-theme': 'lucide:leaf',
+  'dark-midnight-theme': 'lucide:github',
+  'dark-ocean-theme': 'lucide:waves',
+}
+
+const colorMode = useColorMode()
+const { t } = useI18n()
+
+const selectedTheme = computed(() => themeSwither.items?.find(i => i.id === colorMode.preference))
+
+function setTheme(id: string) {
+  if (colorMode.preference === id) return
+  colorMode.preference = id
+}
+</script>
+
 <template>
   <div
     class="aside-profile__theme-trigger"
@@ -42,32 +69,6 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { themeSwither } from '../../config/sidebar-menu'
-
-const ICON_MAP: Record<string, string> = {
-  'light-theme': 'lucide:sun',
-  'dark-theme': 'lucide:moon',
-  'system-theme': 'lucide:monitor',
-  'dark-green-theme': 'lucide:leaf',
-  'dark-midnight-theme': 'lucide:github',
-  'dark-ocean-theme': 'lucide:waves',
-}
-
-defineProps<{ show: boolean }>()
-defineEmits<{ open: [], close: [] }>()
-
-const colorMode = useColorMode()
-const { t } = useI18n()
-
-const selectedTheme = computed(() => themeSwither.items?.find(i => i.id === colorMode.preference))
-
-function setTheme(id: string) {
-  if (colorMode.preference === id) return
-  colorMode.preference = id
-}
-</script>
 
 <style lang="scss">
 .aside-profile {

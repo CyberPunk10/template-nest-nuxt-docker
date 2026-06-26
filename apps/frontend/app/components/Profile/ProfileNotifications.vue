@@ -12,7 +12,11 @@ const notifications = reactive({
 <template>
   <section class="card">
     <h2 class="card__title">
-      <Icon name="lucide:bell" size="15" class="card__icon" />
+      <Icon
+        name="lucide:bell"
+        size="15"
+        class="card__icon"
+      />
       {{ t('profile.notifications.title') }}
     </h2>
     <div class="toggles">

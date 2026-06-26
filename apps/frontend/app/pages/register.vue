@@ -24,7 +24,11 @@ async function submit() {
   <div class="auth">
     <form class="auth__form" @submit.prevent="submit">
       <h1 class="auth__title">Регистрация</h1>
-      <input v-model="name" class="auth__input" placeholder="Имя">
+      <input
+        v-model="name"
+        class="auth__input"
+        placeholder="Имя"
+      >
       <input
         v-model="email"
         class="auth__input"

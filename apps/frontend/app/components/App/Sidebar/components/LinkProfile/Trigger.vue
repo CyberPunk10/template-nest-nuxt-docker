@@ -1,3 +1,14 @@
+<script setup lang="ts">
+defineProps<{
+  avatar: string
+  name?: string
+  email?: string
+  open: boolean
+}>()
+
+defineEmits<{ click: [] }>()
+</script>
+
 <template>
   <button class="aside-profile__trigger" @click="$emit('click')">
     <div class="aside-profile__avatar">{{ avatar }}</div>
@@ -13,17 +24,6 @@
     />
   </button>
 </template>
-
-<script setup lang="ts">
-defineProps<{
-  avatar: string
-  name?: string
-  email?: string
-  open: boolean
-}>()
-
-defineEmits<{ click: [] }>()
-</script>
 
 <style lang="scss">
 .aside-profile {

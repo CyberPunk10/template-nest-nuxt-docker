@@ -8,7 +8,11 @@ const { t } = useI18n()
   <section class="section">
     <h2 class="section__title">{{ t('about.principles.title') }}</h2>
     <div class="principles">
-      <div v-for="p in principles" :key="p.titleKey" class="principle">
+      <div
+        v-for="p in principles"
+        :key="p.titleKey"
+        class="principle"
+      >
         <div class="principle__icon">
           <Icon :name="p.icon" size="18" />
         </div>

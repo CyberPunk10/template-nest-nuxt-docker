@@ -6,7 +6,11 @@ defineProps<{
 
 <template>
   <div class="stats">
-    <div v-for="s in stats" :key="s.label" class="stat">
+    <div
+      v-for="s in stats"
+      :key="s.label"
+      class="stat"
+    >
       <span class="stat__value">{{ s.value }}</span>
       <span class="stat__label">{{ s.label }}</span>
     </div>

@@ -78,7 +78,11 @@ async function removeTask(id: string) {
         :placeholder="t('tasks.titleField')"
         required
       >
-      <input v-model="form.description" class="form__input" :placeholder="t('tasks.description')">
+      <input
+        v-model="form.description"
+        class="form__input"
+        :placeholder="t('tasks.description')"
+      >
       <UiButton type="submit">{{ t('tasks.add') }}</UiButton>
     </form>
   </UiCard>
@@ -86,7 +90,11 @@ async function removeTask(id: string) {
   <UiCard :title="t('tasks.list')">
     <div v-if="!tasks?.length" class="empty">{{ t('tasks.empty') }}</div>
     <div v-else class="tasks">
-      <div v-for="item in tasks" :key="item.id" class="task">
+      <div
+        v-for="item in tasks"
+        :key="item.id"
+        class="task"
+      >
         <template v-if="editingId === item.id">
           <form class="task__edit" @submit.prevent="saveEdit(item.id)">
             <input
@@ -101,10 +109,18 @@ async function removeTask(id: string) {
               :placeholder="t('tasks.descriptionField')"
             >
             <div class="task__edit-actions">
-              <UiButton type="submit" isIcon variant="ghost">
+              <UiButton
+                type="submit"
+                isIcon
+                variant="ghost"
+              >
                 <Icon name="lucide:check" size="14" />
               </UiButton>
-              <UiButton variant="ghost" isIcon @click="cancelEdit">
+              <UiButton
+                variant="ghost"
+                isIcon
+                @click="cancelEdit"
+              >
                 <Icon name="lucide:x" size="14" />
               </UiButton>
             </div>
@@ -116,10 +132,18 @@ async function removeTask(id: string) {
             <span v-if="item.description" class="task__description">{{ item.description }}</span>
           </div>
           <div class="task__actions">
-            <UiButton variant="ghost" isIcon @click="startEdit(item)">
+            <UiButton
+              variant="ghost"
+              isIcon
+              @click="startEdit(item)"
+            >
               <Icon name="lucide:pencil" size="14" />
             </UiButton>
-            <UiButton variant="danger" isIcon @click="removeTask(item.id)">
+            <UiButton
+              variant="danger"
+              isIcon
+              @click="removeTask(item.id)"
+            >
               <Icon name="lucide:trash-2" size="14" />
             </UiButton>
           </div>

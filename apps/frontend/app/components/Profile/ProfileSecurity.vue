@@ -5,11 +5,19 @@ const { t } = useI18n()
 <template>
   <section class="card">
     <h2 class="card__title">
-      <Icon name="lucide:shield" size="15" class="card__icon" />
+      <Icon
+        name="lucide:shield"
+        size="15"
+        class="card__icon"
+      />
       {{ t('profile.security.title') }}
     </h2>
     <div class="rows">
-      <div v-for="key in ['password', 'twoFactor', 'apiKeys'] as const" :key="key" class="row">
+      <div
+        v-for="key in ['password', 'twoFactor', 'apiKeys'] as const"
+        :key="key"
+        class="row"
+      >
         <div class="row__info">
           <span class="row__name">{{ t(`profile.security.${key}.name`) }}</span>
           <span class="row__sub" :class="{ 'row__sub--off': key === 'twoFactor' }">

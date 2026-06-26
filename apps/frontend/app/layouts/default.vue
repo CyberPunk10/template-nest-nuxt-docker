@@ -34,7 +34,11 @@ watch(height, (v) => {
       <AppSidebar v-if="isShowAppSidebar" />
     </ClientOnly>
 
-    <div ref="pageRef" class="app-page" :class="{ '--has-app-header': isShowAppHeader }">
+    <div
+      ref="pageRef"
+      class="app-page"
+      :class="{ '--has-app-header': isShowAppHeader }"
+    >
       <AppHeader v-if="isShowAppHeader" />
 
       <div class="app-page__content">

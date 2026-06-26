@@ -55,7 +55,11 @@ const groups = computed<CommandGroup[]>(() => [
   <section class="section">
     <h2 class="section__title">{{ t('about.commands.title') }}</h2>
     <div class="commands-wrap">
-      <div v-for="group in groups" :key="group.label" class="commands-group">
+      <div
+        v-for="group in groups"
+        :key="group.label"
+        class="commands-group"
+      >
         <p class="commands__label">{{ group.label }}</p>
         <div class="commands">
           <div

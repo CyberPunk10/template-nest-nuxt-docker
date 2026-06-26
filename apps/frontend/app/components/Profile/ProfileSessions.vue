@@ -14,11 +14,19 @@ const { t } = useI18n()
 <template>
   <section class="card">
     <h2 class="card__title">
-      <Icon name="lucide:monitor" size="15" class="card__icon" />
+      <Icon
+        name="lucide:monitor"
+        size="15"
+        class="card__icon"
+      />
       {{ t('profile.sessions.title') }}
     </h2>
     <div class="sessions">
-      <div v-for="s in sessions" :key="s.device" class="session">
+      <div
+        v-for="s in sessions"
+        :key="s.device"
+        class="session"
+      >
         <div class="session__dot" :class="{ 'session__dot--active': s.current }" />
         <div class="session__info">
           <span class="session__device">

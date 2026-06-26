@@ -38,7 +38,11 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
 </script>
 
 <template>
-  <div ref="menuRef" class="aside-profile" :class="{ '--collapsed': isCollapsed }">
+  <div
+    ref="menuRef"
+    class="aside-profile"
+    :class="{ '--collapsed': isCollapsed }"
+  >
     <Trigger
       :avatar="avatar"
       :name="user?.name"
@@ -49,7 +53,11 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
 
     <Menu v-if="menuOpen" @close="menuOpen = false">
       <template #theme>
-        <ThemePopup :show="themeOpen" @open="themeOpen = true" @close="themeOpen = false" />
+        <ThemePopup
+          :show="themeOpen"
+          @open="themeOpen = true"
+          @close="themeOpen = false"
+        />
       </template>
 
       <template #logout>

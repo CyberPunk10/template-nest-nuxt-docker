@@ -30,7 +30,11 @@ const sessions = [
       {{ t('profile.demoBanner') }}
     </div>
 
-    <ProfileHero :avatar="avatar" :name="user.name" :email="user.email" />
+    <ProfileHero
+      :avatar="avatar"
+      :name="user.name"
+      :email="user.email"
+    />
 
     <div class="body">
       <ProfileStats :stats="stats" />

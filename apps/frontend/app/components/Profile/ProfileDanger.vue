@@ -5,7 +5,11 @@ const { t } = useI18n()
 <template>
   <section class="card">
     <h2 class="card__title">
-      <Icon name="lucide:triangle-alert" size="15" class="card__icon" />
+      <Icon
+        name="lucide:triangle-alert"
+        size="15"
+        class="card__icon"
+      />
       {{ t('profile.danger.title') }}
     </h2>
     <div class="row">

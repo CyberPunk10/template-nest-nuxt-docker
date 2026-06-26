@@ -55,7 +55,11 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
 
     <div class="panel__section">
       <h2 class="panel__heading">Сервисы</h2>
-      <a class="service" :href="`${backendUrl}/health`" target="_blank">
+      <a
+        class="service"
+        :href="`${backendUrl}/health`"
+        target="_blank"
+      >
         <span
           class="service__dot"
           :class="backendOnline ? 'service__dot--online' : 'service__dot--offline'"
@@ -63,7 +67,11 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
         <span class="service__name">Backend (NestJS)</span>
         <code class="service__url">{{ backendUrl }}/health</code>
       </a>
-      <a class="service" :href="`${frontendUrl}/api/health`" target="_blank">
+      <a
+        class="service"
+        :href="`${frontendUrl}/api/health`"
+        target="_blank"
+      >
         <span class="service__dot service__dot--online" />
         <span class="service__name">Frontend (Nuxt)</span>
         <code class="service__url">{{ frontendUrl }}/api/health</code>

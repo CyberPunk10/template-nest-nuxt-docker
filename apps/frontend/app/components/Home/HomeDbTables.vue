@@ -36,7 +36,11 @@ const { data: allTasks } = await useApi<GlobalTask[]>('/tasks/all', {
         <span class="section__badge">{{ users?.length ?? 0 }}</span>
       </div>
       <div class="list">
-        <div v-for="item in users" :key="item.id" class="list__row">
+        <div
+          v-for="item in users"
+          :key="item.id"
+          class="list__row"
+        >
           <span class="list__name">{{ item.name }}</span>
           <span class="list__email">{{ item.email }}</span>
         </div>
@@ -49,7 +53,11 @@ const { data: allTasks } = await useApi<GlobalTask[]>('/tasks/all', {
         <span class="section__badge">{{ allTasks?.length ?? 0 }}</span>
       </div>
       <div class="list">
-        <div v-for="item in allTasks" :key="item.id" class="list__row">
+        <div
+          v-for="item in allTasks"
+          :key="item.id"
+          class="list__row"
+        >
           <span class="list__name">{{ item.title }}</span>
           <span class="list__email">{{ item.user.name }}</span>
         </div>

@@ -25,7 +25,11 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
     <span>DEV</span>
     <Icon :name="devOpen ? 'lucide:chevron-right' : 'lucide:chevron-left'" size="11" />
   </button>
-  <aside ref="panelRef" class="dev-panel" :class="{ 'dev-panel--open': devOpen }">
+  <aside
+    ref="panelRef"
+    class="dev-panel"
+    :class="{ 'dev-panel--open': devOpen }"
+  >
     <DevPanel />
   </aside>
 </template>

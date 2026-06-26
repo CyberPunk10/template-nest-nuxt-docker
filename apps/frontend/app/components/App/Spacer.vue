@@ -1,12 +1,12 @@
-<template>
-  <div class="app-spacer" />
-</template>
-
 <script>
 export default {
   name: 'AppSpacer',
 }
 </script>
+
+<template>
+  <div class="app-spacer" />
+</template>
 
 <style lang="scss">
 .app-spacer {

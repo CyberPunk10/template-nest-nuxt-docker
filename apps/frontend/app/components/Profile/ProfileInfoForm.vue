@@ -7,7 +7,11 @@ const form = reactive({ name: 'John Doe', email: 'john@example.com' })
 <template>
   <section class="card">
     <h2 class="card__title">
-      <Icon name="lucide:user" size="15" class="card__icon" />
+      <Icon
+        name="lucide:user"
+        size="15"
+        class="card__icon"
+      />
       {{ t('profile.info.title') }}
     </h2>
     <form class="form">
@@ -30,11 +34,19 @@ const form = reactive({ name: 'John Doe', email: 'john@example.com' })
       </div>
       <div class="field">
         <label class="field__label">{{ t('profile.info.position') }}</label>
-        <input class="field__input field__input--muted" value="Backend Developer" disabled>
+        <input
+          class="field__input field__input--muted"
+          value="Backend Developer"
+          disabled
+        >
       </div>
       <div class="field">
         <label class="field__label">{{ t('profile.info.organization') }}</label>
-        <input class="field__input field__input--muted" value="Acme Corp" disabled>
+        <input
+          class="field__input field__input--muted"
+          value="Acme Corp"
+          disabled
+        >
       </div>
       <div class="form__footer">
         <button class="btn btn--primary" type="submit">

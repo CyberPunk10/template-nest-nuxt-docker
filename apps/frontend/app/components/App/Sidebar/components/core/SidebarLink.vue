@@ -3,29 +3,6 @@ import { NuxtLink } from '#components'
 import { useSidebar } from '../../composables/useSidebar'
 import { themeSwither } from '../../config/sidebar-menu'
 
-const ICON_MAP: Record<string, string> = {
-  home: 'lucide:house',
-  help: 'lucide:circle-help',
-  out: 'lucide:log-out',
-  'no-photo-avatar': 'lucide:user-round',
-  close: 'lucide:x',
-  'light-theme': 'lucide:sun',
-  'dark-theme': 'lucide:moon',
-  'system-theme': 'lucide:monitor',
-  'dark-green-theme': 'lucide:leaf',
-  'dark-midnight-theme': 'lucide:github',
-  'dark-ocean-theme': 'lucide:waves',
-  chevron: 'lucide:chevron-right',
-  'chevron-back': 'lucide:chevron-left',
-  checkmark: 'lucide:check',
-}
-
-function resolveIcon(type: string): string {
-  if (ICON_MAP[type]) return ICON_MAP[type]
-  if (type.includes(':')) return type
-  return `lucide:${type}`
-}
-
 const props = withDefaults(
   defineProps<{
     chevron?: boolean
@@ -48,6 +25,29 @@ const emit = defineEmits<{
   'toggle-collapse': [value: boolean]
   'set-active': [value: boolean]
 }>()
+
+const ICON_MAP: Record<string, string> = {
+  home: 'lucide:house',
+  help: 'lucide:circle-help',
+  out: 'lucide:log-out',
+  'no-photo-avatar': 'lucide:user-round',
+  close: 'lucide:x',
+  'light-theme': 'lucide:sun',
+  'dark-theme': 'lucide:moon',
+  'system-theme': 'lucide:monitor',
+  'dark-green-theme': 'lucide:leaf',
+  'dark-midnight-theme': 'lucide:github',
+  'dark-ocean-theme': 'lucide:waves',
+  chevron: 'lucide:chevron-right',
+  'chevron-back': 'lucide:chevron-left',
+  checkmark: 'lucide:check',
+}
+
+function resolveIcon(type: string): string {
+  if (ICON_MAP[type]) return ICON_MAP[type]
+  if (type.includes(':')) return type
+  return `lucide:${type}`
+}
 
 const $route = useRoute()
 const colorMode = useColorMode()
@@ -199,9 +199,17 @@ function handlerSidebarLink() {
       data-test-id="link-component"
       @click="handlerSidebarLink"
     >
-      <Icon v-if="icon" :name="resolveIcon(icon)" class="aside-link__icon" />
+      <Icon
+        v-if="icon"
+        :name="resolveIcon(icon)"
+        class="aside-link__icon"
+      />
 
-      <span class="aside-link__text" :class="{ '--no-icon': !icon }" data-test-id="text">
+      <span
+        class="aside-link__text"
+        :class="{ '--no-icon': !icon }"
+        data-test-id="text"
+      >
         <slot />
       </span>
 
