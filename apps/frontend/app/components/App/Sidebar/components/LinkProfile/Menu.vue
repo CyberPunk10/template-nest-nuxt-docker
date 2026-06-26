@@ -1,3 +1,10 @@
+<script setup lang="ts">
+import { userMenu } from '../../config/sidebar-menu'
+
+const emit = defineEmits<{ close: [] }>()
+const { t } = useI18n()
+</script>
+
 <template>
   <div class="aside-profile__menu">
     <template v-for="item in userMenu" :key="'divider' in item ? item : item.title">
@@ -22,13 +29,6 @@
     <slot name="logout" />
   </div>
 </template>
-
-<script setup lang="ts">
-import { userMenu } from '../../config/sidebar-menu'
-
-const emit = defineEmits<{ close: [] }>()
-const { t } = useI18n()
-</script>
 
 <style lang="scss">
 .aside-profile {
