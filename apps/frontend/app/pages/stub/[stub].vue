@@ -79,7 +79,7 @@ const shapes = Array.from({ length: 18 }, (_, i) => ({
   &__shape {
     position: absolute;
     border-radius: 50%;
-    background: #00dc82;
+    background: var(--color-accent);
     animation: float linear infinite;
     transform: translate(-50%, -50%);
   }
@@ -104,7 +104,7 @@ const shapes = Array.from({ length: 18 }, (_, i) => ({
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #00dc82;
+    color: var(--color-accent);
   }
 
   &__title {
@@ -117,7 +117,7 @@ const shapes = Array.from({ length: 18 }, (_, i) => ({
 
   &__desc {
     font-size: 14px;
-    color: #475569;
+    color: var(--text-tertiary-color);
     line-height: 1.7;
     margin: 0;
   }
@@ -127,7 +127,7 @@ const shapes = Array.from({ length: 18 }, (_, i) => ({
     flex-direction: column;
     gap: 6px;
     background: #0b1525;
-    border: 1px solid #1e293b;
+    border: 1px solid var(--divider-color);
     border-radius: 8px;
     padding: 10px 14px;
   }
@@ -151,7 +151,7 @@ const shapes = Array.from({ length: 18 }, (_, i) => ({
   &__meta-value {
     font-size: 13px;
     font-family: monospace;
-    color: #00dc82;
+    color: var(--color-accent);
   }
 
   &__back {
@@ -159,11 +159,11 @@ const shapes = Array.from({ length: 18 }, (_, i) => ({
     align-items: center;
     gap: 6px;
     font-size: 13px;
-    color: #475569;
+    color: var(--text-tertiary-color);
     text-decoration: none;
     padding: 8px 14px;
     border-radius: 8px;
-    border: 1px solid #1e293b;
+    border: 1px solid var(--divider-color);
     transition:
       color 0.15s,
       border-color 0.15s;

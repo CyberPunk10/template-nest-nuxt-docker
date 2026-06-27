@@ -35,7 +35,7 @@
   }
 
   &__input {
-    background: #1e293b;
+    background: var(--divider-color);
     border: 1px solid #334155;
     border-radius: 8px;
     padding: 10px 14px;
@@ -45,7 +45,7 @@
     transition: border-color 0.2s;
 
     &:focus {
-      border-color: #00dc82;
+      border-color: var(--color-accent);
     }
   }
 
@@ -56,8 +56,8 @@
   }
 
   &__btn {
-    background: #00dc82;
-    color: #0f172a;
+    background: var(--color-accent);
+    color: var(--background-secondary);
     border: none;
     border-radius: 8px;
     padding: 10px;
@@ -74,7 +74,7 @@
 
   &__link {
     font-size: 13px;
-    color: #475569;
+    color: var(--text-tertiary-color);
     text-align: center;
     text-decoration: none;
 

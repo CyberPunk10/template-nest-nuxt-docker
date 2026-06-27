@@ -18,23 +18,20 @@ defineProps<{
 </template>
 
 <style scoped lang="scss">
-$bg-card: #0b1525;
-$border: #1e293b;
 $text-primary: #f1f5f9;
-$text-faint: #475569;
 
 .stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1px;
-  background: $border;
-  border: 1px solid $border;
+  background: var(--divider-color);
+  border: 1px solid var(--divider-color);
   border-radius: 10px;
   overflow: hidden;
 }
 
 .stat {
-  background: $bg-card;
+  background: var(--background);
   padding: 18px 20px;
   display: flex;
   flex-direction: column;
@@ -49,7 +46,7 @@ $text-faint: #475569;
 
   &__label {
     font-size: 11px;
-    color: $text-faint;
+    color: var(--text-tertiary-color);
     text-transform: uppercase;
     letter-spacing: 0.06em;
   }

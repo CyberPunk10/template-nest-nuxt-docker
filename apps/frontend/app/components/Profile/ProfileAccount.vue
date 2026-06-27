@@ -30,11 +30,9 @@ const { t } = useI18n()
 </template>
 
 <style scoped lang="scss">
-$border: #1e293b;
 $border-flat: #1a2740;
 $border-sub: #111d30;
 $text-muted: #94a3b8;
-$text-faint: #475569;
 
 .card {
   background: transparent;
@@ -67,7 +65,7 @@ $text-faint: #475569;
 
   &__key {
     font-size: 12px;
-    color: $text-faint;
+    color: var(--text-tertiary-color);
   }
 
   &__val {

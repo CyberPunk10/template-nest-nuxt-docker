@@ -33,19 +33,16 @@ const { t } = useI18n()
 </template>
 
 <style scoped lang="scss">
-$bg-card: #0b1525;
-$border: #1e293b;
 $border-sub: #111d30;
 $text-dim: #64748b;
 $text-muted: #94a3b8;
 $text-secondary: #cbd5e1;
-$text-faint: #475569;
 $text-dark: #334155;
 $red-dark: #dc2626;
 
 .card {
-  background: $bg-card;
-  border: 1px solid $border;
+  background: var(--background);
+  border: 1px solid var(--divider-color);
   border-radius: 10px;
   padding: 20px;
 
@@ -103,7 +100,7 @@ $red-dark: #dc2626;
 
   &__sub {
     font-size: 11px;
-    color: $text-faint;
+    color: var(--text-tertiary-color);
 
     &--off {
       color: $red-dark;
@@ -123,7 +120,7 @@ $red-dark: #dc2626;
 
   &--ghost {
     background: transparent;
-    border: 1px solid $border;
+    border: 1px solid var(--divider-color);
     color: $text-dim;
     padding: 6px 12px;
 

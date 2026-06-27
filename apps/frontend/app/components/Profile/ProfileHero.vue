@@ -23,25 +23,22 @@ const { t } = useI18n()
 </template>
 
 <style scoped lang="scss">
-$green: #00dc82;
 $green-dark: #00b368;
 $bg-page: #080f1a;
-$border: #1e293b;
 $text-primary: #f1f5f9;
-$text-faint: #475569;
 
 .hero {
   position: relative;
   overflow: hidden;
   padding: 40px 32px 32px;
-  border-bottom: 1px solid $border;
+  border-bottom: 1px solid var(--divider-color);
 
   &__bg {
     position: absolute;
     inset: 0;
     background:
       radial-gradient(ellipse 60% 80% at 10% 50%, rgba(0, 220, 130, 0.07) 0%, transparent 70%),
-      linear-gradient(180deg, #0f172a 0%, $bg-page 100%);
+      linear-gradient(180deg, var(--background-secondary) 0%, $bg-page 100%);
   }
 
   &__inner {
@@ -55,8 +52,8 @@ $text-faint: #475569;
     width: 72px;
     height: 72px;
     border-radius: 50%;
-    background: linear-gradient(135deg, $green 0%, $green-dark 100%);
-    color: #0f172a;
+    background: linear-gradient(135deg, var(--color-accent) 0%, $green-dark 100%);
+    color: var(--background-secondary);
     font-size: 28px;
     font-weight: 800;
     display: flex;
@@ -84,7 +81,7 @@ $text-faint: #475569;
 
   &__email {
     font-size: 13px;
-    color: $text-faint;
+    color: var(--text-tertiary-color);
     margin: 0;
   }
 
@@ -93,7 +90,7 @@ $text-faint: #475569;
     align-items: center;
     background: rgba(0, 220, 130, 0.1);
     border: 1px solid rgba(0, 220, 130, 0.25);
-    color: $green;
+    color: var(--color-accent);
     font-size: 10px;
     font-weight: 700;
     text-transform: uppercase;

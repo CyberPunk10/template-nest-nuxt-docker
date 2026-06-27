@@ -56,7 +56,7 @@ const locales = [
   position: relative;
   overflow: hidden;
   padding: 72px 48px 56px;
-  border-bottom: 1px solid #1e293b;
+  border-bottom: 1px solid var(--divider-color);
 
   &__lang {
     display: flex;
@@ -73,8 +73,8 @@ const locales = [
     letter-spacing: 0.06em;
     cursor: pointer;
     background: transparent;
-    border: 1px solid #1e293b;
-    color: #475569;
+    border: 1px solid var(--divider-color);
+    color: var(--text-tertiary-color);
     transition:
       border-color 0.15s,
       color 0.15s;
@@ -85,7 +85,7 @@ const locales = [
     }
     &--active {
       border-color: rgba(0, 220, 130, 0.3);
-      color: #00dc82;
+      color: var(--color-accent);
     }
   }
 
@@ -114,7 +114,7 @@ const locales = [
     display: inline-flex;
     background: rgba(0, 220, 130, 0.08);
     border: 1px solid rgba(0, 220, 130, 0.2);
-    color: #00dc82;
+    color: var(--color-accent);
     font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
@@ -133,12 +133,12 @@ const locales = [
   }
 
   &__title-accent {
-    color: #00dc82;
+    color: var(--color-accent);
   }
 
   &__subtitle {
     font-size: 16px;
-    color: #475569;
+    color: var(--text-tertiary-color);
     margin: 0 0 32px;
     line-height: 1.7;
   }
@@ -166,8 +166,8 @@ const locales = [
       color 0.15s;
 
     &--primary {
-      background: #00dc82;
-      color: #0f172a;
+      background: var(--color-accent);
+      color: var(--background-secondary);
       &:hover {
         opacity: 0.88;
       }
@@ -175,7 +175,7 @@ const locales = [
 
     &--ghost {
       background: transparent;
-      border: 1px solid #1e293b;
+      border: 1px solid var(--divider-color);
       color: #64748b;
       &:hover {
         border-color: #334155;

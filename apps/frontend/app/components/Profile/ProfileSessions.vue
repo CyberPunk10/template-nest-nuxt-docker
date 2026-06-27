@@ -44,19 +44,15 @@ const { t } = useI18n()
 </template>
 
 <style scoped lang="scss">
-$bg-card: #0b1525;
-$border: #1e293b;
 $border-sub: #111d30;
 $text-dim: #64748b;
 $text-secondary: #cbd5e1;
-$text-faint: #475569;
 $text-dark: #334155;
-$green: #00dc82;
 $red: #ef4444;
 
 .card {
-  background: $bg-card;
-  border: 1px solid $border;
+  background: var(--background);
+  border: 1px solid var(--divider-color);
   border-radius: 10px;
   padding: 20px;
 
@@ -108,7 +104,7 @@ $red: #ef4444;
     flex-shrink: 0;
 
     &--active {
-      background: $green;
+      background: var(--color-accent);
       box-shadow: 0 0 6px rgba(0, 220, 130, 0.5);
     }
   }
@@ -131,7 +127,7 @@ $red: #ef4444;
 
   &__meta {
     font-size: 11px;
-    color: $text-faint;
+    color: var(--text-tertiary-color);
   }
 
   &__badge {
@@ -140,7 +136,7 @@ $red: #ef4444;
     text-transform: uppercase;
     letter-spacing: 0.06em;
     background: rgba(0, 220, 130, 0.12);
-    color: $green;
+    color: var(--color-accent);
     border-radius: 4px;
     padding: 2px 5px;
   }

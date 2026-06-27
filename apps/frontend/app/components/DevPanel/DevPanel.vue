@@ -156,7 +156,7 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
-  border: 1px solid #1e293b;
+  border: 1px solid var(--divider-color);
   border-radius: 8px;
   text-decoration: none;
   color: #fff;
@@ -164,7 +164,7 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
   transition: border-color 0.2s;
 
   &:hover {
-    border-color: #00dc82;
+    border-color: var(--color-accent);
   }
 
   &--muted {
@@ -180,8 +180,8 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
     flex-shrink: 0;
 
     &--online {
-      background: #00dc82;
-      box-shadow: 0 0 6px #00dc82;
+      background: var(--color-accent);
+      box-shadow: 0 0 6px var(--color-accent);
     }
 
     &--offline {
@@ -202,7 +202,7 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
 
   &__badge {
     font-size: 10px;
-    background: #1e293b;
+    background: var(--divider-color);
     color: #64748b;
     border-radius: 4px;
     padding: 1px 6px;
@@ -216,7 +216,7 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
-  border: 1px solid #1e293b;
+  border: 1px solid var(--divider-color);
   border-radius: 8px;
   font-size: 13px;
 
@@ -236,7 +236,7 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
 
     &--development {
       background: #1c3a2a;
-      color: #00dc82;
+      color: var(--color-accent);
     }
     &--production {
       background: #2a1c1c;
@@ -261,7 +261,7 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
   padding: 0 2px;
 
   &__label {
-    color: #475569;
+    color: var(--text-tertiary-color);
   }
   &__value {
     font-family: monospace;
@@ -274,7 +274,7 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
   align-items: center;
   gap: 8px;
   padding: 7px 12px;
-  border: 1px solid #1e293b;
+  border: 1px solid var(--divider-color);
   border-radius: 8px;
   text-decoration: none;
   color: #94a3b8;
@@ -289,12 +289,12 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
   }
 
   &--active {
-    border-color: #00dc82;
+    border-color: var(--color-accent);
     color: #e2e8f0;
 
     .nav-route__dot {
-      background: #00dc82;
-      box-shadow: 0 0 5px #00dc82;
+      background: var(--color-accent);
+      box-shadow: 0 0 5px var(--color-accent);
     }
   }
 
@@ -322,7 +322,7 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
 
     &--public {
       background: #1c3a2a;
-      color: #00dc82;
+      color: var(--color-accent);
     }
     &--private {
       background: #2a1f1c;

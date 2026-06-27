@@ -58,18 +58,13 @@ const form = reactive({ name: 'John Doe', email: 'john@example.com' })
 </template>
 
 <style scoped lang="scss">
-$bg-card: #0b1525;
-$bg-input: #0f172a;
-$border: #1e293b;
 $text-body: #e2e8f0;
 $text-dim: #64748b;
-$text-faint: #475569;
-$green: #00dc82;
 $red: #ef4444;
 
 .card {
-  background: $bg-card;
-  border: 1px solid $border;
+  background: var(--background);
+  border: 1px solid var(--divider-color);
   border-radius: 10px;
   padding: 20px;
 
@@ -112,14 +107,14 @@ $red: #ef4444;
   &__label {
     font-size: 11px;
     font-weight: 500;
-    color: $text-faint;
+    color: var(--text-tertiary-color);
     text-transform: uppercase;
     letter-spacing: 0.06em;
   }
 
   &__input {
-    background: $bg-input;
-    border: 1px solid $border;
+    background: var(--background-secondary);
+    border: 1px solid var(--divider-color);
     border-radius: 7px;
     padding: 9px 13px;
     font-size: 13px;
@@ -129,10 +124,10 @@ $red: #ef4444;
     font-family: inherit;
 
     &:focus {
-      border-color: $green;
+      border-color: var(--color-accent);
     }
     &--muted {
-      color: $text-faint;
+      color: var(--text-tertiary-color);
       cursor: not-allowed;
     }
   }
@@ -150,8 +145,8 @@ $red: #ef4444;
   font-family: inherit;
 
   &--primary {
-    background: $green;
-    color: #0f172a;
+    background: var(--color-accent);
+    color: var(--background-secondary);
     padding: 9px 18px;
 
     &:hover:not(:disabled) {
@@ -175,7 +170,7 @@ $red: #ef4444;
     color: $red;
   }
   &--success {
-    color: $green;
+    color: var(--color-accent);
   }
 }
 </style>

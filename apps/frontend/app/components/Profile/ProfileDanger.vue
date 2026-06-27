@@ -25,7 +25,6 @@ const { t } = useI18n()
 <style scoped lang="scss">
 $red: #ef4444;
 $text-secondary: #cbd5e1;
-$text-faint: #475569;
 
 .card {
   background: rgba(239, 68, 68, 0.03);
@@ -65,7 +64,7 @@ $text-faint: #475569;
 
   &__desc {
     font-size: 12px;
-    color: $text-faint;
+    color: var(--text-tertiary-color);
     margin: 0;
   }
 }

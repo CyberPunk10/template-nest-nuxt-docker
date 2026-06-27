@@ -17,7 +17,7 @@
   gap: 0;
   flex: 1;
   min-height: 0;
-  background: #0f172a;
+  background: var(--background-secondary);
   color: #fff;
 
   .nuxt-welcome-component {
@@ -26,7 +26,7 @@
   }
 
   .col {
-    border-right: 1px solid #1e293b;
+    border-right: 1px solid var(--divider-color);
     overflow: auto;
   }
 

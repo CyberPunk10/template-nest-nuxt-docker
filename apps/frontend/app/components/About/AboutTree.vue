@@ -65,7 +65,7 @@ const { t } = useI18n()
     color: #7dd3fc;
   }
   &__app {
-    color: #00dc82;
+    color: var(--color-accent);
     font-weight: 600;
   }
   &__pkg {

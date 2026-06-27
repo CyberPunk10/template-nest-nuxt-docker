@@ -40,17 +40,13 @@ const notifications = reactive({
 </template>
 
 <style scoped lang="scss">
-$bg-card: #0b1525;
-$border: #1e293b;
 $border-sub: #111d30;
 $text-dim: #64748b;
 $text-secondary: #cbd5e1;
-$text-faint: #475569;
-$green: #00dc82;
 
 .card {
-  background: $bg-card;
-  border: 1px solid $border;
+  background: var(--background);
+  border: 1px solid var(--divider-color);
   border-radius: 10px;
   padding: 20px;
 
@@ -107,7 +103,7 @@ $green: #00dc82;
   }
   &__desc {
     font-size: 11px;
-    color: $text-faint;
+    color: var(--text-tertiary-color);
   }
 }
 
@@ -115,7 +111,7 @@ $green: #00dc82;
   width: 36px;
   height: 20px;
   border-radius: 10px;
-  background: $border;
+  background: var(--divider-color);
   border: none;
   cursor: pointer;
   position: relative;
@@ -130,7 +126,7 @@ $green: #00dc82;
     width: 14px;
     height: 14px;
     border-radius: 50%;
-    background: $text-faint;
+    background: var(--text-tertiary-color);
     transition:
       transform 0.2s,
       background 0.2s;
@@ -141,7 +137,7 @@ $green: #00dc82;
 
     &::after {
       transform: translateX(16px);
-      background: $green;
+      background: var(--color-accent);
     }
   }
 }

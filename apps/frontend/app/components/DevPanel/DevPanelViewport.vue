@@ -110,7 +110,7 @@ function formatPx(entry: PxEntry): string {
   &__key {
     font-family: monospace;
     font-size: 11px;
-    color: #475569;
+    color: var(--text-tertiary-color);
     width: 80px;
     flex-shrink: 0;
   }
@@ -121,17 +121,17 @@ function formatPx(entry: PxEntry): string {
     font-weight: 600;
     padding: 1px 6px;
     border-radius: 3px;
-    background: #1e293b;
+    background: var(--divider-color);
     color: #94a3b8;
 
     &--on {
       background: #1c3a2a;
-      color: #00dc82;
+      color: var(--color-accent);
     }
 
     &--off {
-      background: #1e293b;
-      color: #475569;
+      background: var(--divider-color);
+      color: var(--text-tertiary-color);
     }
   }
 

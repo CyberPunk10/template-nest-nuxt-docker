@@ -83,7 +83,7 @@ function getChips(branchIndex: number, layer: Layer) {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   background: rgba(0, 220, 130, 0.12);
-  color: #00dc82;
+  color: var(--color-accent);
   border-radius: 4px;
   padding: 2px 5px;
 }
@@ -93,7 +93,7 @@ function getChips(branchIndex: number, layer: Layer) {
 }
 
 .variants {
-  border: 1px solid #1e293b;
+  border: 1px solid var(--divider-color);
   border-radius: 12px;
   overflow: hidden;
   min-width: 600px;
@@ -102,7 +102,7 @@ function getChips(branchIndex: number, layer: Layer) {
 .variants__head {
   display: grid;
   grid-template-columns: 90px repeat(3, 1fr);
-  border-bottom: 2px solid #1e293b;
+  border-bottom: 2px solid var(--divider-color);
 }
 
 .variants__row {
@@ -118,7 +118,7 @@ function getChips(branchIndex: number, layer: Layer) {
 .variants__layer-col {
   padding: 16px 14px;
   background: #060e1a;
-  border-right: 1px solid #1e293b;
+  border-right: 1px solid var(--divider-color);
   display: flex;
   align-items: flex-start;
 }
@@ -154,15 +154,15 @@ function getChips(branchIndex: number, layer: Layer) {
   align-items: center;
   gap: 5px;
   font-size: 12px;
-  color: #475569;
+  color: var(--text-tertiary-color);
 
   code {
     font-family: monospace;
-    color: #475569;
+    color: var(--text-tertiary-color);
   }
 
   &--current code {
-    color: #00dc82;
+    color: var(--color-accent);
   }
 }
 
@@ -188,7 +188,7 @@ function getChips(branchIndex: number, layer: Layer) {
 
 .variants__cell-empty {
   font-size: 12px;
-  color: #1e293b;
+  color: var(--divider-color);
 }
 
 .stack__chip {
@@ -198,6 +198,6 @@ function getChips(branchIndex: number, layer: Layer) {
   white-space: nowrap;
   background: rgba(0, 220, 130, 0.07);
   border: 1px solid rgba(0, 220, 130, 0.25);
-  color: #00dc82;
+  color: var(--color-accent);
 }
 </style>

@@ -47,8 +47,8 @@ defineEmits<{
 }
 
 .ui-button--primary {
-  background: #00dc82;
-  color: #0f172a;
+  background: var(--color-accent);
+  color: var(--background-secondary);
 }
 
 .ui-button--primary:hover:not(:disabled) {
@@ -57,19 +57,19 @@ defineEmits<{
 
 .ui-button--ghost {
   background: transparent;
-  border-color: #1e293b;
+  border-color: var(--divider-color);
   color: #e2e8f0;
 }
 
 .ui-button--ghost:hover:not(:disabled) {
-  border-color: #00dc82;
-  color: #00dc82;
+  border-color: var(--color-accent);
+  color: var(--color-accent);
 }
 
 .ui-button--danger {
   background: transparent;
-  border-color: #1e293b;
-  color: #475569;
+  border-color: var(--divider-color);
+  color: var(--text-tertiary-color);
 }
 
 .ui-button--danger:hover:not(:disabled) {

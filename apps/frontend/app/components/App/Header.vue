@@ -115,7 +115,7 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
     background: transparent;
     border: 1px solid var(--divider-color);
     border-radius: var(--radius-md);
-    color: #475569;
+    color: var(--text-tertiary-color);
     font-size: 10px;
     font-weight: 600;
     padding: 3px 6px;
@@ -125,13 +125,13 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
       color 0.15s;
 
     &:hover {
-      border-color: #475569;
+      border-color: var(--text-tertiary-color);
       color: #94a3b8;
     }
 
     &--active {
-      border-color: #00dc82;
-      color: #00dc82;
+      border-color: var(--color-accent);
+      color: var(--color-accent);
     }
   }
 
@@ -212,7 +212,7 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
     top: calc(100% + var(--space-1-5));
     right: 0;
     min-width: 180px;
-    background: #1e293b;
+    background: var(--divider-color);
     border: 1px solid #334155;
     border-radius: 8px;
     padding: var(--space-1);
