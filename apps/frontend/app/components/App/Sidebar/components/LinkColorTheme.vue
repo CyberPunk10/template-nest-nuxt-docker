@@ -61,7 +61,6 @@ function onClickOutsideSubMenu(itemWithSubMenu: SidebarItem) {
       class="sidebar-change-theme"
       :icon="selectedThemeIcon"
       :tooltipText="$t(selectedTheme)"
-      data-test-id="sidebar-theme"
       @click-section="$emit('click-section', themeSwither)"
     >
       {{ $t(selectedTheme) }}

@@ -9,7 +9,6 @@ const { isMobileOpen } = useSidebar()
   <div
     class="sidebar-shadow"
     :class="{ '--shadow-mobile-opened': isMobileOpen }"
-    data-test-id="shadow"
     @click.self="emit('click')"
   />
 </template>

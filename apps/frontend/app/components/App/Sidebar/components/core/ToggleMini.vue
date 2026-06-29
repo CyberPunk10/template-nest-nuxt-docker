@@ -8,7 +8,6 @@ const { isCollapsed } = useSidebar()
 <template>
   <button
     class="toggle-mini"
-    data-test-id="toggle-button"
     :aria-label="isCollapsed ? $t('sidebar.expand') : $t('sidebar.collapse')"
     @click="emit('toggle-sidebar-width')"
   >

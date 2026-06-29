@@ -65,7 +65,6 @@ function onClickOutsideSubMenu() {
           '--show-sub-menu': show,
         },
       ]"
-      data-test-id="dropdown"
     >
       <div v-if="isPopup" class="sidebar-dropdown__header">
         {{ $t(item.title) }}
@@ -76,7 +75,6 @@ function onClickOutsideSubMenu() {
           <app-spacer
             v-if="subitem.spacer"
             :key="`app-spacer-${item.id}-${index}`"
-            :data-test-id="`app-spacer-${item.id}`"
           />
 
           <SidebarLink
@@ -91,7 +89,6 @@ function onClickOutsideSubMenu() {
             :params="subitem.params"
             :ignoreParams="subitem.ignoreParams"
             :to="subitem.url"
-            data-test-id="link"
             @click-section="onClickSection(subitem)"
             @set-active="onToggleCollapse(subitem, $event)"
             @toggle-collapse="onToggleCollapse(subitem, !notCollapsedItems[subitem.id!])"
@@ -106,7 +103,6 @@ function onClickOutsideSubMenu() {
             :level="level + 1"
             :to="subitem.url"
             :notCollapsedItems="notCollapsedItems"
-            data-test-id="inner-dropdown"
             @click-section="onClickSection"
             @toggle-collapse="onToggleCollapse(subitem, !notCollapsedItems[subitem.id!])"
             @click-outside-submenu="$emit('click-outside-submenu', $event)"

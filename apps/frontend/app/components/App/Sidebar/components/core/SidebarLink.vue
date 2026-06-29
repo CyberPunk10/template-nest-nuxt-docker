@@ -174,7 +174,6 @@ function handlerSidebarLink() {
         '--opened': opened,
       }"
       v-bind="linkAttrs"
-      data-test-id="link-component"
       @click="handlerSidebarLink"
     >
       <Icon
@@ -186,7 +185,6 @@ function handlerSidebarLink() {
       <span
         class="sidebar-link__text"
         :class="{ '--no-icon': !icon }"
-        data-test-id="text"
       >
         <slot />
       </span>
@@ -195,7 +193,6 @@ function handlerSidebarLink() {
         v-if="chevron"
         v-show="levelSidebarLink > 1 || !isCollapsed"
         class="sidebar-link__chevron"
-        data-test-id="chevron"
       >
         <slot name="chevron">
           <Icon name="lucide:chevron-right" />

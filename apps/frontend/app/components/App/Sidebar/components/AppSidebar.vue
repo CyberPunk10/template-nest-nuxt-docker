@@ -196,13 +196,11 @@ function toggleSideBarWidth() {
       '--shadow-mobile-opened': isMobileOpen,
       '--collapsed': isCollapsed,
     }"
-    data-test-id="sidebar-wrapper"
   >
     <SidebarShadow @click="clickByShadow" />
 
     <ToggleMini
       v-if="isSidebarDesktop"
-      data-test-id="toggle-mini"
       @toggle-sidebar-width="toggleSideBarWidth"
     />
 
@@ -210,7 +208,6 @@ function toggleSideBarWidth() {
       ref="sidebarRef"
       class="app-sidebar"
       :class="{ '--collapsed': isCollapsed }"
-      data-test-id="sidebar-menu"
     >
       <SidebarLogo />
 
@@ -222,7 +219,6 @@ function toggleSideBarWidth() {
         }"
         :triggerScrollHandler="triggerScrollHandler"
         withoutIgnoreSwipe
-        data-test-id="sidebar-scroll-menu"
       >
         <!-- Items menu -->
         <template v-for="(item, index) in menu" :key="`sidebar-item-${index}`">
@@ -238,7 +234,6 @@ function toggleSideBarWidth() {
               :tooltipText="$t(item.title)"
               :icon="item.icon"
               :chevron="!!item.items"
-              :data-test-id="`sidebar-level-0-${index}`"
               @click-section="onClickSection({ id: item.id! })"
             >
               {{ $t(item.title) }}
