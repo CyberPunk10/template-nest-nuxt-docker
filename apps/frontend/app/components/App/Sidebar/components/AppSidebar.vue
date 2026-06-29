@@ -10,7 +10,7 @@ import UserMenu from './UserMenu/index.vue'
 import SidebarLogo from './SidebarLogo.vue'
 import SidebarShadow from './core/SidebarShadow.vue'
 import SubMenu from './core/SubMenu.vue'
-import ToggleMini from './core/ToggleMini.vue'
+import SidebarToggle from './core/SidebarToggle.vue'
 
 const { $globalEvents } = useNuxtApp()
 const { width, height } = useWindowSize({ initialWidth: 0, initialHeight: 0 })
@@ -199,7 +199,7 @@ function toggleSideBarWidth() {
   >
     <SidebarShadow @click="clickByShadow" />
 
-    <ToggleMini
+    <SidebarToggle
       v-if="isSidebarDesktop"
       @toggle-sidebar-width="toggleSideBarWidth"
     />
@@ -267,7 +267,7 @@ function toggleSideBarWidth() {
   user-select: none;
 
   &.--collapsed {
-    .toggle-mini__icon {
+    .sidebar-toggle__icon {
       transform: rotate(180deg);
     }
   }
@@ -290,8 +290,8 @@ function toggleSideBarWidth() {
     left var(--app-sidebar-transition);
 
   &.--collapsed {
-    width: var(--app-sidebar-width-mini);
-    max-width: var(--app-sidebar-width-mini);
+    width: var(--app-sidebar-width-collapsed);
+    max-width: var(--app-sidebar-width-collapsed);
     overflow: visible;
   }
 

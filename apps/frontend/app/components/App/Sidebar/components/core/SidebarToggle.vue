@@ -8,20 +8,20 @@ const { isCollapsed } = useSidebar()
 <template>
   <button
     v-tippy="isCollapsed ? $t('sidebar.expand') : $t('sidebar.collapse')"
-    class="toggle-mini"
+    class="sidebar-toggle"
     :aria-label="isCollapsed ? $t('sidebar.expand') : $t('sidebar.collapse')"
     @click="emit('toggle-sidebar-width')"
   >
     <Icon
       :name="isCollapsed ? 'lucide:panel-left-open' : 'lucide:panel-left-close'"
-      class="toggle-mini__icon"
+      class="sidebar-toggle__icon"
       size="16"
     />
   </button>
 </template>
 
 <style lang="scss">
-.toggle-mini {
+.sidebar-toggle {
   z-index: 100;
   position: absolute;
   top: 0.75rem;

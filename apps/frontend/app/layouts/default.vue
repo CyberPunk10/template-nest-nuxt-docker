@@ -68,7 +68,7 @@ watch(height, (v) => {
   }
 
   &.--has-sidebar.--sidebar-collapsed {
-    margin-left: var(--app-sidebar-width-mini);
+    margin-left: var(--app-sidebar-width-collapsed);
   }
 }
 </style>

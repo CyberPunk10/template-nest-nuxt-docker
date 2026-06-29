@@ -1,7 +1,6 @@
 :root {
   --app-sidebar-width: 240px;
-  --app-sidebar-width-mini: 3.25rem;
-  --app-sidebar-width-collapsed: 48px;
+  --app-sidebar-width-collapsed: 3.25rem;
   --app-sidebar-item-height: 2.5rem;
   --app-sidebar-item-height-xs: 2rem;
   --app-sidebar-item-height-sm: 2.25rem;
