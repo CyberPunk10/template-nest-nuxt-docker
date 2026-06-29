@@ -34,5 +34,9 @@
   --danger-color: #ef4444;
   --danger-bg-color: rgba(239, 68, 68, 0.1);
 
-  --shadow-popup: 0 8px 24px rgba(0, 0, 0, 0.6);
+  --shadow-popup: 0 2px 8px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.15);
+
+  --tooltip-bg: #2c2c30;
+  --tooltip-color: #f4f4f6;
+  --tooltip-border: #3f3f46;
 }

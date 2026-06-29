@@ -1,0 +1,24 @@
+.tippy-box[data-theme~='app'] {
+  background: var(--tooltip-bg);
+  border: 1px solid var(--tooltip-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-popup);
+  color: var(--tooltip-color);
+  font-size: 0.75rem;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+
+  .tippy-content {
+    padding: 5px 9px;
+  }
+
+  > .tippy-svg-arrow > svg:first-child {
+    fill: var(--tooltip-border);
+  }
+
+  > .tippy-svg-arrow > svg:last-child {
+    fill: var(--tooltip-bg);
+  }
+
+}

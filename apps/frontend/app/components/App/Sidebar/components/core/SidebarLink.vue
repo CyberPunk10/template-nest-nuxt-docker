@@ -167,6 +167,7 @@ function handlerSidebarLink() {
   <div class="sidebar-link__component">
     <component
       :is="linkComponent"
+      v-tippy="isCollapsed && levelSidebarLink === 1 && tooltipText ? tooltipText : ''"
       class="sidebar-link"
       :class="{
         '--active': isActive,

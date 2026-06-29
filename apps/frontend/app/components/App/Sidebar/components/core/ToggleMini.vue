@@ -7,6 +7,7 @@ const { isCollapsed } = useSidebar()
 
 <template>
   <button
+    v-tippy="isCollapsed ? $t('sidebar.expand') : $t('sidebar.collapse')"
     class="toggle-mini"
     :aria-label="isCollapsed ? $t('sidebar.expand') : $t('sidebar.collapse')"
     @click="emit('toggle-sidebar-width')"

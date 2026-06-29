@@ -29,6 +29,7 @@ export default defineNuxtConfig({
     '~/assets/css/variables.dark-midnight.css',
     '~/assets/css/variables.dark-ocean.css',
     '~/assets/css/variables.light.css',
+    '~/assets/css/_tippy.scss',
   ],
 
   runtimeConfig: {
