@@ -154,7 +154,7 @@ const locales = [
     align-items: center;
     gap: 7px;
     padding: 10px 18px;
-    border-radius: 8px;
+    border-radius: var(--radius-lg);
     font-size: 14px;
     font-weight: 600;
     text-decoration: none;

@@ -30,7 +30,7 @@ defineEmits<{
   justify-content: center;
   gap: 6px;
   padding: 8px 16px;
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   font-size: 14px;
   line-height: 1.2;
   font-weight: 500;

@@ -214,7 +214,7 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
     min-width: 180px;
     background: var(--divider-color);
     border: 1px solid #334155;
-    border-radius: 8px;
+    border-radius: var(--radius-lg);
     padding: var(--space-1);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
   }

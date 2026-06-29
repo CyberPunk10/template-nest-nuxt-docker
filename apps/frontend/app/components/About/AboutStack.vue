@@ -193,7 +193,7 @@ function getChips(branchIndex: number, layer: Layer) {
 
 .stack__chip {
   font-size: 11px;
-  padding: 3px 8px;
+  padding: 3px var(--space-2);
   border-radius: 5px;
   white-space: nowrap;
   background: rgba(0, 220, 130, 0.07);

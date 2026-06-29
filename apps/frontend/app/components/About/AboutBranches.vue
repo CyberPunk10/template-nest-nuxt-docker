@@ -61,7 +61,7 @@ const { t } = useI18n()
   padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-2);
   transition:
     border-color 0.2s,
     background 0.2s;

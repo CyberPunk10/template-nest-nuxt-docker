@@ -37,21 +37,22 @@ const { t } = useI18n()
     bottom: calc(100% + 4px);
     left: var(--space-2);
     right: var(--space-2);
-    min-width: 180px;
+    width: 12.5rem;
     background: var(--background-secondary);
     border: 1px solid var(--divider-color);
-    border-radius: 8px;
+    border-radius: var(--radius-lg);
     padding: var(--space-1);
+    margin-bottom: calc(-1 * var(--space-0-5));
     box-shadow: var(--shadow-popup);
-    z-index: 10;
+    z-index: 100;
   }
 
   &__menu-item {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--space-2);
     width: 100%;
-    padding: 8px 10px;
+    padding: var(--space-2) 10px;
     background: transparent;
     border: none;
     border-radius: var(--radius-md);

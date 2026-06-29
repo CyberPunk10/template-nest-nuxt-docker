@@ -128,7 +128,7 @@ const shapes = Array.from({ length: 18 }, (_, i) => ({
     gap: 6px;
     background: #0b1525;
     border: 1px solid var(--divider-color);
-    border-radius: 8px;
+    border-radius: var(--radius-lg);
     padding: 10px 14px;
   }
 
@@ -162,7 +162,7 @@ const shapes = Array.from({ length: 18 }, (_, i) => ({
     color: var(--text-tertiary-color);
     text-decoration: none;
     padding: 8px 14px;
-    border-radius: 8px;
+    border-radius: var(--radius-lg);
     border: 1px solid var(--divider-color);
     transition:
       color 0.15s,

@@ -154,10 +154,10 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
 .service {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
+  gap: var(--space-2);
+  padding: var(--space-2) 12px;
   border: 1px solid var(--divider-color);
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   text-decoration: none;
   color: #fff;
   font-size: 13px;
@@ -214,10 +214,10 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
 .env-row {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
+  gap: var(--space-2);
+  padding: var(--space-2) 12px;
   border: 1px solid var(--divider-color);
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   font-size: 13px;
 
   &__key {
@@ -230,7 +230,7 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
   &__value {
     font-family: monospace;
     font-size: 11px;
-    padding: 2px 8px;
+    padding: 2px var(--space-2);
     border-radius: 4px;
     font-weight: 600;
 
@@ -272,10 +272,10 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
 .nav-route {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
   padding: 7px 12px;
   border: 1px solid var(--divider-color);
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   text-decoration: none;
   color: #94a3b8;
   font-size: 13px;

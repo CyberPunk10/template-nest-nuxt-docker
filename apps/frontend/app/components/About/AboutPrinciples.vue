@@ -61,7 +61,7 @@ const { t } = useI18n()
   &__icon {
     width: 34px;
     height: 34px;
-    border-radius: 8px;
+    border-radius: var(--radius-lg);
     background: rgba(0, 220, 130, 0.08);
     color: var(--color-accent);
     display: flex;

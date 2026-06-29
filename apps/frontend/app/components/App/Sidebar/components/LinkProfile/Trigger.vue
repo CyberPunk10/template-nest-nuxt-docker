@@ -34,7 +34,7 @@ defineEmits<{ click: [] }>()
     width: 100%;
     background: transparent;
     border: 1px solid transparent;
-    border-radius: 8px;
+    border-radius: var(--radius-lg);
     padding: 5px 10px 5px 4px;
     cursor: pointer;
     transition:

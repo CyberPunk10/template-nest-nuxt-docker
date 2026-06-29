@@ -37,7 +37,7 @@
   &__input {
     background: var(--divider-color);
     border: 1px solid #334155;
-    border-radius: 8px;
+    border-radius: var(--radius-lg);
     padding: 10px 14px;
     font-size: 14px;
     color: #e2e8f0;
@@ -59,7 +59,7 @@
     background: var(--color-accent);
     color: var(--background-secondary);
     border: none;
-    border-radius: 8px;
+    border-radius: var(--radius-lg);
     padding: 10px;
     font-size: 14px;
     font-weight: 600;

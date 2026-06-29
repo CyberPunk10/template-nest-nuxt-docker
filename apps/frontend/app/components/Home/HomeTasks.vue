@@ -179,7 +179,7 @@ async function removeTask(id: string) {
   &__input {
     background: var(--background-secondary);
     border: 1px solid var(--divider-color);
-    border-radius: 8px;
+    border-radius: var(--radius-lg);
     padding: 8px 12px;
     font-size: 13px;
     color: #e2e8f0;

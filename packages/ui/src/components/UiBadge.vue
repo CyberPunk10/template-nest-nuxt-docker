@@ -14,7 +14,7 @@ defineProps<{
 .ui-badge {
   display: inline-flex;
   align-items: center;
-  padding: 2px 8px;
+  padding: 2px var(--space-2);
   border-radius: 9999px;
   font-size: 11px;
   font-weight: 600;
