@@ -14,10 +14,8 @@
 
   --leadgid-color: #f4f4f6;
 
-  --gradient-shadow-from-color: rgba(0, 0, 0, 0.6);
-  --gradient-shadow-from-color-soft: rgba(0, 0, 0, 0.3);
-  --gradient-shadow-to-color: rgba(12, 12, 14, 0);
-  --gradient-shadow-size: 1.5rem;
+  --gradient-shadow-from-color: rgba(0, 0, 0, 0.3);
+  --gradient-shadow-size: 1.25rem;
 
   --divider-color: #27272a;
   --scrollbar-color-border: #27272a;

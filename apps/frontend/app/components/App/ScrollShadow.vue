@@ -378,6 +378,28 @@ defineExpose({ appScrollShadowRef, shadowTop })
   }
 }
 
+@mixin gradient-shadow($direction: 180deg) {
+  $dir: $direction;
+
+  @if $direction == 'top' {
+    $dir: 180deg;
+  } @else if $direction == 'left' {
+    $dir: 90deg;
+  } @else if $direction == 'right' {
+    $dir: -90deg;
+  } @else if $direction == 'bottom' {
+    $dir: 0deg;
+  }
+
+  background: linear-gradient(
+    $dir,
+    var(--gradient-shadow-from-color) 0%,
+    color-mix(in srgb, var(--gradient-shadow-from-color) 55%, transparent) 30%,
+    color-mix(in srgb, var(--gradient-shadow-from-color) 20%, transparent) 60%,
+    transparent 100%
+  );
+}
+
 // top and bottom shadows
 
 .--app-scroll-shadow-top,
@@ -389,39 +411,14 @@ defineExpose({ appScrollShadowRef, shadowTop })
   &:after {
     z-index: 10;
     content: '';
+    pointer-events: none;
     display: block;
     width: 100%;
-    height: var(--gradient-shadow-size, 0.8rem);
+    height: var(--gradient-shadow-size, 1rem);
     position: absolute;
     left: 0;
     right: 0;
   }
-}
-
-@mixin gradient-shadow(
-  $direction: 180deg,
-  $soft: false,
-  $fromColor: var(--gradient-shadow-from-color),
-  $toColor: var(--gradient-shadow-to-color)
-) {
-  $dir: $direction;
-  $from: $fromColor;
-
-  @if ($soft != false) {
-    $from: var(--gradient-shadow-from-color-soft);
-  }
-
-  @if $direction == 'top' {
-    $dir: 180deg;
-  } @else if ($direction == 'left') {
-    $dir: 90deg;
-  } @else if ($direction == 'right') {
-    $dir: -90deg;
-  } @else if ($direction == 'bottom') {
-    $dir: 0deg;
-  }
-
-  background: linear-gradient($dir, $from, $toColor);
 }
 
 .--app-scroll-shadow-top,
@@ -431,7 +428,7 @@ defineExpose({ appScrollShadowRef, shadowTop })
   }
 }
 .--app-scroll-shadow-top:after {
-  bottom: calc(var(--gradient-shadow-size, 0.8rem) * -1 - 1px);
+  bottom: calc(var(--gradient-shadow-size, 1rem) * -1 - 1px);
 }
 .--app-scroll-shadow-top_parent:after {
   top: 0;
@@ -444,7 +441,7 @@ defineExpose({ appScrollShadowRef, shadowTop })
   }
 }
 .--app-scroll-shadow-bottom:after {
-  top: calc(var(--gradient-shadow-size, 0.8rem) * -1 - 1px);
+  top: calc(var(--gradient-shadow-size, 1rem) * -1 - 1px);
 }
 .--app-scroll-shadow-bottom_parent:after {
   bottom: 0;
@@ -461,9 +458,10 @@ defineExpose({ appScrollShadowRef, shadowTop })
   &:after,
   &:before {
     z-index: 10;
+    pointer-events: none;
     content: '';
     display: block;
-    width: 0.8rem;
+    width: var(--gradient-shadow-size, 1rem);
     height: 100%;
     position: absolute;
     top: 0;
@@ -477,7 +475,7 @@ defineExpose({ appScrollShadowRef, shadowTop })
   }
 }
 .--app-scroll-shadow-right:after {
-  right: -0.8rem;
+  right: calc(var(--gradient-shadow-size, 1rem) * -1);
 }
 .--app-scroll-shadow-right_parent:after {
   right: 0;
@@ -490,39 +488,9 @@ defineExpose({ appScrollShadowRef, shadowTop })
   }
 }
 .--app-scroll-shadow-left:before {
-  left: -0.8rem;
+  left: calc(var(--gradient-shadow-size, 1rem) * -1);
 }
 .--app-scroll-shadow-left_parent:before {
   left: 0;
-}
-
-html:not(.--light-mode) {
-  // top and bottom shadows
-  .--app-scroll-shadow-top,
-  .--app-scroll-shadow-top_parent {
-    &:after {
-      @include gradient-shadow(top);
-    }
-  }
-  .--app-scroll-shadow-bottom,
-  .--app-scroll-shadow-bottom_parent {
-    &:after {
-      @include gradient-shadow(bottom);
-    }
-  }
-
-  // left and right shadows
-  .--app-scroll-shadow-right,
-  .--app-scroll-shadow-right_parent {
-    &:after {
-      @include gradient-shadow(right);
-    }
-  }
-  .--app-scroll-shadow-left,
-  .--app-scroll-shadow-left_parent {
-    &:before {
-      @include gradient-shadow(left);
-    }
-  }
 }
 </style>
