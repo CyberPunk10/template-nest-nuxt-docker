@@ -281,7 +281,7 @@ function toggleSideBarWidth() {
   max-width: var(--app-sidebar-width);
   display: flex;
   flex-direction: column;
-  background-color: var(--background);
+  background-color: var(--background-secondary);
   will-change: width;
   font-size: var(--text-xs);
   transition:
