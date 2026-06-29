@@ -18,12 +18,12 @@ async function handleLogout() {
 </script>
 
 <template>
-  <div class="sidebar-profile__menu">
+  <div class="sidebar-user__dropdown">
     <template v-for="item in userMenu" :key="'divider' in item ? item : item.title">
-      <div v-if="'divider' in item" class="sidebar-profile__menu-divider" />
+      <div v-if="'divider' in item" class="sidebar-user__divider" />
       <NuxtLink
         v-else
-        class="sidebar-profile__menu-item"
+        class="sidebar-user__item"
         :to="item.url!"
         @click="$emit('close')"
       >
@@ -32,14 +32,14 @@ async function handleLogout() {
       </NuxtLink>
     </template>
 
-    <div class="sidebar-profile__menu-divider" />
+    <div class="sidebar-user__divider" />
 
     <ThemeSwitcher />
 
-    <div class="sidebar-profile__menu-divider" />
+    <div class="sidebar-user__divider" />
 
     <button
-      class="sidebar-profile__menu-item sidebar-profile__menu-item--danger"
+      class="sidebar-user__item sidebar-user__item--danger"
       @click="handleLogout"
     >
       <Icon name="lucide:log-out" size="14" />
@@ -49,8 +49,8 @@ async function handleLogout() {
 </template>
 
 <style lang="scss">
-.sidebar-profile {
-  &__menu {
+.sidebar-user {
+  &__dropdown {
     position: absolute;
     bottom: calc(100% + 4px);
     left: var(--space-2);
@@ -65,7 +65,7 @@ async function handleLogout() {
     z-index: 100;
   }
 
-  &__menu-item {
+  &__item {
     display: flex;
     align-items: center;
     gap: var(--space-2);
@@ -99,13 +99,13 @@ async function handleLogout() {
     }
   }
 
-  &__menu-divider {
+  &__divider {
     height: 1px;
     background: var(--divider-color);
     margin: 4px 0;
   }
 
-  &__menu-check {
+  &__item-icon {
     margin-left: auto;
     color: var(--color-accent);
     flex-shrink: 0;

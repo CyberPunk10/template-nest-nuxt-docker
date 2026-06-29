@@ -6,7 +6,7 @@ import { useMenu, type MenuItem } from '../composables/useMenu'
 import { themeSwither } from '../config/sidebar-menu'
 import type ScrollShadow from '~/components/App/ScrollShadow.vue'
 import SidebarLink from './core/SidebarLink.vue'
-import LinkProfile from './LinkProfile/index.vue'
+import UserMenu from './UserMenu/index.vue'
 import SidebarLogo from './SidebarLogo.vue'
 import SidebarShadow from './core/SidebarShadow.vue'
 import SubMenu from './core/SubMenu.vue'
@@ -251,7 +251,7 @@ function toggleSideBarWidth() {
       </app-scroll-shadow>
 
       <div class="sidebar-footer">
-        <LinkProfile />
+        <UserMenu />
       </div>
     </div>
   </div>
@@ -301,7 +301,7 @@ function toggleSideBarWidth() {
     padding-top: var(--space-1);
     padding-bottom: var(--space-0-5);
 
-    .sidebar-profile {
+    .sidebar-user {
       padding: var(--space-0-5) var(--space-1-5) var(--space-1);
 
       &__trigger {

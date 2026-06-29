@@ -28,11 +28,11 @@ function setTheme(id: string) {
 
 <template>
   <div
-    class="sidebar-profile__theme-trigger"
+    class="sidebar-user__theme"
     @mouseenter="open"
     @mouseleave="close"
   >
-    <button class="sidebar-profile__menu-item">
+    <button class="sidebar-user__item">
       <Icon
         :name="selectedTheme?.icon ? resolveIcon(selectedTheme.icon) : 'lucide:sun'"
         size="14"
@@ -41,17 +41,17 @@ function setTheme(id: string) {
       <Icon
         name="lucide:chevron-right"
         size="12"
-        class="sidebar-profile__menu-check sidebar-profile__theme-chevron"
+        class="sidebar-user__item-icon sidebar-user__item-chevron"
       />
     </button>
 
-    <div v-if="show" class="sidebar-profile__theme-popup">
-      <div class="sidebar-profile__theme-popup-inner">
+    <div v-if="show" class="sidebar-user__theme-dropdown">
+      <div class="sidebar-user__theme-dropdown-inner">
         <button
           v-for="theme in themeSwither.items"
           :key="theme.id"
-          class="sidebar-profile__menu-item"
-          :class="{ 'sidebar-profile__menu-item--active': colorMode.preference === theme.id }"
+          class="sidebar-user__item"
+          :class="{ 'sidebar-user__item--active': colorMode.preference === theme.id }"
           @click="setTheme(theme.id!)"
         >
           <Icon
@@ -63,7 +63,7 @@ function setTheme(id: string) {
             v-if="colorMode.preference === theme.id"
             name="lucide:check"
             size="12"
-            class="sidebar-profile__menu-check"
+            class="sidebar-user__item-icon"
           />
         </button>
       </div>
@@ -72,27 +72,27 @@ function setTheme(id: string) {
 </template>
 
 <style lang="scss">
-.sidebar-profile {
-  &__theme-chevron {
+.sidebar-user {
+  &__item-chevron {
     color: var(--text-tertiary-color);
   }
 
-  &__theme-trigger {
+  &__theme {
     position: relative;
 
-    &:hover > .sidebar-profile__menu-item {
+    &:hover > .sidebar-user__item {
       background: var(--control-primary-minor-color);
       color: var(--text-primary-color);
     }
   }
 
-  &__menu-item {
+  &__item {
     &:not(:last-child) {
       margin-bottom: var(--space-0-5);
     }
   }
 
-  &__theme-popup {
+  &__theme-dropdown {
     position: absolute;
     bottom: 0;
     left: calc(100% + var(--space-1-5));

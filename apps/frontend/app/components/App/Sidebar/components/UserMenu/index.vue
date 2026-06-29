@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useSidebar } from '../../composables/useSidebar'
-import Trigger from './Trigger.vue'
-import Menu from './Menu.vue'
+import UserMenuTrigger from './UserMenuTrigger.vue'
+import UserMenuDropdown from './UserMenuDropdown.vue'
 
 const { user } = useAuth()
 const { isCollapsed } = useSidebar()
@@ -28,10 +28,10 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
 <template>
   <div
     ref="menuRef"
-    class="sidebar-profile"
+    class="sidebar-user"
     :class="{ '--collapsed': isCollapsed }"
   >
-    <Trigger
+    <UserMenuTrigger
       :avatar="avatar"
       :name="user?.name"
       :email="user?.email"
@@ -39,12 +39,12 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
       @click="toggleMenu"
     />
 
-    <Menu v-if="menuOpen" @close="menuOpen = false" />
+    <UserMenuDropdown v-if="menuOpen" @close="menuOpen = false" />
   </div>
 </template>
 
 <style lang="scss">
-.sidebar-profile {
+.sidebar-user {
   position: relative;
   padding: var(--space-0-5) var(--space-2) var(--space-1);
 }
