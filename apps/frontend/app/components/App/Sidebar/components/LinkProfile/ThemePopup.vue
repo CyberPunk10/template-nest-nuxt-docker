@@ -70,9 +70,15 @@ function setTheme(id: string) {
   &__theme-trigger {
     position: relative;
 
-    &:hover .sidebar-profile__menu-item {
+    &:hover > .sidebar-profile__menu-item {
       background: var(--control-primary-minor-color);
       color: var(--text-primary-color);
+    }
+  }
+
+  &__menu-item {
+    &:not(:last-child) {
+      margin-bottom: var(--space-0-5);
     }
   }
 
@@ -81,7 +87,6 @@ function setTheme(id: string) {
     bottom: 0;
     left: 100%;
     padding-left: 4px;
-    min-width: 160px;
     z-index: 11;
 
     &::before {
@@ -92,6 +97,7 @@ function setTheme(id: string) {
     }
 
     &-inner {
+      width: 10.625rem;
       background: var(--background-secondary);
       border: 1px solid var(--divider-color);
       border-radius: var(--radius-lg);

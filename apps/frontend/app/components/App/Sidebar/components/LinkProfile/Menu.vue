@@ -63,6 +63,7 @@ const { t } = useI18n()
       background 0.1s,
       color 0.1s;
     text-align: left;
+    white-space: nowrap;
 
     &:hover {
       background: var(--control-primary-minor-color);

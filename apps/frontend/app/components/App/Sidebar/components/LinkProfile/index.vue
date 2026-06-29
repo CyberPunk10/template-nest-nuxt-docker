@@ -13,6 +13,18 @@ const avatar = computed(() => user.value?.name.charAt(0).toUpperCase() ?? '?')
 const menuOpen = ref(false)
 const menuRef = ref<HTMLElement | null>(null)
 const themeOpen = ref(false)
+let themeCloseTimer: ReturnType<typeof setTimeout> | null = null
+
+function openTheme() {
+  if (themeCloseTimer) clearTimeout(themeCloseTimer)
+  themeOpen.value = true
+}
+
+function closeTheme() {
+  themeCloseTimer = setTimeout(() => {
+    themeOpen.value = false
+  }, 150)
+}
 
 function toggleMenu() {
   menuOpen.value = !menuOpen.value
@@ -55,8 +67,8 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
       <template #theme>
         <ThemePopup
           :show="themeOpen"
-          @open="themeOpen = true"
-          @close="themeOpen = false"
+          @open="openTheme"
+          @close="closeTheme"
         />
       </template>
 

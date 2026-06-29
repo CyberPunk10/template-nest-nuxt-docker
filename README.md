@@ -93,8 +93,7 @@ template-nest-nuxt/
 - **pnpm workspaces** — общие зависимости
 - **TypeScript strict** — строгий режим, path alias `@repo/*`
 - **ESLint** — статический анализ кода (неиспользуемые переменные, потенциальные ошибки)
-- **Prettier** — автоформатирование кода; запуск: `pnpm prettier --write .`
-- **Husky + lint-staged** — перед каждым коммитом автоматически запускает ESLint и Prettier на изменённых файлах
+- **Husky + lint-staged** — перед каждым коммитом автоматически запускает ESLint на изменённых файлах
 
 ### Пакеты
 
