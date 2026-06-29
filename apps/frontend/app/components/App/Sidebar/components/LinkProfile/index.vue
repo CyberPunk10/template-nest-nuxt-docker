@@ -2,41 +2,17 @@
 import { useSidebar } from '../../composables/useSidebar'
 import Trigger from './Trigger.vue'
 import Menu from './Menu.vue'
-import ThemePopup from './ThemePopup.vue'
 
-const { user, logout } = useAuth()
+const { user } = useAuth()
 const { isCollapsed } = useSidebar()
-const { t } = useI18n()
 
 const avatar = computed(() => user.value?.name.charAt(0).toUpperCase() ?? '?')
 
 const menuOpen = ref(false)
 const menuRef = ref<HTMLElement | null>(null)
-const themeOpen = ref(false)
-let themeCloseTimer: ReturnType<typeof setTimeout> | null = null
-
-function openTheme() {
-  if (themeCloseTimer) clearTimeout(themeCloseTimer)
-  themeOpen.value = true
-}
-
-function closeTheme() {
-  themeCloseTimer = setTimeout(() => {
-    themeOpen.value = false
-  }, 150)
-}
 
 function toggleMenu() {
   menuOpen.value = !menuOpen.value
-  if (!menuOpen.value) themeOpen.value = false
-}
-
-async function handleLogout() {
-  try {
-    await logout()
-  } catch (e) {
-    console.log('logout error', e)
-  }
 }
 
 function onDocumentClick(e: MouseEvent) {
@@ -63,25 +39,7 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
       @click="toggleMenu"
     />
 
-    <Menu v-if="menuOpen" @close="menuOpen = false">
-      <template #theme>
-        <ThemePopup
-          :show="themeOpen"
-          @open="openTheme"
-          @close="closeTheme"
-        />
-      </template>
-
-      <template #logout>
-        <button
-          class="sidebar-profile__menu-item sidebar-profile__menu-item--danger"
-          @click="handleLogout"
-        >
-          <Icon name="lucide:log-out" size="14" />
-          {{ t('userMenu.logout') }}
-        </button>
-      </template>
-    </Menu>
+    <Menu v-if="menuOpen" @close="menuOpen = false" />
   </div>
 </template>
 

@@ -1,8 +1,20 @@
 <script setup lang="ts">
 import { userMenu } from '../../config/sidebar-menu'
+import ThemeSwitcher from './ThemeSwitcher.vue'
 
-const emit = defineEmits<{ close: [] }>()
+defineEmits<{ close: [] }>()
+
 const { t } = useI18n()
+
+const { logout } = useAuth()
+
+async function handleLogout() {
+  try {
+    await logout()
+  } catch (e) {
+    console.log('logout error', e)
+  }
+}
 </script>
 
 <template>
@@ -13,7 +25,7 @@ const { t } = useI18n()
         v-else
         class="sidebar-profile__menu-item"
         :to="item.url!"
-        @click="emit('close')"
+        @click="$emit('close')"
       >
         <Icon :name="item.icon ?? 'lucide:circle'" size="14" />
         {{ t(item.title) }}
@@ -22,11 +34,17 @@ const { t } = useI18n()
 
     <div class="sidebar-profile__menu-divider" />
 
-    <slot name="theme" />
+    <ThemeSwitcher />
 
     <div class="sidebar-profile__menu-divider" />
 
-    <slot name="logout" />
+    <button
+      class="sidebar-profile__menu-item sidebar-profile__menu-item--danger"
+      @click="handleLogout"
+    >
+      <Icon name="lucide:log-out" size="14" />
+      {{ t('userMenu.logout') }}
+    </button>
   </div>
 </template>
 

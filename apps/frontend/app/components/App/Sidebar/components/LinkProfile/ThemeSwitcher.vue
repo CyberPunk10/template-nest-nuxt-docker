@@ -1,12 +1,22 @@
 <script setup lang="ts">
 import { resolveIcon, themeSwither } from '../../config/sidebar-menu'
 
-defineProps<{ show: boolean }>()
-
-defineEmits<{ open: [], close: [] }>()
-
 const colorMode = useColorMode()
 const { t } = useI18n()
+
+const show = ref(false)
+let closeTimer: ReturnType<typeof setTimeout> | null = null
+
+function open() {
+  if (closeTimer) clearTimeout(closeTimer)
+  show.value = true
+}
+
+function close() {
+  closeTimer = setTimeout(() => {
+    show.value = false
+  }, 150)
+}
 
 const selectedTheme = computed(() => themeSwither.items?.find(i => i.id === colorMode.preference))
 
@@ -19,8 +29,8 @@ function setTheme(id: string) {
 <template>
   <div
     class="sidebar-profile__theme-trigger"
-    @mouseenter="$emit('open')"
-    @mouseleave="$emit('close')"
+    @mouseenter="open"
+    @mouseleave="close"
   >
     <button class="sidebar-profile__menu-item">
       <Icon
@@ -85,7 +95,7 @@ function setTheme(id: string) {
   &__theme-popup {
     position: absolute;
     bottom: 0;
-    left: 100%;
+    left: calc(100% + var(--space-1-5));
     padding-left: 4px;
     z-index: 11;
 
