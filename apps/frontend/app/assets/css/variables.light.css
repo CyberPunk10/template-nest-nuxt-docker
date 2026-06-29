@@ -1,4 +1,6 @@
 :root.light {
+  color-scheme: light;
+
   --background: #ffffff;
   --background-secondary: #f4f4f5;
 

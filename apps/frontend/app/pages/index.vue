@@ -11,6 +11,8 @@
 </template>
 
 <style lang="scss">
+@use '~/assets/css/nuxt-welcome';
+
 .home {
   display: grid;
   grid-template-columns: 1fr 380px;
@@ -23,6 +25,7 @@
   .nuxt-welcome-component {
     min-height: auto !important;
     height: 100%;
+    background-color: var(--background) !important;
   }
 
   .col {

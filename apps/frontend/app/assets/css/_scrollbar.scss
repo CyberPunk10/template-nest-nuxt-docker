@@ -8,17 +8,6 @@
   --scrollbar-track-color: transparent;
 }
 
-html.light {
-  color-scheme: light;
-}
-
-html.dark,
-html.dark-green,
-html.dark-midnight,
-html.dark-ocean {
-  color-scheme: dark;
-}
-
 .scrollbar-test {
   overscroll-behavior: contain; // это свойство комментировать в дочерних блоках с прокруткой
   overflow: auto;

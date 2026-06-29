@@ -1,4 +1,6 @@
 :root.dark {
+  color-scheme: dark;
+
   --background: #0c0c0e;
   --background-secondary: #18181b;
 

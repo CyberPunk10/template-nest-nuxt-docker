@@ -1,4 +1,6 @@
 :root.dark-midnight {
+  color-scheme: dark;
+
   --background: #0d1117;
   --background-secondary: #161b22;
 

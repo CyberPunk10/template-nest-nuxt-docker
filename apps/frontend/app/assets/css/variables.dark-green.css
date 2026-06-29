@@ -1,4 +1,6 @@
 :root.dark-green {
+  color-scheme: dark;
+
   --background: #0f172a;
   --background-secondary: #131d35;
 
