@@ -85,13 +85,13 @@ const { data: allTasks } = await useApi<GlobalTask[]>('/tasks/all', {
     font-weight: 400;
     text-transform: none;
     letter-spacing: 0;
-    color: var(--text-tertiary-color);
+    color: var(--text-muted);
     font-style: italic;
   }
 }
 
 .section {
-  border: 1px solid var(--divider-color);
+  border: 1px solid var(--border-subtle);
   border-radius: 12px;
   overflow: hidden;
   background: #0d1424;
@@ -101,7 +101,7 @@ const { data: allTasks } = await useApi<GlobalTask[]>('/tasks/all', {
     align-items: center;
     gap: 8px;
     padding: 10px 14px;
-    border-bottom: 1px solid var(--divider-color);
+    border-bottom: 1px solid var(--border-subtle);
   }
 
   &__title {
@@ -109,7 +109,7 @@ const { data: allTasks } = await useApi<GlobalTask[]>('/tasks/all', {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: var(--text-tertiary-color);
+    color: var(--text-muted);
     flex: 1;
   }
 
@@ -117,7 +117,7 @@ const { data: allTasks } = await useApi<GlobalTask[]>('/tasks/all', {
     font-size: 11px;
     font-weight: 500;
     color: #64748b;
-    background: var(--divider-color);
+    background: var(--border-subtle);
     border-radius: 20px;
     padding: 1px 8px;
   }
@@ -130,7 +130,7 @@ const { data: allTasks } = await useApi<GlobalTask[]>('/tasks/all', {
     justify-content: space-between;
     gap: 12px;
     padding: 8px 14px;
-    border-bottom: 1px solid var(--divider-color);
+    border-bottom: 1px solid var(--border-subtle);
 
     &:last-child {
       border-bottom: none;

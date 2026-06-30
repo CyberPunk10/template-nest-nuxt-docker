@@ -46,7 +46,7 @@ const { t } = useI18n()
   flex-direction: column;
   gap: 10px;
   background: #0b1525;
-  border: 1px solid var(--divider-color);
+  border: 1px solid var(--border-subtle);
   border-radius: 10px;
   padding: 16px;
   transition:
@@ -63,7 +63,7 @@ const { t } = useI18n()
     height: 34px;
     border-radius: var(--radius-lg);
     background: rgba(0, 220, 130, 0.08);
-    color: var(--color-accent);
+    color: var(--accent);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -79,7 +79,7 @@ const { t } = useI18n()
 
   &__desc {
     font-size: 12px;
-    color: var(--text-tertiary-color);
+    color: var(--text-muted);
     margin: 0;
     line-height: 1.5;
   }

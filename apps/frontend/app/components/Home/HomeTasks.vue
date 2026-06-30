@@ -166,7 +166,7 @@ async function removeTask(id: string) {
     font-weight: 400;
     text-transform: none;
     letter-spacing: 0;
-    color: var(--text-tertiary-color);
+    color: var(--text-muted);
     font-style: italic;
   }
 }
@@ -177,8 +177,8 @@ async function removeTask(id: string) {
   gap: 8px;
 
   &__input {
-    background: var(--background-secondary);
-    border: 1px solid var(--divider-color);
+    background: var(--surface-card);
+    border: 1px solid var(--border-subtle);
     border-radius: var(--radius-lg);
     padding: 8px 12px;
     font-size: 13px;
@@ -187,7 +187,7 @@ async function removeTask(id: string) {
     transition: border-color 0.2s;
 
     &:focus {
-      border-color: var(--color-accent);
+      border-color: var(--accent);
     }
 
     &--sm {
@@ -199,7 +199,7 @@ async function removeTask(id: string) {
 
 .empty {
   font-size: 13px;
-  color: var(--text-tertiary-color);
+  color: var(--text-muted);
 }
 
 .tasks {
@@ -247,7 +247,7 @@ async function removeTask(id: string) {
 
   &__description {
     font-size: 11px;
-    color: var(--text-tertiary-color);
+    color: var(--text-muted);
   }
 }
 </style>

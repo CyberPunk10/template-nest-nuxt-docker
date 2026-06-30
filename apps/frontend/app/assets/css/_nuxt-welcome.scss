@@ -2,7 +2,11 @@
 
 // System dark + our light: cancel dark: styles with light values
 @media(prefers-color-scheme:dark) {
-  html.light {
+
+  html.light,
+  html.light-sand,
+  html.light-mist,
+  html.light-rose {
     .nuxt-welcome-component.antialiased {
       --un-text-opacity: 1;
       color: rgb(2 4 32/var(--un-text-opacity));

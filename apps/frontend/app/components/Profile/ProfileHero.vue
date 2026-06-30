@@ -31,14 +31,14 @@ $text-primary: #f1f5f9;
   position: relative;
   overflow: hidden;
   padding: 40px 32px 32px;
-  border-bottom: 1px solid var(--divider-color);
+  border-bottom: 1px solid var(--border-subtle);
 
   &__bg {
     position: absolute;
     inset: 0;
     background:
       radial-gradient(ellipse 60% 80% at 10% 50%, rgba(0, 220, 130, 0.07) 0%, transparent 70%),
-      linear-gradient(180deg, var(--background-secondary) 0%, $bg-page 100%);
+      linear-gradient(180deg, var(--surface-card) 0%, $bg-page 100%);
   }
 
   &__inner {
@@ -52,8 +52,8 @@ $text-primary: #f1f5f9;
     width: 72px;
     height: 72px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--color-accent) 0%, $green-dark 100%);
-    color: var(--background-secondary);
+    background: linear-gradient(135deg, var(--accent) 0%, $green-dark 100%);
+    color: var(--surface-card);
     font-size: 28px;
     font-weight: 800;
     display: flex;
@@ -81,7 +81,7 @@ $text-primary: #f1f5f9;
 
   &__email {
     font-size: 13px;
-    color: var(--text-tertiary-color);
+    color: var(--text-muted);
     margin: 0;
   }
 
@@ -90,7 +90,7 @@ $text-primary: #f1f5f9;
     align-items: center;
     background: rgba(0, 220, 130, 0.1);
     border: 1px solid rgba(0, 220, 130, 0.25);
-    color: var(--color-accent);
+    color: var(--accent);
     font-size: 10px;
     font-weight: 700;
     text-transform: uppercase;

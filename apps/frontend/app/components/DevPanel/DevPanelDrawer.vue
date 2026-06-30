@@ -49,12 +49,12 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
   align-items: center;
   gap: 6px;
   padding: 12px 7px;
-  background: var(--background-secondary);
-  border: 1px solid var(--divider-color);
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
   border-right: none;
   border-radius: 6px 0 0 6px;
   cursor: pointer;
-  color: var(--text-tertiary-color);
+  color: var(--text-muted);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -65,7 +65,7 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
     right: 381px;
   }
   &:hover {
-    color: var(--color-accent);
+    color: var(--accent);
     border-color: rgba(0, 220, 130, 0.3);
   }
 }
@@ -80,7 +80,7 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
   transition: transform 0.3s ease;
   z-index: 9999;
   background: #0a1120;
-  border-left: 1px solid var(--divider-color);
+  border-left: 1px solid var(--border-subtle);
   overflow-y: auto;
   font-family: system-ui, sans-serif;
 

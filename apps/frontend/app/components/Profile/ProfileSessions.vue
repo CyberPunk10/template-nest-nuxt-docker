@@ -51,8 +51,8 @@ $text-dark: #334155;
 $red: #ef4444;
 
 .card {
-  background: var(--background);
-  border: 1px solid var(--divider-color);
+  background: var(--surface-app);
+  border: 1px solid var(--border-subtle);
   border-radius: 10px;
   padding: 20px;
 
@@ -104,7 +104,7 @@ $red: #ef4444;
     flex-shrink: 0;
 
     &--active {
-      background: var(--color-accent);
+      background: var(--accent);
       box-shadow: 0 0 6px rgba(0, 220, 130, 0.5);
     }
   }
@@ -127,7 +127,7 @@ $red: #ef4444;
 
   &__meta {
     font-size: 11px;
-    color: var(--text-tertiary-color);
+    color: var(--text-muted);
   }
 
   &__badge {
@@ -136,7 +136,7 @@ $red: #ef4444;
     text-transform: uppercase;
     letter-spacing: 0.06em;
     background: rgba(0, 220, 130, 0.12);
-    color: var(--color-accent);
+    color: var(--accent);
     border-radius: 4px;
     padding: 2px 5px;
   }

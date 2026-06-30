@@ -3,7 +3,6 @@ import { onClickOutside, useWindowSize } from '@vueuse/core'
 import { APP_BREAKPOINTS } from '~/composables/useAppBreakpoints'
 import { MENU_TYPE, useSidebar, type MenuType } from '../composables/useSidebar'
 import { useMenu, type MenuItem } from '../composables/useMenu'
-import { themeSwither } from '../config/sidebar-menu'
 import type ScrollShadow from '~/components/App/ScrollShadow.vue'
 import SidebarLink from './core/SidebarLink.vue'
 import UserMenu from './UserMenu/index.vue'
@@ -92,22 +91,12 @@ function getMenuItemById(id: string, items = menu.value, parent: any = null): an
   return null
 }
 
-function getSectionById(id: string) {
-  let section
-  if (id === themeSwither.id) section = themeSwither
-  else section = getMenuItemById(id)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  if (!section) section = getMenuItemById(id, themeSwither.items as any, themeSwither)
-  return section
-}
-
 function onClickSection({ id, value }: { id: string, value?: boolean }) {
-  const section = getSectionById(id)
+  const section = getMenuItemById(id)
 
   if (!section?.items?.length) {
-    const isThemeSwitherChild = section?.parent?.id === themeSwither.id
     $globalEvents.emit('toggle-sidebar', { value: false })
-    if (isCollapsed.value || isThemeSwitherChild) resetCollapsed()
+    if (isCollapsed.value) resetCollapsed()
     return
   }
 
@@ -124,9 +113,6 @@ onClickOutside(onClickOutsideRef, onClickOutsideSidebar)
 function onClickOutsideSidebar() {
   requestAnimationFrame(() => {
     if (!isCollapsed.value) {
-      if (menuType.value === MENU_TYPE.DESKTOP) {
-        notCollapsedItems.value[themeSwither.id] = false
-      }
       return
     }
     resetCollapsed()
@@ -153,10 +139,6 @@ function toggleSidebar({ value, type = menuType.value }: { value?: boolean, type
     let direction = 'left'
     if (type === MENU_TYPE.MOBILE_RIGHT) {
       direction = 'right'
-      // если правое меню закрывается, то сворачиваем themeSwither
-      if (newValue === false && notCollapsedItems.value[themeSwither.id]) {
-        notCollapsedItems.value[themeSwither.id] = false
-      }
     }
 
     const appSidebarEl = sidebarRef.value
@@ -281,7 +263,7 @@ function toggleSideBarWidth() {
   max-width: var(--app-sidebar-width);
   display: flex;
   flex-direction: column;
-  background-color: var(--background-secondary);
+  background-color: var(--surface-card);
   will-change: width;
   font-size: var(--text-xs);
   transition:
@@ -297,7 +279,7 @@ function toggleSideBarWidth() {
 
   .sidebar-footer {
     margin-top: auto;
-    border-top: 1px solid var(--divider-color);
+    border-top: 1px solid var(--border-subtle);
     padding-top: var(--space-1);
     padding-bottom: var(--space-0-5);
 
@@ -309,7 +291,7 @@ function toggleSideBarWidth() {
         padding-bottom: var(--space-2);
 
         &:hover {
-          border-color: var(--divider-color);
+          border-color: var(--border-subtle);
           background: rgba(255, 255, 255, 0.03);
         }
       }

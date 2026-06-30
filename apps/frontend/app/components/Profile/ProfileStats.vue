@@ -24,14 +24,14 @@ $text-primary: #f1f5f9;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1px;
-  background: var(--divider-color);
-  border: 1px solid var(--divider-color);
+  background: var(--border-subtle);
+  border: 1px solid var(--border-subtle);
   border-radius: 10px;
   overflow: hidden;
 }
 
 .stat {
-  background: var(--background);
+  background: var(--surface-app);
   padding: 18px 20px;
   display: flex;
   flex-direction: column;
@@ -46,7 +46,7 @@ $text-primary: #f1f5f9;
 
   &__label {
     font-size: 11px;
-    color: var(--text-tertiary-color);
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.06em;
   }

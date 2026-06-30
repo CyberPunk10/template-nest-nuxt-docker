@@ -72,8 +72,8 @@ const activeQs = ref(0)
   font-family: monospace;
   cursor: pointer;
   background: transparent;
-  border: 1px solid var(--divider-color);
-  color: var(--text-tertiary-color);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
   transition:
     border-color 0.15s,
     color 0.15s,
@@ -87,7 +87,7 @@ const activeQs = ref(0)
   &--active {
     border-color: rgba(0, 220, 130, 0.3);
     background: rgba(0, 220, 130, 0.05);
-    color: var(--color-accent);
+    color: var(--accent);
   }
 }
 
@@ -115,7 +115,7 @@ const activeQs = ref(0)
     border-radius: 50%;
     background: rgba(0, 220, 130, 0.08);
     border: 1px solid rgba(0, 220, 130, 0.2);
-    color: var(--color-accent);
+    color: var(--accent);
     font-size: 11px;
     font-weight: 700;
     display: flex;
@@ -140,13 +140,13 @@ const activeQs = ref(0)
   &__cmd {
     font-family: monospace;
     font-size: 12px;
-    color: var(--text-tertiary-color);
+    color: var(--text-muted);
   }
 
   &__copy {
     margin-left: auto;
     margin-top: 2px;
-    color: var(--divider-color);
+    color: var(--border-subtle);
     flex-shrink: 0;
     opacity: 0;
     transition: color 0.15s;
@@ -154,12 +154,12 @@ const activeQs = ref(0)
 
   &:hover &__copy {
     opacity: 1;
-    color: var(--text-tertiary-color);
+    color: var(--text-muted);
   }
 
   &__copy--done {
     opacity: 1 !important;
-    color: var(--color-accent) !important;
+    color: var(--accent) !important;
     transition: none;
   }
 }

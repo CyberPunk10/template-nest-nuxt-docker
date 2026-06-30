@@ -156,7 +156,7 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
   align-items: center;
   gap: var(--space-2);
   padding: var(--space-2) 12px;
-  border: 1px solid var(--divider-color);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   text-decoration: none;
   color: #fff;
@@ -164,7 +164,7 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
   transition: border-color 0.2s;
 
   &:hover {
-    border-color: var(--color-accent);
+    border-color: var(--accent);
   }
 
   &--muted {
@@ -180,8 +180,8 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
     flex-shrink: 0;
 
     &--online {
-      background: var(--color-accent);
-      box-shadow: 0 0 6px var(--color-accent);
+      background: var(--accent);
+      box-shadow: 0 0 6px var(--accent);
     }
 
     &--offline {
@@ -202,7 +202,7 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
 
   &__badge {
     font-size: 10px;
-    background: var(--divider-color);
+    background: var(--border-subtle);
     color: #64748b;
     border-radius: 4px;
     padding: 1px 6px;
@@ -216,7 +216,7 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
   align-items: center;
   gap: var(--space-2);
   padding: var(--space-2) 12px;
-  border: 1px solid var(--divider-color);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   font-size: 13px;
 
@@ -236,7 +236,7 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
 
     &--development {
       background: #1c3a2a;
-      color: var(--color-accent);
+      color: var(--accent);
     }
     &--production {
       background: #2a1c1c;
@@ -261,7 +261,7 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
   padding: 0 2px;
 
   &__label {
-    color: var(--text-tertiary-color);
+    color: var(--text-muted);
   }
   &__value {
     font-family: monospace;
@@ -274,7 +274,7 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
   align-items: center;
   gap: var(--space-2);
   padding: 7px 12px;
-  border: 1px solid var(--divider-color);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   text-decoration: none;
   color: #94a3b8;
@@ -289,12 +289,12 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
   }
 
   &--active {
-    border-color: var(--color-accent);
+    border-color: var(--accent);
     color: #e2e8f0;
 
     .nav-route__dot {
-      background: var(--color-accent);
-      box-shadow: 0 0 5px var(--color-accent);
+      background: var(--accent);
+      box-shadow: 0 0 5px var(--accent);
     }
   }
 
@@ -322,7 +322,7 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
 
     &--public {
       background: #1c3a2a;
-      color: var(--color-accent);
+      color: var(--accent);
     }
     &--private {
       background: #2a1f1c;

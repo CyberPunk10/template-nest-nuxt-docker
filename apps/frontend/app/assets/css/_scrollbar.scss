@@ -5,7 +5,7 @@
   --scrollbar-size: 8px;
   --scrollbar-minlength: 15px;
   --scrollbar-ff-width: thin;
-  --scrollbar-track-color: transparent;
+  --scrollbar-track: transparent;
 }
 
 .scrollbar-test {
@@ -24,11 +24,9 @@
 }
 
 @mixin scrollbarWrap($selector) {
+
   /* Modern browsers with `scrollbar-*` support */
   @supports (scrollbar-width: auto) {
-    // в версии 121 Chrome перестал поддерживаться селектор ::-webkit-scrollbar, поэтому добавлено свойство scrollbar-width
-    // https://developer.chrome.com/docs/css-ui/scrollbar-styling?hl=ru#changing_the_size_of_the_scrollbar_with_scrollbar-width
-
     .layout-scrollbar-obtrusive #{$selector} {
       scrollbar-width: thin; // auto , thin и none (нельзя задать в виде числа)
     }
@@ -43,14 +41,14 @@
   }
 
   #{$selector} {
-    scrollbar-color: var(--scrollbar-color) var(--scrollbar-track-color);
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 
     &::-webkit-scrollbar-track {
-      background-color: var(--scrollbar-track-color);
+      background-color: var(--scrollbar-track);
     }
 
     &::-webkit-scrollbar-thumb {
-      background-color: var(--scrollbar-color);
+      background-color: var(--scrollbar-thumb);
       border-radius: 9px;
       border: 2px solid transparent;
       min-height: 5rem !important; // минимальная высота/длина ползунка

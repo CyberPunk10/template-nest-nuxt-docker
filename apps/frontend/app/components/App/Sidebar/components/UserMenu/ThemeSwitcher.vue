@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { resolveIcon, themeSwither } from '../../config/sidebar-menu'
+import { resolveIcon, themes } from '../../config/sidebar-menu'
 
-const colorMode = useColorMode()
+const { followSystem, selectedLight, selectedDark, activeTheme, setFollowSystem, selectTheme } = useThemePreference()
 const { t } = useI18n()
 
 const show = ref(false)
@@ -18,11 +18,16 @@ function close() {
   }, 150)
 }
 
-const selectedTheme = computed(() => themeSwither.items?.find(i => i.id === colorMode.preference))
+const activeThemeIcon = computed(() => {
+  const theme = themes.find(t => t.id === activeTheme.value)
+  return theme ? resolveIcon(theme.icon) : 'lucide:sun'
+})
 
-function setTheme(id: string) {
-  if (colorMode.preference === id) return
-  colorMode.preference = id
+function isChecked(id: string, kind: 'light' | 'dark') {
+  if (followSystem.value) {
+    return kind === 'light' ? selectedLight.value === id : selectedDark.value === id
+  }
+  return activeTheme.value === id
 }
 </script>
 
@@ -33,10 +38,7 @@ function setTheme(id: string) {
     @mouseleave="close"
   >
     <button class="sidebar-user__item">
-      <Icon
-        :name="selectedTheme?.icon ? resolveIcon(selectedTheme.icon) : 'lucide:sun'"
-        size="14"
-      />
+      <Icon :name="activeThemeIcon" size="14" />
       {{ t('userMenu.appearance') }}
       <Icon
         name="lucide:chevron-right"
@@ -48,24 +50,39 @@ function setTheme(id: string) {
     <div v-if="show" class="sidebar-user__theme-dropdown">
       <div class="sidebar-user__theme-dropdown-inner">
         <button
-          v-for="theme in themeSwither.items"
-          :key="theme.id"
-          class="sidebar-user__item"
-          :class="{ 'sidebar-user__item--active': colorMode.preference === theme.id }"
-          @click="setTheme(theme.id!)"
+          class="sidebar-user__item sidebar-user__item--follow-system"
+          :class="{ 'sidebar-user__item--active': followSystem }"
+          @click="setFollowSystem(!followSystem)"
         >
-          <Icon
-            :name="theme.icon ? resolveIcon(theme.icon) : 'lucide:circle'"
-            size="14"
-          />
-          {{ t(theme.title) }}
-          <Icon
-            v-if="colorMode.preference === theme.id"
-            name="lucide:check"
-            size="12"
-            class="sidebar-user__item-icon"
-          />
+          <Icon name="lucide:monitor" size="14" />
+          {{ t('themes.followSystem') }}
+          <span class="sidebar-user__switch" :class="{ 'sidebar-user__switch--on': followSystem }">
+            <span class="sidebar-user__switch-thumb" />
+          </span>
         </button>
+
+        <div class="sidebar-user__divider sidebar-user__divider--inner" />
+
+        <template v-for="(theme, index) in themes" :key="theme.id">
+          <div
+            v-if="index > 0 && themes[index - 1]?.kind !== theme.kind"
+            class="sidebar-user__divider sidebar-user__divider--inner"
+          />
+          <button
+            class="sidebar-user__item"
+            :class="{ 'sidebar-user__item--active': isChecked(theme.id, theme.kind) }"
+            @click="selectTheme(theme.id, theme.kind)"
+          >
+            <Icon :name="resolveIcon(theme.icon)" size="14" />
+            {{ t(theme.title) }}
+            <Icon
+              v-if="isChecked(theme.id, theme.kind)"
+              name="lucide:check"
+              size="12"
+              class="sidebar-user__item-icon"
+            />
+          </button>
+        </template>
       </div>
     </div>
   </div>
@@ -74,21 +91,59 @@ function setTheme(id: string) {
 <style lang="scss">
 .sidebar-user {
   &__item-chevron {
-    color: var(--text-tertiary-color);
+    color: var(--text-muted);
   }
 
   &__theme {
     position: relative;
 
     &:hover > .sidebar-user__item {
-      background: var(--control-primary-minor-color);
-      color: var(--text-primary-color);
+      background: var(--control-hover);
+      color: var(--text-primary);
     }
   }
 
   &__item {
     &:not(:last-child) {
       margin-bottom: var(--space-0-5);
+    }
+
+    &--follow-system {
+      justify-content: flex-start;
+    }
+  }
+
+  &__divider--inner {
+    margin: var(--space-1) 0;
+  }
+
+  &__switch {
+    margin-left: auto;
+    flex-shrink: 0;
+    width: 28px;
+    height: 16px;
+    border-radius: 8px;
+    background: var(--text-muted);
+    position: relative;
+    transition: background 0.15s;
+
+    &--on {
+      background: var(--accent);
+    }
+
+    &-thumb {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #fff;
+      transition: transform 0.15s;
+
+      .sidebar-user__switch--on & {
+        transform: translateX(12px);
+      }
     }
   }
 
@@ -108,11 +163,11 @@ function setTheme(id: string) {
 
     &-inner {
       width: 10.625rem;
-      background: var(--background-secondary);
-      border: 1px solid var(--divider-color);
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
       border-radius: var(--radius-lg);
       padding: var(--space-1);
-      box-shadow: var(--shadow-popup);
+      box-shadow: var(--shadow-md);
     }
   }
 }

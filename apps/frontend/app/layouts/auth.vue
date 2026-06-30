@@ -35,7 +35,7 @@
   }
 
   &__input {
-    background: var(--divider-color);
+    background: var(--border-subtle);
     border: 1px solid #334155;
     border-radius: var(--radius-lg);
     padding: 10px 14px;
@@ -45,7 +45,7 @@
     transition: border-color 0.2s;
 
     &:focus {
-      border-color: var(--color-accent);
+      border-color: var(--accent);
     }
   }
 
@@ -56,8 +56,8 @@
   }
 
   &__btn {
-    background: var(--color-accent);
-    color: var(--background-secondary);
+    background: var(--accent);
+    color: var(--surface-card);
     border: none;
     border-radius: var(--radius-lg);
     padding: 10px;
@@ -74,7 +74,7 @@
 
   &__link {
     font-size: 13px;
-    color: var(--text-tertiary-color);
+    color: var(--text-muted);
     text-align: center;
     text-decoration: none;
 

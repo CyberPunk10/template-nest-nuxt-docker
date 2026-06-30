@@ -42,8 +42,8 @@ defineEmits<{ click: [] }>()
       background 0.15s;
 
     &:hover {
-      border-color: var(--divider-color);
-      background: var(--control-primary-minor-color);
+      border-color: var(--border-subtle);
+      background: var(--control-hover);
     }
   }
 
@@ -52,8 +52,8 @@ defineEmits<{ click: [] }>()
     width: 1.75rem;
     height: 1.75rem;
     border-radius: 50%;
-    background: var(--color-accent);
-    color: var(--background);
+    background: var(--accent);
+    color: var(--surface-app);
     font-size: 13px;
     font-weight: 700;
     display: flex;
@@ -74,7 +74,7 @@ defineEmits<{ click: [] }>()
 
   &__name {
     font-size: 13px;
-    color: var(--text-primary-color);
+    color: var(--text-primary);
     line-height: 1;
     white-space: nowrap;
     overflow: hidden;
@@ -83,7 +83,7 @@ defineEmits<{ click: [] }>()
 
   &__email {
     font-size: 11px;
-    color: var(--text-secondary-color);
+    color: var(--text-secondary);
     line-height: 1;
     white-space: nowrap;
     overflow: hidden;
@@ -92,7 +92,7 @@ defineEmits<{ click: [] }>()
 
   &__chevron {
     flex-shrink: 0;
-    color: var(--text-tertiary-color);
+    color: var(--text-muted);
     opacity: 1;
     transition:
       transform 0.2s,

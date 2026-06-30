@@ -95,7 +95,7 @@ const groups = computed<CommandGroup[]>(() => [
 
 .commands-wrap {
   background: #0b1525;
-  border: 1px solid var(--divider-color);
+  border: 1px solid var(--border-subtle);
   border-radius: 10px;
   padding: 16px 18px;
   flex: 1;
@@ -138,7 +138,7 @@ const groups = computed<CommandGroup[]>(() => [
   transition: border-color 0.15s;
 
   &:hover {
-    border-color: var(--divider-color);
+    border-color: var(--border-subtle);
   }
 
   &__cmd {
@@ -152,19 +152,19 @@ const groups = computed<CommandGroup[]>(() => [
     flex-shrink: 0;
     align-self: flex-start;
     margin-top: 1px;
-    color: var(--divider-color);
+    color: var(--border-subtle);
     opacity: 0;
     transition: color 0.15s;
   }
 
   &:hover &__copy {
     opacity: 1;
-    color: var(--text-tertiary-color);
+    color: var(--text-muted);
   }
 
   &__copy--done {
     opacity: 1 !important;
-    color: var(--color-accent) !important;
+    color: var(--accent) !important;
     transition: none;
   }
 

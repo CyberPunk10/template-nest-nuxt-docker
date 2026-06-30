@@ -47,8 +47,8 @@ defineEmits<{
 }
 
 .ui-button--primary {
-  background: var(--color-accent);
-  color: var(--background-secondary);
+  background: var(--accent);
+  color: var(--surface-card);
 }
 
 .ui-button--primary:hover:not(:disabled) {
@@ -57,19 +57,19 @@ defineEmits<{
 
 .ui-button--ghost {
   background: transparent;
-  border-color: var(--divider-color);
+  border-color: var(--border-subtle);
   color: #e2e8f0;
 }
 
 .ui-button--ghost:hover:not(:disabled) {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .ui-button--danger {
   background: transparent;
-  border-color: var(--divider-color);
-  color: var(--text-tertiary-color);
+  border-color: var(--border-subtle);
+  color: var(--text-muted);
 }
 
 .ui-button--danger:hover:not(:disabled) {

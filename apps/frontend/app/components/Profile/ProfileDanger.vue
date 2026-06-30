@@ -64,7 +64,7 @@ $text-secondary: #cbd5e1;
 
   &__desc {
     font-size: 12px;
-    color: var(--text-tertiary-color);
+    color: var(--text-muted);
     margin: 0;
   }
 }

@@ -35,7 +35,7 @@ const { $globalEvents } = useNuxtApp()
   flex-shrink: 0;
   height: var(--app-header-height);
   padding: 0 var(--space-3-5);
-  border-bottom: 1px solid var(--divider-color);
+  border-bottom: 1px solid var(--border-subtle);
 
   .sidebar-close {
     font-size: 0.75rem !important;

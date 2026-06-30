@@ -56,7 +56,7 @@ const { t } = useI18n()
 
 .branch-card {
   background: #0b1525;
-  border: 1px solid var(--divider-color);
+  border: 1px solid var(--border-subtle);
   border-radius: 10px;
   padding: 16px;
   display: flex;
@@ -100,7 +100,7 @@ const { t } = useI18n()
   &__name {
     font-family: monospace;
     font-size: 12px;
-    color: var(--color-accent);
+    color: var(--accent);
   }
 
   &__badge {
@@ -109,7 +109,7 @@ const { t } = useI18n()
     text-transform: uppercase;
     letter-spacing: 0.06em;
     background: rgba(0, 220, 130, 0.12);
-    color: var(--color-accent);
+    color: var(--accent);
     border-radius: 4px;
     padding: 2px 5px;
   }
@@ -122,7 +122,7 @@ const { t } = useI18n()
 
   &__desc {
     font-size: 12px;
-    color: var(--text-tertiary-color);
+    color: var(--text-muted);
     margin: 0;
     line-height: 1.5;
   }
@@ -137,7 +137,7 @@ const { t } = useI18n()
 
     code {
       font-family: monospace;
-      color: var(--text-tertiary-color);
+      color: var(--text-muted);
     }
   }
 }

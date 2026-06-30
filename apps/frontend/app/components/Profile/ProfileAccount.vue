@@ -65,7 +65,7 @@ $text-muted: #94a3b8;
 
   &__key {
     font-size: 12px;
-    color: var(--text-tertiary-color);
+    color: var(--text-muted);
   }
 
   &__val {

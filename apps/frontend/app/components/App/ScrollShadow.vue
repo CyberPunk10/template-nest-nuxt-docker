@@ -393,9 +393,9 @@ defineExpose({ appScrollShadowRef, shadowTop })
 
   background: linear-gradient(
     $dir,
-    var(--gradient-shadow-from-color) 0%,
-    color-mix(in srgb, var(--gradient-shadow-from-color) 55%, transparent) 30%,
-    color-mix(in srgb, var(--gradient-shadow-from-color) 20%, transparent) 60%,
+    var(--gradient-shadow-color) 0%,
+    color-mix(in srgb, var(--gradient-shadow-color) 55%, transparent) 30%,
+    color-mix(in srgb, var(--gradient-shadow-color) 20%, transparent) 60%,
     transparent 100%
   );
 }

@@ -56,12 +56,12 @@ async function handleLogout() {
     left: var(--space-2);
     right: var(--space-2);
     width: 12.5rem;
-    background: var(--background-secondary);
-    border: 1px solid var(--divider-color);
+    background: var(--surface-card);
+    border: 1px solid var(--border-subtle);
     border-radius: var(--radius-lg);
     padding: var(--space-1);
     margin-bottom: calc(-1 * var(--space-0-5));
-    box-shadow: var(--shadow-popup);
+    box-shadow: var(--shadow-md);
     z-index: 100;
   }
 
@@ -75,7 +75,7 @@ async function handleLogout() {
     border: none;
     border-radius: var(--radius-md);
     font-size: 13px;
-    color: var(--text-secondary-color);
+    color: var(--text-secondary);
     cursor: pointer;
     text-decoration: none;
     transition:
@@ -85,29 +85,29 @@ async function handleLogout() {
     white-space: nowrap;
 
     &:hover {
-      background: var(--control-primary-minor-color);
-      color: var(--text-primary-color);
+      background: var(--control-hover);
+      color: var(--text-primary);
     }
 
     &--active {
-      color: var(--text-primary-color);
+      color: var(--text-primary);
     }
 
     &--danger:hover {
-      background: var(--danger-bg-color);
-      color: var(--danger-color);
+      background: var(--status-danger-subtle);
+      color: var(--status-danger);
     }
   }
 
   &__divider {
     height: 1px;
-    background: var(--divider-color);
+    background: var(--border-subtle);
     margin: 4px 0;
   }
 
   &__item-icon {
     margin-left: auto;
-    color: var(--color-accent);
+    color: var(--accent);
     flex-shrink: 0;
   }
 }

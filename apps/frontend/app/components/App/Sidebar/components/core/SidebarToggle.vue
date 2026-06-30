@@ -34,12 +34,12 @@ const { isCollapsed } = useSidebar()
   border-radius: var(--radius-lg);
   background: transparent;
   border: none;
-  color: var(--text-tertiary-color);
+  color: var(--text-muted);
   cursor: pointer;
   transition: color 0.15s ease;
 
   &:hover {
-    color: var(--text-primary-color);
+    color: var(--text-primary);
   }
 
   &__icon {

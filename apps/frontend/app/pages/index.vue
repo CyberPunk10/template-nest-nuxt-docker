@@ -19,17 +19,17 @@
   gap: 0;
   flex: 1;
   min-height: 0;
-  background: var(--background-secondary);
+  background: var(--surface-card);
   color: #fff;
 
   .nuxt-welcome-component {
     min-height: auto !important;
     height: 100%;
-    background-color: var(--background) !important;
+    background-color: var(--surface-app) !important;
   }
 
   .col {
-    border-right: 1px solid var(--divider-color);
+    border-right: 1px solid var(--border-subtle);
     overflow: auto;
   }
 

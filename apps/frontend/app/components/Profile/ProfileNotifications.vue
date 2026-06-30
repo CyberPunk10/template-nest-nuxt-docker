@@ -45,8 +45,8 @@ $text-dim: #64748b;
 $text-secondary: #cbd5e1;
 
 .card {
-  background: var(--background);
-  border: 1px solid var(--divider-color);
+  background: var(--surface-app);
+  border: 1px solid var(--border-subtle);
   border-radius: 10px;
   padding: 20px;
 
@@ -103,7 +103,7 @@ $text-secondary: #cbd5e1;
   }
   &__desc {
     font-size: 11px;
-    color: var(--text-tertiary-color);
+    color: var(--text-muted);
   }
 }
 
@@ -111,7 +111,7 @@ $text-secondary: #cbd5e1;
   width: 36px;
   height: 20px;
   border-radius: 10px;
-  background: var(--divider-color);
+  background: var(--border-subtle);
   border: none;
   cursor: pointer;
   position: relative;
@@ -126,7 +126,7 @@ $text-secondary: #cbd5e1;
     width: 14px;
     height: 14px;
     border-radius: 50%;
-    background: var(--text-tertiary-color);
+    background: var(--text-muted);
     transition:
       transform 0.2s,
       background 0.2s;
@@ -137,7 +137,7 @@ $text-secondary: #cbd5e1;
 
     &::after {
       transform: translateX(16px);
-      background: var(--color-accent);
+      background: var(--accent);
     }
   }
 }

@@ -143,6 +143,9 @@ export const ICON_MAP: Record<string, string> = {
   'no-photo-avatar': 'lucide:user-round',
   close: 'lucide:x',
   'light-theme': 'lucide:sun',
+  'light-sand-theme': 'lucide:coffee',
+  'light-mist-theme': 'lucide:cloud',
+  'light-rose-theme': 'lucide:flower-2',
   'dark-theme': 'lucide:moon',
   'system-theme': 'lucide:monitor',
   'dark-green-theme': 'lucide:leaf',
@@ -167,40 +170,20 @@ export const userMenu: SidebarItem[] = [
   { title: 'userMenu.help', icon: 'lucide:circle-help', url: '/stub/help' },
 ]
 
-export const themeSwither = {
-  id: 'theme-swither',
-  title: 'themes.light',
-  icon: 'light-theme',
-  items: [
-    {
-      id: 'light',
-      title: 'themes.light',
-      icon: 'light-theme',
-    },
-    {
-      id: 'dark',
-      title: 'themes.dark',
-      icon: 'dark-theme',
-    },
-    {
-      id: 'system',
-      title: 'themes.system',
-      icon: 'system-theme',
-    },
-    {
-      id: 'dark-green',
-      title: 'themes.darkGreen',
-      icon: 'dark-green-theme',
-    },
-    {
-      id: 'dark-midnight',
-      title: 'themes.darkMidnight',
-      icon: 'dark-midnight-theme',
-    },
-    {
-      id: 'dark-ocean',
-      title: 'themes.darkOcean',
-      icon: 'dark-ocean-theme',
-    },
-  ],
-} satisfies SidebarItem
+export interface ThemeItem {
+  id: string
+  title: string
+  icon: string
+  kind: 'light' | 'dark'
+}
+
+export const themes: ThemeItem[] = [
+  { id: 'light', title: 'themes.light', icon: 'light-theme', kind: 'light' },
+  { id: 'light-sand', title: 'themes.lightSand', icon: 'light-sand-theme', kind: 'light' },
+  { id: 'light-mist', title: 'themes.lightMist', icon: 'light-mist-theme', kind: 'light' },
+  { id: 'light-rose', title: 'themes.lightRose', icon: 'light-rose-theme', kind: 'light' },
+  { id: 'dark', title: 'themes.dark', icon: 'dark-theme', kind: 'dark' },
+  { id: 'dark-green', title: 'themes.darkGreen', icon: 'dark-green-theme', kind: 'dark' },
+  { id: 'dark-midnight', title: 'themes.darkMidnight', icon: 'dark-midnight-theme', kind: 'dark' },
+  { id: 'dark-ocean', title: 'themes.darkOcean', icon: 'dark-ocean-theme', kind: 'dark' },
+]

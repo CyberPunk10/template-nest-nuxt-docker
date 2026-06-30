@@ -32,7 +32,7 @@ const {
   align-self: center;
 
   &__icon {
-    color: var(--color-accent);
+    color: var(--accent);
     flex-shrink: 0;
   }
 
@@ -57,7 +57,7 @@ const {
   &__title {
     font-size: 14px;
     font-weight: 800;
-    color: var(--text-primary-color);
+    color: var(--text-primary);
     line-height: 1;
     display: flex;
     align-items: baseline;
@@ -65,19 +65,19 @@ const {
   }
 
   &__accent {
-    color: var(--color-accent);
+    color: var(--accent);
   }
 
   &__version {
     font-size: 11px;
     font-weight: 400;
-    color: var(--text-tertiary-color);
+    color: var(--text-muted);
   }
 
   &__sub {
     font-size: 11px;
     font-weight: 500;
-    color: var(--text-secondary-color);
+    color: var(--text-secondary);
     letter-spacing: 0.05em;
     line-height: 1;
     display: flex;

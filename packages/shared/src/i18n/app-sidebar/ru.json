@@ -53,6 +53,10 @@
     "dark": "Тёмная",
     "light": "Светлая",
     "system": "Системная",
+    "followSystem": "Системная",
+    "lightSand": "Песок",
+    "lightMist": "Туман",
+    "lightRose": "Роза",
     "darkGreen": "Тёмно-зелёная",
     "darkMidnight": "Полночная",
     "darkOcean": "Океан"

@@ -41,8 +41,8 @@ $text-dark: #334155;
 $red-dark: #dc2626;
 
 .card {
-  background: var(--background);
-  border: 1px solid var(--divider-color);
+  background: var(--surface-app);
+  border: 1px solid var(--border-subtle);
   border-radius: 10px;
   padding: 20px;
 
@@ -100,7 +100,7 @@ $red-dark: #dc2626;
 
   &__sub {
     font-size: 11px;
-    color: var(--text-tertiary-color);
+    color: var(--text-muted);
 
     &--off {
       color: $red-dark;
@@ -120,7 +120,7 @@ $red-dark: #dc2626;
 
   &--ghost {
     background: transparent;
-    border: 1px solid var(--divider-color);
+    border: 1px solid var(--border-subtle);
     color: $text-dim;
     padding: 6px 12px;
 

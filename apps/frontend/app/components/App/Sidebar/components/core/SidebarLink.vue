@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { NuxtLink } from '#components'
 import { useSidebar } from '../../composables/useSidebar'
-import { resolveIcon, themeSwither } from '../../config/sidebar-menu'
+import { resolveIcon } from '../../config/sidebar-menu'
 
 const props = withDefaults(
   defineProps<{
@@ -27,7 +27,7 @@ const emit = defineEmits<{
 }>()
 
 const $route = useRoute()
-const colorMode = useColorMode()
+
 const { $globalEvents } = useNuxtApp()
 const { isCollapsed } = useSidebar()
 
@@ -123,14 +123,6 @@ const isActive = computed(() => {
   return isSamePath && (!withoutExcluded.length || props.ignoreParams)
 })
 
-const showCheckmark = computed(() => {
-  if (!props.icon) return false
-  if (props.levelSidebarLink === 1) return false
-  const themeSwitherItem = themeSwither.items.find(i => i.icon === props.icon)
-  if (!themeSwitherItem) return false
-  return themeSwitherItem.id === colorMode.preference
-})
-
 watch(
   () => isActive.value,
   val => emit('set-active', val),
@@ -199,10 +191,6 @@ function handlerSidebarLink() {
           <Icon name="lucide:chevron-right" />
         </slot>
       </span>
-
-      <span v-if="showCheckmark" class="sidebar-link__checkmark">
-        <Icon name="lucide:check" />
-      </span>
     </component>
   </div>
 </template>
@@ -219,7 +207,7 @@ function handlerSidebarLink() {
   border-radius: var(--radius-md);
   padding: 0 var(--space-2-5);
   cursor: pointer;
-  color: var(--text-secondary-color);
+  color: var(--text-secondary);
   font-size: 0.8125rem;
   text-decoration: none;
   text-align: left;
@@ -228,13 +216,13 @@ function handlerSidebarLink() {
     color 0.1s;
 
   &.--opened {
-    background-color: var(--control-primary-minor-color);
-    color: var(--text-primary-color);
+    background-color: var(--control-hover);
+    color: var(--text-primary);
   }
 
   &.--active {
-    background-color: var(--active-bg-color);
-    color: var(--active-text-color);
+    background-color: var(--accent-subtle);
+    color: var(--accent);
   }
 
   &.--collapsed {
@@ -289,7 +277,7 @@ function handlerSidebarLink() {
   }
 
   &__chevron {
-    color: var(--text-tertiary-color);
+    color: var(--text-muted);
     width: 1rem;
     height: 1rem;
     order: 3;
@@ -319,8 +307,8 @@ function handlerSidebarLink() {
 
   &__chevron {
     .app-badge {
-      background-color: var(--background-secondary);
-      color: var(--text-secondary-color);
+      background-color: var(--surface-card);
+      color: var(--text-secondary);
     }
   }
 
@@ -335,8 +323,8 @@ function handlerSidebarLink() {
   }
 
   &:hover {
-    background-color: var(--control-primary-minor-color);
-    color: var(--text-primary-color);
+    background-color: var(--control-hover);
+    color: var(--text-primary);
   }
 }
 </style>

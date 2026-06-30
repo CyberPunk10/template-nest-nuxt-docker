@@ -120,7 +120,7 @@ function onClickOutsideSubMenu() {
   &__header {
     font-size: var(--text-xs);
     font-weight: var(--font-semibold);
-    border-bottom: 1px solid var(--control-primary-minor-color);
+    border-bottom: 1px solid var(--control-hover);
     padding: var(--space-2) var(--space-4);
     margin-bottom: var(--space-1);
   }
@@ -129,12 +129,12 @@ function onClickOutsideSubMenu() {
     height: var(--app-sidebar-item-height-sm);
 
     &.--opened {
-      background-color: var(--control-primary-minor-color);
+      background-color: var(--control-hover);
     }
 
     &.--active {
-      background-color: var(--active-bg-color);
-      color: var(--active-text-color);
+      background-color: var(--accent-subtle);
+      color: var(--accent);
     }
   }
 
@@ -169,10 +169,10 @@ function onClickOutsideSubMenu() {
     position: absolute;
     top: 0;
     left: calc(100% + var(--space-1));
-    background: var(--background);
+    background: var(--surface-app);
     border-radius: var(--radius-lg);
-    border: 1px solid var(--control-primary-minor-color);
-    box-shadow: var(--shadow-popup);
+    border: 1px solid var(--control-hover);
+    box-shadow: var(--shadow-md);
     min-width: 11.25rem;
     max-width: 13.75rem;
     width: max-content;
@@ -236,7 +236,7 @@ function onClickOutsideSubMenu() {
 .sidebar-dropdown__scroll {
   &.--custom-css-scrollbar {
     &::-webkit-scrollbar-thumb {
-      border: 1px solid var(--scrollbar-color-border);
+      border: 1px solid var(--scrollbar-border);
     }
   }
 }

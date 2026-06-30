@@ -17,7 +17,7 @@ defineProps<{
 
 <style scoped>
 .ui-card {
-  border: 1px solid var(--divider-color);
+  border: 1px solid var(--border-subtle);
   border-radius: 12px;
   background: #020420;
   overflow: hidden;
@@ -25,7 +25,7 @@ defineProps<{
 
 .ui-card__header {
   padding: 12px 16px;
-  border-bottom: 1px solid var(--divider-color);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .ui-card__title {

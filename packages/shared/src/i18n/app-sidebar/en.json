@@ -53,6 +53,10 @@
     "dark": "Dark",
     "light": "Light",
     "system": "System",
+    "followSystem": "Follow system",
+    "lightSand": "Sand",
+    "lightMist": "Mist",
+    "lightRose": "Rose",
     "darkGreen": "Dark Green",
     "darkMidnight": "Midnight",
     "darkOcean": "Ocean"

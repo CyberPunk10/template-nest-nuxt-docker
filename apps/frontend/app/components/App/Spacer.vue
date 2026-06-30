@@ -21,7 +21,7 @@ export default {
     display: block;
     width: 100%;
     height: 1px;
-    background-color: var(--control-primary-minor-color);
+    background-color: var(--control-hover);
   }
 }
 </style>

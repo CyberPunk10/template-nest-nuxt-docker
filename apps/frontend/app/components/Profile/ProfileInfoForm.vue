@@ -63,8 +63,8 @@ $text-dim: #64748b;
 $red: #ef4444;
 
 .card {
-  background: var(--background);
-  border: 1px solid var(--divider-color);
+  background: var(--surface-app);
+  border: 1px solid var(--border-subtle);
   border-radius: 10px;
   padding: 20px;
 
@@ -107,14 +107,14 @@ $red: #ef4444;
   &__label {
     font-size: 11px;
     font-weight: 500;
-    color: var(--text-tertiary-color);
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.06em;
   }
 
   &__input {
-    background: var(--background-secondary);
-    border: 1px solid var(--divider-color);
+    background: var(--surface-card);
+    border: 1px solid var(--border-subtle);
     border-radius: 7px;
     padding: 9px 13px;
     font-size: 13px;
@@ -124,10 +124,10 @@ $red: #ef4444;
     font-family: inherit;
 
     &:focus {
-      border-color: var(--color-accent);
+      border-color: var(--accent);
     }
     &--muted {
-      color: var(--text-tertiary-color);
+      color: var(--text-muted);
       cursor: not-allowed;
     }
   }
@@ -145,8 +145,8 @@ $red: #ef4444;
   font-family: inherit;
 
   &--primary {
-    background: var(--color-accent);
-    color: var(--background-secondary);
+    background: var(--accent);
+    color: var(--surface-card);
     padding: 9px 18px;
 
     &:hover:not(:disabled) {
@@ -170,7 +170,7 @@ $red: #ef4444;
     color: $red;
   }
   &--success {
-    color: var(--color-accent);
+    color: var(--accent);
   }
 }
 </style>
