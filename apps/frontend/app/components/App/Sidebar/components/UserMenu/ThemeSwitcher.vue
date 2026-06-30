@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { resolveIcon, themes } from '../../config/sidebar-menu'
+import { resolveIcon } from '../../config/icons'
+import { themes } from '../../config/user-menu'
 
 const { followSystem, selectedLight, selectedDark, activeTheme, setFollowSystem, selectTheme } = useThemePreference()
 const { t } = useI18n()

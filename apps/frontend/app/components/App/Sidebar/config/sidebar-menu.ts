@@ -1,4 +1,4 @@
-export interface SidebarItem {
+export interface SidebarMenuItem {
   id?: string
   title: string
   icon?: string
@@ -8,8 +8,10 @@ export interface SidebarItem {
   params?: Record<string, string>
   ignoreParams?: boolean
   external?: boolean
-  items?: SidebarItem[]
+  items?: SidebarMenuItem[]
 }
+
+export type SidebarItem = SidebarMenuItem
 
 export const dashboard = {
   id: 'dashboard',
@@ -135,55 +137,3 @@ export const bigSection = {
     { title: 'nav.bs30', url: '/stub/bs-archive', icon: 'lucide:archive' },
   ],
 } satisfies SidebarItem
-
-export const ICON_MAP: Record<string, string> = {
-  home: 'lucide:house',
-  help: 'lucide:circle-help',
-  out: 'lucide:log-out',
-  'no-photo-avatar': 'lucide:user-round',
-  close: 'lucide:x',
-  'light-theme': 'lucide:sun',
-  'light-sand-theme': 'lucide:coffee',
-  'light-mist-theme': 'lucide:cloud',
-  'light-rose-theme': 'lucide:flower-2',
-  'dark-theme': 'lucide:moon',
-  'system-theme': 'lucide:monitor',
-  'dark-green-theme': 'lucide:leaf',
-  'dark-midnight-theme': 'lucide:github',
-  'dark-ocean-theme': 'lucide:waves',
-  chevron: 'lucide:chevron-right',
-  'chevron-back': 'lucide:chevron-left',
-  checkmark: 'lucide:check',
-}
-
-export function resolveIcon(type: string): string {
-  if (ICON_MAP[type]) return ICON_MAP[type]
-  if (type.includes(':')) return type
-  return `lucide:${type}`
-}
-
-export const userMenu: SidebarItem[] = [
-  { title: 'userMenu.profile', icon: 'lucide:user', url: '/profile' },
-  { title: 'userMenu.settings', icon: 'lucide:settings', url: '/stub/settings' },
-  { title: 'userMenu.notifications', icon: 'lucide:bell', url: '/stub/notifications' },
-  { title: 'userMenu.changelog', icon: 'lucide:sparkles', url: '/stub/changelog' },
-  { title: 'userMenu.help', icon: 'lucide:circle-help', url: '/stub/help' },
-]
-
-export interface ThemeItem {
-  id: string
-  title: string
-  icon: string
-  kind: 'light' | 'dark'
-}
-
-export const themes: ThemeItem[] = [
-  { id: 'light', title: 'themes.light', icon: 'light-theme', kind: 'light' },
-  { id: 'light-sand', title: 'themes.lightSand', icon: 'light-sand-theme', kind: 'light' },
-  { id: 'light-mist', title: 'themes.lightMist', icon: 'light-mist-theme', kind: 'light' },
-  { id: 'light-rose', title: 'themes.lightRose', icon: 'light-rose-theme', kind: 'light' },
-  { id: 'dark', title: 'themes.dark', icon: 'dark-theme', kind: 'dark' },
-  { id: 'dark-green', title: 'themes.darkGreen', icon: 'dark-green-theme', kind: 'dark' },
-  { id: 'dark-midnight', title: 'themes.darkMidnight', icon: 'dark-midnight-theme', kind: 'dark' },
-  { id: 'dark-ocean', title: 'themes.darkOcean', icon: 'dark-ocean-theme', kind: 'dark' },
-]

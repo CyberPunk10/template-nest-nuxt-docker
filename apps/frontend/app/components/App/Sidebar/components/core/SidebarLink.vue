@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { NuxtLink } from '#components'
 import { useSidebar } from '../../composables/useSidebar'
-import { resolveIcon } from '../../config/sidebar-menu'
+import { resolveIcon } from '../../config/icons'
 
 const props = withDefaults(
   defineProps<{

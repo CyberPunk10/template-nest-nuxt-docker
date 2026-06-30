@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { userMenu } from '../../config/sidebar-menu'
+import { userMenu } from '../../config/user-menu'
 import ThemeSwitcher from './ThemeSwitcher.vue'
+import LanguageSwitcher from './LanguageSwitcher.vue'
 
 defineEmits<{ close: [] }>()
 
@@ -19,10 +20,12 @@ async function handleLogout() {
 
 <template>
   <div class="sidebar-user__dropdown">
-    <template v-for="item in userMenu" :key="'divider' in item ? item : item.title">
+    <template v-for="item in userMenu" :key="item.id">
       <div v-if="'divider' in item" class="sidebar-user__divider" />
+      <LanguageSwitcher v-else-if="'slot' in item && item.id === 'language'" />
+      <ThemeSwitcher v-else-if="'slot' in item && item.id === 'appearance'" />
       <NuxtLink
-        v-else
+        v-else-if="'title' in item"
         class="sidebar-user__item"
         :to="item.url!"
         @click="$emit('close')"
@@ -31,10 +34,6 @@ async function handleLogout() {
         {{ t(item.title) }}
       </NuxtLink>
     </template>
-
-    <div class="sidebar-user__divider" />
-
-    <ThemeSwitcher />
 
     <div class="sidebar-user__divider" />
 

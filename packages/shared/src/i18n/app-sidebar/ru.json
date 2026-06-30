@@ -67,8 +67,14 @@
     "notifications": "Уведомления",
     "changelog": "Что нового",
     "help": "Помощь",
+    "language": "Язык",
     "appearance": "Оформление",
     "logout": "Выйти"
+  },
+  "locales": {
+    "ru": "Русский",
+    "en": "English",
+    "th": "ภาษาไทย"
   },
   "app": {
     "logout": "Выйти"

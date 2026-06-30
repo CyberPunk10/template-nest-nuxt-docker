@@ -3,12 +3,12 @@ import { onClickOutside } from '@vueuse/core'
 import { useSidebar } from '../../composables/useSidebar'
 import SidebarLink from './SidebarLink.vue'
 import AppCollapseTransition from '~/components/App/CollapseTransition.vue'
-import type { SidebarItem } from '../../config/sidebar-menu'
+import type { SidebarMenuItem } from '../../config/sidebar-menu'
 
 const props = withDefaults(
   defineProps<{
     notCollapsedItems: Record<string, boolean>
-    item: SidebarItem
+    item: SidebarMenuItem
     level?: number
     forcePopup?: boolean
   }>(),
@@ -17,8 +17,8 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   'toggle-collapse': [payload: { id: string, value: boolean }]
-  'click-section': [item: SidebarItem]
-  'click-outside-submenu': [item: SidebarItem]
+  'click-section': [item: SidebarMenuItem]
+  'click-outside-submenu': [item: SidebarMenuItem]
 }>()
 
 const SubMenu = defineAsyncComponent(() => import('./SubMenu.vue'))
@@ -28,7 +28,7 @@ const { isCollapsed } = useSidebar()
 const show = computed(() => !!props.notCollapsedItems[props.item.id!])
 const isPopup = computed(() => (props.forcePopup || isCollapsed.value) && props.level === 1)
 
-function onToggleCollapse(item: SidebarItem, value: boolean) {
+function onToggleCollapse(item: SidebarMenuItem, value: boolean) {
   if (!props.notCollapsedItems[props.item.id!] && value && !isCollapsed.value) {
     emit('toggle-collapse', { id: props.item.id!, value: true })
   }
@@ -37,7 +37,7 @@ function onToggleCollapse(item: SidebarItem, value: boolean) {
   emit('toggle-collapse', { id: item.id, value })
 }
 
-function onClickSection(item: SidebarItem) {
+function onClickSection(item: SidebarMenuItem) {
   if (item?.items) return
   emit('click-section', item)
 }

@@ -67,8 +67,14 @@
     "notifications": "การแจ้งเตือน",
     "changelog": "มีอะไรใหม่",
     "help": "ช่วยเหลือ",
+    "language": "ภาษา",
     "appearance": "รูปลักษณ์",
     "logout": "ออกจากระบบ"
+  },
+  "locales": {
+    "ru": "Русский",
+    "en": "English",
+    "th": "ภาษาไทย"
   },
   "app": {
     "logout": "ออกจากระบบ"

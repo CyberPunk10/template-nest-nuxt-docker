@@ -7,10 +7,10 @@ import {
   reports,
   settings,
   users,
-  type SidebarItem,
+  type SidebarMenuItem,
 } from '../config/sidebar-menu'
 
-export type MenuItem = SidebarItem | { spacer: true, id: string }
+export type MenuItem = SidebarMenuItem | { spacer: true, id: string }
 
 export function useMenu() {
   const duplicateSpacersFilter = (item: MenuItem, idx: number, arr: MenuItem[]) =>
@@ -25,7 +25,7 @@ export function useMenu() {
   }
 
   const leftMenu = computed(() => {
-    const sections: SidebarItem[] = [
+    const sections: SidebarMenuItem[] = [
       dashboard,
       analytics,
       users,
