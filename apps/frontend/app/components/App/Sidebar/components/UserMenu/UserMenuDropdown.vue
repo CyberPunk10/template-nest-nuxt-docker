@@ -56,8 +56,8 @@ async function handleLogout() {
     left: var(--space-2);
     right: var(--space-2);
     width: 12.5rem;
-    background: var(--surface-card);
-    border: 1px solid var(--border-subtle);
+    background: var(--surface-popover);
+    border: 1px solid var(--border-popover);
     border-radius: var(--radius-lg);
     padding: var(--space-1);
     margin-bottom: calc(-1 * var(--space-0-5));
@@ -101,7 +101,7 @@ async function handleLogout() {
 
   &__divider {
     height: 1px;
-    background: var(--border-subtle);
+    background: var(--border-popover);
     margin: 4px 0;
   }
 

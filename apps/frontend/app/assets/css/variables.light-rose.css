@@ -4,12 +4,14 @@
   /* Surfaces — тинт только на app, карточки и оверлеи нейтральные */
   --surface-app:     #f5eeee; /* body, самый дальний фон страницы */
   --surface-panel:   #fdf8f8; /* сайдбар, шапка, постоянные панели */
-  --surface-card:    #fefefe; /* карточки, секции, попапы, дропдауны */
+  --surface-card:    #fefefe; /* карточки, секции */
+  --surface-popover: #f8efef; /* попапы, дропдауны — поверх карточек */
   --surface-sunken:  #efe8e8; /* инпуты, textarea, code — вдавленные зоны */
-  --surface-overlay: #ffffff; /* модалки, тултипы — поверх всего */
+  --surface-overlay: #ffffff; /* модалки — поверх всего */
 
   /* Borders — три уровня выразительности */
   --border-subtle:  #e8d8d8; /* разделители между строками, внутри компонентов */
+  --border-popover: #dccaca; /* разделители внутри попапов и дропдаунов */
   --border-default: #d8c4c4; /* границы карточек, инпутов, дропдаунов */
   --border-strong:  #b08080; /* акцентные границы, focus ring */
 

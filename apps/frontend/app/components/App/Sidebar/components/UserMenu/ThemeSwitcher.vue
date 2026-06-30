@@ -163,11 +163,15 @@ function isChecked(id: string, kind: 'light' | 'dark') {
 
     &-inner {
       width: 10.625rem;
-      background: var(--surface-card);
-      border: 1px solid var(--border-subtle);
+      background: var(--surface-popover);
+      border: 1px solid var(--border-popover);
       border-radius: var(--radius-lg);
       padding: var(--space-1);
       box-shadow: var(--shadow-md);
+
+      .sidebar-user__divider--inner {
+        background: var(--border-popover);
+      }
     }
   }
 }
