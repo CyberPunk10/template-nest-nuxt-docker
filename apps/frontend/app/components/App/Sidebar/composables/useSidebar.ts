@@ -1,7 +1,6 @@
 export const MENU_TYPE = {
   DESKTOP: 'desktop',
-  MOBILE_RIGHT: 'mobile-right',
-  MOBILE_LEFT: 'mobile-left',
+  MOBILE: 'mobile',
 } as const
 
 export type MenuType = (typeof MENU_TYPE)[keyof typeof MENU_TYPE]

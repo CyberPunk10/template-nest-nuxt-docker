@@ -12,7 +12,7 @@ import SubMenu from './core/SubMenu.vue'
 import SidebarToggle from './core/SidebarToggle.vue'
 
 const { $globalEvents } = useNuxtApp()
-const { width, height } = useWindowSize({ initialWidth: 0, initialHeight: 0 })
+const { width } = useWindowSize({ initialWidth: 0, initialHeight: 0 })
 
 const { isCollapsed, isMobileOpen, menuType } = useSidebar()
 
@@ -27,7 +27,7 @@ const notCollapsedItems = ref<Record<string, boolean>>({})
 const { leftMenu, rightMenu } = useMenu()
 const menu = computed((): MenuItem[] => [...leftMenu.value, ...rightMenu.value])
 
-watch([width, height], () => updateSidebarState())
+watch(width, () => updateSidebarState())
 
 function updateSidebarState(isInit = false) {
   if (isInit) {
@@ -36,18 +36,14 @@ function updateSidebarState(isInit = false) {
     toggleSidebar({ value: false })
   }
 
-  isCollapsed.value = width.value > APP_BREAKPOINTS.tablet
-    && width.value <= APP_BREAKPOINTS.desktop
-    && height.value > APP_BREAKPOINTS.mobile
+  isCollapsed.value = width.value > APP_BREAKPOINTS.md && width.value <= APP_BREAKPOINTS.lg
 
-  if (width.value > APP_BREAKPOINTS.tablet && height.value > APP_BREAKPOINTS.mobile) {
+  if (width.value > APP_BREAKPOINTS.lg) {
     menuType.value = MENU_TYPE.DESKTOP
     isMobileOpen.value = false
     $globalEvents.emit('body-overflow', false)
   } else {
-    menuType.value = menuType.value === MENU_TYPE.MOBILE_RIGHT
-      ? MENU_TYPE.MOBILE_RIGHT
-      : MENU_TYPE.MOBILE_LEFT
+    menuType.value = MENU_TYPE.MOBILE
   }
 }
 
@@ -137,7 +133,7 @@ function toggleSidebar({ value, type = menuType.value }: { value?: boolean, type
 
   if (!isSidebarDesktop.value) {
     let direction = 'left'
-    if (type === MENU_TYPE.MOBILE_RIGHT) {
+    if (type === MENU_TYPE.MOBILE) {
       direction = 'right'
     }
 
@@ -317,10 +313,6 @@ function toggleSideBarWidth() {
       overflow: visible;
     }
 
-    // используем flex для того, чтобы прижать кнопку с изменением темы внизу,
-    // но мы не можем использовать flex в мини, т.к. из-за flex-direction получается неправильное
-    // позиционирование подменю (--popup), поэтому в мини будем прижимать кнопку через position,
-    // основываясь на высоте экрана
     &:not(.--collapsed) {
       display: flex;
       flex-direction: column;
@@ -329,23 +321,11 @@ function toggleSideBarWidth() {
       > * {
         flex: 0 0 auto;
       }
-
-      .sidebar-change-theme {
-        margin-top: auto;
-      }
-    }
-    @media (min-height: 804px) {
-      &.--collapsed {
-        .sidebar-change-theme {
-          position: absolute;
-          bottom: 2.875rem;
-        }
-      }
     }
   }
 }
 
-@media (max-height: 540px), (max-width: 768px) {
+@media (max-width: 768px) {
   .app-sidebar__wrapper {
     width: 0;
 

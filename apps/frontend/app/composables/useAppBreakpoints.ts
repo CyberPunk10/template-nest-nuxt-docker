@@ -1,17 +1,17 @@
 import { useBreakpoints } from '@vueuse/core'
 
 export const APP_BREAKPOINTS = {
-  mobile: 540,
-  tablet: 768,
-  desktop: 900,
+  xs: 480, // fullscreen threshold: drawer, модалки на 100%
+  md: 768, // mobile → tablet: появляется header, sidebar становится drawer
+  lg: 1024, // tablet → desktop: header скрывается, sidebar постоянный
 } as const
 
 const breakpoints = useBreakpoints(APP_BREAKPOINTS)
 
 export const useAppBreakpoints = () => {
-  const isMobile = breakpoints.smallerOrEqual('mobile')
-  const isTablet = breakpoints.smallerOrEqual('tablet')
-  const isDesktop = breakpoints.greater('tablet')
+  const isMobile = breakpoints.smallerOrEqual('md')
+  const isTablet = breakpoints.between('md', 'lg')
+  const isDesktop = breakpoints.greater('lg')
 
   return { isMobile, isTablet, isDesktop }
 }

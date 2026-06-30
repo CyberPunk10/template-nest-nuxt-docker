@@ -34,9 +34,9 @@ const sections: Section[] = [
     source: 'useAppBreakpoints()',
     pkg: '~/composables',
     entries: [
-      { type: 'bool', key: 'isMobile', value: isMobile, hint: `≤${APP_BREAKPOINTS.mobile}px` },
-      { type: 'bool', key: 'isTablet', value: isTablet, hint: `≤${APP_BREAKPOINTS.tablet}px` },
-      { type: 'bool', key: 'isDesktop', value: isDesktop, hint: `>${APP_BREAKPOINTS.tablet}px` },
+      { type: 'bool', key: 'isMobile', value: isMobile, hint: `≤${APP_BREAKPOINTS.md}px` },
+      { type: 'bool', key: 'isTablet', value: isTablet, hint: `${APP_BREAKPOINTS.md}–${APP_BREAKPOINTS.lg}px` },
+      { type: 'bool', key: 'isDesktop', value: isDesktop, hint: `>${APP_BREAKPOINTS.lg}px` },
     ],
   },
 ]
