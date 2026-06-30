@@ -62,7 +62,7 @@ async function handleLogout() {
     padding: var(--space-1);
     margin-bottom: calc(-1 * var(--space-0-5));
     box-shadow: var(--shadow-md);
-    z-index: 100;
+    z-index: var(--z-dropdown);
   }
 
   &__item {

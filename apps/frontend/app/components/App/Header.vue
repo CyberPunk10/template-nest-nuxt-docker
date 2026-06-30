@@ -80,7 +80,7 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
 .header {
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: var(--z-sticky);
   height: var(--app-header-height);
   background: var(--surface-app);
   border-bottom: 1px solid var(--border-subtle);
@@ -238,7 +238,7 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
     text-align: left;
 
     &:hover {
-      background: rgba(255, 255, 255, 0.06);
+      background: var(--control-hover);
       color: #e2e8f0;
     }
 

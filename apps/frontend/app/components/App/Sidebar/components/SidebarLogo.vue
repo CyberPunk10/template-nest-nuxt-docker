@@ -39,7 +39,7 @@ const { $globalEvents } = useNuxtApp()
 
   .sidebar-close {
     font-size: 0.75rem !important;
-    z-index: 20;
+    z-index: var(--z-raised);
     color: var(--leadgid-color);
   }
 

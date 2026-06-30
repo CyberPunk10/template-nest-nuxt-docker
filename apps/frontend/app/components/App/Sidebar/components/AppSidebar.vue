@@ -245,7 +245,7 @@ function toggleSideBarWidth() {
   top: 0;
   left: 0;
   bottom: 0;
-  z-index: 1700;
+  z-index: var(--z-overlay);
   user-select: none;
 
   &.--collapsed {
@@ -256,7 +256,7 @@ function toggleSideBarWidth() {
 }
 
 .app-sidebar {
-  z-index: 50;
+  z-index: var(--z-raised);
   position: relative;
   height: 100%;
   width: var(--app-sidebar-width);

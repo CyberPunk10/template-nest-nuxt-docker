@@ -1,18 +1,19 @@
 :root {
-  --app-sidebar-width: 240px;
+  --app-sidebar-width: 15rem;
   --app-sidebar-width-collapsed: 3.25rem;
   --app-sidebar-item-height: 2.5rem;
   --app-sidebar-item-height-xs: 2rem;
   --app-sidebar-item-height-sm: 2.25rem;
   --app-sidebar-dropdown-max-height: 48vh;
-  --app-sidebar-transition: 0.3s ease;
-  --app-sidebar-transition-duration: 0.3s;
+  --app-sidebar-transition-duration: var(--duration-slow);
+  --app-sidebar-transition: var(--app-sidebar-transition-duration) ease;
 
-  --app-header-height: 52px;
+  --app-header-height: 3.25rem;
   --max-width-content: 75.375rem;
+}
 
-
-  @media (max-width: 500px) {
+@media (max-width: 500px) {
+  :root {
     --app-sidebar-width: 100%;
   }
 }

@@ -22,7 +22,7 @@ const { isCollapsed } = useSidebar()
 
 <style lang="scss">
 .sidebar-toggle {
-  z-index: 100;
+  z-index: var(--z-dropdown);
   position: absolute;
   top: 0.75rem;
   right: -2.25rem;

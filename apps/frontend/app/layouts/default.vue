@@ -50,12 +50,11 @@ watch(height, (v) => {
 
 <style>
 .layout {
-  font-family: system-ui, sans-serif;
   transition: margin var(--app-sidebar-transition);
 
   .app-page.--has-app-header {
     .app-page__content {
-      height: calc(100vh - 52px);
+      height: calc(100vh - var(--app-header-height));
 
       & > div {
         height: 100%;

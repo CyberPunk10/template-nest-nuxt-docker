@@ -44,10 +44,10 @@
 
   /* Z-index */
   --z-base:     0;
-  --z-raised:   10;
-  --z-dropdown: 100;
-  --z-sticky:   200;
-  --z-overlay:  300;
+  --z-raised:   10;   /* локальные элементы: тени, псевдоэлементы */
+  --z-dropdown: 100;  /* выпадающие меню, tooltip-кнопки */
+  --z-sticky:   200;  /* header, sidebar на десктопе (постоянный хром) */
+  --z-overlay:  300;  /* sidebar на мобилке (drawer поверх контента) */
   --z-modal:    400;
   --z-toast:    500;
 

@@ -409,7 +409,7 @@ defineExpose({ appScrollShadowRef, shadowTop })
   position: relative;
 
   &:after {
-    z-index: 10;
+    z-index: var(--z-raised);
     content: '';
     pointer-events: none;
     display: block;
@@ -457,7 +457,7 @@ defineExpose({ appScrollShadowRef, shadowTop })
 
   &:after,
   &:before {
-    z-index: 10;
+    z-index: var(--z-raised);
     pointer-events: none;
     content: '';
     display: block;

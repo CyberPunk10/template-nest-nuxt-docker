@@ -152,7 +152,7 @@ function isChecked(id: string, kind: 'light' | 'dark') {
     bottom: 0;
     left: calc(100% + var(--space-1-5));
     padding-left: 4px;
-    z-index: 11;
+    z-index: var(--z-raised);
 
     &::before {
       content: '';
