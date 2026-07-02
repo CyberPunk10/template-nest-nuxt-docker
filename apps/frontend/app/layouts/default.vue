@@ -52,22 +52,32 @@ watch(height, (v) => {
 .layout {
   transition: margin var(--app-sidebar-transition);
 
-  .app-page.--has-app-header {
-    .app-page__content {
-      height: calc(100vh - var(--app-header-height));
+  &.--has-sidebar {
+    margin-left: var(--app-sidebar-width);
 
-      & > div {
-        height: 100%;
-      }
+    &.--sidebar-collapsed {
+      margin-left: var(--app-sidebar-width-collapsed);
     }
   }
 
-  &.--has-sidebar {
-    margin-left: var(--app-sidebar-width);
+  @media (width <= 1024px) {
+    &.--has-sidebar {
+      margin-left: 0;
+    }
   }
+}
 
-  &.--has-sidebar.--sidebar-collapsed {
-    margin-left: var(--app-sidebar-width-collapsed);
+.app-page.--has-app-header {
+  .app-page__content {
+    height: calc(100vh - var(--app-header-height));
+
+    @media (width > 1024px) {
+      height: 100vh;
+    }
+
+    & > div {
+      height: 100%;
+    }
   }
 }
 </style>

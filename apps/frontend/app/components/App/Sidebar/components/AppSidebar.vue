@@ -178,7 +178,6 @@ function toggleSideBarWidth() {
     <SidebarShadow @click="clickByShadow" />
 
     <SidebarToggle
-      v-if="isSidebarDesktop"
       @toggle-sidebar-width="toggleSideBarWidth"
     />
 
@@ -243,12 +242,6 @@ function toggleSideBarWidth() {
   bottom: 0;
   z-index: var(--z-overlay);
   user-select: none;
-
-  &.--collapsed {
-    .sidebar-toggle__icon {
-      transform: rotate(180deg);
-    }
-  }
 }
 
 .app-sidebar {

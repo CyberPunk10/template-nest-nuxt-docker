@@ -1,3 +1,7 @@
+<script setup lang="ts">
+definePageMeta({ title: 'nav.home' })
+</script>
+
 <template>
   <div class="home">
     <div class="col">
