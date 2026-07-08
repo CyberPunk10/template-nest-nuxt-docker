@@ -107,6 +107,7 @@ async function main() {
 }
 
 main().catch((e) => {
+  // eslint-disable-next-line no-console
   console.error('predev failed:', e.message)
   process.exit(1)
 })
