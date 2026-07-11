@@ -18,10 +18,10 @@ apps/frontend/.env[.example] # Nuxt อ่านโดยตรง
 
 ทั้งคู่คือ «ที่อยู่ของ backend» แต่สำหรับผู้ใช้งานคนละกลุ่ม:
 
-| ตัวแปร                    | ไฟล์                 | ใครอ่าน           | ค่า                                      |
-| ------------------------- | -------------------- | ----------------- | ---------------------------------------- |
+| ตัวแปร                     | ไฟล์                 | ใครอ่าน           | ค่า                                    |
+| ------------------------- | -------------------- | ----------------- | -------------------------------------- |
 | `BACKEND_URL`             | `apps/frontend/.env` | Nuxt SSR (server) | `http://localhost:3001` เมื่อ `pnpm dev` |
-| `NUXT_PUBLIC_BACKEND_URL` | `apps/frontend/.env` | Browser           | `http://localhost:3001`                  |
+| `NUXT_PUBLIC_BACKEND_URL` | `apps/frontend/.env` | Browser           | `http://localhost:3001`                |
 
 ใน Docker ค่าทั้งสองถูกส่งโดยตรงผ่าน `docker-compose.yml`: `BACKEND_URL` เป็น `http://backend:3001` (ชื่อ service ภายในเครือข่าย Docker), `NUXT_PUBLIC_BACKEND_URL` เป็น `http://localhost:3001`
 
@@ -57,9 +57,10 @@ docker-compose.yml (ค่าถูก hardcode ไว้)
 
 ## `predev.mjs`
 
-รันโดยอัตโนมัติก่อน `pnpm dev` (ตามธรรมเนียม npm `pre*`) ทำสองอย่าง:
+รันโดยอัตโนมัติก่อน `pnpm dev` (ตามธรรมเนียม npm `pre*`) ทำสามอย่าง:
 
 1. หากไม่มี `apps/backend/.env` หรือ `apps/frontend/.env` — คัดลอกจาก `.env.example`
 2. หาก port ที่ต้องการถูกใช้งานอยู่ — เสนอให้ kill process บน port นั้นหรือยกเลิกการรัน
+3. รัน PostgreSQL ผ่าน `docker-compose.dev.yml` หาก container ยังไม่ได้ทำงาน (idempotent; หากไม่มี Docker — จะเตือนแล้วดำเนินการต่อ)
 
 รายละเอียดเพิ่มเติมเกี่ยวกับโหมดการรัน — ดู [การพัฒนา](/th/guide/development)

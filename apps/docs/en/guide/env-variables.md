@@ -18,10 +18,10 @@ apps/frontend/.env[.example] # Read directly by Nuxt
 
 Both mean "backend address", but for different consumers:
 
-| Variable                  | File                 | Who reads it      | Value                                   |
-| ------------------------- | -------------------- | ----------------- | --------------------------------------- |
+| Variable                  | File                 | Who reads it      | Value                                  |
+| ------------------------- | -------------------- | ----------------- | -------------------------------------- |
 | `BACKEND_URL`             | `apps/frontend/.env` | Nuxt SSR (server) | `http://localhost:3001` with `pnpm dev` |
-| `NUXT_PUBLIC_BACKEND_URL` | `apps/frontend/.env` | Browser           | `http://localhost:3001`                 |
+| `NUXT_PUBLIC_BACKEND_URL` | `apps/frontend/.env` | Browser           | `http://localhost:3001`                |
 
 In Docker both values are passed directly via `docker-compose.yml`: `BACKEND_URL` as `http://backend:3001` (the service name inside the Docker network), `NUXT_PUBLIC_BACKEND_URL` as `http://localhost:3001`.
 
@@ -57,9 +57,10 @@ docker-compose.yml (values hardcoded)
 
 ## `predev.mjs`
 
-Runs automatically before `pnpm dev` (npm `pre*` convention). It does two things:
+Runs automatically before `pnpm dev` (npm `pre*` convention). It does three things:
 
 1. If `apps/backend/.env` or `apps/frontend/.env` is missing — copies it from `.env.example`
 2. If the required port is busy — offers to kill the process on it or abort the start
+3. Starts PostgreSQL via `docker-compose.dev.yml` if the container isn't running yet (idempotent; if Docker is unavailable — warns and continues)
 
 For more on run modes, see [Development](/en/guide/development).

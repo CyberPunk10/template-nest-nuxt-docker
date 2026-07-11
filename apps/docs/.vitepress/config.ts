@@ -45,6 +45,7 @@ export default defineConfigWithTheme<ThemeConfig>({
             items: [
               { text: 'Разработка', link: '/guide/development' },
               { text: 'Архитектура', link: '/guide/architecture' },
+              { text: 'База данных', link: '/guide/database' },
               { text: 'Переменные окружения', link: '/guide/env-variables' },
             ],
           },
@@ -78,6 +79,7 @@ export default defineConfigWithTheme<ThemeConfig>({
             items: [
               { text: 'Development', link: '/en/guide/development' },
               { text: 'Architecture', link: '/en/guide/architecture' },
+              { text: 'Database', link: '/en/guide/database' },
               { text: 'Environment variables', link: '/en/guide/env-variables' },
             ],
           },
@@ -111,6 +113,7 @@ export default defineConfigWithTheme<ThemeConfig>({
             items: [
               { text: 'การพัฒนา', link: '/th/guide/development' },
               { text: 'สถาปัตยกรรม', link: '/th/guide/architecture' },
+              { text: 'ฐานข้อมูล', link: '/th/guide/database' },
               { text: 'ตัวแปรสภาพแวดล้อม', link: '/th/guide/env-variables' },
             ],
           },
