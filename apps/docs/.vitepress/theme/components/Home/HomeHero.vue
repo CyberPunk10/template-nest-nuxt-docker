@@ -23,15 +23,21 @@ const docsLink = computed(() => {
       <div class="hero__inner">
         <span class="hero__badge">{{ hero.badge }}</span>
         <h1 class="hero__title">
-          {{ hero.title }}<br /><span class="hero__title-accent">{{ hero.titleAccent }}</span>
+          {{ hero.title }}<br><span class="hero__title-accent">{{ hero.titleAccent }}</span>
         </h1>
         <p class="hero__subtitle" v-html="hero.subtitle.replace('\n', '<br />')" />
         <div class="hero__actions">
-          <a class="hero__btn hero__btn--primary" :href="docsLink">
+          <a
+            class="hero__btn hero__btn--primary"
+            :href="docsLink"
+          >
             <Icon name="lucide:book-open" size="15" />
             {{ hero.docs }}
           </a>
-          <a class="hero__btn hero__btn--ghost" href="/">
+          <a
+            class="hero__btn hero__btn--ghost"
+            href="/"
+          >
             <Icon name="lucide:log-in" size="15" />
             {{ hero.toDashboard }}
           </a>

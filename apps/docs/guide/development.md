@@ -74,5 +74,3 @@ docker compose up --build
 - реальный домен (`example.com`) — Caddy автоматически выпустит TLS-сертификат (ACME/Let's Encrypt).
 
 Для авто-HTTPS нужны: домен, направленный на сервер, открытые порты 80/443 и проехавший DNS **до** старта.
-
-Подробный разбор конфигурации reverse-proxy — см. [Caddy](/guide/caddy).
