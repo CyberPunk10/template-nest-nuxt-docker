@@ -57,10 +57,9 @@ docker-compose.yml (values hardcoded)
 
 ## `predev.mjs`
 
-Runs automatically before `pnpm dev` (npm `pre*` convention). It does three things:
+Runs automatically before `pnpm dev` (npm `pre*` convention). It does two things:
 
 1. If `apps/backend/.env` or `apps/frontend/.env` is missing — copies it from `.env.example`
 2. If the required port is busy — offers to kill the process on it or abort the start
-3. Starts PostgreSQL via `docker-compose.dev.yml` if the container isn't running yet (idempotent; if Docker is unavailable — warns and continues)
 
 For more on run modes, see [Development](/en/guide/development).

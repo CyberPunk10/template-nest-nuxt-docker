@@ -57,10 +57,9 @@ docker-compose.yml (ค่าถูก hardcode ไว้)
 
 ## `predev.mjs`
 
-รันโดยอัตโนมัติก่อน `pnpm dev` (ตามธรรมเนียม npm `pre*`) ทำสามอย่าง:
+รันโดยอัตโนมัติก่อน `pnpm dev` (ตามธรรมเนียม npm `pre*`) ทำสองอย่าง:
 
 1. หากไม่มี `apps/backend/.env` หรือ `apps/frontend/.env` — คัดลอกจาก `.env.example`
 2. หาก port ที่ต้องการถูกใช้งานอยู่ — เสนอให้ kill process บน port นั้นหรือยกเลิกการรัน
-3. รัน PostgreSQL ผ่าน `docker-compose.dev.yml` หาก container ยังไม่ได้ทำงาน (idempotent; หากไม่มี Docker — จะเตือนแล้วดำเนินการต่อ)
 
 รายละเอียดเพิ่มเติมเกี่ยวกับโหมดการรัน — ดู [การพัฒนา](/th/guide/development)
