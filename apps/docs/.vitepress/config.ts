@@ -46,6 +46,15 @@ export default defineConfigWithTheme<ThemeConfig>({
               { text: 'Разработка', link: '/guide/development' },
               { text: 'Архитектура', link: '/guide/architecture' },
               { text: 'База данных', link: '/guide/database' },
+              {
+                text: 'Авторизация',
+                collapsed: false,
+                items: [
+                  { text: 'Обзор', link: '/guide/auth/' },
+                  { text: 'Бэкенд (NestJS)', link: '/guide/auth/backend' },
+                  { text: 'Фронтенд (Nuxt)', link: '/guide/auth/frontend' },
+                ],
+              },
               { text: 'Переменные окружения', link: '/guide/env-variables' },
             ],
           },
@@ -80,6 +89,15 @@ export default defineConfigWithTheme<ThemeConfig>({
               { text: 'Development', link: '/en/guide/development' },
               { text: 'Architecture', link: '/en/guide/architecture' },
               { text: 'Database', link: '/en/guide/database' },
+              {
+                text: 'Authentication',
+                collapsed: false,
+                items: [
+                  { text: 'Overview', link: '/en/guide/auth/' },
+                  { text: 'Backend (NestJS)', link: '/en/guide/auth/backend' },
+                  { text: 'Frontend (Nuxt)', link: '/en/guide/auth/frontend' },
+                ],
+              },
               { text: 'Environment variables', link: '/en/guide/env-variables' },
             ],
           },
@@ -114,6 +132,15 @@ export default defineConfigWithTheme<ThemeConfig>({
               { text: 'การพัฒนา', link: '/th/guide/development' },
               { text: 'สถาปัตยกรรม', link: '/th/guide/architecture' },
               { text: 'ฐานข้อมูล', link: '/th/guide/database' },
+              {
+                text: 'การยืนยันตัวตน',
+                collapsed: false,
+                items: [
+                  { text: 'ภาพรวม', link: '/th/guide/auth/' },
+                  { text: 'แบ็กเอนด์ (NestJS)', link: '/th/guide/auth/backend' },
+                  { text: 'ฟรอนต์เอนด์ (Nuxt)', link: '/th/guide/auth/frontend' },
+                ],
+              },
               { text: 'ตัวแปรสภาพแวดล้อม', link: '/th/guide/env-variables' },
             ],
           },

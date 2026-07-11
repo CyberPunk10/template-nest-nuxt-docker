@@ -21,9 +21,15 @@ const home = computed(() => theme.value.home!)
       >
         <div class="branch-card__header">
           <div class="branch-card__name-row">
-            <Icon name="lucide:git-branch" size="12" class="branch-card__icon" />
+            <Icon
+              name="lucide:git-branch"
+              size="12"
+              class="branch-card__icon"
+            />
             <code class="branch-card__name">{{ b.name }}</code>
-            <span v-if="b.current" class="branch-card__badge">{{ home.branches.current }}</span>
+            <span v-if="b.current" class="branch-card__badge">{{
+              home.branches.current
+            }}</span>
           </div>
           <span class="branch-card__label">{{ home.branches[b.id].label }}</span>
         </div>

@@ -18,10 +18,10 @@ apps/frontend/.env[.example] # Nuxt อ่านโดยตรง
 
 ทั้งคู่คือ «ที่อยู่ของ backend» แต่สำหรับผู้ใช้งานคนละกลุ่ม:
 
-| ตัวแปร                    | ไฟล์                 | ใครอ่าน           | ค่า                                      |
-| ------------------------- | -------------------- | ----------------- | ---------------------------------------- |
+| ตัวแปร                     | ไฟล์                  | ใครอ่าน            | ค่า                                     |
+| ------------------------- | -------------------- | ----------------- | -------------------------------------- |
 | `BACKEND_URL`             | `apps/frontend/.env` | Nuxt SSR (server) | `http://localhost:3001` เมื่อ `pnpm dev` |
-| `NUXT_PUBLIC_BACKEND_URL` | `apps/frontend/.env` | Browser           | `http://localhost:3001`                  |
+| `NUXT_PUBLIC_BACKEND_URL` | `apps/frontend/.env` | Browser           | `http://localhost:3001`                |
 
 ใน Docker ค่าทั้งสองถูกส่งโดยตรงผ่าน `docker-compose.yml`: `BACKEND_URL` เป็น `http://backend:3001` (ชื่อ service ภายในเครือข่าย Docker), `NUXT_PUBLIC_BACKEND_URL` เป็น `http://localhost:3001`
 

@@ -157,10 +157,10 @@ Prisma แปลง error ของ PostgreSQL ให้เป็น code ขอ
 
 Code ที่พบบ่อยที่สุด:
 
-| Code    | ความหมาย                                                 | การตอบสนองทั่วไป                      |
-| ------- | -------------------------------------------------------- | ------------------------------------- |
-| `P2002` | ละเมิด unique constraint (เช่น email ถูกใช้ไปแล้ว)       | `409 Conflict`                        |
-| `P2025` | ไม่พบ record ตอน `update`, `delete`, `findUniqueOrThrow` | `404 Not Found`                       |
+| Code    | ความหมาย                                                | การตอบสนองทั่วไป                       |
+| ------- | ------------------------------------------------------- | ------------------------------------ |
+| `P2002` | ละเมิด unique constraint (เช่น email ถูกใช้ไปแล้ว)           | `409 Conflict`                       |
+| `P2025` | ไม่พบ record ตอน `update`, `delete`, `findUniqueOrThrow` | `404 Not Found`                      |
 | `P2003` | ละเมิด foreign key constraint                            | `409 Conflict` หรือ `400 Bad Request` |
 
 Pattern ที่ถูกต้องตามหลัก idiomatic คือ ทำ `update`/`delete` ไปเลยแล้วดักจับ P2025 แทนที่จะทำ `findUniqueOrThrow` ก่อนล่วงหน้า

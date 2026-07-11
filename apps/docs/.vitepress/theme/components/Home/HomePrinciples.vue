@@ -13,7 +13,11 @@ const home = computed(() => theme.value.home!)
   <section class="section">
     <h2 class="section__title">{{ home.principles.title }}</h2>
     <div class="principles">
-      <div v-for="p in principles" :key="p.id" class="home-card principle">
+      <div
+        v-for="p in principles"
+        :key="p.id"
+        class="home-card principle"
+      >
         <div class="principle__icon">
           <Icon :name="p.icon" size="18" />
         </div>
