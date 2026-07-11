@@ -74,5 +74,3 @@ Build และรันสแตกทั้งหมดหลัง reverse-pr
 - โดเมนจริง (`example.com`) — Caddy จะออก TLS-certificate ให้อัตโนมัติ (ACME/Let's Encrypt)
 
 สำหรับ auto-HTTPS ต้องมี: โดเมนที่ชี้มายัง server, port 80/443 ที่เปิดอยู่ และ DNS ที่ propagate เรียบร้อยแล้ว **ก่อน** เริ่มรัน
-
-สำหรับรายละเอียดการตั้งค่า reverse-proxy — ดู [Caddy](/th/guide/caddy)

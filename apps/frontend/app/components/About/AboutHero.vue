@@ -26,13 +26,13 @@ const locales = [
       <div class="hero__inner">
         <span class="hero__badge">{{ t('about.hero.badge') }}</span>
         <h1 class="hero__title">
-          {{ t('about.hero.title') }}<br /><span class="hero__title-accent">{{
+          {{ t('about.hero.title') }}<br><span class="hero__title-accent">{{
             t('about.hero.titleAccent')
           }}</span>
         </h1>
         <p class="hero__subtitle">
           <template v-for="(line, i) in t('about.hero.subtitle').split('\n')" :key="i">
-            <br v-if="i > 0" />{{ line }}
+            <br v-if="i > 0">{{ line }}
           </template>
         </p>
         <div class="hero__actions">

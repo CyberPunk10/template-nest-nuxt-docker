@@ -52,9 +52,7 @@ const year = new Date().getFullYear()
         <a :href="authorUrl" target="_blank" rel="noopener">{{ home.footer.contacts.author }}</a>
         <!-- TODO(автор): email/telegram — заглушки. Вписать реальные или убрать. -->
         <a :href="`mailto:${contactEmail}`">{{ home.footer.contacts.email }}</a>
-        <a :href="contactTelegram" target="_blank" rel="noopener">{{
-          home.footer.contacts.telegram
-        }}</a>
+        <a :href="contactTelegram" target="_blank" rel="noopener">{{ home.footer.contacts.telegram }}</a>
       </nav>
 
       <div class="footer__start">

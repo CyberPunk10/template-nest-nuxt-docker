@@ -98,8 +98,8 @@ async function removeUser(id: string) {
 
       <UiCard :title="t('users.create')">
         <form class="form" @submit.prevent="createUser">
-          <input v-model="form.name" class="form__input" :placeholder="t('users.name')" />
-          <input v-model="form.email" class="form__input" placeholder="Email" />
+          <input v-model="form.name" class="form__input" :placeholder="t('users.name')">
+          <input v-model="form.email" class="form__input" placeholder="Email">
           <p v-if="error" class="form__error">{{ error }}</p>
           <UiButton type="submit" :disabled="creating">
             {{ creating ? t('users.adding') : t('users.add') }}
@@ -117,12 +117,12 @@ async function removeUser(id: string) {
                   v-model="editForm.name"
                   class="form__input form__input--sm"
                   :placeholder="t('users.name')"
-                />
+                >
                 <input
                   v-model="editForm.email"
                   class="form__input form__input--sm"
                   placeholder="Email"
-                />
+                >
                 <p v-if="editError" class="form__error">{{ editError }}</p>
                 <div class="user__edit-actions">
                   <UiButton type="submit" variant="ghost">

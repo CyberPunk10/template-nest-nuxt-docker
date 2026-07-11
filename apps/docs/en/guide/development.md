@@ -74,5 +74,3 @@ The address and HTTPS are set via the `SITE_ADDRESS` variable:
 - a real domain (`example.com`) — Caddy will automatically issue a TLS certificate (ACME/Let's Encrypt).
 
 For automatic HTTPS you need: a domain pointing at the server, open ports 80/443, and DNS that has propagated **before** startup.
-
-For a detailed breakdown of the reverse-proxy configuration, see [Caddy](/en/guide/caddy).
