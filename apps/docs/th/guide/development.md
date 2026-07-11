@@ -14,15 +14,14 @@
 | คำสั่ง | `pnpm dev` | `docker compose up` |
 | โค้ด (backend/frontend/docs) | รันแบบ native พร้อม HMR | build เป็น Docker image |
 | ฐานข้อมูล | PostgreSQL ใน Docker | PostgreSQL ใน Docker |
-| Reverse-proxy (Caddy) | **ไม่ใช้งาน** | จุดเข้าเดียว (80/443) |
-| การเข้าถึง | ตรง ๆ: `:3000`, `:3001`, `:5173` | ทุกอย่างผ่าน Caddy บนโดเมนเดียว |
+| การเข้าถึง | ตรง ๆ: `:3000`, `:3001`, `:5173` | ผ่าน Docker |
 | ความเร็วในการแก้ไข | ทันที (hot reload) | build image ใหม่ |
 
 ## ทำไมสำหรับการพัฒนาถึง — ไม่ใช้ Docker
 
 Docker image จะ build **artifact สำหรับ production** (`pnpm build`) การเปลี่ยนแปลงโค้ดใด ๆ จะต้อง build image ใหม่ — นั่นคือหลายสิบวินาทีต่อการแก้ไขหนึ่งครั้ง โดยไม่มี hot-reload และไม่สะดวกในการ debug
 
-ดังนั้นในโหมด dev โค้ดจึงรันแบบ **native** ผ่าน `pnpm dev` ส่วน Docker จะรันเฉพาะสิ่งที่ติดตั้งแบบ native ไม่สะดวก — นั่นคือ **ฐานข้อมูล** ส่วน reverse-proxy (Caddy) ไม่จำเป็นในโหมด dev: คุณเข้าถึง service ต่าง ๆ ได้ตรง ๆ ผ่าน port ของแต่ละตัว
+ดังนั้นในโหมด dev โค้ดจึงรันแบบ **native** ผ่าน `pnpm dev` ส่วน Docker จะรันเฉพาะสิ่งที่ติดตั้งแบบ native ไม่สะดวก — นั่นคือ **ฐานข้อมูล**
 
 การแบ่งแยกแบบนี้เป็นแนวปฏิบัติมาตรฐาน: บนเครื่อง local รันโค้ดแบบ native เพื่อความเร็ว ส่วน Docker จะ build เฉพาะสำหรับ image ของ prod และการ deploy เท่านั้น
 
@@ -61,18 +60,4 @@ docker compose -f docker-compose.dev.yml down     # หยุด (ข้อม�
 docker compose up --build
 ```
 
-Build และรันสแตกทั้งหมดหลัง reverse-proxy Caddy:
-
-- **Caddy** — จุดเข้าออกภายนอกเพียงจุดเดียว (port 80/443)
-  - `/docs` และ `/docs/*` → container ของเอกสาร (static ของ VitePress);
-  - อย่างอื่นทั้งหมด → frontend (Nuxt SSR) รวมถึง BFF-route `/api/backend/*` ซึ่งจะ forward ต่อไปยัง NestJS ผ่านเครือข่ายภายในเอง
-- **backend**, **frontend**, **docs** ไม่ถูก publish ออกภายนอก — เข้าถึงได้เฉพาะผ่าน Caddy เท่านั้น
-
-ที่อยู่และ HTTPS กำหนดผ่านตัวแปร `SITE_ADDRESS`:
-
-- ค่าเริ่มต้น `:80` — HTTP ธรรมดา (ตรวจสอบ prod-build บนเครื่อง local);
-- โดเมนจริง (`example.com`) — Caddy จะออก TLS-certificate ให้อัตโนมัติ (ACME/Let's Encrypt)
-
-สำหรับ auto-HTTPS ต้องมี: โดเมนที่ชี้มายัง server, port 80/443 ที่เปิดอยู่ และ DNS ที่ propagate เรียบร้อยแล้ว **ก่อน** เริ่มรัน
-
-สำหรับรายละเอียดการตั้งค่า reverse-proxy — ดู [Caddy](/th/guide/caddy)
+Build และรันสแตกทั้งหมดใน Docker
