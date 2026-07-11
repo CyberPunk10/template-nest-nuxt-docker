@@ -1,18 +1,14 @@
-// https://vitepress.dev/guide/custom-theme
-import { h } from 'vue'
-import type { Theme } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
-import './style.css'
+import type { EnhanceAppContext } from 'vitepress'
+import Layout from './Layout.vue'
+import Icon from './components/Icon.vue'
+import './custom.css'
 
 export default {
   extends: DefaultTheme,
-  Layout: () => {
-    return h(DefaultTheme.Layout, null, {
-      // https://vitepress.dev/guide/extending-default-theme#layout-slots
-    })
+  Layout,
+  enhanceApp({ app }: EnhanceAppContext) {
+    // Глобальный <Icon> — замена nuxt-иconов на стартовой странице.
+    app.component('Icon', Icon)
   },
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  enhanceApp({ app, router, siteData }) {
-    // ...
-  },
-} satisfies Theme
+}
