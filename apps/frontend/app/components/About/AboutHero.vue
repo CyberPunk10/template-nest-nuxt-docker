@@ -30,7 +30,11 @@ const locales = [
             t('about.hero.titleAccent')
           }}</span>
         </h1>
-        <p class="hero__subtitle" v-html="t('about.hero.subtitle').replace('\n', '<br />')" />
+        <p class="hero__subtitle">
+          <template v-for="(line, i) in t('about.hero.subtitle').split('\n')" :key="i">
+            <br v-if="i > 0" />{{ line }}
+          </template>
+        </p>
         <div class="hero__actions">
           <NuxtLink class="hero__btn hero__btn--primary" to="/login">
             <Icon name="lucide:log-in" size="15" />

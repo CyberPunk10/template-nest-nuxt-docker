@@ -1,0 +1,200 @@
+# ฐานข้อมูล: PostgreSQL + Prisma
+
+> **Branch:** เอกสารนี้ใช้ได้เฉพาะกับ branch `postgres-prisma` เท่านั้น
+
+## Stack
+
+- **PostgreSQL 17** — รันผ่าน Docker ในโหมด dev
+- **Prisma 7** — ORM, migration, การ generate client
+
+---
+
+## การรันในเครื่อง (Local)
+
+> **เมื่อสลับ branch** ไฟล์ `.env` ในเครื่องจะไม่อัปเดตให้อัตโนมัติ — อาจไม่มีตัวแปรของ branch ใหม่อยู่ในนั้น ให้เทียบกับ `.env.example` แล้วเพิ่มตัวแปรที่ขาดไป เช่น เมื่อสลับ branch `main` → `postgres-prisma` ไฟล์ `apps/backend/.env` อาจไม่มีตัวแปร `POSTGRES_*` ให้คัดลอกมาจาก `apps/backend/.env.example`
+
+รัน PostgreSQL ผ่าน Docker:
+
+```bash
+docker compose -f docker-compose.dev.yml up -d
+```
+
+รัน migration และ generate client:
+
+```bash
+cd apps/backend
+pnpm prisma migrate dev
+```
+
+---
+
+## การตั้งค่า (Configuration)
+
+### `apps/backend/.env`
+
+พารามิเตอร์การเชื่อมต่อ DB สำหรับ Prisma และตัวแอปพลิเคชัน:
+
+```
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=template
+```
+
+### `.env` ที่ root
+
+พารามิเตอร์สำหรับ Docker Compose:
+
+```
+POSTGRES_PORT=5432
+```
+
+### การเปลี่ยน port
+
+ถ้า port 5432 ถูกใช้งานอยู่ — ต้องเปลี่ยนใน **สองที่**:
+
+1. `apps/backend/.env` — `POSTGRES_PORT=5435`
+2. `.env` ที่ root — `POSTGRES_PORT=5435`
+
+ที่แรก Prisma เป็นตัวอ่าน ที่สอง Docker Compose เป็นตัวอ่านตอน proxy port จาก host เข้าไปยัง container
+
+---
+
+## Prisma
+
+### โครงสร้าง
+
+```
+apps/backend/
+├── prisma/
+│   ├── schema.prisma       ← โมเดล
+│   └── migrations/         ← ประวัติ migration (commit เข้า git)
+└── prisma.config.ts        ← การตั้งค่า Prisma (datasource URL)
+```
+
+### คำสั่งหลัก
+
+คำสั่งทั้งหมดรันจาก `apps/backend/`:
+
+```bash
+cd apps/backend
+
+# สร้างและรัน migration
+pnpm prisma migrate dev --name <ชื่อ>
+
+# รัน migration โดยไม่สร้างใหม่ (CI / production)
+pnpm prisma migrate deploy
+
+# เปิด Prisma Studio (GUI สำหรับดูและแก้ไขข้อมูล)
+pnpm prisma studio
+# → http://localhost:5555
+
+# generate client ใหม่ด้วยตนเอง
+pnpm prisma generate
+```
+
+### การ generate client
+
+Prisma generate client ไว้ที่ `src/generated/prisma` — โฟลเดอร์นี้อยู่ใน `.gitignore`
+ใน Prisma 7 client **จะไม่ถูก generate อัตโนมัติ** ตอน `migrate dev` — ต้องรัน `prisma generate` เองหลังจากเปลี่ยน schema สามารถตั้งค่าให้รันอัตโนมัติได้ผ่าน `afterApply` ใน `prisma.config.ts`
+
+---
+
+## Migration
+
+โฟลเดอร์ `prisma/migrations/` จะถูก commit เข้า git — นี่คือประวัติการเปลี่ยนแปลง schema ของ DB
+ห้ามแก้ไขไฟล์ migration ด้วยมือเด็ดขาด
+
+สำหรับ production ให้ใช้ `prisma migrate deploy` — จะรันเฉพาะ migration ที่ pending อยู่โดยไม่มีคำถามแบบ interactive
+
+---
+
+## การแก้ปัญหาความไม่ตรงกันระหว่าง schema กับ client ที่ generate ไว้
+
+### ปัญหาเกิดขึ้นได้อย่างไร
+
+Prisma ทำงานกับ artifact สองอย่างที่เป็นอิสระต่อกัน:
+
+1. **ประวัติ migration** — ไฟล์ใน `prisma/migrations/` ที่ commit เข้า git
+2. **client ที่ generate ไว้** — โค้ด TypeScript ใน `src/generated/prisma/` ที่ไม่ได้ commit (อยู่ใน `.gitignore`)
+
+client ถูก generate จากสถานะจริงของ DB ณ ตอนที่รัน `prisma migrate dev` ถ้าใน DB มีการรัน migration ที่ไฟล์ของมันไม่อยู่ใน `migrations/` — เช่น ถูกสร้างบนเครื่องอื่นหรือใน branch อื่นแล้วไม่ได้เข้า git — client จะมี field และโมเดลที่ไม่มีอยู่ใน `schema.prisma` ผลลัพธ์คือ: เกิด TypeScript error กับ field ที่ไม่มีในโค้ด
+
+สัญญาณของสถานการณ์นี้ในผลลัพธ์ของ `migrate dev`:
+
+```
+Drift detected: Your database schema is not in sync with your migration history.
+The following migration(s) are applied to the database but missing from the local migrations directory: 20260607165435_add_auth
+```
+
+### วิธีแก้สำหรับสภาพแวดล้อม dev
+
+ต้อง reset DB กลับไปยังสถานะที่อธิบายไว้ในไฟล์ migration ปัจจุบัน แล้ว build client ใหม่:
+
+```bash
+cd apps/backend
+
+# 1. reset DB และรัน migration ใหม่ทั้งหมด (ข้อมูลทั้งหมดจะถูกลบ)
+pnpm prisma migrate reset
+
+# 2. generate client ใหม่จาก schema.prisma ปัจจุบัน
+pnpm prisma generate
+```
+
+> `migrate reset` จะไม่รัน `generate` ให้อัตโนมัติ — ต้อง build client แยกเอง
+> หลังจากนั้น TypeScript error กับ field ที่ "ไม่มีอยู่" จะหายไป
+
+### เมื่อวิธีนี้ใช้ไม่ได้
+
+ถ้าความไม่ตรงกันเกิดขึ้นใน **production** หรือในสภาพแวดล้อมที่มีข้อมูลซึ่งสูญเสียไม่ได้ — `migrate reset` ใช้ไม่ได้ ในกรณีนี้ต้องเลือกอย่างใดอย่างหนึ่ง คือกู้ไฟล์ migration ที่หายไปกลับมาจากประวัติ git ของ branch อื่นหรือเครื่องอื่น หรือใช้ `prisma migrate resolve` เพื่อประสานสถานะด้วยตนเอง
+
+---
+
+## Error codes ของ Prisma
+
+Prisma แปลง error ของ PostgreSQL ให้เป็น code ของตัวเองผ่าน `PrismaClientKnownRequestError` ซึ่งช่วยให้จัดการ error ได้โดยไม่ต้อง parse ข้อความจาก driver
+
+Code ที่พบบ่อยที่สุด:
+
+| Code    | ความหมาย                                                 | การตอบสนองทั่วไป                      |
+| ------- | -------------------------------------------------------- | ------------------------------------- |
+| `P2002` | ละเมิด unique constraint (เช่น email ถูกใช้ไปแล้ว)       | `409 Conflict`                        |
+| `P2025` | ไม่พบ record ตอน `update`, `delete`, `findUniqueOrThrow` | `404 Not Found`                       |
+| `P2003` | ละเมิด foreign key constraint                            | `409 Conflict` หรือ `400 Bad Request` |
+
+Pattern ที่ถูกต้องตามหลัก idiomatic คือ ทำ `update`/`delete` ไปเลยแล้วดักจับ P2025 แทนที่จะทำ `findUniqueOrThrow` ก่อนล่วงหน้า
+
+::: tip TOCTOU (Time-Of-Check Time-Of-Use)
+คลาสของ bug ที่ระหว่างการตรวจสอบเงื่อนไขกับการใช้งานเงื่อนไขนั้นมีช่องว่างซึ่งสถานะอาจเปลี่ยนแปลงได้ ในที่นี้: ระหว่าง `findUniqueOrThrow` (การตรวจสอบ) กับ `update`/`delete` (การใช้งาน) process อื่นสามารถลบ record ได้ทัน
+:::
+
+❌ **สองคำสั่งที่มีช่อง TOCTOU:**
+
+```typescript
+// คำสั่งที่ 1: ตรวจสอบว่ามีอยู่หรือไม่
+await this.prisma.user.findUniqueOrThrow({ where: { id } }).catch(() => {
+  throw new NotFoundException() // จัดการแล้ว
+})
+// ← ตรงนี้ process อื่นอาจลบ record ได้
+// คำสั่งที่ 2: update — โยน P2025 ที่ไม่ได้จัดการ → 500
+return await this.prisma.user.update({ where: { id }, data: dto })
+```
+
+✅ **คำสั่งเดียว จัดการ P2025 อย่างชัดเจน:**
+
+```typescript
+try {
+  return await this.prisma.user.update({ where: { id }, data: dto })
+} catch (e) {
+  if (e instanceof PrismaClientKnownRequestError) {
+    if (e.code === 'P2025') throw new NotFoundException()
+    if (e.code === 'P2002') throw new ConflictException()
+  }
+  throw e
+}
+```
+
+วิธีนี้ตัดช่อง TOCTOU ระหว่างสองคำสั่งออกไป และลดจำนวนครั้งที่เรียก DB ลงครึ่งหนึ่ง
+
+รายการ code ทั้งหมด: [Prisma Error Reference](https://www.prisma.io/docs/orm/reference/error-reference)

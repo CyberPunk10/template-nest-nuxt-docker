@@ -30,8 +30,6 @@ template-nest-nuxt/
   В prod proxy настраивается через переменную NUXT_PUBLIC_API_BASE.
 ```
 
----
-
 ## Пакеты: как потребляются
 
 ```
@@ -48,8 +46,6 @@ template-nest-nuxt/
   Нельзя скомпилировать просто через tsc — .vue файлы
   требуют vue-tsc + специального пайплайна.
 ```
-
----
 
 ## TypeScript конфиги
 
@@ -82,8 +78,6 @@ tsconfig.base.json               ← корень монорепо, только
               rootDir: ./src             ← даёт чистый dist/main.js
               outDir: ./dist             ← без вложенных путей apps/backend/src/...
 ```
-
----
 
 ## Docker: стадии сборки
 

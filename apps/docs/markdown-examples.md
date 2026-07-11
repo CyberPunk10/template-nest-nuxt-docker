@@ -1,12 +1,12 @@
-# Markdown Extension Examples
+# Примеры расширений Markdown
 
-This page demonstrates some of the built-in markdown extensions provided by VitePress.
+Эта страница демонстрирует некоторые встроенные расширения markdown, которые предоставляет VitePress.
 
-## Syntax Highlighting
+## Подсветка синтаксиса
 
-VitePress provides Syntax Highlighting powered by [Shiki](https://github.com/shikijs/shiki), with additional features like line-highlighting:
+VitePress предоставляет подсветку синтаксиса на основе [Shiki](https://github.com/shikijs/shiki), с дополнительными возможностями вроде подсветки строк:
 
-**Input**
+**Ввод**
 
 ````md
 ```js{4}
@@ -20,7 +20,7 @@ export default {
 ```
 ````
 
-**Output**
+**Вывод**
 
 ```js{4}
 export default {
@@ -32,9 +32,9 @@ export default {
 }
 ```
 
-## Custom Containers
+## Пользовательские контейнеры
 
-**Input**
+**Ввод**
 
 ```md
 ::: info
@@ -58,7 +58,7 @@ This is a details block.
 :::
 ```
 
-**Output**
+**Вывод**
 
 ::: info
 This is an info box.
@@ -80,6 +80,6 @@ This is a dangerous warning.
 This is a details block.
 :::
 
-## More
+## Подробнее
 
-Check out the documentation for the [full list of markdown extensions](https://vitepress.dev/guide/markdown).
+Смотрите документацию для [полного списка расширений markdown](https://vitepress.dev/guide/markdown).
