@@ -1,4 +1,4 @@
-# template-nest-nuxt
+# template-nest-nuxt-docker
 
 Переиспользуемый шаблон монорепозитория NestJS + Nuxt 4, завёрнутый в Docker
 
@@ -9,23 +9,32 @@
 ![Docker](https://img.shields.io/badge/Docker-ready-2496ED?style=flat-square&logo=docker&logoColor=white)
 ![Node.js](https://img.shields.io/badge/Node.js-24-339933?style=flat-square&logo=node.js&logoColor=white)
 
-📖 [Архитектура](docs/architecture.md) · 🗄️ [База данных](docs/database.md)
-
-![Preview](docs/assets/preview.png)
-
 ## Варианты
 
-| Ветка             | Описание                  |
-| ----------------- | ------------------------- |
-| `main`            | Базовый шаблон — без БД   |
-| `postgres-prisma` | + PostgreSQL + Prisma ORM |
+Шаблон существует в нескольких версиях — каждая хранится в отдельной git-ветке и является самостоятельной точкой старта. Выбери нужную и клонируй сразу с ней.
+
+### `main` — базовый шаблон
+
+NestJS + Nuxt 4 + Docker. Users CRUD in-memory, i18n, Swagger, ESLint, Husky. Без БД.
 
 ```bash
-# базовый вариант
-git clone https://github.com/CyberPunk10/template-nest-nuxt-docker.git
+git clone https://github.com/CyberPunk10/template-nest-nuxt-docker.git my-app
+```
 
-# с PostgreSQL и Prisma
-git clone -b postgres-prisma https://github.com/CyberPunk10/template-nest-nuxt-docker.git
+### `postgres-prisma` — + PostgreSQL + Prisma
+
+Всё из `main`, плюс Prisma 7 + PostgreSQL 17, PrismaModule, миграции, docker-compose с БД.
+
+```bash
+git clone -b postgres-prisma https://github.com/CyberPunk10/template-nest-nuxt-docker.git my-app
+```
+
+### `auth` — + JWT авторизация
+
+Всё из `postgres-prisma`, плюс Passport.js, email+пароль, httpOnly cookies, сессии в БД, глобальный guard, `@Public()` декоратор.
+
+```bash
+git clone -b auth https://github.com/CyberPunk10/template-nest-nuxt-docker.git my-app
 ```
 
 ---
@@ -75,8 +84,8 @@ template-nest-nuxt/
 
 - **pnpm workspaces** — общие зависимости
 - **TypeScript strict** — строгий режим, path alias `@repo/*`
-- **ESLint + Prettier** — единый форматтер для всего монорепо
-- **Husky + lint-staged** — проверка изменённых файлов перед коммитом
+- **ESLint** — статический анализ кода (неиспользуемые переменные, потенциальные ошибки)
+- **Husky + lint-staged** — перед каждым коммитом автоматически запускает ESLint на изменённых файлах
 
 ### Пакеты
 
@@ -114,6 +123,8 @@ pnpm dev
 
 - копирует `.env` из `.env.example` если файл отсутствует
 - проверяет порты и предлагает разрешить конфликт если они заняты
+
+> **При переключении веток** локальный `.env` не обновляется автоматически — в нём могут отсутствовать переменные новой ветки. Сверь с `.env.example` и добавь недостающие.
 
 - Frontend: http://localhost:3000
 - Backend: http://localhost:3001

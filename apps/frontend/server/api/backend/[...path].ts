@@ -1,9 +1,10 @@
 export default defineEventHandler(async (event) => {
   const backendUrl = process.env.BACKEND_URL ?? 'http://localhost:3001'
   const path = event.context.params?.path ?? ''
-  const query = getQuery(event)
-  const queryString = new URLSearchParams(query as Record<string, string>).toString()
-  const url = `${backendUrl}/${path}${queryString ? `?${queryString}` : ''}`
+  // Берём search-строку напрямую из URL — без парсинга и пересборки,
+  // чтобы корректно форвардить массивы (?ids[]=1&ids[]=2) и спецсимволы.
+  const search = getRequestURL(event).search
+  const url = `${backendUrl}/${path}${search}`
 
   return proxyRequest(event, url)
 })
