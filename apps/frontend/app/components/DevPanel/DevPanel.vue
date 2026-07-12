@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import DevPanelViewport from './DevPanelViewport.vue'
 
-const { get } = useApi()
-const { data: backendHealth, error: backendError } = await get<{ status: string }>('/health')
-const backendOnline = computed(() => backendHealth.value?.status === 'ok' && !backendError.value)
-
 const {
-  public: { backendUrl, appEnv },
+  public: { apiBase, backendUrl, appEnv },
 } = useRuntimeConfig()
+const { data: backendHealth, error: backendError } = await useFetch<{ status: string }>('/health', {
+  baseURL: apiBase,
+})
+const backendOnline = computed(() => backendHealth.value?.status === 'ok' && !backendError.value)
 const requestUrl = useRequestURL()
 const frontendUrl = requestUrl.origin
 const swaggerEnabled = appEnv === 'development'
@@ -37,6 +37,10 @@ const currentLayout = computed(() => {
   const meta = route.meta as { layout?: string }
   return meta.layout ?? 'default'
 })
+
+function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
+  return isPublicRoute(r.meta as RouteMeta)
+}
 </script>
 
 <template>
@@ -109,6 +113,12 @@ const currentLayout = computed(() => {
       >
         <span class="nav-route__dot" />
         <code class="nav-route__path">{{ r.path }}</code>
+        <span
+          class="nav-route__badge"
+          :class="isPublic(r) ? 'nav-route__badge--public' : 'nav-route__badge--private'"
+        >
+          {{ isPublic(r) ? 'public' : 'private' }}
+        </span>
       </NuxtLink>
     </div>
 
