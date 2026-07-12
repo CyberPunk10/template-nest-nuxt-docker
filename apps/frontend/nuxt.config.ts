@@ -10,10 +10,29 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxt/icon',
     '@nuxtjs/i18n',
+    [
+      '@nuxtjs/color-mode',
+      {
+        preference: 'dark',
+        fallback: 'dark',
+      },
+    ],
   ],
   devtools: { enabled: true },
   css: [
     '~/assets/css/reset.css',
+    '~/assets/css/_scrollbar.scss',
+    '~/assets/css/variables.css',
+    '~/assets/css/variables.layout.css',
+    '~/assets/css/variables.dark.css',
+    '~/assets/css/variables.dark-slate.css',
+    '~/assets/css/variables.dark-midnight.css',
+    '~/assets/css/variables.dark-ocean.css',
+    '~/assets/css/variables.dark-nuxt.css',
+    '~/assets/css/variables.light.css',
+    '~/assets/css/variables.light-sand.css',
+    '~/assets/css/variables.light-mist.css',
+    '~/assets/css/variables.light-rose.css',
   ],
 
   runtimeConfig: {

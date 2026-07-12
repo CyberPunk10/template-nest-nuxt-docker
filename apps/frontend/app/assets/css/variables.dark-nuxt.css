@@ -1,0 +1,61 @@
+:root.dark-nuxt {
+  color-scheme: dark;
+
+  /* Эталонная тема по палитре nuxt.com — Tailwind slate + фирменный green #00dc82.
+     Сделана для сравнения: переключись между dark-nuxt и dark-ocean. */
+
+  /* Surfaces — глубина как на nuxt.com: body slate-950, панели → карточки светлеют */
+  --surface-app:     #020617; /* body — slate-950, самый дальний фон */
+  --surface-panel:   #0b1120; /* сайдбар, шапка */
+  --surface-card:    #0f172a; /* карточки, секции — slate-900 */
+  --surface-popover: #1e293b; /* попапы, дропдауны — slate-800 */
+  --surface-sunken:  #020617; /* инпуты, textarea, code */
+  --surface-overlay: #0f172a; /* модалки */
+
+  /* Borders — ступени slate */
+  --border-subtle:  #1e293b; /* slate-800 — разделители */
+  --border-popover: #334155; /* slate-700 — внутри попапов */
+  --border-default: #334155; /* slate-700 — карточки, инпуты */
+  --border-strong:  #475569; /* slate-600 — focus ring */
+
+  /* Text — ступени slate */
+  --text-primary:   #f8fafc; /* slate-50 — основной контент */
+  --text-secondary: #94a3b8; /* slate-400 — подписи, метки */
+  --text-muted:     #64748b; /* slate-500 — плейсхолдеры, иконки */
+  --text-on-accent: #05130c; /* тёмный текст поверх светлого green */
+
+  /* Accent — фирменный Nuxt green */
+  --accent:        #00dc82; /* кнопки, ссылки, активные состояния */
+  --accent-hover:  #00f090; /* hover */
+  --accent-subtle: rgba(0, 220, 130, 0.1); /* фон выбранной строки, active nav item */
+  --glow: radial-gradient(ellipse 50% 100% at 50% 0%, rgba(0, 220, 130, 0.08) 0%, transparent 70%); /* фоновое свечение вверху страницы */
+
+  /* Controls — нейтральные интерактивные состояния */
+  --control-hover:    rgba(255, 255, 255, 0.06); /* hover на кнопках, пунктах меню */
+  --control-selected: rgba(255, 255, 255, 0.09); /* выбранный пункт без акцентного цвета */
+
+  /* Status — успех в green-семье Nuxt, отличается ступенью от accent */
+  --status-danger:         #ef4444;                 /* ошибки, деструктивные действия */
+  --status-danger-subtle:  rgba(239, 68, 68, 0.1);  /* фон alert/toast об ошибке */
+  --status-success:        #4ade80;                 /* успех — green-400 */
+  --status-success-subtle: rgba(74, 222, 128, 0.1); /* фон успешного alert */
+  --status-warning:        #f59e0b;                 /* предупреждения */
+  --status-warning-subtle: rgba(245, 158, 11, 0.1); /* фон предупреждающего alert */
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2); /* поднятые карточки */
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.2); /* попапы, дропдауны */
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.25); /* модалки */
+
+  /* Misc */
+  --gradient-shadow-color: rgba(0, 0, 0, 0.3); /* тень-градиент у края сайдбара */
+  --gradient-shadow-size:  1.25rem;
+
+  --scrollbar-thumb:  rgba(30, 41, 59, 0.8);
+  --scrollbar-border: #1e293b;
+  --scrollbar-track:  transparent;
+
+  --tooltip-bg:     #1e293b;
+  --tooltip-text:   #f8fafc;
+  --tooltip-border: #334155;
+}

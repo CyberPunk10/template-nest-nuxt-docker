@@ -1,0 +1,57 @@
+:root.dark-midnight {
+  color-scheme: dark;
+
+  /* Surfaces — слои глубины, каждый следующий "выше" предыдущего */
+  --surface-app:     #0d1117; /* body, самый дальний фон страницы */
+  --surface-panel:   #11161e; /* сайдбар, шапка, постоянные панели */
+  --surface-card:    #161b22; /* карточки, секции */
+  --surface-popover: #21262d; /* попапы, дропдауны — поверх карточек */
+  --surface-sunken:  #090d12; /* инпуты, textarea, code — вдавленные зоны */
+  --surface-overlay: #161b22; /* модалки — поверх всего */
+
+  /* Borders — три уровня выразительности */
+  --border-subtle:  #21262d; /* разделители между строками, внутри компонентов */
+  --border-popover: #2c333b; /* разделители внутри попапов и дропдаунов */
+  --border-default: #30363d; /* границы карточек, инпутов, дропдаунов */
+  --border-strong:  #444c56; /* акцентные границы, focus ring */
+
+  /* Text — четыре роли, не иерархия важности */
+  --text-primary:   #e6edf3; /* основной контент, заголовки */
+  --text-secondary: #7d8590; /* подписи, метки, вспомогательный текст */
+  --text-muted:     #484f58; /* плейсхолдеры, иконки, disabled */
+  --text-on-accent: #ffffff; /* текст поверх accent-фона (кнопки, badges) */
+
+  /* Accent — брендовый #00dc82 */
+  --accent:        #00dc82; /* кнопки, ссылки, активные состояния */
+  --accent-hover:  #00f090; /* hover на accent-элементах */
+  --accent-subtle: rgba(0, 220, 130, 0.1); /* фон выбранной строки, active nav item */
+
+  /* Controls — нейтральные интерактивные состояния */
+  --control-hover:    rgba(255, 255, 255, 0.06); /* hover на кнопках, пунктах меню */
+  --control-selected: rgba(255, 255, 255, 0.09); /* выбранный пункт без акцентного цвета */
+
+  /* Status — смысловые цвета обратной связи */
+  --status-danger:         #ef4444;               /* ошибки, деструктивные действия */
+  --status-danger-subtle:  rgba(239, 68, 68, 0.1); /* фон alert/toast об ошибке */
+  --status-success:        #4edaa0;               /* успех, подтверждение */
+  --status-success-subtle: rgba(78, 218, 160, 0.1); /* фон успешного alert */
+  --status-warning:        #f59e0b;               /* предупреждения, осторожность */
+  --status-warning-subtle: rgba(245, 158, 11, 0.1); /* фон предупреждающего alert */
+
+  /* Shadows — три уровня подъёма */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2); /* поднятые карточки */
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.2); /* попапы, дропдауны */
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.25); /* модалки */
+
+  /* Misc */
+  --gradient-shadow-color: rgba(0, 0, 0, 0.32); /* тень-градиент у края сайдбара */
+  --gradient-shadow-size:  1.25rem;
+
+  --scrollbar-thumb:  rgba(33, 38, 45, 0.8);
+  --scrollbar-border: #21262d;
+  --scrollbar-track:  transparent;
+
+  --tooltip-bg:     #21262d;
+  --tooltip-text:   #e6edf3;
+  --tooltip-border: #30363d;
+}

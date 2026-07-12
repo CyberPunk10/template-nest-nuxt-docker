@@ -3,6 +3,7 @@ defineProps<{
   variant?: 'primary' | 'ghost' | 'danger'
   disabled?: boolean
   type?: 'button' | 'submit' | 'reset'
+  isIcon?: boolean
 }>()
 
 defineEmits<{
@@ -13,7 +14,7 @@ defineEmits<{
 <template>
   <button
     class="ui-button"
-    :class="`ui-button--${variant ?? 'primary'}`"
+    :class="[`ui-button--${variant ?? 'primary'}`, { 'ui-button--icon': isIcon }]"
     :type="type ?? 'button'"
     :disabled="disabled"
     @click="$emit('click', $event)"
@@ -29,7 +30,7 @@ defineEmits<{
   justify-content: center;
   gap: 6px;
   padding: 8px 16px;
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   font-size: 14px;
   line-height: 1.2;
   font-weight: 500;
@@ -46,8 +47,8 @@ defineEmits<{
 }
 
 .ui-button--primary {
-  background: #00dc82;
-  color: #0f172a;
+  background: var(--accent);
+  color: var(--surface-card);
 }
 
 .ui-button--primary:hover:not(:disabled) {
@@ -56,27 +57,30 @@ defineEmits<{
 
 .ui-button--ghost {
   background: transparent;
-  border-color: #1e293b;
-  color: #e2e8f0;
+  border-color: var(--border-subtle);
+  color: var(--text-primary);
 }
 
 .ui-button--ghost:hover:not(:disabled) {
-  border-color: #00dc82;
-  color: #00dc82;
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .ui-button--danger {
   background: transparent;
-  border-color: #1e293b;
-  color: #475569;
-  padding: 6px;
-  width: 30px;
-  height: 30px;
+  border-color: var(--border-subtle);
+  color: var(--text-muted);
 }
 
 .ui-button--danger:hover:not(:disabled) {
   border-color: #ef4444;
   color: #ef4444;
   background: rgba(239, 68, 68, 0.15);
+}
+
+.ui-button--icon {
+  padding: 6px;
+  width: 30px;
+  height: 30px;
 }
 </style>

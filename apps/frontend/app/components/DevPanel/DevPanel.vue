@@ -13,7 +13,7 @@ const swaggerEnabled = appEnv === 'development'
 const route = useRoute()
 const router = useRouter()
 
-type RouteMeta = { public?: boolean; guestOnly?: boolean }
+type RouteMeta = { public?: boolean, guestOnly?: boolean }
 
 function isPublicRoute(meta: RouteMeta) {
   return !!(meta?.public || meta?.guestOnly)
@@ -22,7 +22,7 @@ function isPublicRoute(meta: RouteMeta) {
 const routes = computed(() =>
   router
     .getRoutes()
-    .filter((r) => r.path && !r.path.includes(':') && !r.name?.toString().startsWith('_'))
+    .filter(r => r.path && !r.path.includes(':') && !r.name?.toString().startsWith('_'))
     .sort((a, b) => {
       const aPublic = isPublicRoute(a.meta as RouteMeta)
       const bPublic = isPublicRoute(b.meta as RouteMeta)
@@ -49,7 +49,11 @@ const currentLayout = computed(() => {
 
     <div class="panel__section">
       <h2 class="panel__heading">Сервисы</h2>
-      <a class="service" :href="`${backendUrl}/health`" target="_blank">
+      <a
+        class="service"
+        :href="`${backendUrl}/health`"
+        target="_blank"
+      >
         <span
           class="service__dot"
           :class="backendOnline ? 'service__dot--online' : 'service__dot--offline'"
@@ -57,7 +61,11 @@ const currentLayout = computed(() => {
         <span class="service__name">Backend (NestJS)</span>
         <code class="service__url">{{ backendUrl }}/health</code>
       </a>
-      <a class="service" :href="`${frontendUrl}/api/health`" target="_blank">
+      <a
+        class="service"
+        :href="`${frontendUrl}/api/health`"
+        target="_blank"
+      >
         <span class="service__dot service__dot--online" />
         <span class="service__name">Frontend (Nuxt)</span>
         <code class="service__url">{{ frontendUrl }}/api/health</code>
@@ -129,17 +137,17 @@ const currentLayout = computed(() => {
 .service {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  border: 1px solid #1e293b;
-  border-radius: 8px;
+  gap: var(--space-2);
+  padding: var(--space-2) 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
   text-decoration: none;
   color: #fff;
   font-size: 13px;
   transition: border-color 0.2s;
 
   &:hover {
-    border-color: #00dc82;
+    border-color: var(--accent);
   }
 
   &--muted {
@@ -155,8 +163,8 @@ const currentLayout = computed(() => {
     flex-shrink: 0;
 
     &--online {
-      background: #00dc82;
-      box-shadow: 0 0 6px #00dc82;
+      background: var(--accent);
+      box-shadow: 0 0 6px var(--accent);
     }
 
     &--offline {
@@ -177,7 +185,7 @@ const currentLayout = computed(() => {
 
   &__badge {
     font-size: 10px;
-    background: #1e293b;
+    background: var(--border-subtle);
     color: #64748b;
     border-radius: 4px;
     padding: 1px 6px;
@@ -189,10 +197,10 @@ const currentLayout = computed(() => {
 .env-row {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  border: 1px solid #1e293b;
-  border-radius: 8px;
+  gap: var(--space-2);
+  padding: var(--space-2) 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
   font-size: 13px;
 
   &__key {
@@ -205,13 +213,13 @@ const currentLayout = computed(() => {
   &__value {
     font-family: monospace;
     font-size: 11px;
-    padding: 2px 8px;
+    padding: 2px var(--space-2);
     border-radius: 4px;
     font-weight: 600;
 
     &--development {
       background: #1c3a2a;
-      color: #00dc82;
+      color: var(--accent);
     }
     &--production {
       background: #2a1c1c;
@@ -236,7 +244,7 @@ const currentLayout = computed(() => {
   padding: 0 2px;
 
   &__label {
-    color: #475569;
+    color: var(--text-muted);
   }
   &__value {
     font-family: monospace;
@@ -247,10 +255,10 @@ const currentLayout = computed(() => {
 .nav-route {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
   padding: 7px 12px;
-  border: 1px solid #1e293b;
-  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
   text-decoration: none;
   color: #94a3b8;
   font-size: 13px;
@@ -260,16 +268,16 @@ const currentLayout = computed(() => {
 
   &:hover {
     border-color: #334155;
-    color: #e2e8f0;
+    color: var(--text-primary);
   }
 
   &--active {
-    border-color: #00dc82;
-    color: #e2e8f0;
+    border-color: var(--accent);
+    color: var(--text-primary);
 
     .nav-route__dot {
-      background: #00dc82;
-      box-shadow: 0 0 5px #00dc82;
+      background: var(--accent);
+      box-shadow: 0 0 5px var(--accent);
     }
   }
 
@@ -297,7 +305,7 @@ const currentLayout = computed(() => {
 
     &--public {
       background: #1c3a2a;
-      color: #00dc82;
+      color: var(--accent);
     }
     &--private {
       background: #2a1f1c;

@@ -5,14 +5,15 @@
     "validation": "Validation failed"
   },
   "users": {
-    "title": "Users",
-    "subtitle": "CRUD · NestJS /users",
-    "create": "Create",
-    "list": "List",
-    "empty": "No users",
-    "name": "Name",
-    "add": "Add",
-    "adding": "Adding...",
-    "error": "Error"
+    "title": "Users"
+  },
+  "stub": {
+    "title": "Under construction",
+    "desc": "This section is not implemented yet — it's a template placeholder. Replace this page with real content when you're ready.",
+    "route": "route",
+    "back": "Back to home"
+  },
+  "nav": {
+    "home": "Home",
   }
 }

@@ -14,7 +14,7 @@ defineProps<{
 .ui-badge {
   display: inline-flex;
   align-items: center;
-  padding: 2px 8px;
+  padding: 2px var(--space-2);
   border-radius: 9999px;
   font-size: 11px;
   font-weight: 600;
@@ -24,7 +24,7 @@ defineProps<{
 
 .ui-badge--green {
   background: #052e16;
-  color: #00dc82;
+  color: var(--accent);
 }
 .ui-badge--yellow {
   background: #2d1f00;
@@ -35,7 +35,7 @@ defineProps<{
   color: #ef4444;
 }
 .ui-badge--gray {
-  background: #1e293b;
+  background: var(--border-subtle);
   color: #94a3b8;
 }
 </style>

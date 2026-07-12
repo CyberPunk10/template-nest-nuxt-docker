@@ -1,0 +1,173 @@
+// При удалении компонента <NuxtWelcome /> можно удалять и этот файл
+
+// System dark + our light: cancel dark: styles with light values
+@media(prefers-color-scheme:dark) {
+
+  html.light,
+  html.light-sand,
+  html.light-mist,
+  html.light-rose {
+    .nuxt-welcome-component.antialiased {
+      --un-text-opacity: 1;
+      color: rgb(2 4 32/var(--un-text-opacity));
+
+      .dark\:border-\[\#00DC82\]\/50 {
+        border-color: #00dc4280
+      }
+
+      .dark\:border-\[\#00DC82\]\/80,
+      .group:hover .group-hover\:dark\:border-\[\#00DC82\]\/80 {
+        border-color: rgb(0 220 130/var(--un-border-opacity))
+      }
+
+      .dark\:border-white\/10 {
+        --un-border-opacity: 1;
+        border-color: rgb(224 224 224/var(--un-border-opacity))
+      }
+
+      .dark\:border-white\/20 {
+        --un-border-opacity: 1;
+        border-color: rgb(224 224 224/var(--un-border-opacity))
+      }
+
+      .hover\:dark\:border-\[\#00DC82\]:hover {
+        --un-border-opacity: 1;
+        border-color: rgb(0 220 130/var(--un-border-opacity))
+      }
+
+      .dark\:bg-\[\#020420\] {
+        --un-bg-opacity: 1;
+        background-color: rgb(0 220 130/.05)
+      }
+
+      .dark\:bg-white\/5 {
+        background-color: #f5f5f51a
+      }
+
+      .dark\:text-\[\#00DC82\] {
+        --un-text-opacity: 1;
+        color: rgb(0 153 86/var(--un-text-opacity))
+      }
+
+      .dark\:text-gray-200 {
+        --un-text-opacity: 1;
+        color: rgb(66 66 66/var(--un-text-opacity))
+      }
+
+      .dark\:text-gray-400 {
+        --un-text-opacity: 1;
+        color: rgb(117 117 117/var(--un-text-opacity))
+      }
+
+      .dark\:text-white {
+        --un-text-opacity: 1;
+        color: rgb(2 4 32/var(--un-text-opacity))
+      }
+
+      .dark\:text-white\/40 {
+        color: #02042033
+      }
+
+      .dark\:hover\:text-white:hover {
+        --un-text-opacity: 1;
+        color: rgb(2 4 32/var(--un-text-opacity))
+      }
+
+      .group:hover .group-hover\:dark\:text-gray-100 {
+        --un-text-opacity: 1;
+        color: rgb(66 66 66/var(--un-text-opacity))
+      }
+
+      .text-green-700 {
+        --un-text-opacity: 1;
+        color: rgb(0 153 86 / var(--un-text-opacity));
+      }
+
+      .bg-green-50 {
+        --un-bg-opacity: 1;
+        background-color: rgb(208 252 222 / var(--un-bg-opacity));
+      }
+    }
+  }
+}
+
+// System light + our dark: force dark: styles
+@media(prefers-color-scheme:light) {
+
+  html.dark,
+  html.dark-slate,
+  html.dark-midnight,
+  html.dark-ocean {
+    .nuxt-welcome-component.antialiased {
+      --un-bg-opacity: 1;
+      background-color: rgb(2 4 32/var(--un-bg-opacity));
+      --un-text-opacity: 1;
+      color: rgb(255 255 255/var(--un-text-opacity));
+
+      .dark\:border-\[\#00DC82\]\/50 {
+        border-color: #00dc8280
+      }
+
+      .dark\:border-\[\#00DC82\]\/80,
+      .group:hover .group-hover\:dark\:border-\[\#00DC82\]\/80 {
+        border-color: #00dc82cc
+      }
+
+      .dark\:border-white\/10 {
+        border-color: #ffffff1a
+      }
+
+      .dark\:border-white\/20 {
+        border-color: #fff3
+      }
+
+      .hover\:dark\:border-\[\#00DC82\]:hover {
+        --un-border-opacity: 1;
+        border-color: rgb(0 220 130/var(--un-border-opacity))
+      }
+
+      .dark\:bg-\[\#020420\] {
+        --un-bg-opacity: 1;
+        background-color: rgb(2 4 32/var(--un-bg-opacity))
+      }
+
+      .dark\:bg-white\/5 {
+        background-color: #ffffff0d
+      }
+
+      .dark\:text-\[\#00DC82\] {
+        --un-text-opacity: 1;
+        color: rgb(0 220 130/var(--un-text-opacity))
+      }
+
+      .dark\:text-gray-200 {
+        --un-text-opacity: 1;
+        color: rgb(224 224 224/var(--un-text-opacity))
+      }
+
+      .dark\:text-gray-400 {
+        --un-text-opacity: 1;
+        color: rgb(158 158 158/var(--un-text-opacity))
+      }
+
+      .dark\:text-white {
+        --un-text-opacity: 1;
+        color: rgb(255 255 255/var(--un-text-opacity))
+      }
+
+      .dark\:text-white\/40 {
+        color: #fff6
+      }
+
+      .dark\:hover\:text-white:hover {
+        --un-text-opacity: 1;
+        color: rgb(255 255 255/var(--un-text-opacity))
+      }
+
+      .group:hover .group-hover\:dark\:text-gray-100 {
+        --un-text-opacity: 1;
+        color: rgb(238 238 238/var(--un-text-opacity))
+      }
+    }
+  }
+}

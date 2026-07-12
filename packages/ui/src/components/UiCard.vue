@@ -17,7 +17,7 @@ defineProps<{
 
 <style scoped>
 .ui-card {
-  border: 1px solid #1e293b;
+  border: 1px solid var(--border-subtle);
   border-radius: 12px;
   background: #020420;
   overflow: hidden;
@@ -25,13 +25,13 @@ defineProps<{
 
 .ui-card__header {
   padding: 12px 16px;
-  border-bottom: 1px solid #1e293b;
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .ui-card__title {
   font-size: 13px;
   font-weight: 600;
-  color: #e2e8f0;
+  color: var(--text-primary);
 }
 
 .ui-card__body {
