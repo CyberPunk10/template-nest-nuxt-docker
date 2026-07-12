@@ -30,10 +30,6 @@ const title = computed(() => route.meta.title as string | undefined)
   padding: 0 var(--space-4);
   padding-left: var(--space-12);
 
-  @media (width > 1024px) {
-    display: none;
-  }
-
   &__title {
     flex: 1;
     font-size: var(--text-sm);
