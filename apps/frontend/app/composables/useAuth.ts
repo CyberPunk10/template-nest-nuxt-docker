@@ -17,7 +17,7 @@ export function useAuth() {
   }
 
   async function register(name: string, email: string, password: string) {
-    user.value = await $api<AuthUser>('/auth/register', {
+    const me = await $api<AuthUser>('/auth/register', {
       method: 'POST',
       body: { name, email, password },
     })
