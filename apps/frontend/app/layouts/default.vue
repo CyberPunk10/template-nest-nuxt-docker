@@ -21,6 +21,8 @@ watch(height, (v) => {
       ref="pageRef"
       class="app-page"
     >
+      <AppHeader />
+
       <div class="app-page__content">
         <slot />
       </div>
