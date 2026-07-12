@@ -1,8 +1,9 @@
 import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put } from '@nestjs/common'
+import { User } from '../../generated/prisma/client'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
-import { SafeUser, UsersService } from './users.service'
+import { UsersService } from './users.service'
 
 @ApiTags('Users')
 @Controller('users')
@@ -12,7 +13,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Получить всех пользователей' })
   @ApiResponse({ status: 200, description: 'Список пользователей' })
   @Get()
-  findAll(): SafeUser[] {
+  findAll(): Promise<User[]> {
     return this.usersService.findAll()
   }
 
@@ -22,7 +23,7 @@ export class UsersController {
   @ApiResponse({ status: 409, description: 'Email уже занят' })
   @Post()
   @HttpCode(201)
-  create(@Body() dto: CreateUserDto): SafeUser {
+  create(@Body() dto: CreateUserDto): Promise<User> {
     return this.usersService.create(dto)
   }
 
@@ -30,7 +31,7 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Пользователь найден' })
   @ApiResponse({ status: 404, description: 'Пользователь не найден' })
   @Get(':id')
-  findOne(@Param('id') id: string): SafeUser {
+  findOne(@Param('id') id: string): Promise<User> {
     return this.usersService.findOne(id)
   }
 
@@ -38,7 +39,7 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Пользователь обновлён' })
   @ApiResponse({ status: 404, description: 'Пользователь не найден' })
   @Put(':id')
-  update(@Param('id') id: string, @Body() dto: UpdateUserDto): SafeUser {
+  update(@Param('id') id: string, @Body() dto: UpdateUserDto): Promise<User> {
     return this.usersService.update(id, dto)
   }
 
@@ -47,7 +48,7 @@ export class UsersController {
   @ApiResponse({ status: 404, description: 'Пользователь не найден' })
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id') id: string): void {
-    this.usersService.remove(id)
+  remove(@Param('id') id: string): Promise<void> {
+    return this.usersService.remove(id)
   }
 }

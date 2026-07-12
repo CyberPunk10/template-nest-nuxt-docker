@@ -1,69 +1,36 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
+import { User } from '../../generated/prisma/client'
+import { PrismaService } from '../prisma/prisma.service'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
-import { User } from './user.entity'
 
 export type SafeUser = Omit<User, 'password'>
 
-function toSafeUser({ password: _password, ...safeUser }: User): SafeUser {
-  return safeUser
-}
-
 @Injectable()
 export class UsersService {
-  private readonly users: User[] = [
-    {
-      id: crypto.randomUUID(),
-      name: 'Alice',
-      email: 'alice@example.com',
-      password: 'password',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      id: crypto.randomUUID(),
-      name: 'Bob',
-      email: 'bob@example.com',
-      password: 'password',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-  ]
+  constructor(private readonly prisma: PrismaService) {}
 
-  findAll(): SafeUser[] {
-    return this.users.map(toSafeUser)
+  findAll(): Promise<User[]> {
+    return this.prisma.user.findMany()
   }
 
-  create(dto: CreateUserDto): SafeUser {
-    if (this.users.some(u => u.email === dto.email)) {
-      throw new ConflictException('Email already in use')
-    }
-    const now = new Date()
-    const user: User = { id: crypto.randomUUID(), ...dto, createdAt: now, updatedAt: now }
-    this.users.push(user)
-    return toSafeUser(user)
+  create(dto: CreateUserDto): Promise<User> {
+    return this.prisma.user.create({ data: dto })
   }
 
-  findOne(id: string): SafeUser {
-    const user = this.users.find(u => u.id === id)
+  async findOne(id: string): Promise<User> {
+    const user = await this.prisma.user.findUnique({ where: { id } })
     if (!user) throw new NotFoundException(`User ${id} not found`)
     return user
   }
 
-  findByEmail(email: string): User | undefined {
-    return this.users.find(u => u.email === email)
+  async update(id: string, dto: UpdateUserDto): Promise<User> {
+    await this.findOne(id)
+    return this.prisma.user.update({ where: { id }, data: dto })
   }
 
-  update(id: string, dto: UpdateUserDto): SafeUser {
-    const user = this.users.find(u => u.id === id)
-    if (!user) throw new NotFoundException(`User ${id} not found`)
-    Object.assign(user, dto, { updatedAt: new Date() })
-    return toSafeUser(user)
-  }
-
-  remove(id: string): void {
-    const index = this.users.findIndex(u => u.id === id)
-    if (index === -1) throw new NotFoundException(`User ${id} not found`)
-    this.users.splice(index, 1)
+  async remove(id: string): Promise<void> {
+    await this.findOne(id)
+    await this.prisma.user.delete({ where: { id } })
   }
 }

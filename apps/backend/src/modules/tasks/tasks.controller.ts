@@ -12,7 +12,7 @@ import {
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { CreateTaskDto } from './dto/create-task.dto'
 import { UpdateTaskDto } from './dto/update-task.dto'
-import { Task } from './task.entity'
+import { Task } from '../../generated/prisma/client'
 import { TasksService } from './tasks.service'
 
 @ApiTags('Tasks')
@@ -23,7 +23,7 @@ export class TasksController {
   @ApiOperation({ summary: 'Получить все задачи' })
   @ApiResponse({ status: 200 })
   @Get()
-  findAll(): Task[] {
+  findAll(): Promise<Task[]> {
     return this.tasksService.findAll()
   }
 
@@ -31,7 +31,7 @@ export class TasksController {
   @ApiResponse({ status: 201 })
   @Post()
   @HttpCode(201)
-  create(@Body() dto: CreateTaskDto): Task {
+  create(@Body() dto: CreateTaskDto): Promise<Task> {
     return this.tasksService.create(dto)
   }
 
@@ -39,7 +39,7 @@ export class TasksController {
   @ApiResponse({ status: 200 })
   @ApiResponse({ status: 404, description: 'Задача не найдена' })
   @Put(':id')
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateTaskDto): Task {
+  update(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateTaskDto): Promise<Task> {
     return this.tasksService.update(id, dto)
   }
 
@@ -48,7 +48,7 @@ export class TasksController {
   @ApiResponse({ status: 404, description: 'Задача не найдена' })
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id', ParseUUIDPipe) id: string): void {
-    this.tasksService.remove(id)
+  remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+    return this.tasksService.remove(id)
   }
 }

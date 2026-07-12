@@ -1,39 +1,34 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
+import { PrismaService } from '../prisma/prisma.service'
 import { CreateTaskDto } from './dto/create-task.dto'
 import { UpdateTaskDto } from './dto/update-task.dto'
-import { Task } from './task.entity'
+import { Task } from '../../generated/prisma/client'
 
 @Injectable()
 export class TasksService {
-  private readonly tasks: Task[] = []
+  constructor(private readonly prisma: PrismaService) {}
 
-  findAll(): Task[] {
-    return this.tasks
+  findAll(): Promise<Task[]> {
+    return this.prisma.task.findMany()
   }
 
-  findOne(id: string): Task {
-    const task = this.tasks.find(t => t.id === id)
+  async findOne(id: string): Promise<Task> {
+    const task = await this.prisma.task.findUnique({ where: { id } })
     if (!task) throw new NotFoundException(`Task ${id} not found`)
     return task
   }
 
-  create(dto: CreateTaskDto): Task {
-    const now = new Date()
-    const task: Task = { id: crypto.randomUUID(), ...dto, createdAt: now, updatedAt: now }
-    this.tasks.push(task)
-    return task
+  create(dto: CreateTaskDto): Promise<Task> {
+    return this.prisma.task.create({ data: dto })
   }
 
-  update(id: string, dto: UpdateTaskDto): Task {
-    const index = this.tasks.findIndex(t => t.id === id)
-    if (index === -1) throw new NotFoundException(`Task ${id} not found`)
-    this.tasks[index] = { ...this.tasks[index], ...dto, updatedAt: new Date() }
-    return this.tasks[index]
+  async update(id: string, dto: UpdateTaskDto): Promise<Task> {
+    await this.findOne(id)
+    return this.prisma.task.update({ where: { id }, data: dto })
   }
 
-  remove(id: string): void {
-    const index = this.tasks.findIndex(t => t.id === id)
-    if (index === -1) throw new NotFoundException(`Task ${id} not found`)
-    this.tasks.splice(index, 1)
+  async remove(id: string): Promise<void> {
+    await this.findOne(id)
+    await this.prisma.task.delete({ where: { id } })
   }
 }
