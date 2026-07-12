@@ -3,21 +3,5 @@
   --breakpoint-md: 768px;  /* mobile → tablet: появляется header, sidebar становится drawer */
   --breakpoint-lg: 1024px; /* tablet → desktop: header скрывается, sidebar постоянный */
 
-  --app-sidebar-width: 15rem;
-  --app-sidebar-width-collapsed: 3.25rem;
-  --app-sidebar-item-height: 2.5rem;
-  --app-sidebar-item-height-xs: 2rem;
-  --app-sidebar-item-height-sm: 2.25rem;
-  --app-sidebar-dropdown-max-height: 48vh;
-  --app-sidebar-transition-duration: var(--duration-slow);
-  --app-sidebar-transition: var(--app-sidebar-transition-duration) ease;
-
   --app-header-height: 3.25rem;
-  --max-width-content: 75.375rem;
-}
-
-@media (max-width: 480px) {
-  :root {
-    --app-sidebar-width: 100%;
-  }
 }

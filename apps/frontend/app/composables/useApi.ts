@@ -1,23 +1,9 @@
-export function useApi() {
+export const useApi = createUseFetch(() => {
   const {
     public: { apiBase },
   } = useRuntimeConfig()
 
-  function get<T>(path: string) {
-    return useFetch<T>(`${apiBase}${path}`)
+  return {
+    baseURL: apiBase as string,
   }
-
-  function post<T>(path: string, body: Record<string, unknown>) {
-    return $fetch<T>(`${apiBase}${path}`, { method: 'POST', body })
-  }
-
-  function put<T>(path: string, body: Record<string, unknown>) {
-    return $fetch<T>(`${apiBase}${path}`, { method: 'PUT', body })
-  }
-
-  function del<T = void>(path: string) {
-    return $fetch<T>(`${apiBase}${path}`, { method: 'DELETE' })
-  }
-
-  return { get, post, put, del }
-}
+})

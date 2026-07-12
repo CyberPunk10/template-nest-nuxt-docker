@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import DevPanelViewport from './DevPanelViewport.vue'
+
 const { get } = useApi()
 const { data: backendHealth, error: backendError } = await get<{ status: string }>('/health')
 const backendOnline = computed(() => backendHealth.value?.status === 'ok' && !backendError.value)
@@ -108,6 +110,11 @@ const currentLayout = computed(() => {
         <span class="nav-route__dot" />
         <code class="nav-route__path">{{ r.path }}</code>
       </NuxtLink>
+    </div>
+
+    <div class="panel__section">
+      <h2 class="panel__heading">Viewport</h2>
+      <DevPanelViewport />
     </div>
   </div>
 </template>

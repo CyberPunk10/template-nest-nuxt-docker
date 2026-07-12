@@ -28,13 +28,7 @@ watch(height, (v) => {
   </div>
 </template>
 
-<style scoped>
+<style lang="scss">
 .layout {
-  min-height: 100vh;
-  font-family: system-ui, sans-serif;
-}
-
-.layout__content {
-  height: 100%;
 }
 </style>
