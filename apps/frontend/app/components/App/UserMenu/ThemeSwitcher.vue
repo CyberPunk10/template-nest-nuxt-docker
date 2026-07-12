@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { resolveIcon } from '~/components/App/Sidebar/config/icons'
-import { themes } from '~/components/App/UserMenu/user-menu'
+import { themes } from '~/components/App/UserMenu/config/user-menu'
 
 const { followSystem, selectedLight, selectedDark, activeTheme, setFollowSystem, selectTheme } = useThemePreference()
 const { t } = useI18n()

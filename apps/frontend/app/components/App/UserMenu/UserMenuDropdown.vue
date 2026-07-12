@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { userMenu } from '~/components/App/UserMenu/user-menu'
+import { userMenu } from '~/components/App/UserMenu/config/user-menu'
 import ThemeSwitcher from './ThemeSwitcher.vue'
 import LanguageSwitcher from './LanguageSwitcher.vue'
 
