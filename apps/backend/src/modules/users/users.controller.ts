@@ -2,8 +2,7 @@ import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put } from '@nest
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
-import { User } from './user.entity'
-import { UsersService } from './users.service'
+import { SafeUser, UsersService } from './users.service'
 
 @ApiTags('Users')
 @Controller('users')
@@ -13,16 +12,17 @@ export class UsersController {
   @ApiOperation({ summary: 'Получить всех пользователей' })
   @ApiResponse({ status: 200, description: 'Список пользователей' })
   @Get()
-  findAll(): User[] {
+  findAll(): SafeUser[] {
     return this.usersService.findAll()
   }
 
   @ApiOperation({ summary: 'Создать пользователя' })
   @ApiResponse({ status: 201, description: 'Пользователь создан' })
   @ApiResponse({ status: 400, description: 'Ошибка валидации' })
+  @ApiResponse({ status: 409, description: 'Email уже занят' })
   @Post()
   @HttpCode(201)
-  create(@Body() dto: CreateUserDto): User {
+  create(@Body() dto: CreateUserDto): SafeUser {
     return this.usersService.create(dto)
   }
 
@@ -30,7 +30,7 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Пользователь найден' })
   @ApiResponse({ status: 404, description: 'Пользователь не найден' })
   @Get(':id')
-  findOne(@Param('id') id: string): User {
+  findOne(@Param('id') id: string): SafeUser {
     return this.usersService.findOne(id)
   }
 
@@ -38,7 +38,7 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Пользователь обновлён' })
   @ApiResponse({ status: 404, description: 'Пользователь не найден' })
   @Put(':id')
-  update(@Param('id') id: string, @Body() dto: UpdateUserDto): User {
+  update(@Param('id') id: string, @Body() dto: UpdateUserDto): SafeUser {
     return this.usersService.update(id, dto)
   }
 
