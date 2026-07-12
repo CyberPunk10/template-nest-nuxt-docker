@@ -129,13 +129,6 @@ pnpm dev
 - Frontend: http://localhost:3000
 - Backend: http://localhost:3001
 
-Когда появятся внешние зависимости (БД, другие сервисы) — поднимай только их через Docker, приложения оставляй локальными:
-
-```bash
-docker compose -f docker-compose.dev.yml up -d   # только инфраструктура
-pnpm dev                                          # приложения локально
-```
-
 ### Локально (prod-сборка)
 
 Проверить production-сборку без Docker:
