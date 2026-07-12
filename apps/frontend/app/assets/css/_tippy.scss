@@ -1,0 +1,24 @@
+.tippy-box[data-theme~='app'] {
+  background: var(--tooltip-bg);
+  border: 1px solid var(--tooltip-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  color: var(--tooltip-text);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+
+  .tippy-content {
+    padding: var(--space-1) var(--space-2);
+  }
+
+  /* The border */
+  > .tippy-svg-arrow > svg:first-child {
+    fill: var(--tooltip-border);
+  }
+
+  /* The fill */
+  > .tippy-svg-arrow > svg:last-child {
+    fill: var(--tooltip-bg);
+  }
+}

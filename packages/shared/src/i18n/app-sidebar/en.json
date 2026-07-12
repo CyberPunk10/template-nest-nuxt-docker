@@ -1,0 +1,91 @@
+{
+  "nav": {
+    "home": "Home",
+    "playground": "Playground",
+    "analytics": "Analytics",
+    "users": "Users",
+    "usersList": "All Users",
+    "usersRoles": "Roles",
+    "usersRolesAdmin": "Administrator",
+    "usersRolesManager": "Manager",
+    "usersRolesGuest": "Guest",
+    "usersInvites": "Invitations",
+    "catalog": "Catalog",
+    "catalogItems": "Items",
+    "catalogCategories": "Categories",
+    "orders": "Orders",
+    "reports": "Reports",
+    "settings": "Settings",
+    "profile": "Profile",
+    "about": "About",
+    "bigSection": "Analytics+",
+    "bs1": "Daily",
+    "bs2": "Weekly",
+    "bs3": "Monthly",
+    "bs4": "Quarterly",
+    "bs5": "Annual",
+    "bs6": "Revenue",
+    "bs7": "Expenses",
+    "bs8": "Profit",
+    "bs9": "Conversion",
+    "bs10": "Traffic",
+    "bs11": "Sources",
+    "bs12": "Retention",
+    "bs13": "Cohorts",
+    "bs14": "Funnels",
+    "bs15": "Heatmap",
+    "bs16": "Segments",
+    "bs17": "Campaigns",
+    "bs18": "Channels",
+    "bs19": "Custom",
+    "bs20": "Export",
+    "bs21": "Tags",
+    "bs22": "Labels",
+    "bs23": "Goals",
+    "bs24": "Alerts",
+    "bs25": "Webhooks",
+    "bs26": "API",
+    "bs27": "Tokens",
+    "bs28": "Logs",
+    "bs29": "Audit",
+    "bs30": "Archive"
+  },
+  "themes": {
+    "dark": "Dark",
+    "light": "Light",
+    "system": "System",
+    "followSystem": "Follow system",
+    "lightSand": "Sand",
+    "lightMist": "Mist",
+    "lightRose": "Rose",
+    "darkSlate": "Dark Slate",
+    "darkMidnight": "Midnight",
+    "darkOcean": "Ocean",
+    "darkNuxt": "Nuxt"
+  },
+  "userMenu": {
+    "profile": "Profile",
+    "settings": "Settings",
+    "notifications": "Notifications",
+    "changelog": "What's New",
+    "help": "Help",
+    "language": "Language",
+    "appearance": "Appearance",
+    "logout": "Log out"
+  },
+  "locales": {
+    "ru": "Русский",
+    "en": "English",
+    "th": "ภาษาไทย"
+  },
+  "app": {
+    "logout": "Log out"
+  },
+  "dashboard": {
+    "myProfile": "My Profile"
+  },
+  "sidebar": {
+    "expand": "Expand sidebar",
+    "collapse": "Collapse sidebar"
+  }
+}

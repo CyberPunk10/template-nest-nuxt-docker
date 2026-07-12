@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import UserMenu from '~/components/App/UserMenu/index.vue'
+
 const route = useRoute()
 
 const title = computed(() => route.meta.title as string | undefined)
@@ -12,7 +14,7 @@ const title = computed(() => route.meta.title as string | undefined)
     </span>
 
     <div class="app-header__right">
-      Menu
+      <UserMenu placement="down" />
     </div>
   </header>
 </template>
@@ -29,6 +31,10 @@ const title = computed(() => route.meta.title as string | undefined)
   align-items: center;
   padding: 0 var(--space-4);
   padding-left: var(--space-12);
+
+  @media (width > 1024px) {
+    display: none;
+  }
 
   &__title {
     flex: 1;

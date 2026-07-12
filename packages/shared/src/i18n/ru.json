@@ -39,6 +39,19 @@
     "back": "На главную"
   },
   "nav": {
-    "home": "Главная"
+    "home": "Главная",
+    "analytics": "Аналитика",
+    "users": "Пользователи",
+    "usersList": "Все пользователи",
+    "usersRoles": "Роли",
+    "usersInvites": "Приглашения",
+    "catalog": "Каталог",
+    "catalogItems": "Товары",
+    "catalogCategories": "Категории",
+    "orders": "Заказы",
+    "reports": "Отчёты",
+    "settings": "Настройки",
+    "profile": "Профиль",
+    "about": "О шаблоне"
   }
 }

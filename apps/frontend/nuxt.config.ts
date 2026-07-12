@@ -33,6 +33,7 @@ export default defineNuxtConfig({
     '~/assets/css/variables.light-sand.css',
     '~/assets/css/variables.light-mist.css',
     '~/assets/css/variables.light-rose.css',
+    '~/assets/css/_tippy.scss',
   ],
 
   runtimeConfig: {

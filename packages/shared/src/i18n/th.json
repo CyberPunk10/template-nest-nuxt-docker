@@ -39,6 +39,19 @@
     "back": "กลับหน้าหลัก"
   },
   "nav": {
-    "home": "หน้าหลัก"
+    "home": "หน้าหลัก",
+    "analytics": "การวิเคราะห์",
+    "users": "ผู้ใช้",
+    "usersList": "ผู้ใช้ทั้งหมด",
+    "usersRoles": "บทบาท",
+    "usersInvites": "คำเชิญ",
+    "catalog": "แคตาล็อก",
+    "catalogItems": "รายการ",
+    "catalogCategories": "หมวดหมู่",
+    "orders": "คำสั่งซื้อ",
+    "reports": "รายงาน",
+    "settings": "การตั้งค่า",
+    "profile": "โปรไฟล์",
+    "about": "เกี่ยวกับ"
   }
 }

@@ -39,6 +39,19 @@
     "back": "Back to home"
   },
   "nav": {
-    "home": "Home"
+    "home": "Home",
+    "analytics": "Analytics",
+    "users": "Users",
+    "usersList": "All users",
+    "usersRoles": "Roles",
+    "usersInvites": "Invites",
+    "catalog": "Catalog",
+    "catalogItems": "Items",
+    "catalogCategories": "Categories",
+    "orders": "Orders",
+    "reports": "Reports",
+    "settings": "Settings",
+    "profile": "Profile",
+    "about": "About"
   }
 }
