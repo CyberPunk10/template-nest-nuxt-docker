@@ -4,6 +4,31 @@
     "unauthorized": "Unauthorized",
     "validation": "Validation failed"
   },
+  "db": {
+    "title": "Database",
+    "subtitle": "read-only snapshot",
+    "cols": {
+      "id": "ID",
+      "name": "Name",
+      "email": "Email",
+      "title": "Title",
+      "description": "Description",
+      "author": "Author",
+      "createdAt": "Created",
+      "updatedAt": "Updated"
+    }
+  },
+  "tasks": {
+    "title": "Tasks",
+    "subtitle": "CRUD · NestJS /tasks",
+    "create": "Create task",
+    "list": "Current user's tasks",
+    "empty": "No tasks",
+    "titleField": "Title",
+    "description": "Description (optional)",
+    "descriptionField": "Description",
+    "add": "Add"
+  },
   "users": {
     "title": "Users"
   },

@@ -4,6 +4,31 @@
     "unauthorized": "Не авторизован",
     "validation": "Ошибка валидации"
   },
+  "db": {
+    "title": "База данных",
+    "subtitle": "только чтение",
+    "cols": {
+      "id": "ID",
+      "name": "Имя",
+      "email": "Email",
+      "title": "Название",
+      "description": "Описание",
+      "author": "Автор",
+      "createdAt": "Создано",
+      "updatedAt": "Обновлено"
+    }
+  },
+  "tasks": {
+    "title": "Задачи",
+    "subtitle": "CRUD · NestJS /tasks",
+    "create": "Создать задачу",
+    "list": "Задачи текущего пользователя",
+    "empty": "Нет задач",
+    "titleField": "Название",
+    "description": "Описание (необязательно)",
+    "descriptionField": "Описание",
+    "add": "Добавить"
+  },
   "users": {
     "title": "Пользователи"
   },
