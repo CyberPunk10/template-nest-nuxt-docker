@@ -15,7 +15,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Регистрация' })
   @ApiResponse({ status: 201 })
   @ApiResponse({ status: 409, description: 'Email уже занят' })
-  register(@Body() dto: RegisterDto): SafeUser {
+  register(@Body() dto: RegisterDto): Promise<SafeUser> {
     return this.authService.register(dto)
   }
 
@@ -24,7 +24,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Вход' })
   @ApiResponse({ status: 200 })
   @ApiResponse({ status: 401, description: 'Неверные учётные данные' })
-  login(@Body() dto: LoginDto): SafeUser {
+  login(@Body() dto: LoginDto): Promise<SafeUser> {
     return this.authService.login(dto)
   }
 
@@ -37,7 +37,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Текущий пользователь' })
   @ApiResponse({ status: 200 })
   @ApiResponse({ status: 404, description: 'Пользователь не найден' })
-  me(@Query('userId') userId: string): SafeUser {
+  me(@Query('userId') userId: string): Promise<SafeUser> {
     return this.authService.me(userId)
   }
 }

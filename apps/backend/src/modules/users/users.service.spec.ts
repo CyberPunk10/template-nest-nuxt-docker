@@ -1,5 +1,6 @@
-import { NotFoundException } from '@nestjs/common'
+import { ConflictException, NotFoundException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
+import { Prisma } from '../../generated/prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
 import { UsersService } from './users.service'
 
@@ -19,6 +20,13 @@ const prismaMock = {
     update: jest.fn(),
     delete: jest.fn(),
   },
+}
+
+function makePrismaError(code: string) {
+  return new Prisma.PrismaClientKnownRequestError('mock', {
+    code,
+    clientVersion: '0.0.0',
+  })
 }
 
 describe('UsersService', () => {
@@ -42,11 +50,19 @@ describe('UsersService', () => {
 
   it('create — создаёт пользователя', async () => {
     prismaMock.user.create.mockResolvedValue(mockUser)
-    const result = await service.create({ name: 'Alice', email: 'alice@example.com' })
-    expect(result).toEqual(mockUser)
-    expect(prismaMock.user.create).toHaveBeenCalledWith({
-      data: { name: 'Alice', email: 'alice@example.com' },
+    const result = await service.create({
+      name: 'Alice',
+      email: 'alice@example.com',
+      password: 'supersecret',
     })
+    expect(result).toEqual(mockUser)
+  })
+
+  it('create — выбрасывает ConflictException при дублирующемся email (P2002)', async () => {
+    prismaMock.user.create.mockRejectedValue(makePrismaError('P2002'))
+    await expect(
+      service.create({ name: 'Alice', email: 'taken@example.com', password: 'supersecret' }),
+    ).rejects.toThrow(ConflictException)
   })
 
   it('findOne — возвращает пользователя по id', async () => {
@@ -62,25 +78,30 @@ describe('UsersService', () => {
 
   it('update — обновляет пользователя', async () => {
     const updated = { ...mockUser, name: 'Bob' }
-    prismaMock.user.findUnique.mockResolvedValue(mockUser)
     prismaMock.user.update.mockResolvedValue(updated)
     const result = await service.update('uuid-1', { name: 'Bob' })
     expect(result.name).toBe('Bob')
   })
 
-  it('update — выбрасывает NotFoundException если не найден', async () => {
-    prismaMock.user.findUnique.mockResolvedValue(null)
+  it('update — выбрасывает NotFoundException если не найден (P2025)', async () => {
+    prismaMock.user.update.mockRejectedValue(makePrismaError('P2025'))
     await expect(service.update('uuid-999', { name: 'Bob' })).rejects.toThrow(NotFoundException)
   })
 
+  it('update — выбрасывает ConflictException при дублирующемся email (P2002)', async () => {
+    prismaMock.user.update.mockRejectedValue(makePrismaError('P2002'))
+    await expect(
+      service.update('uuid-1', { email: 'taken@example.com' }),
+    ).rejects.toThrow(ConflictException)
+  })
+
   it('remove — удаляет пользователя', async () => {
-    prismaMock.user.findUnique.mockResolvedValue(mockUser)
     prismaMock.user.delete.mockResolvedValue(mockUser)
     await expect(service.remove('uuid-1')).resolves.toBeUndefined()
   })
 
-  it('remove — выбрасывает NotFoundException если не найден', async () => {
-    prismaMock.user.findUnique.mockResolvedValue(null)
+  it('remove — выбрасывает NotFoundException если не найден (P2025)', async () => {
+    prismaMock.user.delete.mockRejectedValue(makePrismaError('P2025'))
     await expect(service.remove('uuid-999')).rejects.toThrow(NotFoundException)
   })
 })
