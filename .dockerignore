@@ -3,5 +3,15 @@
 **/.output
 **/dist
 **/.env
+**/.env.*
+!**/.env.example
 **/coverage
 **/.git
+
+# Prisma
+**/src/generated
+
+**/.vitepress/cache
+
+docker-compose*.yml
+**/Dockerfile*
