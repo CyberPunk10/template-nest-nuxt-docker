@@ -266,6 +266,10 @@ function toggleClass(data: ShadowPayload & { elem: Element | null, val?: boolean
   else data.elem.classList.remove(className)
 }
 
+function scrollTo(options: ScrollToOptions) {
+  appScrollShadowRef.value?.scrollTo?.(options)
+}
+
 // прокрутка с помощью движений мыши (нажать и перемещать) для горизонтального скролла
 if (props.scrollWithMouseMovements) {
   const down = ref(false)
@@ -334,7 +338,7 @@ if (props.scrollWithMouseMovements) {
   })
 }
 
-defineExpose({ appScrollShadowRef, shadowTop })
+defineExpose({ appScrollShadowRef, shadowTop, scrollTo })
 </script>
 
 <template>
