@@ -1,0 +1,32 @@
+import { readFileSync, writeFileSync, existsSync } from 'fs'
+import { resolve, dirname } from 'path'
+import { fileURLToPath } from 'url'
+
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
+
+export const ROOT_ENV = resolve(ROOT, '.env')
+export const ROOT_ENV_EXAMPLE = resolve(ROOT, '.env.example')
+
+export const BACKEND_ENV = resolve(ROOT, 'apps/backend/.env')
+export const BACKEND_ENV_EXAMPLE = resolve(ROOT, 'apps/backend/.env.example')
+
+export const FRONTEND_ENV = resolve(ROOT, 'apps/frontend/.env')
+export const FRONTEND_ENV_EXAMPLE = resolve(ROOT, 'apps/frontend/.env.example')
+
+export const DOCS_ENV = resolve(ROOT, 'apps/docs/.env')
+export const DOCS_ENV_EXAMPLE = resolve(ROOT, 'apps/docs/.env.example')
+
+// Копирует .env.example → .env если .env отсутствует
+function copyEnvExample(envPath, examplePath) {
+  if (!existsSync(envPath) && existsSync(examplePath)) {
+    writeFileSync(envPath, readFileSync(examplePath, 'utf8'))
+  }
+}
+
+// Создаёт .env из .env.example для всех приложений, где .env файл отсутствует
+export function copyEnvFiles() {
+  copyEnvExample(ROOT_ENV, ROOT_ENV_EXAMPLE)
+  copyEnvExample(BACKEND_ENV, BACKEND_ENV_EXAMPLE)
+  copyEnvExample(FRONTEND_ENV, FRONTEND_ENV_EXAMPLE)
+  copyEnvExample(DOCS_ENV, DOCS_ENV_EXAMPLE)
+}
