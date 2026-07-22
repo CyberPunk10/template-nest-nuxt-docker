@@ -40,11 +40,19 @@ export default defineNuxtConfig({
     public: {
       // Переопределяется через NUXT_PUBLIC_API_BASE
       apiBase: '/api/backend',
-      // Переопределяется через NUXT_PUBLIC_BACKEND_URL
-      backendUrl: 'http://localhost:3001',
+
+      // Только для отображения ссылки в DevPanel — НЕ использовать для fetch,
+      // это просто число порта, а не готовый URL. Реальные запросы к backend
+      // идут через apiBase (server-side proxy, см. server/api/backend/[...path].ts),
+      // который использует отдельную серверную переменную BACKEND_URL.
+      // Переопределяется через NUXT_PUBLIC_BACKEND_PORT
+      backendPort: '3100',
+
       // Переопределяется через NUXT_PUBLIC_APP_ENV
       appEnv: 'development',
-      appVersion, // версия приложения для наглядности в интерфейсе
+
+      // версия приложения для наглядности в интерфейсе
+      appVersion,
     },
   },
 

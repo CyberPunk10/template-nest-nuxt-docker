@@ -1,15 +1,15 @@
 # @repo/frontend
 
-Nuxt 4 frontend. Работает на порту `3000`.
+Nuxt 4 frontend. Работает на порту `3200`.
 
 ## Переменные окружения
 
 | Переменная             | По умолчанию            | Описание                            |
 | ---------------------- | ----------------------- | ----------------------------------- |
 | `NUXT_PUBLIC_API_BASE` | `/api/backend`          | Префикс API для клиента (публичная) |
-| `BACKEND_URL`          | `http://localhost:3001` | URL бекенда для server-side proxy   |
+| `BACKEND_URL`          | `http://localhost:3100` | URL бекенда для server-side proxy   |
 
-Скопируй `.env.example` в `.env` и заполни нужные значения.
+Скопируйте `.env.example` в `.env` и заполните нужные значения.
 
 ## Запуск
 
@@ -43,7 +43,7 @@ pnpm --filter @repo/frontend preview
 ```bash
 # из корня монорепо
 docker build -f apps/frontend/Dockerfile -t my-frontend .
-docker run -p 3000:3000 -e BACKEND_URL=http://localhost:3001 my-frontend
+docker run -p 3200:3200 -e BACKEND_URL=http://localhost:3100 my-frontend
 ```
 
 ## Структура

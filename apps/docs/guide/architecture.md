@@ -5,8 +5,9 @@
 ```
 template-nest-nuxt/
 ├── apps/
-│   ├── frontend   (@repo/frontend)   Nuxt 4 · :3000
-│   └── backend    (@repo/backend)    NestJS  · :3001
+│   ├── backend    (@repo/backend)    NestJS
+│   ├── frontend   (@repo/frontend)   Nuxt 4
+│   └── docs       (@repo/docs)       VitePress (в Docker — за nginx)
 └── packages/
     ├── shared     (@repo/shared)     TypeScript типы + i18n
     └── ui         (@repo/ui)         Vue компоненты
@@ -26,7 +27,7 @@ template-nest-nuxt/
                (Nuxt server proxy,
                 без CORS в dev)
 
-  Nuxt проксирует /api/backend/* на http://localhost:3001.
+  Nuxt проксирует /api/backend/* на http://localhost:3100.
   В prod proxy настраивается через переменную NUXT_PUBLIC_API_BASE.
 ```
 
@@ -77,69 +78,4 @@ tsconfig.base.json               ← корень монорепо, только
        └── backend/tsconfig.build.json   ← для nest build, noEmit: false
               rootDir: ./src             ← даёт чистый dist/main.js
               outDir: ./dist             ← без вложенных путей apps/backend/src/...
-```
-
-## Docker: стадии сборки
-
-Оба сервиса собираются в две стадии:
-
-```
-  [ builder ]                          [ runner ]
-  ───────────                          ──────────
-  COPY package.json манифесты          Финальный образ.
-  pnpm install --frozen-lockfile       Только то, что нужно для запуска.
-  COPY исходники
-  Собираем проект.
-
-  Backend дополнительно запускает pnpm deploy --prod /deploy
-  — копирует из node_modules только зависимости @repo/backend,
-  без лишних пакетов монорепо. Runner получает чистый плоский node_modules.
-
-  Frontend этого не делает — Nuxt сам упаковывает все зависимости
-  в .output при сборке. node_modules в runner не нужен вообще.
-
-  Почему install идёт до COPY исходников?
-  Docker кэширует послойно — если исходники изменились,
-  но package.json нет, install берётся из кэша.
-  Порядок: COPY манифесты → pnpm install → COPY . .
-```
-
-**Backend builder:**
-
-```
-1. pnpm install --frozen-lockfile   ← устанавливает все зависимости монорепо
-                                       --frozen-lockfile гарантирует точные версии
-                                       как в локальной разработке
-2. pnpm build @repo/shared          ← компилирует shared в ESM (dist/)
-                                       нужно до nest build, т.к. backend импортирует из dist/
-3. nest build                       ← компилирует backend в dist/
-4. pnpm deploy --prod /deploy       ← копирует только нужные зависимости в /deploy
-                                       не скачивает заново — берёт из node_modules
-```
-
-**Backend runner:**
-
-```
-/app/
-├── node_modules/                 ← только зависимости @repo/backend (pnpm deploy)
-│                                    плоская структура, без лишних пакетов монорепо
-└── dist/
-    └── main.js                   ← скомпилированный код (rootDir: ./src → чистый путь)
-
-CMD: node dist/main
-```
-
-**Frontend runner:**
-
-```
-/app/
-└── .output/                      ← Nuxt упаковывает всё сюда при сборке
-    ├── server/
-    │   └── index.mjs             ← точка входа (Node.js server)
-    └── public/                   ← статика (JS, CSS, assets)
-
-CMD: node .output/server/index.mjs
-
-node_modules не нужен — все зависимости уже внутри .output.
-.output можно скопировать на сервер и запустить без pnpm.
 ```

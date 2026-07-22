@@ -1,8 +1,16 @@
+import { resolve, dirname } from 'path'
+import { fileURLToPath } from 'url'
+import { config as loadEnv } from 'dotenv'
 import { defineConfigWithTheme } from 'vitepress'
 import type { DefaultTheme } from 'vitepress'
 import ruLocale from './locales/ru.json'
 import enLocale from './locales/en.json'
 import thLocale from './locales/th.json'
+
+// apps/docs/.env не грузится автоматически (в отличие от Nest ConfigModule
+// и Nuxt) — читаем его явно, чтобы PORT управлял портом `vitepress dev` так же,
+// как для backend/frontend.
+loadEnv({ path: resolve(dirname(fileURLToPath(import.meta.url)), '../.env') })
 
 // Расширяем тему дефолтной + переводы стартовой страницы в themeConfig.home.
 // VitePress отдаёт их через useData().theme реактивно к локали — вместо vue-i18n.
@@ -12,10 +20,23 @@ interface ThemeConfig extends DefaultTheme.Config {
 }
 
 export default defineConfigWithTheme<ThemeConfig>({
-  // В проде документация отдаётся под подпутём /docs (за reverse-proxy).
-  base: '/docs/',
+  base: '/',
   title: 'NestJS + Nuxt Template',
   description: 'Документация монорепо-шаблона',
+
+  // В доках много ссылок вида http://localhost:3100/3200/5173 —
+  // VitePress по умолчанию считает их dead links при сборке,
+  // т.к. localhost гарантированно недостижим со стороны собранного сайта.
+  // 'localhostLinks' — встроенный режим именно под этот случай: точечно
+  // разрешает //localhost:*, не отключая проверку остальных ссылок целиком.
+  ignoreDeadLinks: 'localhostLinks',
+
+  vite: {
+    server: {
+      // 5173 — дефолт самого Vite, используется если PORT не задан в apps/docs/.env
+      port: Number(process.env.PORT) || 5173,
+    },
+  },
 
   // Общие для всех локалей настройки темы (переопределяются в locales.*).
   themeConfig: {
@@ -43,9 +64,17 @@ export default defineConfigWithTheme<ThemeConfig>({
           {
             text: 'Документация',
             items: [
-              { text: 'Разработка', link: '/guide/development' },
+              { text: 'Запуск проекта', link: '/guide/getting-started' },
               { text: 'Архитектура', link: '/guide/architecture' },
               { text: 'Переменные окружения', link: '/guide/env-variables' },
+              { text: 'Docker', link: '/guide/docker' },
+              { text: 'Скрипты', link: '/guide/scripts' },
+            ],
+          },
+          {
+            text: 'Дополнительная информация',
+            items: [
+              { text: 'pnpm и Corepack', link: '/guide/pnpm' },
             ],
           },
           {
@@ -76,9 +105,17 @@ export default defineConfigWithTheme<ThemeConfig>({
           {
             text: 'Documentation',
             items: [
-              { text: 'Development', link: '/en/guide/development' },
+              { text: 'Getting Started', link: '/en/guide/getting-started' },
               { text: 'Architecture', link: '/en/guide/architecture' },
               { text: 'Environment variables', link: '/en/guide/env-variables' },
+              { text: 'Docker', link: '/en/guide/docker' },
+              { text: 'Scripts', link: '/en/guide/scripts' },
+            ],
+          },
+          {
+            text: 'Additional Information',
+            items: [
+              { text: 'pnpm and Corepack', link: '/en/guide/pnpm' },
             ],
           },
           {
@@ -109,9 +146,17 @@ export default defineConfigWithTheme<ThemeConfig>({
           {
             text: 'เอกสาร',
             items: [
-              { text: 'การพัฒนา', link: '/th/guide/development' },
+              { text: 'เริ่มต้นใช้งาน', link: '/th/guide/getting-started' },
               { text: 'สถาปัตยกรรม', link: '/th/guide/architecture' },
               { text: 'ตัวแปรสภาพแวดล้อม', link: '/th/guide/env-variables' },
+              { text: 'Docker', link: '/th/guide/docker' },
+              { text: 'สคริปต์', link: '/th/guide/scripts' },
+            ],
+          },
+          {
+            text: 'ข้อมูลเพิ่มเติม',
+            items: [
+              { text: 'pnpm และ Corepack', link: '/th/guide/pnpm' },
             ],
           },
           {

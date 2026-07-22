@@ -15,7 +15,11 @@ RUN pnpm --filter @repo/backend deploy --prod --legacy /deploy
 FROM node:24-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
-COPY --from=builder /deploy/node_modules ./node_modules
-COPY --from=builder /app/apps/backend/dist ./dist
-EXPOSE 3001
+ENV PORT=3100
+USER node
+COPY --from=builder --chown=node:node /deploy/node_modules ./node_modules
+COPY --from=builder --chown=node:node /app/apps/backend/dist ./dist
+EXPOSE ${PORT}
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s \
+  CMD wget -qO- http://127.0.0.1:${PORT}/health || exit 1
 CMD ["node", "dist/main"]

@@ -1,6 +1,7 @@
 import { createServer } from 'net'
 import { readFileSync, existsSync } from 'fs'
 import { execSync } from 'child_process'
+import { intro, select, outro, cancel, isCancel } from '@clack/prompts'
 
 // Парсит .env файл в объект { KEY: 'value' }
 function parseEnv(filePath) {
@@ -57,4 +58,32 @@ export function requirePort(envPath, key) {
     throw new Error(`${key}=${env[key]} в ${envPath} — не корректный номер порта (0-65535)`)
   }
   return port
+}
+
+// Проверяет порты нескольких сервисов, при конфликте предлагает диалог.
+// services: [{ name, envPath, key }] — откуда и какую переменную порта читать для каждого.
+export async function checkPorts(services) {
+  const ports = services.map(s => ({ ...s, port: requirePort(s.envPath, s.key) }))
+
+  const free = await Promise.all(ports.map(s => isPortFree(s.port)))
+  if (free.every(Boolean)) return
+
+  const busy = ports.filter((_, i) => !free[i])
+  intro(`Port conflict: ${busy.map(s => `${s.name}=${s.port}`).join(', ')}`)
+
+  const answer = await select({
+    message: 'What would you like to do?',
+    options: [
+      { label: `Kill existing processes and use same ports (${ports.map(s => s.port).join(', ')})`, value: 'kill' },
+      { label: 'Abort', value: 'abort' },
+    ],
+  })
+
+  if (isCancel(answer) || answer === 'abort') {
+    cancel('Aborted.')
+    process.exit(1)
+  }
+
+  busy.forEach(s => killPort(s.port))
+  outro('Ports freed')
 }

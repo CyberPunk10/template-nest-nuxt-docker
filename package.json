@@ -11,8 +11,11 @@
   },
   "description": "",
   "scripts": {
+    "env:copy": "node scripts/copy-env-cli.mjs",
     "predev": "node scripts/predev.mjs",
     "dev": "node scripts/dev.mjs",
+    "predocker:up": "node scripts/predocker.mjs",
+    "docker:up": "docker compose up",
     "build": "pnpm -r build",
     "lint": "pnpm -r lint",
     "type-check": "pnpm -r type-check",
@@ -27,9 +30,9 @@
     "eslint": "^10.4.1",
     "globals": "^17.6.0",
     "husky": "^9.0.0",
-    "lint-staged": "^17.0.7",
+    "lint-staged": "^17.1.0",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.60.1"
+    "typescript-eslint": "^8.65.0"
   },
   "keywords": [
     "nestjs",

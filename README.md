@@ -11,7 +11,7 @@
 
 ## Варианты
 
-Шаблон существует в нескольких версиях — каждая хранится в отдельной git-ветке и является самостоятельной точкой старта. Выбери нужную и клонируй сразу с ней.
+Шаблон существует в нескольких версиях — каждая хранится в отдельной git-ветке и является самостоятельной точкой старта. Выберите нужную и клонируйте сразу с ней.
 
 ### `main` — базовый шаблон
 
@@ -45,7 +45,8 @@ git clone -b auth https://github.com/CyberPunk10/template-nest-nuxt-docker.git m
 template-nest-nuxt/
 ├── apps/
 │   ├── backend/        ← NestJS API (порт задаётся в .env)
-│   └── frontend/       ← Nuxt 4 (порт задаётся в .env)
+│   ├── frontend/       ← Nuxt 4 (порт задаётся в .env)
+│   └── docs/           ← VitePress-документация (порт задаётся в .env)
 ├── packages/
 │   ├── shared/         ← @repo/shared — общие типы и i18n переводы
 │   └── ui/             ← @repo/ui — общие Vue компоненты
@@ -58,21 +59,29 @@ template-nest-nuxt/
 
 Каждое приложение читает **только свой** `.env`:
 
-| Файл                 | Назначение                  |
-| -------------------- | --------------------------- |
-| `apps/backend/.env`  | Локальная разработка NestJS |
-| `apps/frontend/.env` | Локальная разработка Nuxt   |
+| Файл                 | Назначение                                  |
+| -------------------- | -------------------------------------------- |
+| `apps/backend/.env`  | Локальная разработка NestJS                  |
+| `apps/frontend/.env` | Локальная разработка Nuxt                     |
+| `apps/docs/.env`     | Локальная разработка VitePress                |
+| `.env` (в корне)     | Только для Docker (хост-порты и внутренние порты контейнеров) |
 
-Если `.env` отсутствует, он автоматически копируется из `.env.example` при первом `pnpm dev`.
+Если `apps/backend/.env`/`apps/frontend/.env`/`apps/docs/.env` отсутствует, он автоматически копируется из `.env.example` при первом `pnpm dev` (`predev.mjs`). Корневой `.env` копируется тем же образом при первом `pnpm docker:up` (`predocker.mjs`).
 
 ### Изменение портов
 
-При изменении портов обнови:
+Для `pnpm dev` (локальная разработка):
 
-1. `apps/backend/.env` — `PORT` (порт backend), `CORS_ORIGIN` (должен содержать порт frontend)
-2. `apps/frontend/.env` — `PORT` (порт frontend), `BACKEND_URL`, `NUXT_PUBLIC_BACKEND_URL` (оба должны содержать порт backend)
+1. `apps/backend/.env` — `PORT` (порт backend), `CORS_ORIGIN_SCHEME_HOST`+`CORS_ORIGIN_PORT` (должен содержать порт frontend)
+2. `apps/frontend/.env` — `PORT` (порт frontend), `BACKEND_URL` (должен содержать порт backend), `NUXT_PUBLIC_BACKEND_PORT` (только порт backend, для ссылки в DevPanel — не для запросов)
+3. `apps/docs/.env` — `PORT` (порт VitePress dev-сервера, читается через `dotenv` в `.vitepress/config.ts` — сам VitePress `.env` не грузит)
 
-Для Docker порты захардкожены в `docker-compose.yml` — менять там.
+Для Docker — правьте только корневой `.env`, не `docker-compose.yml`:
+
+- `BACKEND_HOST_PORT`/`FRONTEND_HOST_PORT`/`DOCS_HOST_PORT` — хост-порты (на чём сервис доступен снаружи)
+- `BACKEND_INTERNAL_PORT`/`FRONTEND_INTERNAL_PORT`/`DOCS_INTERNAL_PORT` — порт внутри контейнера
+
+`docker-compose.yml` сам синхронизирует `CORS_ORIGIN_PORT` backend'а с хост-портом frontend'а (`FRONTEND_HOST_PORT`) — этого вручную трогать не нужно. Подробнее — см. [`apps/docs/guide/docker.md`](apps/docs/guide/docker.md) и [`apps/docs/guide/env-variables.md`](apps/docs/guide/env-variables.md).
 
 > **Запуск из папки приложения:** `pnpm dev` из `apps/backend` или `apps/frontend` работает — каждое приложение читает свой `.env`. Предпочтительный способ — `pnpm dev` из корня монорепо.
 
@@ -96,15 +105,16 @@ template-nest-nuxt/
 
 ### Backend
 
-- **Swagger/OpenAPI** — интерактивная документация API с возможностью тестировать запросы прямо в браузере. Доступна только в dev на `http://localhost:3001/api/docs`, в production не монтируется
+- **Swagger/OpenAPI** — интерактивная документация API с возможностью тестировать запросы прямо в браузере. Доступна только в dev на `http://localhost:3100/api/docs`, в production не монтируется
 - **Exception filter** — глобальный перехватчик ошибок: клиент всегда получает единообразный JSON, непредвиденные ошибки (`500`) логируются через NestJS Logger со stack trace
 - **ValidationPipe** — автоматическая валидация тела запросов через DTO: лишние поля отклоняются с `400`, типы приводятся автоматически
 - **Joi** — валидация переменных окружения при старте приложения: если обязательная переменная отсутствует или имеет неверный тип — сервис не запустится с понятной ошибкой
 
 ### Инфраструктура
 
-- **Docker** — multi-stage образы для backend и frontend
-- **docker compose** — dev и prod режимы
+- **Docker** — multi-stage образы для backend, frontend и docs
+- **docker compose** — поднимает все три сервиса вместе, в общей сети
+- **`pnpm docker:up`** — обёртка над `docker compose up`: создаёт корневой `.env` из `.env.example`, проверяет занятость хост-портов
 
 ---
 
@@ -124,10 +134,11 @@ pnpm dev
 - копирует `.env` из `.env.example` если файл отсутствует
 - проверяет порты и предлагает разрешить конфликт если они заняты
 
-> **При переключении веток** локальный `.env` не обновляется автоматически — в нём могут отсутствовать переменные новой ветки. Сверь с `.env.example` и добавь недостающие.
+> **При переключении веток** локальный `.env` не обновляется автоматически — в нём могут отсутствовать переменные новой ветки. Сверьте с `.env.example` и добавьте недостающие.
 
-- Frontend: http://localhost:3000
-- Backend: http://localhost:3001
+- Backend:  http://localhost:3100
+- Frontend: http://localhost:3200
+- Docs:     http://localhost:5173
 
 ### Локально (prod-сборка)
 
@@ -143,15 +154,27 @@ cd apps/backend && pnpm start:prod
 cd apps/frontend && node .output/server/index.mjs
 ```
 
-### Docker — оба сервиса
+### Docker — все сервисы
+
+Нужны корневой `.env` и `apps/*/.env` (см. [«Конфигурация окружения»](#конфигурация-окружения)) — без них `docker compose` откажется стартовать (`no port specified` без корневого `.env`, `env file ... not found` без `apps/*/.env`).
 
 ```bash
 docker network create template-nest-nuxt_app  # только первый раз
+pnpm env:copy                                 # только первый раз, если .env ещё нет
 docker compose up --build
 ```
 
-- Frontend: http://localhost:3000
-- Backend: http://localhost:3001
+`pnpm env:copy` создаёт из `.env.example` все `.env`, которых ещё нет (корневой, `apps/backend`, `apps/frontend`, `apps/docs`), и ничего больше не делает — не проверяет порты, не запускает Docker. Та же логика, что использует `predev`/`predocker` под капотом, доступная отдельно.
+
+Если удобнее не следить за этим вручную вообще — `pnpm docker:up` делает то же самое, что и `docker compose up`, но перед стартом сама создаёт все `.env` из `.env.example` (если отсутствуют) и проверяет хост-порты на занятость. Полезно в первую очередь при первом запуске; если вы сами управляете `.env` и портами — можно просто продолжать пользоваться `docker compose` напрямую.
+
+```bash
+pnpm docker:up --build
+```
+
+- Backend: http://localhost:3500 (или `BACKEND_HOST_PORT` из `.env`)
+- Frontend: http://localhost:3600 (или значение `FRONTEND_HOST_PORT` из `.env`)
+- Docs: http://localhost:3700 (или `DOCS_HOST_PORT` из `.env`)
 
 Остановить:
 
@@ -159,28 +182,33 @@ docker compose up --build
 docker compose down
 ```
 
-### Docker — только backend
+### Docker — по одному сервису
 
 ```bash
 docker build -f apps/backend/Dockerfile -t my-backend .
-docker run -p 3001:3001 -e PORT=3001 -e CORS_ORIGIN=http://localhost:3000 my-backend
+docker run -p 3100:3100 -e PORT=3100 -e CORS_ORIGIN_SCHEME_HOST=http://localhost -e CORS_ORIGIN_PORT=3200 my-backend
 ```
-
-### Docker — только frontend
 
 ```bash
 docker build -f apps/frontend/Dockerfile -t my-frontend .
-docker run -p 3000:3000 -e BACKEND_URL=http://localhost:3001 my-frontend
+docker run -p 3200:3200 -e BACKEND_URL=http://localhost:3100 my-frontend
+```
+
+```bash
+docker build -f apps/docs/Dockerfile -t my-docs .
+docker run -p 8080:80 -e PORT=80 my-docs
 ```
 
 > **Важно:** при запуске контейнеров по отдельности они не видят друг друга по имени сервиса.
-> Если нужно чтобы frontend достучался до backend — создай общую сеть вручную:
+> Если нужно чтобы frontend достучался до backend — создайте общую сеть вручную:
 >
 > ```bash
 > docker network create my-app
-> docker run -p 3001:3001 --network my-app --name backend my-backend
-> docker run -p 3000:3000 --network my-app -e BACKEND_URL=http://backend:3001 my-frontend
+> docker run -p 3100:3100 --network my-app --name backend my-backend
+> docker run -p 3200:3200 --network my-app -e BACKEND_URL=http://backend:3100 my-frontend
 > ```
+
+Подробнее про Docker-схему (хост-порты vs внутренние порты, `envsubst` для `docs`, `USER node`, `HEALTHCHECK`) — см. [`apps/docs/guide/docker.md`](apps/docs/guide/docker.md).
 
 ---
 
@@ -194,6 +222,8 @@ pnpm lint           # проверить линтером
 pnpm type-check     # проверить типы
 ```
 
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:3001
-- Backend health: http://localhost:3001/health
+- Backend API: http://localhost:3100
+- Backend health: http://localhost:3100/health
+- Frontend: http://localhost:3200
+- Frontend health: http://localhost:3200/api/health
+- Docs (только dev, `pnpm dev`): http://localhost:5173

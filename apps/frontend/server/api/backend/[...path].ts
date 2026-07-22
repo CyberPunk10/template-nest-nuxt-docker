@@ -1,5 +1,5 @@
 export default defineEventHandler(async (event) => {
-  const backendUrl = process.env.BACKEND_URL ?? 'http://localhost:3001'
+  const backendUrl = process.env.BACKEND_URL ?? 'http://localhost:3100'
   const path = event.context.params?.path ?? ''
   // Берём search-строку напрямую из URL — без парсинга и пересборки,
   // чтобы корректно форвардить массивы (?ids[]=1&ids[]=2) и спецсимволы.
