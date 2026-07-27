@@ -20,6 +20,10 @@ describe('AppController (e2e)', () => {
     return request(app.getHttpServer()).get('/health').expect(200).expect({ status: 'ok' })
   })
 
+  it('/ (GET)', () => {
+    return request(app.getHttpServer()).get('/').expect(200).expect('Hello Nest!')
+  })
+
   afterEach(async () => {
     await app.close()
   })

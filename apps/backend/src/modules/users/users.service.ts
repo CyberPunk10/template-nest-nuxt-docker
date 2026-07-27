@@ -2,6 +2,7 @@ import { ConflictException, Injectable, NotFoundException } from '@nestjs/common
 import { Prisma, User } from '../../generated/prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
 import { UpdateUserDto } from './dto/update-user.dto'
+import { CreateUserDto } from './dto/create-user.dto'
 
 export type SafeUser = Omit<User, 'passwordHash'>
 
@@ -21,6 +22,17 @@ export class UsersService {
     return this.prisma.user.findMany({ select: safeUserSelect })
   }
 
+  async create(dto: CreateUserDto): Promise<SafeUser> {
+    try {
+      return await this.prisma.user.create({ data: dto, select: safeUserSelect })
+    } catch (e: unknown) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {
+        throw new ConflictException('Email already in use')
+      }
+      throw e
+    }
+  }
+
   async findOne(id: string): Promise<SafeUser> {
     const user = await this.prisma.user.findUnique({ where: { id }, select: safeUserSelect })
     if (!user) throw new NotFoundException(`User ${id} not found`)
@@ -38,6 +50,10 @@ export class UsersService {
       }
       throw e
     }
+  }
+
+  findByEmail(email: string): Promise<User | null> {
+    return this.prisma.user.findUnique({ where: { email } })
   }
 
   async remove(id: string): Promise<void> {

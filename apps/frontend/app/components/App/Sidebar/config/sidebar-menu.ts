@@ -100,10 +100,10 @@ export const reports = {
   icon: 'lucide:file-text',
 } satisfies SidebarItem
 
+// url подставляется динамически в useMenu() из runtimeConfig.public.docsUrl
 export const settings = {
   id: 'settings',
   title: 'nav.about',
-  url: 'http://localhost:5173', // docsUrl: 'http://localhost:5173',
   icon: 'lucide:info',
 } satisfies SidebarItem
 

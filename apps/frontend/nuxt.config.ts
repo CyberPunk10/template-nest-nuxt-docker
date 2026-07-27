@@ -39,22 +39,42 @@ export default defineNuxtConfig({
   runtimeConfig: {
     // Серверная переменная — недоступна на клиенте.
     // Переопределяется через NUXT_BACKEND_URL в .env
-    backendUrl: 'http://localhost:3001',
+    backendUrl: 'http://localhost:3100',
+
     public: {
       // Переопределяется через NUXT_PUBLIC_API_BASE
       apiBase: '/api/backend',
-      // Переопределяется через NUXT_PUBLIC_BACKEND_URL
-      backendUrl: 'http://localhost:3001',
-      // Переопределяется через NUXT_PUBLIC_APP_ENV
-      appEnv: 'development',
+
+      // Только для отображения ссылки в DevPanel — НЕ использовать для fetch,
+      // это просто число порта, а не готовый URL. Реальные запросы к backend
+      // идут через apiBase (server-side proxy, см. server/api/backend/[...path].ts),
+      // который использует отдельную серверную переменную BACKEND_URL.
+      // Переопределяется через NUXT_PUBLIC_BACKEND_PORT
+      backendPort: '3100',
+
       // Адрес VitePress-документации. Dev — отдельный порт, prod — подпуть /docs.
       // Переопределяется через NUXT_PUBLIC_DOCS_URL
       docsUrl: 'http://localhost:5173',
-      appVersion, // версия приложения для наглядности в интерфейсе
+
+      // Переопределяется через NUXT_PUBLIC_APP_ENV
+      appEnv: 'development',
+
+      // версия приложения для наглядности в интерфейсе
+      appVersion,
     },
   },
 
   compatibilityDate: '2025-07-15',
+
+  vite: {
+    optimizeDeps: {
+      include: [
+        '@vueuse/core',
+        'mitt',
+        'vue-tippy',
+      ],
+    },
+  },
 
   eslint: {
     config: {

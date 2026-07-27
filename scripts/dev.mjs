@@ -7,6 +7,6 @@ concurrently(
     { command: 'pnpm --filter docs dev', name: 'Docs' },
   ],
   {
-    prefixColors: ['#e0234e', '#ffca28', '#428bb8'],
+    prefixColors: ['#e0234e', '#ffca28', '#55a5d3'],
   },
 )

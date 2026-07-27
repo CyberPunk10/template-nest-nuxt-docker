@@ -1,7 +1,11 @@
 <script setup lang="ts">
-import { userMenu } from '~/components/App/UserMenu/user-menu'
+import { userMenu } from '~/components/App/UserMenu/config/user-menu'
 import ThemeSwitcher from './ThemeSwitcher.vue'
 import LanguageSwitcher from './LanguageSwitcher.vue'
+
+withDefaults(defineProps<{ placement?: 'up' | 'down' }>(), {
+  placement: 'up',
+})
 
 defineEmits<{ close: [] }>()
 
@@ -19,7 +23,7 @@ async function handleLogout() {
 </script>
 
 <template>
-  <div class="user-menu__dropdown">
+  <div class="user-menu__dropdown" :class="`user-menu__dropdown--${placement}`">
     <template v-for="item in userMenu" :key="item.id">
       <div v-if="'divider' in item" class="user-menu__divider" />
       <LanguageSwitcher v-else-if="'slot' in item && item.id === 'language'" />
@@ -51,7 +55,6 @@ async function handleLogout() {
 .user-menu {
   &__dropdown {
     position: absolute;
-    bottom: calc(100% + 4px);
     left: var(--space-2);
     right: var(--space-2);
     width: 12.5rem;
@@ -59,9 +62,19 @@ async function handleLogout() {
     border: 1px solid var(--border-popover);
     border-radius: var(--radius-lg);
     padding: var(--space-1);
-    margin-bottom: calc(-1 * var(--space-0-5));
     box-shadow: var(--shadow-md);
     z-index: var(--z-dropdown);
+
+    &--up {
+      bottom: calc(100% + 4px);
+      margin-bottom: calc(-1 * var(--space-0-5));
+    }
+
+    &--down {
+      top: calc(100% + 4px);
+      left: auto;
+      right: 0;
+    }
   }
 
   &__item {

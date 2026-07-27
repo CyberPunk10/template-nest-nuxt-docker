@@ -2,7 +2,7 @@
 import DevPanelViewport from './DevPanelViewport.vue'
 
 const {
-  public: { apiBase, backendUrl, appEnv, docsUrl },
+  public: { apiBase, backendPort, appEnv, docsUrl },
 } = useRuntimeConfig()
 const { data: backendHealth, error: backendError } = await useFetch<{ status: string }>('/health', {
   baseURL: apiBase,
@@ -10,6 +10,10 @@ const { data: backendHealth, error: backendError } = await useFetch<{ status: st
 const backendOnline = computed(() => backendHealth.value?.status === 'ok' && !backendError.value)
 const requestUrl = useRequestURL()
 const frontendUrl = requestUrl.origin
+// Только для отображения ссылки: реальный backend всегда доступен браузеру
+// на том же хосте, что и frontend, но на своём порту — не завязано на то,
+// запущено через pnpm dev или docker compose (там разные внутренние адреса).
+const backendUrl = `${requestUrl.protocol}//${requestUrl.hostname}:${backendPort}`
 const swaggerEnabled = appEnv === 'development'
 
 const route = useRoute()

@@ -174,15 +174,14 @@ function scrollHandler(_event: Event | null, force = false) {
   if (!appScrollShadowRef.value) return
 
   // top and bottom
-  const { scrollHeight, offsetHeight, clientHeight, scrollTop } = appScrollShadowRef.value
+  const { scrollHeight, offsetHeight, scrollTop } = appScrollShadowRef.value
   const isChangedScrollY = scrollTop !== scrollY.value
-  const contentHeight = Math.max(scrollHeight, offsetHeight, clientHeight)
   const overflowY = getComputedStyle(appScrollShadowRef.value).overflowY
   const isScrollableY = overflowY === 'auto' || overflowY === 'scroll'
 
-  hasVBar.value = isScrollableY && contentHeight > clientHeight
+  hasVBar.value = isScrollableY && scrollHeight > offsetHeight
   scrollY.value = scrollTop
-  const processFull = contentHeight - clientHeight
+  const processFull = scrollHeight - offsetHeight
   const bottomScrollY = processFull - scrollTop
   shadowBottom.value = hasVBar.value && bottomScrollY > 10
   processY.value = hasVBar.value ? (processFull - bottomScrollY) / processFull : 0
@@ -266,6 +265,10 @@ function toggleClass(data: ShadowPayload & { elem: Element | null, val?: boolean
   else data.elem.classList.remove(className)
 }
 
+function scrollTo(options: ScrollToOptions) {
+  appScrollShadowRef.value?.scrollTo?.(options)
+}
+
 // прокрутка с помощью движений мыши (нажать и перемещать) для горизонтального скролла
 if (props.scrollWithMouseMovements) {
   const down = ref(false)
@@ -334,7 +337,7 @@ if (props.scrollWithMouseMovements) {
   })
 }
 
-defineExpose({ appScrollShadowRef, shadowTop })
+defineExpose({ appScrollShadowRef, shadowTop, scrollTo })
 </script>
 
 <template>

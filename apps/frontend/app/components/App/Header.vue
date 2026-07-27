@@ -14,7 +14,7 @@ const title = computed(() => route.meta.title as string | undefined)
     </span>
 
     <div class="app-header__right">
-      <UserMenu />
+      <UserMenu placement="down" />
     </div>
   </header>
 </template>

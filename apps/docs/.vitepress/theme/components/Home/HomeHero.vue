@@ -12,7 +12,7 @@ const hero = computed(() => theme.value.home!.hero)
 // en/th — в своих папках. withBase добавит base '/docs/'.
 const docsLink = computed(() => {
   const prefix = lang.value === 'ru' ? '' : `/${lang.value}`
-  return withBase(`${prefix}/guide/development`)
+  return withBase(`${prefix}/guide/getting-started`)
 })
 </script>
 

@@ -1,5 +1,5 @@
 FROM node:24-alpine AS base
-RUN npm install -g pnpm@11.5.2
+RUN corepack enable
 
 FROM base AS builder
 WORKDIR /app
@@ -15,6 +15,10 @@ RUN pnpm --filter @repo/frontend build
 FROM node:24-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
-COPY --from=builder /app/apps/frontend/.output ./.output
-EXPOSE 3000
+ENV PORT=3200
+USER node
+COPY --from=builder --chown=node:node /app/apps/frontend/.output ./.output
+EXPOSE ${PORT}
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s \
+  CMD wget -qO- http://127.0.0.1:${PORT}/api/health || exit 1
 CMD ["node", ".output/server/index.mjs"]

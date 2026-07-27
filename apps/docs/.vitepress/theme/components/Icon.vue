@@ -3,15 +3,11 @@ import { computed } from 'vue'
 
 // Лёгкая замена nuxt-иconов: рисуем только те lucide-иконки, что нужны
 // стартовой странице, inline-SVG. Имя — 'lucide:log-in' или просто 'log-in'.
-const props = withDefaults(
-  defineProps<{ name: string; size?: number | string }>(),
-  { size: 16 },
-)
+const props = withDefaults(defineProps<{ name: string; size?: number | string }>(), { size: 16 })
 
 // lucide-пути (stroke-иконки, viewBox 0 0 24 24).
 const paths: Record<string, string> = {
-  'log-in':
-    'M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4 M10 17l5-5-5-5 M15 12H3',
+  'log-in': 'M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4 M10 17l5-5-5-5 M15 12H3',
   'book-open':
     'M12 7v14 M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z',
   github:
@@ -31,9 +27,7 @@ const paths: Record<string, string> = {
 
 const key = computed(() => props.name.replace(/^lucide:/, ''))
 const d = computed(() => paths[key.value] ?? '')
-const px = computed(() =>
-  typeof props.size === 'number' ? `${props.size}px` : props.size,
-)
+const px = computed(() => (typeof props.size === 'number' ? `${props.size}px` : props.size))
 </script>
 
 <template>

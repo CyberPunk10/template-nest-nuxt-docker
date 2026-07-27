@@ -40,7 +40,12 @@ export function useMenu() {
     return getFilteredItems(sections)
   })
 
-  const rightMenu = computed((): MenuItem[] => [{ spacer: true, id: 'before-settings' }, settings])
+  const { public: { docsUrl } } = useRuntimeConfig()
+
+  const rightMenu = computed((): MenuItem[] => [
+    { spacer: true, id: 'before-settings' },
+    { ...settings, url: docsUrl, external: true },
+  ])
 
   return {
     leftMenu,

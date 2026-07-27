@@ -19,7 +19,7 @@ async function bootstrap() {
     }),
   )
   app.enableCors({
-    origin: config.get<string>('CORS_ORIGIN', 'http://localhost:3000'),
+    origin: `${config.get<string>('CORS_ORIGIN_SCHEME_HOST')}:${config.get<number>('CORS_ORIGIN_PORT')}`,
     credentials: true,
   })
 
@@ -31,6 +31,6 @@ async function bootstrap() {
     SwaggerModule.setup('api/docs', app, document)
   }
 
-  await app.listen(config.get<number>('PORT', 3001))
+  await app.listen(config.get<number>('PORT', 3100))
 }
 void bootstrap()

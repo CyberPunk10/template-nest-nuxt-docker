@@ -2,65 +2,80 @@
 
 ## Файлы
 
-```
-apps/backend/.env[.example]  # Читает NestJS напрямую
-apps/frontend/.env[.example] # Читает Nuxt напрямую
-```
-
-- Каждое приложение читает **только свой** `.env`
-- Если `.env` отсутствует, он **автоматически** копируется из `.env.example` при запуске `pnpm dev` (с помощью `predev.mjs`)
-
----
-
-## Почему переменные повторяются
-
-### `BACKEND_URL` vs `NUXT_PUBLIC_BACKEND_URL`
-
-Оба — «адрес бэкенда», но для разных потребителей:
-
-| Переменная                | Файл                 | Кто читает        | Значение                               |
-| ------------------------- | -------------------- | ----------------- | -------------------------------------- |
-| `BACKEND_URL`             | `apps/frontend/.env` | Nuxt SSR (сервер) | `http://localhost:3001` при `pnpm dev` |
-| `NUXT_PUBLIC_BACKEND_URL` | `apps/frontend/.env` | Браузер           | `http://localhost:3001`                |
-
-В Docker оба значения передаются напрямую через `docker-compose.yml`: `BACKEND_URL` как `http://backend:3001` (имя сервиса внутри Docker-сети), `NUXT_PUBLIC_BACKEND_URL` как `http://localhost:3001`.
-
-`NUXT_PUBLIC_` — обязательный префикс Nuxt для переменных, доступных браузеру. Убрать дублирование нельзя: это ограничение фреймворка.
-
-### `CORS_ORIGIN`
-
-Только в `apps/backend/.env` для локального запуска (`pnpm dev`). В Docker передаётся напрямую через `docker-compose.yml`.
-
----
-
-## Схема: что откуда читается
-
-### `pnpm dev`
+Четыре независимых `.env` — по одному на приложение плюс корневой для Docker:
 
 ```
-apps/backend/.env   →  PORT, CORS_ORIGIN
-apps/frontend/.env  →  PORT, NUXT_PUBLIC_BACKEND_URL, BACKEND_URL
+template-nest-nuxt/
+├── .env[.example]            ← читает docker-compose.yml
+├── apps/
+│   ├── backend/
+│   │   └── .env[.example]    ← читает NestJS напрямую
+│   ├── frontend/
+│   │   └── .env[.example]    ← читает Nuxt напрямую
+│   └── docs/
+│       └── .env[.example]    ← VitePress dev-сервер (dotenv)
+└── ...
 ```
 
-### Docker
+Каждое приложение читает **только свой** `.env`, не зная о существовании остальных. Корневой `.env` нужен для docker-compose.
 
-```
-docker-compose.yml (значения захардкожены)
-  backend:   PORT=3001, CORS_ORIGIN=http://localhost:3000
-  frontend:  NUXT_PUBLIC_API_BASE=/api/backend,
-             NUXT_PUBLIC_APP_ENV=production,
-             NUXT_PUBLIC_BACKEND_URL=http://localhost:3001,
-             BACKEND_URL=http://backend:3001
-```
+В репозитории лежат только `.env.example` — реальные `.env` создаются копированием: вручную через `pnpm env:copy`, либо автоматически при первом `pnpm dev`/`pnpm docker:up` (см. [`predev.mjs`, `predocker.mjs`](/guide/scripts#predev-mjs-predocker-mjs) в гайде [Скрипты](/guide/scripts)). Копирование всегда безопасно — существующие `.env` не перезаписываются.
 
----
+## Три слоя портов
 
-## `predev.mjs`
+Один и тот же сервис имеет **до трёх разных портов**, в зависимости от контекста запуска — это не дублирование и не опечатка, у каждого своя роль:
 
-Запускается автоматически перед `pnpm dev` (npm `pre*` соглашение). Делает три вещи:
+| Слой | Переменная | Файл | Что означает |
+| --- | --- | --- | --- |
+| Dev-порт | `PORT` | `apps/backend/.env`, `apps/frontend/.env`, `apps/docs/.env` | На чём слушает процесс при `pnpm dev` |
+| Внутренний порт | `BACKEND_INTERNAL_PORT`, `FRONTEND_INTERNAL_PORT`, `DOCS_INTERNAL_PORT` | `.env` (корень) | На чём слушает процесс **внутри контейнера** в Docker |
+| Хост-порт | `BACKEND_HOST_PORT`, `FRONTEND_HOST_PORT`, `DOCS_HOST_PORT` | `.env` (корень) | На чём сервис виден **снаружи** Docker (`localhost:<host-порт>` на машине) |
 
-1. Если `apps/backend/.env` или `apps/frontend/.env` отсутствует — копирует из `.env.example`
-2. Если нужный порт занят — предлагает убить процесс на нём или прервать запуск
-3. Поднимает PostgreSQL через `docker-compose.dev.yml`, если контейнер ещё не запущен (идемпотентно; при отсутствии Docker — предупреждает и продолжает)
+Почему нельзя одной переменной: `pnpm dev` и Docker — разные процессы запуска с разными требованиями. В Docker сам процесс внутри контейнера и адрес, по которому до него достучится хост-машина — это система из двух чисел с NAT-проксированием между ними (`ports: "<хост-порт>:<внутренний порт>"`), а `pnpm dev` — это просто один процесс на голой машине с одним портом.
 
-Подробнее про режимы запуска — см. [Разработка](/guide/development).
+### Почему `PORT` не берётся из `apps/*/.env` в Docker
+
+Внутренний порт контейнера **не** читается напрямую из `apps/backend/.env` (там уже есть своя `PORT`), хотя `env_file:` и передаёт этот файл внутрь контейнера целиком. Причина — момент времени: `docker-compose.yml`'s `ports:` (куда Docker должен проксировать) резолвится Compose'ом при чтении YAML, **до** старта контейнера, а `env_file:` передаёт переменные внутрь контейнера только **при** старте. Чтобы обе половины (`ports:` и то, что реально попадает в `PORT` внутри контейнера) гарантированно совпадали, оба берутся из одного источника, видимого Compose'у на этапе интерполяции — корневого `.env`. Отсюда `environment: PORT: '${BACKEND_INTERNAL_PORT}'` в `docker-compose.yml`, которая явно переопределяет то, что иначе пришло бы из `apps/backend/.env` через `env_file:` (`environment:` в Compose всегда сильнее `env_file:`).
+
+Практическое следствие: если поменять `PORT` в `apps/backend/.env`, ничего не сломается для `pnpm dev`, но и не изменится ничего для Docker — `environment:` всё равно победит значением из `BACKEND_INTERNAL_PORT`. Чтобы реально изменить порт для Docker, нужно менять `BACKEND_INTERNAL_PORT`/`FRONTEND_INTERNAL_PORT`/`DOCS_INTERNAL_PORT` в корневом `.env`.
+
+У `docs` дополнительный нюанс: внутри контейнера работает `nginx`, который сам по себе не читает переменные окружения — `PORT` попадает в конфиг через `envsubst`, прогоняющий `apps/docs/nginx.conf.template` (`listen ${PORT};`) в реальный `nginx.conf` при старте контейнера.
+
+Подробнее, с примером `docker-compose.yml` — см. [Docker → Хост-порты, внутренний порт и почему их два](/guide/docker#хост-порты-внутреннии-порт-и-почему-их-два).
+
+## Переменные по файлам
+
+### `.env` (корень)
+
+| Переменная | Значение | Комментарий |
+| --- | --- | --- |
+| `BACKEND_HOST_PORT` | `3500` | Хост-порт backend — на чём сервис виден снаружи Docker |
+| `FRONTEND_HOST_PORT` | `3600` | Хост-порт frontend |
+| `DOCS_HOST_PORT` | `3700` | Хост-порт docs |
+| `BACKEND_INTERNAL_PORT` | `3100` | Порт, на котором backend слушает **внутри контейнера** |
+| `FRONTEND_INTERNAL_PORT` | `3200` | Порт, на котором frontend слушает внутри контейнера |
+| `DOCS_INTERNAL_PORT` | `3300` | Порт, на котором nginx (docs) слушает внутри контейнера |
+
+### `apps/backend/.env`
+
+| Переменная | Значение (dev) | Комментарий |
+| --- | --- | --- |
+| `PORT` | `3100` | Порт backend при `pnpm dev`. В Docker переопределяется `BACKEND_INTERNAL_PORT` из корневого `.env` |
+| `CORS_ORIGIN_SCHEME_HOST` | `http://localhost` | Разрешённый origin для CORS — протокол+хост. Не меняется в Docker |
+| `CORS_ORIGIN_PORT` | `3200` | Разрешённый origin для CORS — порт frontend'а. В Docker переопределяется `FRONTEND_HOST_PORT` |
+
+### `apps/frontend/.env`
+
+| Переменная | Значение (dev) | Комментарий |
+| --- | --- | --- |
+| `PORT` | `3200` | Порт frontend при `pnpm dev`. В Docker переопределяется `FRONTEND_INTERNAL_PORT` из корневого `.env` |
+| `NUXT_PUBLIC_API_BASE` | `/api/backend` | Префикс для server-side прокси на backend (браузер ходит сюда, не напрямую на backend) |
+| `BACKEND_URL` | `http://localhost:3100` | Адрес backend для Nuxt SSR (сервер). В Docker переопределяется на `http://backend:${BACKEND_INTERNAL_PORT}` — по имени сервиса, `localhost` внутри Docker-сети недостижим |
+| `NUXT_PUBLIC_BACKEND_PORT` | `3100` | Только порт backend, для ссылки в DevPanel (не для запросов). В Docker переопределяется `BACKEND_HOST_PORT` |
+
+### `apps/docs/.env`
+
+| Переменная | Значение | Комментарий |
+| --- | --- | --- |
+| `PORT` | `5173` | Порт VitePress dev-сервера. Читается через `dotenv` в `.vitepress/config.ts` — сам VitePress `.env` не грузит. Не используется в Docker |
+

@@ -2,18 +2,43 @@
 import { MENU_TYPE, useSidebar } from '../../composables/useSidebar'
 
 const emit = defineEmits(['toggle-sidebar-width'])
-const { isCollapsed } = useSidebar()
+
+const { $globalEvents } = useNuxtApp()
+const { t } = useI18n()
+const { isCollapsed, isMobileOpen, menuType } = useSidebar()
+
+const isDesktop = computed(() => menuType.value === MENU_TYPE.DESKTOP)
+
+// единый паттерн для десктопа и мобилки: одна кнопка-панель,
+// иконка отражает текущее состояние (скрыто → open, видно → close)
+const isShown = computed(() => (isDesktop.value ? !isCollapsed.value : isMobileOpen.value))
+
+const iconName = computed(() =>
+  isShown.value ? 'lucide:panel-left-close' : 'lucide:panel-left-open',
+)
+
+const label = computed(() => (isShown.value ? t('sidebar.collapse') : t('sidebar.expand')))
+
+function handleClick() {
+  if (isDesktop.value) {
+    emit('toggle-sidebar-width')
+  } else {
+    $globalEvents.emit('toggle-sidebar', {})
+  }
+}
 </script>
 
 <template>
   <button
-    v-tippy="isCollapsed ? $t('sidebar.expand') : $t('sidebar.collapse')"
+    v-tippy="isDesktop ? label : ''"
     class="sidebar-toggle"
-    :aria-label="isCollapsed ? $t('sidebar.expand') : $t('sidebar.collapse')"
-    @click="emit('toggle-sidebar-width')"
+    :aria-label="label"
+    :aria-expanded="isShown"
+    @click="handleClick"
   >
     <Icon
-      :name="isCollapsed ? 'lucide:panel-left-open' : 'lucide:panel-left-close'"
+      :key="iconName"
+      :name="iconName"
       class="sidebar-toggle__icon"
       size="18"
     />

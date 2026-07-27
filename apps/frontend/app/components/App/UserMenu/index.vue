@@ -3,6 +3,10 @@ import { useSidebar } from '~/components/App/Sidebar/composables/useSidebar'
 import UserMenuTrigger from './UserMenuTrigger.vue'
 import UserMenuDropdown from './UserMenuDropdown.vue'
 
+withDefaults(defineProps<{ placement?: 'up' | 'down' }>(), {
+  placement: 'up',
+})
+
 const { user } = useAuth()
 const { isCollapsed } = useSidebar()
 
@@ -39,7 +43,11 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
       @click="toggleMenu"
     />
 
-    <UserMenuDropdown v-if="menuOpen" @close="menuOpen = false" />
+    <UserMenuDropdown
+      v-if="menuOpen"
+      :placement="placement"
+      @close="menuOpen = false"
+    />
   </div>
 </template>
 
