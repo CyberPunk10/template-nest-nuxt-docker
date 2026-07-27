@@ -1,0 +1,195 @@
+/**
+ * Фирменный акцент — бирюзовый (teal).
+ * Переопределяем brand-переменные темы VitePress.
+ * brand-1 — основной (текст ссылок, заголовки),
+ * brand-2 — hover, brand-3 — фоны/кнопки, brand-soft — подложки.
+ */
+:root {
+  /* Системный шрифт для всего проекта — переопределяем штатный токен темы
+     (по умолчанию VitePress использует Inter). Emoji-fallback'ы сохранены. */
+  --vp-font-family-base: system-ui, -apple-system, 'Segoe UI', Roboto,
+    ui-sans-serif, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', 'Noto Color Emoji';
+
+  --vp-c-brand-1: #0ca678;
+  --vp-c-brand-2: #099268;
+  --vp-c-brand-3: #0ca678;
+  --vp-c-brand-soft: rgba(12, 166, 120, 0.14);
+
+  /* Акцентная кнопка на главной (hero action) */
+  --vp-button-brand-bg: #0ca678;
+  --vp-button-brand-hover-bg: #099268;
+  --vp-button-brand-active-bg: #087f5b;
+  --vp-button-brand-border: transparent;
+  --vp-button-brand-hover-border: transparent;
+}
+
+/**
+ * Геройский блок на главной (обычная страница, но крупный заголовок).
+ */
+.home-hero {
+  padding: 12px 0 28px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--vp-c-divider);
+}
+.home-hero__icon {
+  font-size: 44px;
+  line-height: 1;
+  margin-bottom: 12px;
+}
+.home-hero__title {
+  font-size: 40px;
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0 0 12px;
+  border: 0; /* убираем стандартную линию под h1 */
+  /* teal-градиент в тон акценту */
+  background: linear-gradient(120deg, var(--vp-c-brand-1), var(--vp-c-brand-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.home-hero__tagline {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--vp-c-text-2);
+  max-width: 60ch;
+  margin: 0;
+}
+@media (min-width: 640px) {
+  .home-hero__title { font-size: 52px; }
+}
+
+/**
+ * Картинки в контенте.
+ * По умолчанию тема может растягивать <img> на всю ширину контейнера —
+ * из-за этого иконка-логотип в заголовке (<img height="20">) раздувалась
+ * во весь экран. Ограничиваем: обычные картинки — не шире контейнера,
+ * а иконки в заголовках держат заданную высоту и не растягиваются.
+ */
+.vp-doc img {
+  max-width: 100%;
+  height: auto;
+}
+.vp-doc h1 img,
+.vp-doc h2 img,
+.vp-doc h3 img {
+  display: inline;
+  width: auto;
+  height: 1em;
+  vertical-align: middle;
+}
+
+/* Тёмная тема — берём более светлый оттенок для контраста на тёмном фоне */
+.dark {
+  --vp-c-brand-1: #20c997;
+  --vp-c-brand-2: #38d9a9;
+  --vp-c-brand-3: #12b886;
+  --vp-c-brand-soft: rgba(32, 201, 151, 0.16);
+
+  --vp-button-brand-bg: #12b886;
+  --vp-button-brand-hover-bg: #20c997;
+  --vp-button-brand-active-bg: #0ca678;
+}
+
+/**
+ * For CustomHome.vue
+ */
+.home {
+  /* тёмные значения — по умолчанию */
+  --home-accent: #00dc82;         /* кнопки, ссылки, активные состояния */
+  --home-text-primary: #f4f4f6;   /* заголовки, основной контент */
+  --home-text-muted: #52525b;     /* плейсхолдеры, иконки, disabled */
+  --home-surface-card: #18181b;   /* карточки, секции */
+  --home-border-subtle: #6d79b524;  /* разделители */
+  --home-surface-app: #080f1a;        /* фон приложения (внутри карточек) — пока не используется */
+
+  /* градации текста (dark) */
+  --home-text-strong: #f1f5f9;  /* яркие заголовки */
+  --home-text-hover: #94a3b8;   /* текст при hover */
+  --home-text-soft: #cbd5e1;    /* светлый вторичный текст */
+  --home-text-dim: #334155;     /* приглушённый: лейблы, подписи, comment */
+
+  /* поверхности и границы витрины (dark) */
+  --home-surface-2: #ffffff0d;    /* вложенные плашки, зебра */
+  --home-surface-deep: #020c18; /* глубокий фон: терминал, ячейки */
+  --home-border-2: #0f1f33;     /* тонкие границы на тёмном */
+
+  /* семантические цвета дерева/бренда (dark).
+     Вынесены в токены, но light пока = dark — светлая палитра дерева
+     требует отдельного дизайн-решения (голубой/фиолетовый на белом блёклы). */
+  --home-tree-dir: #7dd3fc;     /* папки */
+  --home-tree-pkg: #a78bfa;     /* пакеты/типы */
+  --home-tree-key: #fbbf24;     /* ключи */
+  --home-tree-docker: #2496ed;  /* бренд Docker */
+
+  /* размеры — общие для обеих тем */
+  --home-radius-md: 0.375rem;     /* 6px */
+  --home-radius-lg: 0.5rem;       /* 8px */
+  --home-space-2: 0.5rem;         /* 8px */
+}
+
+/* light theme */
+:root:not(.dark) .home {
+  --home-accent: #00c16a;
+  --home-text-primary: #09090b;
+  --home-text-muted: #a1a1aa;
+  --home-surface-card: #f6f6f7;
+  --home-border-subtle: #e4e4e7;
+  --home-surface-app: #ffffff;
+
+  --home-text-strong: #09090b;
+  --home-text-hover: #52525b;
+  --home-text-soft: #3f3f46;
+  --home-text-dim: #71717a;
+
+  --home-surface-2: #f4f4f5;
+  --home-surface-deep: #f0f0f1;
+  --home-border-2: #e4e4e7;
+
+  /* цвета дерева пока не адаптированы под light — те же, что в dark */
+  --home-tree-dir: #7dd3fc;
+  --home-tree-pkg: #a78bfa;
+  --home-tree-key: #fbbf24;
+  --home-tree-docker: #2496ed;
+}
+
+/* Прозрачный навбар на витрине вверху → фон при скролле.*/
+.showcase-page .VPNavBar,
+.showcase-page .VPNavBar .content-body,
+.showcase-page .VPNavBar .divider,
+.showcase-page .VPNavBar .divider-line,
+.showcase-page .VPNavBar.home.top .divider,
+.showcase-page .VPNavBar.home.top .divider-line {
+  background-color: transparent !important;
+}
+
+/* На витрине название проекта уже есть в hero — убираем дубль из шапки.
+   На гайдах (без .showcase-page) заголовок остаётся для навигации.
+   !important — у штатного .VPNavBarTitle scoped-селектор специфичнее. */
+.showcase-page .VPNavBarTitle {
+  display: none !important;
+}
+
+/* Витрина живёт в слоте layout-bottom, а штатный контент (VPContent.is-home
+   с пустым VPHome) на этой странице не нужен — скрываем пустой блок.
+   Только на витрине (.showcase-page); на гайдах VPContent работает штатно. */
+.showcase-page .VPContent {
+  display: none;
+}
+
+/* ─────────────────────────  Тёмная тема  ───────────────────────── */
+
+.dark {
+  --vp-c-bg: #080f1a;
+  --vp-home-hero-name-color: #00dc82;
+  --vp-button-brand-bg: #00dc82;
+  --vp-button-brand-text: #18181b;
+
+  --vp-c-bg-soft: #151b26;
+
+  --vp-sidebar-bg-color: #151b26;
+
+  --vp-code-block-bg: #151b26;
+}

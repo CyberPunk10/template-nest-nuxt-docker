@@ -25,9 +25,10 @@ export default defineNuxtConfig({
     '~/assets/css/variables.css',
     '~/assets/css/variables.layout.css',
     '~/assets/css/variables.dark.css',
-    '~/assets/css/variables.dark-green.css',
+    '~/assets/css/variables.dark-slate.css',
     '~/assets/css/variables.dark-midnight.css',
     '~/assets/css/variables.dark-ocean.css',
+    '~/assets/css/variables.dark-nuxt.css',
     '~/assets/css/variables.light.css',
     '~/assets/css/variables.light-sand.css',
     '~/assets/css/variables.light-mist.css',
@@ -46,6 +47,9 @@ export default defineNuxtConfig({
       backendUrl: 'http://localhost:3001',
       // Переопределяется через NUXT_PUBLIC_APP_ENV
       appEnv: 'development',
+      // Адрес VitePress-документации. Dev — отдельный порт, prod — подпуть /docs.
+      // Переопределяется через NUXT_PUBLIC_DOCS_URL
+      docsUrl: 'http://localhost:5173',
       appVersion, // версия приложения для наглядности в интерфейсе
     },
   },

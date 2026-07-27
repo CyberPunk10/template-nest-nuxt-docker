@@ -1,0 +1,111 @@
+{
+  "home": {
+    "hero": {
+      "badge": "Open-source template",
+      "title": "NestJS + Nuxt 4",
+      "titleAccent": "Monorepo Template",
+      "subtitle": "Production-ready стартовая точка для full-stack приложений.\nРазворачивается за минуты, масштабируется до продакшена.",
+      "toDashboard": "Перейти в кабинет",
+      "login": "Войти",
+      "github": "GitHub",
+      "docs": "Документация"
+    },
+    "quickstart": {
+      "title": "Быстрый старт",
+      "steps": {
+        "clone": "Клонировать репозиторий",
+        "install": "Установить зависимости",
+        "run": "Запустить приложения",
+        "envCheck": "Проверить .env — при смене ветки могут появиться новые переменные",
+        "network": "Создать Docker-сеть (только первый раз)",
+        "postgres": "Поднять PostgreSQL",
+        "migrate": "Применить миграции"
+      }
+    },
+    "principles": {
+      "title": "Принципы",
+      "transparency": {
+        "title": "Прозрачность",
+        "desc": "Никакой магии. Каждое решение объяснено и очевидно из кода."
+      },
+      "idiomatic": {
+        "title": "Идиоматичность",
+        "desc": "Следуем соглашениям NestJS и Nuxt, не изобретаем велосипед."
+      },
+      "production": {
+        "title": "Готовность к prod",
+        "desc": "Docker, env-валидация, обработка ошибок — с первого дня."
+      },
+      "starter": {
+        "title": "Старт для ваших идей",
+        "desc": "Готовый фундамент — клонируйте и стройте свой продукт, не тратя недели на обвязку."
+      }
+    },
+    "branches": {
+      "title": "Варианты",
+      "current": "текущая",
+      "basedOn": "на основе",
+      "main": {
+        "label": "Базовый",
+        "desc": "Стартовая точка без БД. Users CRUD хранится in-memory."
+      },
+      "postgresPrisma": {
+        "label": "PostgreSQL",
+        "desc": "Подключает PostgreSQL и Prisma 7 поверх базового варианта."
+      },
+      "auth": {
+        "label": "Auth",
+        "desc": "Идеальный старт для личных кабинетов и административных панелей. JWT-аутентификация поверх postgres-prisma: email + пароль, httpOnly cookies, сессии в БД."
+      }
+    },
+    "stack": {
+      "title": "Стек"
+    },
+    "commands": {
+      "title": "Команды",
+      "groups": {
+        "dev": "Dev",
+        "prod": "Prod",
+        "utils": "Утилиты",
+        "prisma": "Prisma"
+      },
+      "items": {
+        "pnpmDev": "запустить приложения",
+        "dockerDev": "инфраструктура",
+        "pnpmBuild": "собрать всё",
+        "dockerUp": "все сервисы в Docker",
+        "dockerDown": "остановить",
+        "pnpmLint": "проверить код",
+        "pnpmTypeCheck": "проверить типы",
+        "prismaStudio": "Prisma Studio"
+      }
+    },
+    "tree": {
+      "title": "Структура"
+    },
+    "footer": {
+      "tagline": "Production-ready монорепо-шаблон для быстрого старта.",
+      "projectTitle": "Проект",
+      "startTitle": "Начать",
+      "startHint": "Создайте проект одной командой:",
+      "links": {
+        "github": "GitHub",
+        "issues": "Issues",
+        "license": "Лицензия MIT"
+      },
+      "poweredBy": "Работает на",
+      "copyright": "Открытый код под лицензией MIT.",
+      "supportTitle": "Поддержать",
+      "contactsTitle": "Контакты",
+      "support": {
+        "star": "Star на GitHub",
+        "sponsor": "Спонсировать"
+      },
+      "contacts": {
+        "author": "Автор на GitHub",
+        "email": "Email",
+        "telegram": "Telegram"
+      }
+    }
+  }
+}

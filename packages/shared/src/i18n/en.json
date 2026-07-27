@@ -6,7 +6,17 @@
   },
   "db": {
     "title": "Database",
-    "subtitle": "read-only snapshot"
+    "subtitle": "read-only snapshot",
+    "cols": {
+      "id": "ID",
+      "name": "Name",
+      "email": "Email",
+      "title": "Title",
+      "description": "Description",
+      "author": "Author",
+      "createdAt": "Created",
+      "updatedAt": "Updated"
+    }
   },
   "tasks": {
     "title": "Tasks",

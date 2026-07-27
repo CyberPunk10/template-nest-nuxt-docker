@@ -28,7 +28,7 @@
   }
 
   &__title {
-    color: #e2e8f0;
+    color: var(--text-primary);
     font-size: 20px;
     font-weight: 600;
     margin: 0 0 8px;
@@ -40,7 +40,7 @@
     border-radius: var(--radius-lg);
     padding: 10px 14px;
     font-size: 14px;
-    color: #e2e8f0;
+    color: var(--text-primary);
     outline: none;
     transition: border-color 0.2s;
 
@@ -51,7 +51,7 @@
 
   &__error {
     font-size: 13px;
-    color: #ef4444;
+    color: var(--status-danger);
     margin: 0;
   }
 
@@ -79,7 +79,7 @@
     text-decoration: none;
 
     &:hover {
-      color: #94a3b8;
+      color: var(--text-secondary);
     }
   }
 }

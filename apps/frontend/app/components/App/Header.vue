@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import UserMenu from '~/components/App/Sidebar/components/UserMenu/index.vue'
+import UserMenu from '~/components/App/UserMenu/index.vue'
 
 const route = useRoute()
 
@@ -30,6 +30,7 @@ const title = computed(() => route.meta.title as string | undefined)
   display: flex;
   align-items: center;
   padding: 0 var(--space-4);
+  padding-left: var(--space-12);
 
   @media (width > 1024px) {
     display: none;

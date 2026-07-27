@@ -60,6 +60,7 @@ app/
 │   └── index.vue         ← Users CRUD с i18n
 └── app.vue
 
+// TODO: странно, что это не внутри конфига, а отдельным файлом
 i18n/
 └── i18n.config.ts        ← подключает переводы из @repo/shared
 

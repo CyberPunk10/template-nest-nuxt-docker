@@ -58,3 +58,10 @@
   --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-out:     cubic-bezier(0, 0, 0.2, 1);
 }
+
+/* Самый дальний фон приложения — резолвится по активной теме.
+   Страницы без своего фона больше не просвечивают. */
+body {
+  background: var(--surface-app);
+  color: var(--text-primary);
+}

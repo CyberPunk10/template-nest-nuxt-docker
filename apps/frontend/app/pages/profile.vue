@@ -24,7 +24,7 @@ const sessions = [
 </script>
 
 <template>
-  <div class="page">
+  <div class="profile-page">
     <div class="demo-banner">
       <Icon name="lucide:flask-conical" size="14" />
       {{ t('profile.demoBanner') }}
@@ -71,10 +71,10 @@ $text-body: #e2e8f0;
   padding: 10px 32px;
 }
 
-.page {
+.profile-page {
   flex: 1;
   background: $bg-page;
-  color: $text-body;
+  color: var(--text-primary);
   font-family: system-ui, sans-serif;
 }
 

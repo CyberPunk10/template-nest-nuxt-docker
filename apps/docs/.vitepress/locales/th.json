@@ -1,0 +1,111 @@
+{
+  "home": {
+    "hero": {
+      "badge": "Open-source template",
+      "title": "NestJS + Nuxt 4",
+      "titleAccent": "Monorepo Template",
+      "subtitle": "จุดเริ่มต้นสำหรับแอปพลิเคชัน full-stack พร้อม production\nติดตั้งภายในไม่กี่นาที รองรับการ scale ถึง production",
+      "toDashboard": "ไปยังแดชบอร์ด",
+      "login": "เข้าสู่ระบบ",
+      "github": "GitHub",
+      "docs": "เอกสาร"
+    },
+    "quickstart": {
+      "title": "เริ่มต้นอย่างรวดเร็ว",
+      "steps": {
+        "clone": "โคลน repository",
+        "install": "ติดตั้ง dependencies",
+        "run": "เริ่มต้นแอปพลิเคชัน",
+        "envCheck": "ตรวจสอบ .env — การเปลี่ยน branch อาจต้องการตัวแปรใหม่",
+        "network": "สร้าง Docker network (ครั้งแรกเท่านั้น)",
+        "postgres": "เริ่ม PostgreSQL",
+        "migrate": "รัน migrations"
+      }
+    },
+    "principles": {
+      "title": "หลักการ",
+      "transparency": {
+        "title": "ความโปร่งใส",
+        "desc": "ไม่มีความซับซ้อนที่ซ่อนอยู่ ทุกการตัดสินใจอธิบายได้และชัดเจนจากโค้ด"
+      },
+      "idiomatic": {
+        "title": "ตามแนวทาง",
+        "desc": "ปฏิบัติตามข้อตกลงของ NestJS และ Nuxt ไม่ประดิษฐ์สิ่งใหม่โดยไม่จำเป็น"
+      },
+      "production": {
+        "title": "พร้อม production",
+        "desc": "Docker, env validation, จัดการ error — ตั้งแต่วันแรก"
+      },
+      "starter": {
+        "title": "จุดเริ่มต้นสำหรับไอเดียของคุณ",
+        "desc": "รากฐานที่พร้อมใช้ — clone แล้วสร้างผลิตภัณฑ์ของคุณได้เลย ไม่ต้องเสียเวลาหลายสัปดาห์กับ boilerplate"
+      }
+    },
+    "branches": {
+      "title": "ตัวแปร",
+      "current": "ปัจจุบัน",
+      "basedOn": "ต่อยอดจาก",
+      "main": {
+        "label": "พื้นฐาน",
+        "desc": "จุดเริ่มต้นโดยไม่มีฐานข้อมูล Users CRUD เก็บใน in-memory"
+      },
+      "postgresPrisma": {
+        "label": "PostgreSQL",
+        "desc": "เพิ่ม PostgreSQL และ Prisma 7 ต่อยอดจากตัวแปรพื้นฐาน"
+      },
+      "auth": {
+        "label": "Auth",
+        "desc": "จุดเริ่มต้นที่เหมาะสำหรับแดชบอร์ดและแผงผู้ดูแลระบบ JWT authentication ต่อยอดจาก postgres-prisma: email + password, httpOnly cookies, sessions ใน DB"
+      }
+    },
+    "stack": {
+      "title": "สแตก"
+    },
+    "commands": {
+      "title": "คำสั่ง",
+      "groups": {
+        "dev": "Dev",
+        "prod": "Prod",
+        "utils": "ยูทิลิตี้",
+        "prisma": "Prisma"
+      },
+      "items": {
+        "pnpmDev": "เริ่มแอปพลิเคชัน",
+        "dockerDev": "โครงสร้างพื้นฐาน",
+        "pnpmBuild": "build ทั้งหมด",
+        "dockerUp": "ทุก services ใน Docker",
+        "dockerDown": "หยุด",
+        "pnpmLint": "ตรวจสอบโค้ด",
+        "pnpmTypeCheck": "ตรวจสอบ types",
+        "prismaStudio": "Prisma Studio"
+      }
+    },
+    "tree": {
+      "title": "โครงสร้าง"
+    },
+    "footer": {
+      "tagline": "เทมเพลต monorepo พร้อมใช้งาน production สำหรับเริ่มต้นอย่างรวดเร็ว",
+      "projectTitle": "โปรเจกต์",
+      "startTitle": "เริ่มต้น",
+      "startHint": "สร้างโปรเจกต์ด้วยคำสั่งเดียว:",
+      "links": {
+        "github": "GitHub",
+        "issues": "Issues",
+        "license": "สัญญาอนุญาต MIT"
+      },
+      "poweredBy": "ขับเคลื่อนโดย",
+      "copyright": "โอเพนซอร์สภายใต้สัญญาอนุญาต MIT",
+      "supportTitle": "สนับสนุน",
+      "contactsTitle": "ติดต่อ",
+      "support": {
+        "star": "Star บน GitHub",
+        "sponsor": "สนับสนุน"
+      },
+      "contacts": {
+        "author": "ผู้เขียนบน GitHub",
+        "email": "Email",
+        "telegram": "Telegram"
+      }
+    }
+  }
+}

@@ -48,7 +48,7 @@ watch(height, (v) => {
   </div>
 </template>
 
-<style>
+<style lang="scss">
 .layout {
   transition: margin var(--app-sidebar-transition);
 

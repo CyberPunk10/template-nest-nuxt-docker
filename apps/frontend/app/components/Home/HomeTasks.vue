@@ -182,7 +182,7 @@ async function removeTask(id: string) {
     border-radius: var(--radius-lg);
     padding: 8px 12px;
     font-size: 13px;
-    color: #e2e8f0;
+    color: var(--text-primary);
     outline: none;
     transition: border-color 0.2s;
 
@@ -242,7 +242,7 @@ async function removeTask(id: string) {
 
   &__title {
     font-size: 13px;
-    color: #e2e8f0;
+    color: var(--text-primary);
   }
 
   &__description {

@@ -20,6 +20,13 @@ export const dashboard = {
   icon: 'home',
 } satisfies SidebarItem
 
+export const playground = {
+  id: 'playground',
+  title: 'nav.playground',
+  url: '/playground',
+  icon: 'lucide:flask-conical',
+} satisfies SidebarItem
+
 export const analytics = {
   id: 'analytics',
   title: 'nav.analytics',
@@ -96,7 +103,7 @@ export const reports = {
 export const settings = {
   id: 'settings',
   title: 'nav.about',
-  url: '/about',
+  url: 'http://localhost:5173', // docsUrl: 'http://localhost:5173',
   icon: 'lucide:info',
 } satisfies SidebarItem
 

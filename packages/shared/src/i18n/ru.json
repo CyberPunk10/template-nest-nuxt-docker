@@ -6,7 +6,17 @@
   },
   "db": {
     "title": "База данных",
-    "subtitle": "только чтение"
+    "subtitle": "только чтение",
+    "cols": {
+      "id": "ID",
+      "name": "Имя",
+      "email": "Email",
+      "title": "Название",
+      "description": "Описание",
+      "author": "Автор",
+      "createdAt": "Создано",
+      "updatedAt": "Обновлено"
+    }
   },
   "tasks": {
     "title": "Задачи",

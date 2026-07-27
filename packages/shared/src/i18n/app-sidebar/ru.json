@@ -1,6 +1,7 @@
 {
   "nav": {
     "home": "Главная",
+    "playground": "Песочница",
     "analytics": "Аналитика",
     "users": "Пользователи",
     "usersList": "Все пользователи",
@@ -57,9 +58,10 @@
     "lightSand": "Песок",
     "lightMist": "Туман",
     "lightRose": "Роза",
-    "darkGreen": "Тёмно-зелёная",
+    "darkSlate": "Тёмно-синяя",
     "darkMidnight": "Полночная",
-    "darkOcean": "Океан"
+    "darkOcean": "Океан",
+    "darkNuxt": "Nuxt"
   },
   "userMenu": {
     "profile": "Профиль",

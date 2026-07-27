@@ -67,7 +67,6 @@ const shapes = Array.from({ length: 18 }, (_, i) => ({
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #080f1a;
   overflow: hidden;
 
   &__bg {
@@ -110,7 +109,7 @@ const shapes = Array.from({ length: 18 }, (_, i) => ({
   &__title {
     font-size: 28px;
     font-weight: 700;
-    color: #e2e8f0;
+    color: var(--text-primary);
     margin: 0;
     letter-spacing: -0.02em;
   }

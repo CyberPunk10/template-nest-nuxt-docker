@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useSidebar } from '../../composables/useSidebar'
+import { MENU_TYPE, useSidebar } from '../../composables/useSidebar'
 
 const emit = defineEmits(['toggle-sidebar-width'])
 const { isCollapsed } = useSidebar()
@@ -15,7 +15,7 @@ const { isCollapsed } = useSidebar()
     <Icon
       :name="isCollapsed ? 'lucide:panel-left-open' : 'lucide:panel-left-close'"
       class="sidebar-toggle__icon"
-      size="16"
+      size="18"
     />
   </button>
 </template>

@@ -1,6 +1,7 @@
 {
   "nav": {
     "home": "Home",
+    "playground": "Playground",
     "analytics": "Analytics",
     "users": "Users",
     "usersList": "All Users",
@@ -57,9 +58,10 @@
     "lightSand": "Sand",
     "lightMist": "Mist",
     "lightRose": "Rose",
-    "darkGreen": "Dark Green",
+    "darkSlate": "Dark Slate",
     "darkMidnight": "Midnight",
-    "darkOcean": "Ocean"
+    "darkOcean": "Ocean",
+    "darkNuxt": "Nuxt"
   },
   "userMenu": {
     "profile": "Profile",

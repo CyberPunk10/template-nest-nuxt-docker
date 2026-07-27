@@ -21,10 +21,10 @@
   --text-muted:     #52525b; /* плейсхолдеры, иконки, disabled */
   --text-on-accent: #ffffff; /* текст поверх accent-фона (кнопки, badges) */
 
-  /* Accent — основной цвет действий и выделения */
-  --accent:        #6c47ff; /* кнопки, ссылки, активные состояния */
-  --accent-hover:  #7c5aff; /* hover на accent-элементах */
-  --accent-subtle: rgba(108, 71, 255, 0.1); /* фон выбранной строки, active nav item */
+  /* Accent — брендовый #00dc82 */
+  --accent:        #00dc82; /* кнопки, ссылки, активные состояния */
+  --accent-hover:  #00f090; /* hover на accent-элементах */
+  --accent-subtle: rgba(0, 220, 130, 0.1); /* фон выбранной строки, active nav item */
 
   /* Controls — нейтральные интерактивные состояния */
   --control-hover:    rgba(255, 255, 255, 0.07); /* hover на кнопках, пунктах меню */
@@ -33,8 +33,8 @@
   /* Status — смысловые цвета обратной связи */
   --status-danger:         #ef4444;               /* ошибки, деструктивные действия */
   --status-danger-subtle:  rgba(239, 68, 68, 0.1); /* фон alert/toast об ошибке */
-  --status-success:        #22c55e;               /* успех, подтверждение */
-  --status-success-subtle: rgba(34, 197, 94, 0.1); /* фон успешного alert */
+  --status-success:        #4edaa0;               /* успех, подтверждение */
+  --status-success-subtle: rgba(78, 218, 160, 0.1); /* фон успешного alert */
   --status-warning:        #f59e0b;               /* предупреждения, осторожность */
   --status-warning-subtle: rgba(245, 158, 11, 0.1); /* фон предупреждающего alert */
 

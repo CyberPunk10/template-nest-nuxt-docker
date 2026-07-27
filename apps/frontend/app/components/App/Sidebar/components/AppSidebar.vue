@@ -5,7 +5,7 @@ import { MENU_TYPE, useSidebar, type MenuType } from '../composables/useSidebar'
 import { useMenu, type MenuItem } from '../composables/useMenu'
 import type ScrollShadow from '~/components/App/ScrollShadow.vue'
 import SidebarLink from './core/SidebarLink.vue'
-import UserMenu from './UserMenu/index.vue'
+import UserMenu from '~/components/App/UserMenu/index.vue'
 import SidebarLogo from './SidebarLogo.vue'
 import SidebarShadow from './core/SidebarShadow.vue'
 import SubMenu from './core/SubMenu.vue'
@@ -204,6 +204,7 @@ function toggleSideBarWidth() {
           <div v-else class="sidebar-menu__item">
             <SidebarLink
               :to="item.url"
+              :external="item.external"
               :params="item.params"
               :ignoreParams="item.ignoreParams"
               :class="item.classes"
@@ -252,7 +253,7 @@ function toggleSideBarWidth() {
   max-width: var(--app-sidebar-width);
   display: flex;
   flex-direction: column;
-  background-color: var(--surface-card);
+  background-color: var(--surface-panel);
   will-change: width;
   font-size: var(--text-xs);
   transition:
@@ -272,7 +273,7 @@ function toggleSideBarWidth() {
     padding-top: var(--space-1);
     padding-bottom: var(--space-0-5);
 
-    .sidebar-user {
+    .user-menu {
       padding: var(--space-0-5) var(--space-1-5) var(--space-1);
 
       &__trigger {

@@ -4,6 +4,7 @@ import {
   catalog,
   dashboard,
   orders,
+  playground,
   reports,
   settings,
   users,
@@ -27,6 +28,7 @@ export function useMenu() {
   const leftMenu = computed(() => {
     const sections: SidebarMenuItem[] = [
       dashboard,
+      playground,
       analytics,
       users,
       catalog,

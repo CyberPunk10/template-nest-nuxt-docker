@@ -3,16 +3,20 @@ interface User {
   id: string
   name: string
   email: string
+  createdAt: string
+  updatedAt: string
 }
 
 interface GlobalTask {
   id: string
   title: string
   description: string | null
+  createdAt: string
+  updatedAt: string
   user: { name: string }
 }
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const { data: users } = await useApi<User[]>('/users', {
   default: () => [],
@@ -22,6 +26,18 @@ const { data: allTasks } = await useApi<GlobalTask[]>('/tasks/all', {
   key: QUERY_KEYS.allTasks,
   default: () => [],
 })
+
+function shortId(id: string): string {
+  return id.slice(0, 8)
+}
+
+function formatDate(value: string): string {
+  return new Date(value).toLocaleDateString(locale.value, {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  })
+}
 </script>
 
 <template>
@@ -35,14 +51,26 @@ const { data: allTasks } = await useApi<GlobalTask[]>('/tasks/all', {
         <span class="section__title">{{ t('users.title') }}</span>
         <span class="section__badge">{{ users?.length ?? 0 }}</span>
       </div>
-      <div class="list">
-        <div
-          v-for="item in users"
-          :key="item.id"
-          class="list__row"
-        >
-          <span class="list__name">{{ item.name }}</span>
-          <span class="list__email">{{ item.email }}</span>
+      <div class="table">
+        <div class="table__grid table__grid--users">
+          <div class="table__head">
+            <span class="col">{{ t('db.cols.id') }}</span>
+            <span class="col">{{ t('db.cols.name') }}</span>
+            <span class="col">{{ t('db.cols.email') }}</span>
+            <span class="col col--right">{{ t('db.cols.createdAt') }}</span>
+            <span class="col col--right">{{ t('db.cols.updatedAt') }}</span>
+          </div>
+          <div
+            v-for="item in users"
+            :key="item.id"
+            class="table__row"
+          >
+            <span class="col col--id" :title="item.id">{{ shortId(item.id) }}</span>
+            <span class="col col--name">{{ item.name }}</span>
+            <span class="col" :title="item.email">{{ item.email }}</span>
+            <span class="col col--date">{{ formatDate(item.createdAt) }}</span>
+            <span class="col col--date">{{ formatDate(item.updatedAt) }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -52,14 +80,30 @@ const { data: allTasks } = await useApi<GlobalTask[]>('/tasks/all', {
         <span class="section__title">{{ t('tasks.title') }}</span>
         <span class="section__badge">{{ allTasks?.length ?? 0 }}</span>
       </div>
-      <div class="list">
-        <div
-          v-for="item in allTasks"
-          :key="item.id"
-          class="list__row"
-        >
-          <span class="list__name">{{ item.title }}</span>
-          <span class="list__email">{{ item.user.name }}</span>
+      <div class="table">
+        <div class="table__grid table__grid--tasks">
+          <div class="table__head">
+            <span class="col">{{ t('db.cols.id') }}</span>
+            <span class="col">{{ t('db.cols.title') }}</span>
+            <span class="col">{{ t('db.cols.description') }}</span>
+            <span class="col">{{ t('db.cols.author') }}</span>
+            <span class="col col--right">{{ t('db.cols.createdAt') }}</span>
+            <span class="col col--right">{{ t('db.cols.updatedAt') }}</span>
+          </div>
+          <div
+            v-for="item in allTasks"
+            :key="item.id"
+            class="table__row"
+          >
+            <span class="col col--id" :title="item.id">{{ shortId(item.id) }}</span>
+            <span class="col col--name">{{ item.title }}</span>
+            <span class="col col--muted" :title="item.description ?? ''">
+              {{ item.description || '—' }}
+            </span>
+            <span class="col col--name">{{ item.user.name }}</span>
+            <span class="col col--date">{{ formatDate(item.createdAt) }}</span>
+            <span class="col col--date">{{ formatDate(item.updatedAt) }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -78,7 +122,7 @@ const { data: allTasks } = await useApi<GlobalTask[]>('/tasks/all', {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #888;
+  color: var(--text-secondary);
   margin: 0;
 
   &-sub {
@@ -123,33 +167,100 @@ const { data: allTasks } = await useApi<GlobalTask[]>('/tasks/all', {
   }
 }
 
-.list {
-  &__row {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 8px 14px;
-    border-bottom: 1px solid var(--border-subtle);
+.table {
+  // при нехватке места — горизонтальный скролл (колонки держат min-width)
+  overflow-x: auto;
 
-    &:last-child {
-      border-bottom: none;
+  &__grid {
+    display: grid;
+    // сетка занимает всю доступную ширину; min-width = сумма минимумов колонок,
+    // поэтому при узком контейнере она не сжимается ниже него и включается скролл
+    width: 100%;
+
+    // широкая колонка = minmax(10rem, 1fr): забирает остаток, но не уже 10rem —
+    // на этом минимуме длинный текст переносится на вторую строку
+    // id · name · email · created · updated
+    &--users {
+      // 76 + 96 + 160(10rem) + 100 + 100 + паддинги ≈ 34rem
+      grid-template-columns: 76px minmax(6rem, 0.6fr) minmax(10rem, 1fr) 100px 100px;
+      min-width: 34rem;
+    }
+
+    // id · title · description · author · created · updated
+    &--tasks {
+      // 76 + 128 + 160 + 96 + 100 + 100 ≈ 42rem
+      grid-template-columns: 76px minmax(8rem, 0.8fr) minmax(10rem, 1fr) minmax(6rem, 0.6fr) 100px 100px;
+      min-width: 42rem;
     }
   }
 
-  &__name {
-    font-size: 13px;
-    color: #cbd5e1;
-    text-transform: capitalize;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  // строки-обёртки прозрачны для grid: их дети становятся ячейками общей сетки,
+  // поэтому колонки выровнены между всеми строками
+  &__head,
+  &__row {
+    display: contents;
   }
 
-  &__email {
+  &__head .col {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #64748b;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  &__row .col {
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  // граница строки = нижний бордер ячеек; убираем у последней строки
+  &__row:last-child .col {
+    border-bottom: none;
+  }
+}
+
+.col {
+  padding: 8px 6px;
+  font-size: 13px;
+  color: #cbd5e1;
+  // длинный текст переносится на следующую строку внутри ячейки
+  overflow-wrap: anywhere;
+  word-break: break-word;
+
+  &:first-child {
+    padding-left: 14px;
+  }
+
+  &:last-child {
+    padding-right: 14px;
+  }
+
+  &--id {
+    font-family: ui-monospace, 'SFMono-Regular', 'Menlo', monospace;
     font-size: 11px;
     color: #64748b;
     white-space: nowrap;
+  }
+
+  &--name {
+    text-transform: capitalize;
+  }
+
+  &--date {
+    font-size: 11px;
+    color: #64748b;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  &--right {
+    text-align: right;
+  }
+
+  &--muted {
+    color: #64748b;
+    text-transform: none;
   }
 }
 </style>

@@ -31,7 +31,7 @@ defineProps<{
 .ui-card__title {
   font-size: 13px;
   font-weight: 600;
-  color: #e2e8f0;
+  color: var(--text-primary);
 }
 
 .ui-card__body {

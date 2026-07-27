@@ -2,7 +2,7 @@
 import DevPanelViewport from './DevPanelViewport.vue'
 
 const {
-  public: { apiBase, backendUrl, appEnv },
+  public: { apiBase, backendUrl, appEnv, docsUrl },
 } = useRuntimeConfig()
 const { data: backendHealth, error: backendError } = await useFetch<{ status: string }>('/health', {
   baseURL: apiBase,
@@ -95,6 +95,15 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
           <span v-if="!swaggerEnabled" class="service__badge">only dev</span>
         </span>
         <code class="service__url">{{ backendUrl }}/api/docs</code>
+      </a>
+      <a
+        class="service"
+        :href="docsUrl"
+        target="_blank"
+      >
+        <span class="service__dot service__dot--static" style="background: #38bdf8" />
+        <span class="service__name">Документация (VitePress)</span>
+        <code class="service__url">{{ docsUrl }}</code>
       </a>
     </div>
 
@@ -285,12 +294,12 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
 
   &:hover {
     border-color: #334155;
-    color: #e2e8f0;
+    color: var(--text-primary);
   }
 
   &--active {
     border-color: var(--accent);
-    color: #e2e8f0;
+    color: var(--text-primary);
 
     .nav-route__dot {
       background: var(--accent);

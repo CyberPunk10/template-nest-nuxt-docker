@@ -58,7 +58,7 @@ defineEmits<{
 .ui-button--ghost {
   background: transparent;
   border-color: var(--border-subtle);
-  color: #e2e8f0;
+  color: var(--text-primary);
 }
 
 .ui-button--ghost:hover:not(:disabled) {

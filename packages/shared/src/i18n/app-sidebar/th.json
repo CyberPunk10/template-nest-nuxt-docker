@@ -1,6 +1,7 @@
 {
   "nav": {
     "home": "หน้าหลัก",
+    "playground": "พื้นที่ทดลอง",
     "analytics": "การวิเคราะห์",
     "users": "ผู้ใช้",
     "usersList": "ผู้ใช้ทั้งหมด",
@@ -57,9 +58,10 @@
     "lightSand": "ทราย",
     "lightMist": "หมอก",
     "lightRose": "กุหลาบ",
-    "darkGreen": "เขียวเข้ม",
+    "darkSlate": "น้ำเงินเข้ม",
     "darkMidnight": "มิดไนท์",
-    "darkOcean": "โอเชียน"
+    "darkOcean": "โอเชียน",
+    "darkNuxt": "Nuxt"
   },
   "userMenu": {
     "profile": "โปรไฟล์",
