@@ -8,7 +8,7 @@
 
 ### Why JWT access + refresh in HttpOnly cookies
 
-There are various architectural approaches to authentication. We chose **a JWT access token (15 min) + a refresh token with rotation in PostgreSQL**.
+There are various architectural approaches to authentication. We chose **a JWT access token (15 min) + a refresh token with server-side rotation (in-memory)**.
 
 | Approach                                            | When it fits                                                     | Why we didn't choose it                                                       |
 | --------------------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------------------- |
@@ -16,30 +16,30 @@ There are various architectural approaches to authentication. We chose **a JWT a
 | **Pure stateless JWT**                              | Microservices, service-to-service, very short TTL                | A JWT can't be invalidated — a stolen token is valid until it expires        |
 | **Managed auth** (Clerk, Auth0)                     | Startup, no data-storage requirements                            | External dependency, data goes to a third party, cost at scale               |
 | **OAuth / OIDC** (Keycloak, Google)                 | B2B SaaS, corporate SSO                                          | Overkill for a template; can be added on top of the current solution         |
-| **JWT access + refresh in DB** ← our choice         | Nuxt/Next + a separate API, full security needed                 | —                                                                            |
+| **JWT access + refresh on the server** ← our choice | Nuxt/Next + a separate API, full security needed                 | —                                                                            |
 
 ### Why not stateless JWT
 
-A stateless JWT doesn't require a DB lookup on every request — the token is self-contained. But it has a fundamental limitation: **the token can't be invalidated early**. If the token is stolen or the user changed their password — the token stays valid until its TTL expires.
+A stateless JWT doesn't require a session-store lookup on every request — the token is self-contained. But it has a fundamental limitation: **the token can't be invalidated early**. If the token is stolen or the user changed their password — the token stays valid until its TTL expires.
 
 The only workaround is a blacklist in Redis, which effectively makes the JWT stateful, only more complex.
 
 ### Why not a session cookie
 
-A session cookie (the whole session encrypted in the cookie, no DB) is a simple solution, but it doesn't provide:
+A session cookie (the whole session encrypted in the cookie, no server-side store) is a simple solution, but it doesn't provide:
 
 - Forced logout: you can't "revoke" a cookie already held by the client
-- Device history: there's no sessions table — nothing to show
-- Reuse detection: without a DB record it's impossible to detect token reuse
+- Device history: there's no session registry — nothing to show
+- Reuse detection: without a server-side record it's impossible to detect token reuse
 
 ### Our choice: a hybrid
 
 ```
-access_token  (JWT, 15 min)  — verified without the DB on every request
-refresh_token (in DB, 7 days) — refreshes the access_token, full control over the session
+access_token  (JWT, 15 min)          — verified without a store lookup on every request
+refresh_token (server-side, 7 days)  — refreshes the access_token, full control over the session
 ```
 
-This is the **de facto standard** for web apps with a separate backend: a balance between performance (a DB lookup only once every 15 minutes) and security (a refresh can be revoked instantly, reuse detection, session history).
+This is the **de facto standard** for web apps with a separate backend: a balance between performance (a session-store lookup only once every 15 minutes) and security (a refresh can be revoked instantly, reuse detection, session history).
 
 ### Difference from the microservices approach
 

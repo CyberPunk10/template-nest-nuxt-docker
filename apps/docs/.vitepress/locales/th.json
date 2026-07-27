@@ -55,7 +55,7 @@
       },
       "auth": {
         "label": "Auth",
-        "desc": "จุดเริ่มต้นที่เหมาะสำหรับแดชบอร์ดและแผงผู้ดูแลระบบ JWT authentication ต่อยอดจาก postgres-prisma: email + password, httpOnly cookies, sessions ใน DB"
+        "desc": "จุดเริ่มต้นที่เหมาะสำหรับแดชบอร์ดและแผงผู้ดูแลระบบ JWT authentication ต่อยอดจากตัวแปรพื้นฐาน: email + password, httpOnly cookies, sessions แบบ in-memory"
       }
     },
     "stack": {
@@ -66,18 +66,15 @@
       "groups": {
         "dev": "Dev",
         "prod": "Prod",
-        "utils": "ยูทิลิตี้",
-        "prisma": "Prisma"
+        "utils": "ยูทิลิตี้"
       },
       "items": {
         "pnpmDev": "เริ่มแอปพลิเคชัน",
-        "dockerDev": "โครงสร้างพื้นฐาน",
         "pnpmBuild": "build ทั้งหมด",
         "dockerUp": "ทุก services ใน Docker",
         "dockerDown": "หยุด",
         "pnpmLint": "ตรวจสอบโค้ด",
-        "pnpmTypeCheck": "ตรวจสอบ types",
-        "prismaStudio": "Prisma Studio"
+        "pnpmTypeCheck": "ตรวจสอบ types"
       }
     },
     "tree": {

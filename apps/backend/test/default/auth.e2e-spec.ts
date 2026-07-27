@@ -5,7 +5,8 @@ import request from 'supertest'
 import { App } from 'supertest/types'
 import { AppModule } from '../../src/app.module'
 import { HttpExceptionFilter } from '../../src/common/filters/http-exception.filter'
-import { PrismaService } from '../../src/modules/prisma/prisma.service'
+import { SessionsStore } from '../../src/modules/auth/sessions.store'
+import { UsersService } from '../../src/modules/users/users.service'
 
 // supertest типизирует headers как Record<string, string>, но set-cookie —
 // массив строк. Приводим через unknown и нормализуем вручную.
@@ -40,7 +41,8 @@ function extractRefreshFromHeader(cookieHeader: string): string {
 
 describe('Auth (e2e)', () => {
   let app: INestApplication<App>
-  let prisma: PrismaService
+  let sessions: SessionsStore
+  let users: UsersService
 
   beforeAll(async () => {
     const moduleFixture = await Test.createTestingModule({
@@ -57,15 +59,16 @@ describe('Auth (e2e)', () => {
     )
 
     await app.init()
-    prisma = moduleFixture.get(PrismaService)
+    sessions = moduleFixture.get(SessionsStore)
+    users = moduleFixture.get(UsersService)
   })
 
   // Email-адреса, используемые в тестах — удаляем только их
   const TEST_EMAILS = ['test@example.com', 'other@example.com']
 
   async function cleanupTestData() {
-    await prisma.session.deleteMany({ where: { user: { email: { in: TEST_EMAILS } } } })
-    await prisma.user.deleteMany({ where: { email: { in: TEST_EMAILS } } })
+    await sessions.clear()
+    await users.removeByEmails(TEST_EMAILS)
   }
 
   afterAll(async () => {
@@ -211,8 +214,11 @@ describe('Auth (e2e)', () => {
     it('возвращает 401 с просроченным токеном', async () => {
       const originalCookies = await loginCookies()
 
-      // Переводим expiresAt сессии в прошлое напрямую в БД
-      await prisma.session.updateMany({ data: { expiresAt: new Date(0) } })
+      // Переводим expiresAt сессии в прошлое напрямую в сторе
+      const [session] = await sessions.findAllByUserId(
+        (await users.findByEmail(DEFAULT_USER.email))!.id,
+      )
+      await sessions.expire(session.id)
 
       const res = await request(app.getHttpServer())
         .post('/auth/refresh')
@@ -320,9 +326,9 @@ describe('Auth (e2e)', () => {
         .set('Cookie', extractRefreshFromHeader(cookies))
       expect(refreshRes.status).toBe(401)
 
-      // Сессий этого пользователя в БД не осталось
-      const sessions = await prisma.session.findMany({ where: { userId } })
-      expect(sessions).toHaveLength(0)
+      // Сессий этого пользователя в сторе не осталось
+      const remaining = await sessions.findAllByUserId(userId)
+      expect(remaining).toHaveLength(0)
     })
 
     it('идемпотентен — повторный logout не бросает ошибку', async () => {

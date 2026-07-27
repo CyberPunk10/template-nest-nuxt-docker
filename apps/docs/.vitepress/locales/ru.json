@@ -55,7 +55,7 @@
       },
       "auth": {
         "label": "Auth",
-        "desc": "Идеальный старт для личных кабинетов и административных панелей. JWT-аутентификация поверх postgres-prisma: email + пароль, httpOnly cookies, сессии в БД."
+        "desc": "Идеальный старт для личных кабинетов и административных панелей. JWT-аутентификация поверх базового варианта: email + пароль, httpOnly cookies, сессии in-memory."
       }
     },
     "stack": {
@@ -66,18 +66,15 @@
       "groups": {
         "dev": "Dev",
         "prod": "Prod",
-        "utils": "Утилиты",
-        "prisma": "Prisma"
+        "utils": "Утилиты"
       },
       "items": {
         "pnpmDev": "запустить приложения",
-        "dockerDev": "инфраструктура",
         "pnpmBuild": "собрать всё",
         "dockerUp": "все сервисы в Docker",
         "dockerDown": "остановить",
         "pnpmLint": "проверить код",
-        "pnpmTypeCheck": "проверить типы",
-        "prismaStudio": "Prisma Studio"
+        "pnpmTypeCheck": "проверить типы"
       }
     },
     "tree": {

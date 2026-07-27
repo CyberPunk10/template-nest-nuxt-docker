@@ -66,7 +66,6 @@ export default defineConfigWithTheme<ThemeConfig>({
             items: [
               { text: 'Запуск проекта', link: '/guide/getting-started' },
               { text: 'Архитектура', link: '/guide/architecture' },
-              { text: 'База данных', link: '/guide/database' },
               { text: 'Переменные окружения', link: '/guide/env-variables' },
               { text: 'Docker', link: '/guide/docker' },
               { text: 'Скрипты', link: '/guide/scripts' },
@@ -108,7 +107,6 @@ export default defineConfigWithTheme<ThemeConfig>({
             items: [
               { text: 'Getting Started', link: '/en/guide/getting-started' },
               { text: 'Architecture', link: '/en/guide/architecture' },
-              { text: 'Database', link: '/en/guide/database' },
               { text: 'Environment variables', link: '/en/guide/env-variables' },
               { text: 'Docker', link: '/en/guide/docker' },
               { text: 'Scripts', link: '/en/guide/scripts' },
@@ -150,7 +148,6 @@ export default defineConfigWithTheme<ThemeConfig>({
             items: [
               { text: 'เริ่มต้นใช้งาน', link: '/th/guide/getting-started' },
               { text: 'สถาปัตยกรรม', link: '/th/guide/architecture' },
-              { text: 'ฐานข้อมูล', link: '/th/guide/database' },
               { text: 'ตัวแปรสภาพแวดล้อม', link: '/th/guide/env-variables' },
               { text: 'Docker', link: '/th/guide/docker' },
               { text: 'สคริปต์', link: '/th/guide/scripts' },

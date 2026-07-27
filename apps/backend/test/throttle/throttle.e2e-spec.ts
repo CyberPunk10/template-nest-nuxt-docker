@@ -5,11 +5,13 @@ import request from 'supertest'
 import { App } from 'supertest/types'
 import { AppModule } from '../../src/app.module'
 import { HttpExceptionFilter } from '../../src/common/filters/http-exception.filter'
-import { PrismaService } from '../../src/modules/prisma/prisma.service'
+import { SessionsStore } from '../../src/modules/auth/sessions.store'
+import { UsersService } from '../../src/modules/users/users.service'
 
 describe('Auth throttle (e2e)', () => {
   let app: INestApplication<App>
-  let prisma: PrismaService
+  let sessions: SessionsStore
+  let users: UsersService
 
   beforeAll(async () => {
     const moduleFixture = await Test.createTestingModule({
@@ -23,7 +25,8 @@ describe('Auth throttle (e2e)', () => {
       new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }),
     )
     await app.init()
-    prisma = moduleFixture.get(PrismaService)
+    sessions = moduleFixture.get(SessionsStore)
+    users = moduleFixture.get(UsersService)
   })
 
   const TEST_EMAILS = Array.from({ length: 10 }, (_, i) => `throttle${i}@example.com`).concat([
@@ -31,8 +34,8 @@ describe('Auth throttle (e2e)', () => {
   ])
 
   async function cleanupTestData() {
-    await prisma.session.deleteMany({ where: { user: { email: { in: TEST_EMAILS } } } })
-    await prisma.user.deleteMany({ where: { email: { in: TEST_EMAILS } } })
+    await sessions.clear()
+    await users.removeByEmails(TEST_EMAILS)
   }
 
   beforeEach(async () => {

@@ -1,70 +1,70 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common'
-import { Prisma, User } from '../../generated/prisma/client'
-import { PrismaService } from '../prisma/prisma.service'
+import { randomUUID } from 'crypto'
+import { User } from './user.entity'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { CreateUserDto } from './dto/create-user.dto'
 
 export type SafeUser = Omit<User, 'passwordHash'>
 
-export const safeUserSelect = {
-  id: true,
-  name: true,
-  email: true,
-  createdAt: true,
-  updatedAt: true,
-} as const
+function toSafeUser({ passwordHash: _passwordHash, ...safeUser }: User): SafeUser {
+  return safeUser
+}
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prisma: PrismaService) {}
+  private readonly users: User[] = []
 
-  findAll(): Promise<SafeUser[]> {
-    return this.prisma.user.findMany({ select: safeUserSelect })
+  async findAll(): Promise<SafeUser[]> {
+    return this.users.map(toSafeUser)
   }
 
   async create(dto: CreateUserDto): Promise<SafeUser> {
-    try {
-      return await this.prisma.user.create({ data: dto, select: safeUserSelect })
-    } catch (e: unknown) {
-      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {
-        throw new ConflictException('Email already in use')
-      }
-      throw e
+    if (this.users.some(u => u.email === dto.email)) {
+      throw new ConflictException('Email already in use')
     }
+    const now = new Date()
+    const user: User = {
+      id: randomUUID(),
+      name: dto.name,
+      email: dto.email,
+      passwordHash: dto.password,
+      createdAt: now,
+      updatedAt: now,
+    }
+    this.users.push(user)
+    return toSafeUser(user)
   }
 
   async findOne(id: string): Promise<SafeUser> {
-    const user = await this.prisma.user.findUnique({ where: { id }, select: safeUserSelect })
+    const user = this.users.find(u => u.id === id)
     if (!user) throw new NotFoundException(`User ${id} not found`)
-    return user
+    return toSafeUser(user)
   }
 
   async update(id: string, dto: UpdateUserDto): Promise<SafeUser> {
-    try {
-      return await this.prisma.user.update({ where: { id }, data: dto, select: safeUserSelect })
-    } catch (e: unknown) {
-      if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        // Коды ошибок Prisma: https://www.prisma.io/docs/orm/reference/error-reference
-        if (e.code === 'P2025') throw new NotFoundException(`User ${id} not found`)
-        if (e.code === 'P2002') throw new ConflictException('Email already in use')
-      }
-      throw e
+    const user = this.users.find(u => u.id === id)
+    if (!user) throw new NotFoundException(`User ${id} not found`)
+    if (dto.email && this.users.some(u => u.id !== id && u.email === dto.email)) {
+      throw new ConflictException('Email already in use')
     }
+    Object.assign(user, dto, { updatedAt: new Date() })
+    return toSafeUser(user)
   }
 
-  findByEmail(email: string): Promise<User | null> {
-    return this.prisma.user.findUnique({ where: { email } })
+  async findByEmail(email: string): Promise<User | null> {
+    return this.users.find(u => u.email === email) ?? null
   }
 
   async remove(id: string): Promise<void> {
-    try {
-      await this.prisma.user.delete({ where: { id } })
-    } catch (e: unknown) {
-      // Коды ошибок Prisma: https://www.prisma.io/docs/orm/reference/error-reference
-      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2025') {
-        throw new NotFoundException(`User ${id} not found`)
-      }
-      throw e
+    const index = this.users.findIndex(u => u.id === id)
+    if (index === -1) throw new NotFoundException(`User ${id} not found`)
+    this.users.splice(index, 1)
+  }
+
+  async removeByEmails(emails: string[]): Promise<void> {
+    for (const email of emails) {
+      const index = this.users.findIndex(u => u.email === email)
+      if (index !== -1) this.users.splice(index, 1)
     }
   }
 }

@@ -7,16 +7,16 @@
 - **Cookies:** `access_token` (JWT, 15 min) and `refresh_token` (7 days) — both httpOnly, inaccessible from JS
 - **Protected routes:** the global `JwtAuthGuard` verifies the `access_token` on every request
 - **Refresh:** when the access token expires, the frontend automatically calls `POST /auth/refresh`. The refresh token is rotated on every renewal
-- **Sessions:** each refresh token is stored in the `Session` table as an HMAC hash. On every token renewal the old record is marked `isUsed: true` and a new one is created. Logout removes the active session from the database
+- **Sessions:** each refresh token is stored in the process's memory (`SessionsStore`) as an HMAC hash. On every token renewal the old record is marked `isUsed: true` and a new one is created. Logout removes the active session from the store
 - **Reuse detection:** if an already-used refresh token is presented again, that's a sign of token theft. All sessions in the family (`familyId`) are invalidated
 
-### Why store sessions in the database
+### Why store sessions at all
 
 A JWT cannot be invalidated before it expires — that is a fundamental property of the standard. If a user logs out or changes their password, the access token remains valid for up to another 15 minutes.
 
-Storing the refresh token in the database solves this: on logout or password change the session is removed from the database, and obtaining a new access token becomes impossible. This caps the maximum lifetime of a compromised token at the lifetime of the access token (15 min).
+Storing the refresh token server-side solves this: on logout or password change the session is removed from the store, and obtaining a new access token becomes impossible. This caps the maximum lifetime of a compromised token at the lifetime of the access token (15 min).
 
-Additional capabilities the `Session` table enables:
+Additional capabilities the `SessionsStore` enables:
 
 - **Log out everywhere** — delete all of a user's sessions
 - **List active sessions** — show the user where they're logged in (browser, IP, time)
@@ -26,7 +26,7 @@ Additional capabilities the `Session` table enables:
 
 On every `POST /auth/refresh`, **rotation** happens: the old refresh token is deactivated and a new one is issued. This is the standard from RFC 9700 (OAuth 2.0 Security BCP).
 
-**What the `Session` table looks like for a single user:**
+**What the `SessionsStore` records look like for a single user:**
 
 ```
 | Event                     | familyId | hash               | isUsed                            |
@@ -56,15 +56,15 @@ Refresh (attacker stole token "A" and reuses it):
   → the laptop session (f2) is untouched
 ```
 
-The `isUsed: true` records are needed only as traps while the original token could still be alive. A cron job deletes all records where `expiresAt < now` — both the `isUsed: true` traps and the active sessions of users who haven't logged in for a long time (see [Cleaning up expired sessions](#cleaning-up-expired-sessions)).
+The `isUsed: true` records are needed only as traps while the original token could still be alive. A cron job deletes all records where `expiresAt < now` — both the `isUsed: true` traps and the active sessions of users who haven't logged in for a long time (see [Cleaning up expired sessions](#cleaning-up-expired-sessions)). All of these records live only in the process's memory — the `familyId` chain does not survive a backend restart.
 
 **`familyId`** ties together all rotations of a single login. Because of it, a compromise invalidates only the compromised chain, not all of the user's devices at once.
 
 ### Why HMAC and not bcrypt for the refresh token
 
-bcrypt is non-deterministic — it produces a different hash every time, so you can't look up a session in the database by hash directly. You'd have to load every session and iterate over them — O(n) queries.
+bcrypt is non-deterministic — it produces a different hash every time, so you can't look up a session by hash directly. You'd have to iterate over every session in the store — O(n) comparisons.
 
-HMAC is deterministic: one token + one secret = always the same hash. This lets you find the session in a single query: `WHERE refreshTokenHash = hmac(token, secret)`.
+HMAC is deterministic: one token + one secret = always the same hash. This lets you find the session by its `refreshTokenHash` value (see `SessionsStore.findByRefreshTokenHash`).
 
 The trade-off: if `REFRESH_TOKEN_SECRET` leaks, all refresh tokens are potentially compromised at once. Mitigation: keep the secret in a secure store (Vault, AWS Secrets Manager) and rotate it periodically.
 
@@ -233,16 +233,21 @@ pnpm test:e2e:throttle  # throttle tests (throttler enabled)
 
 ## Cleaning up expired sessions
 
-On every rotation the old record stays in the `Session` table with `isUsed: true`. If a user refreshes once a day for 7 days, that accumulates 7 records for a single chain. Without cleanup the table grows without bound.
+On every rotation the old record stays in `SessionsStore` with `isUsed: true`. If a user refreshes once a day for 7 days, that accumulates 7 records for a single chain. Without cleanup the Map inside `SessionsStore` grows without bound (a memory leak in the process).
 
 `SessionCleanupService` runs a cron job every night at 03:00 and deletes all records where `expiresAt < now`:
 
 ```typescript
 @Cron(CronExpression.EVERY_DAY_AT_3AM)
-async cleanupExpiredSessions() {
-  await this.prisma.session.deleteMany({
-    where: { expiresAt: { lt: new Date() } },
-  })
+async cleanupExpiredSessions(): Promise<void> {
+  try {
+    const { count } = await this.sessions.deleteExpired()
+    if (count > 0) {
+      this.logger.log(`Deleted ${count} expired sessions`)
+    }
+  } catch (err) {
+    this.logger.error('Failed to cleanup expired sessions', err)
+  }
 }
 ```
 
@@ -272,7 +277,7 @@ This removes at the same time:
 - `GET /auth/me`: with and without a token
 - Refresh: token rotation, invalidating the old one, the new token is valid
 - Reuse detection: reusing an old token invalidates the whole family; other devices' sessions are untouched
-- Logout: clearing the session in the database, idempotency, working without a token
+- Logout: clearing the session in the store, idempotency, working without a token
 
 **`test/throttle/throttle.e2e-spec.ts`** — rate limiting (throttler enabled, more detail in the Rate limiting → Tests section).
 

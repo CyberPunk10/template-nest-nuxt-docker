@@ -1,45 +1,62 @@
 import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common'
-import { Task } from '../../generated/prisma/client'
-import { PrismaService } from '../prisma/prisma.service'
+import { randomUUID } from 'crypto'
+import { Task } from './task.entity'
 import { CreateTaskDto } from './dto/create-task.dto'
 import { UpdateTaskDto } from './dto/update-task.dto'
+import { UsersService } from '../users/users.service'
 
 @Injectable()
 export class TasksService {
-  constructor(private readonly prisma: PrismaService) {}
+  private readonly tasks: Task[] = []
 
-  findAll(userId: string): Promise<Task[]> {
-    return this.prisma.task.findMany({
-      where: { userId },
-      orderBy: { createdAt: 'desc' },
-    })
+  constructor(private readonly usersService: UsersService) {}
+
+  async findAll(userId: string): Promise<Task[]> {
+    return this.tasks
+      .filter(t => t.userId === userId)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
   }
 
-  findAllGlobal(): Promise<(Task & { user: { name: string } })[]> {
-    return this.prisma.task.findMany({
-      orderBy: { createdAt: 'desc' },
-      include: { user: { select: { name: true } } },
-    })
+  async findAllGlobal(): Promise<(Task & { user: { name: string } })[]> {
+    const users = await this.usersService.findAll()
+    const nameById = new Map(users.map(u => [u.id, u.name]))
+    return this.tasks
+      .slice()
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      .map(task => ({ ...task, user: { name: nameById.get(task.userId) ?? '' } }))
   }
 
   async findOne(id: string, userId: string): Promise<Task> {
-    const task = await this.prisma.task.findUnique({ where: { id } })
+    const task = this.tasks.find(t => t.id === id)
     if (!task) throw new NotFoundException(`Task ${id} not found`)
     if (task.userId !== userId) throw new ForbiddenException()
     return task
   }
 
-  create(dto: CreateTaskDto, userId: string): Promise<Task> {
-    return this.prisma.task.create({ data: { ...dto, userId } })
+  async create(dto: CreateTaskDto, userId: string): Promise<Task> {
+    const now = new Date()
+    const task: Task = {
+      id: randomUUID(),
+      title: dto.title,
+      description: dto.description ?? null,
+      userId,
+      createdAt: now,
+      updatedAt: now,
+    }
+    this.tasks.push(task)
+    return task
   }
 
   async update(id: string, dto: UpdateTaskDto, userId: string): Promise<Task> {
     await this.findOne(id, userId)
-    return this.prisma.task.update({ where: { id }, data: dto })
+    const task = this.tasks.find(t => t.id === id)!
+    Object.assign(task, dto, { updatedAt: new Date() })
+    return task
   }
 
   async remove(id: string, userId: string): Promise<void> {
     await this.findOne(id, userId)
-    await this.prisma.task.delete({ where: { id } })
+    const index = this.tasks.findIndex(t => t.id === id)
+    this.tasks.splice(index, 1)
   }
 }

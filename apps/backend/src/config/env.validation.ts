@@ -8,12 +8,6 @@ export const envValidationSchema = Joi.object({
   CORS_ORIGIN_SCHEME_HOST: Joi.string().uri().required(),
   CORS_ORIGIN_PORT: Joi.number().integer().min(1).max(65535).required(),
 
-  POSTGRES_HOST: Joi.string().required(),
-  POSTGRES_PORT: Joi.number().integer().min(1).max(65535).default(5432),
-  POSTGRES_USER: Joi.string().required(),
-  POSTGRES_PASSWORD: Joi.string().required(),
-  POSTGRES_DB: Joi.string().required(),
-
   THROTTLE_TTL: Joi.number().integer().min(1).default(60_000),
   THROTTLE_LIMIT: Joi.number().integer().min(1).default(100),
 
