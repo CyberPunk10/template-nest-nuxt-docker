@@ -62,7 +62,7 @@ export const branches: Branch[] = [
     name: 'postgres-prisma',
     current: false,
     stack: {
-      Backend: ['NestJS', 'Prisma 7', '@prisma/adapter-pg', 'Joi validation', 'Swagger/OpenAPI'],
+      Backend: ['NestJS', 'Prisma 7', '@prisma/adapter-pg', 'Swagger/OpenAPI'],
       Frontend: ['Nuxt 4', 'Vue 3', 'TypeScript'],
       Shared: ['@repo/shared', 'i18n (ru/en/th)'],
       Infra: ['Docker (multi-stage)', 'pnpm 11 workspaces', 'PostgreSQL 17'],
@@ -92,7 +92,7 @@ export const quickstarts: Quickstart[] = [
       { id: 'install', cmd: 'pnpm install' },
       {
         id: 'envCheck',
-        cmd: 'cp apps/backend/.env.example apps/backend/.env',
+        cmd: 'pnpm env:copy',
       },
       { id: 'run', cmd: 'pnpm dev' },
     ],
@@ -107,7 +107,7 @@ export const quickstarts: Quickstart[] = [
       { id: 'install', cmd: 'pnpm install' },
       {
         id: 'envCheck',
-        cmd: 'cp apps/backend/.env.example apps/backend/.env',
+        cmd: 'pnpm env:copy',
       },
       {
         id: 'network',
