@@ -2,7 +2,7 @@ export const layers = ['Backend', 'Frontend', 'Shared', 'Infra'] as const
 export type Layer = (typeof layers)[number]
 
 export interface Branch {
-  id: string // ключ в home.branches (main | postgresPrisma | auth)
+  id: string // ключ в home.branches (main | auth | postgresPrisma)
   name: string
   current: boolean
   stack: Record<Layer, string[]>
@@ -36,30 +36,34 @@ export const branches: Branch[] = [
     },
   },
   {
-    id: 'postgresPrisma',
-    name: 'postgres-prisma',
-    current: false,
-    stack: {
-      Backend: ['NestJS', 'Prisma 7', '@prisma/adapter-pg', 'Joi validation', 'Swagger/OpenAPI'],
-      Frontend: ['Nuxt 4', 'Vue 3', 'TypeScript'],
-      Shared: ['@repo/shared', 'i18n (ru/en/th)'],
-      Infra: ['Docker (multi-stage)', 'pnpm 11 workspaces', 'PostgreSQL 17'],
-    },
-  },
-  {
     id: 'auth',
-    name: 'auth',
+    name: 'auth-session',
     current: true,
     stack: {
       Backend: [
         'NestJS',
-        'Prisma 7',
-        '@prisma/adapter-pg',
         'Passport.js',
         'JWT + bcrypt',
         'Swagger/OpenAPI',
       ],
-      Frontend: ['Nuxt 4', 'Vue 3', 'TypeScript', 'useAuth', 'Route middleware'],
+      Frontend: [
+        'Nuxt 4',
+        'Vue 3',
+        'TypeScript',
+        'useAuth',
+        'Route middleware',
+      ],
+      Shared: ['@repo/shared', 'i18n (ru/en/th)'],
+      Infra: ['Docker (multi-stage)', 'pnpm 11 workspaces'],
+    },
+  },
+  {
+    id: 'postgresPrisma',
+    name: 'postgres-prisma',
+    current: false,
+    stack: {
+      Backend: ['NestJS', 'Prisma 7', '@prisma/adapter-pg', 'Swagger/OpenAPI'],
+      Frontend: ['Nuxt 4', 'Vue 3', 'TypeScript'],
       Shared: ['@repo/shared', 'i18n (ru/en/th)'],
       Infra: ['Docker (multi-stage)', 'pnpm 11 workspaces', 'PostgreSQL 17'],
     },
@@ -79,6 +83,21 @@ export const quickstarts: Quickstart[] = [
     ],
   },
   {
+    branch: 'auth-session',
+    steps: [
+      {
+        id: 'clone',
+        cmd: 'git clone https://github.com/CyberPunk10/template-nest-nuxt-docker && git checkout auth-session',
+      },
+      { id: 'install', cmd: 'pnpm install' },
+      {
+        id: 'envCheck',
+        cmd: 'pnpm env:copy',
+      },
+      { id: 'run', cmd: 'pnpm dev' },
+    ],
+  },
+  {
     branch: 'postgres-prisma',
     steps: [
       {
@@ -88,34 +107,7 @@ export const quickstarts: Quickstart[] = [
       { id: 'install', cmd: 'pnpm install' },
       {
         id: 'envCheck',
-        cmd: 'cp apps/backend/.env.example apps/backend/.env',
-      },
-      {
-        id: 'network',
-        cmd: 'docker network create template-nest-nuxt_app',
-      },
-      {
-        id: 'postgres',
-        cmd: 'docker compose -f docker-compose.dev.yml up -d',
-      },
-      {
-        id: 'migrate',
-        cmd: 'cd apps/backend && pnpm prisma migrate dev',
-      },
-      { id: 'run', cmd: 'pnpm dev' },
-    ],
-  },
-  {
-    branch: 'auth',
-    steps: [
-      {
-        id: 'clone',
-        cmd: 'git clone https://github.com/CyberPunk10/template-nest-nuxt-docker && git checkout auth',
-      },
-      { id: 'install', cmd: 'pnpm install' },
-      {
-        id: 'envCheck',
-        cmd: 'cp apps/backend/.env.example apps/backend/.env',
+        cmd: 'pnpm env:copy',
       },
       {
         id: 'network',
