@@ -2,10 +2,10 @@
 
 มีสองวิธีในการรันโปรเจกต์ — **pnpm** หรือ **Docker** แต่ละแบบมี dev/production ของตัวเอง:
 
-|                | Development                                                                | Production                                                                     |
-| -------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| **pnpm**       | [`pnpm dev`](#pnpm-dev) — พัฒนาแบบวันต่อวัน มี hot-reload เร็วที่สุด  | [`pnpm build`](#pnpm-build-production-build-ไม่ผ่าน-docker) — ตรวจสอบ production build โดยไม่ใช้ container |
-| **Docker**     | ยังไม่รองรับ — ดูหมายเหตุในหัวข้อ [Docker](#docker-—-ทุก-service)                 | [`docker compose up`](#docker-—-ทุก-service) — production stack ใน container เหมือนตอน deploy จริง        |
+|            | Development                                                 | Production                                                                                             |
+| ---------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| **pnpm**   | [`pnpm dev`](#pnpm-dev) — พัฒนาแบบวันต่อวัน มี hot-reload เร็วที่สุด | [`pnpm build`](#pnpm-build-production-build-ไม่ผ่าน-docker) — ตรวจสอบ production build โดยไม่ใช้ container |
+| **Docker** | ยังไม่รองรับ — ดูหมายเหตุในหัวข้อ [Docker](#docker-—-ทุก-service)   | [`docker compose up`](#docker-—-ทุก-service) — production stack ใน container เหมือนตอน deploy จริง        |
 
 ## เตรียมความพร้อม
 
@@ -93,11 +93,11 @@ pnpm dev
 
 คำสั่งเดียวเปิดทุกอย่างแบบ native พร้อม hot-reload ในแต่ละ service ก่อน start จะรัน `predev.mjs` (ดูข้อ 5 ด้านบน): สร้าง `.env` ถ้ายังไม่มี และแก้ปัญหาพอร์ตชนกัน
 
-| Service   | URL                     | เทคโนโลยี       |
-| -------- | ------------------------ | ----------------- |
-| Backend  | `http://localhost:3100` | NestJS `--watch`  |
-| Frontend | `http://localhost:3200` | Nuxt dev          |
-| Docs     | `http://localhost:5173` | VitePress dev     |
+| Service  | URL                     | เทคโนโลยี         |
+| -------- | ----------------------- | ---------------- |
+| Backend  | `http://localhost:3100` | NestJS `--watch` |
+| Frontend | `http://localhost:3200` | Nuxt dev         |
+| Docs     | `http://localhost:5173` | VitePress dev    |
 
 ::: tip
 ตอนสลับ branch `.env` ในเครื่องจะไม่อัปเดตอัตโนมัติ — อาจขาดตัวแปรของ branch ใหม่ไป เทียบกับ `.env.example` แล้วเพิ่มตัวที่ขาดเข้าไป

@@ -6,49 +6,49 @@
 
 ### Root
 
-| สคริปต์ | คำสั่ง | ทำอะไร |
-| --- | --- | --- |
-| `env:copy` | `node scripts/copy-env-cli.mjs` | สร้าง `.env` ที่ขาดหายทั้งหมดจาก `.env.example` — ไม่รันหรือตรวจสอบอะไรอย่างอื่น |
-| `predev` | `node scripts/predev.mjs` | รันอัตโนมัติก่อน `dev` (npm `pre*` convention) |
-| `dev` | `node scripts/dev.mjs` | เปิด backend, frontend และ docs พร้อมกัน (ผ่าน `concurrently`) |
-| `predocker:up` | `node scripts/predocker.mjs` | รันอัตโนมัติก่อน `docker:up` |
-| `docker:up` | `docker compose up` | เปิดทั้งสาม service ใน Docker |
-| `build` | `pnpm -r build` | Build workspace package ทั้งหมด (รัน `build` ใน `apps/*` แต่ละตัว) |
-| `lint` | `pnpm -r lint` | รัน linter กับ workspace package ทั้งหมด |
-| `type-check` | `pnpm -r type-check` | ตรวจสอบ type ของ workspace package ทั้งหมด |
-| `reinstall` | `node scripts/reinstall.mjs` | ลบ `node_modules`/`pnpm-lock.yaml` แล้วติดตั้ง dependency ใหม่ทั้งหมด |
-| `prepare` | `husky` | ตั้งค่า git hook (เรียกอัตโนมัติตอน `pnpm install`) |
+| สคริปต์          | คำสั่ง                             | ทำอะไร                                                                 |
+| -------------- | ------------------------------- | --------------------------------------------------------------------- |
+| `env:copy`     | `node scripts/copy-env-cli.mjs` | สร้าง `.env` ที่ขาดหายทั้งหมดจาก `.env.example` — ไม่รันหรือตรวจสอบอะไรอย่างอื่น |
+| `predev`       | `node scripts/predev.mjs`       | รันอัตโนมัติก่อน `dev` (npm `pre*` convention)                             |
+| `dev`          | `node scripts/dev.mjs`          | เปิด backend, frontend และ docs พร้อมกัน (ผ่าน `concurrently`)            |
+| `predocker:up` | `node scripts/predocker.mjs`    | รันอัตโนมัติก่อน `docker:up`                                               |
+| `docker:up`    | `docker compose up`             | เปิดทั้งสาม service ใน Docker                                            |
+| `build`        | `pnpm -r build`                 | Build workspace package ทั้งหมด (รัน `build` ใน `apps/*` แต่ละตัว)         |
+| `lint`         | `pnpm -r lint`                  | รัน linter กับ workspace package ทั้งหมด                                  |
+| `type-check`   | `pnpm -r type-check`            | ตรวจสอบ type ของ workspace package ทั้งหมด                              |
+| `reinstall`    | `node scripts/reinstall.mjs`    | ลบ `node_modules`/`pnpm-lock.yaml` แล้วติดตั้ง dependency ใหม่ทั้งหมด        |
+| `prepare`      | `husky`                         | ตั้งค่า git hook (เรียกอัตโนมัติตอน `pnpm install`)                          |
 
 ### `apps/backend`
 
-| สคริปต์ | คำสั่ง | ทำอะไร |
-| --- | --- | --- |
-| `dev` | `nest start --watch` | Develop ในเครื่อง มี hot-reload |
-| `build` | `nest build` | Production build เป็น `dist/` |
-| `start` | `nest start` | รัน `dist/` ที่ build แล้วโดยไม่มี watch |
-| `start:prod` | `node dist/main` | รันในโหมด production (สิ่งที่ `Dockerfile` ใช้) |
-| `lint` | `eslint ... --fix` | Linter พร้อม auto-fix |
-| `type-check` | `tsc --noEmit` | ตรวจสอบ type โดยไม่ build |
-| `test` / `test:watch` / `test:cov` / `test:e2e` | `jest ...` | Unit test และ e2e test |
+| สคริปต์                                           | คำสั่ง                  | ทำอะไร                                     |
+| ----------------------------------------------- | -------------------- | ----------------------------------------- |
+| `dev`                                           | `nest start --watch` | Develop ในเครื่อง มี hot-reload              |
+| `build`                                         | `nest build`         | Production build เป็น `dist/`              |
+| `start`                                         | `nest start`         | รัน `dist/` ที่ build แล้วโดยไม่มี watch        |
+| `start:prod`                                    | `node dist/main`     | รันในโหมด production (สิ่งที่ `Dockerfile` ใช้) |
+| `lint`                                          | `eslint ... --fix`   | Linter พร้อม auto-fix                      |
+| `type-check`                                    | `tsc --noEmit`       | ตรวจสอบ type โดยไม่ build                  |
+| `test` / `test:watch` / `test:cov` / `test:e2e` | `jest ...`           | Unit test และ e2e test                    |
 
 ### `apps/frontend`
 
-| สคริปต์ | คำสั่ง | ทำอะไร |
-| --- | --- | --- |
-| `dev` | `nuxt dev` | Develop ในเครื่อง มี hot-reload |
-| `build` | `nuxt build` | Production build เป็น `.output/` |
-| `preview` | `nuxt preview` | รัน production build ในเครื่อง |
-| `postinstall` | `nuxt prepare` | สร้าง `.nuxt/` (types, aliases) — รันอัตโนมัติหลัง `pnpm install` |
-| `lint` | `eslint . --fix` | Linter พร้อม auto-fix |
-| `type-check` | `nuxt typecheck` | ตรวจสอบ type ผ่าน `vue-tsc` |
+| สคริปต์         | คำสั่ง              | ทำอะไร                                                       |
+| ------------- | ---------------- | ----------------------------------------------------------- |
+| `dev`         | `nuxt dev`       | Develop ในเครื่อง มี hot-reload                                |
+| `build`       | `nuxt build`     | Production build เป็น `.output/`                             |
+| `preview`     | `nuxt preview`   | รัน production build ในเครื่อง                                 |
+| `postinstall` | `nuxt prepare`   | สร้าง `.nuxt/` (types, aliases) — รันอัตโนมัติหลัง `pnpm install` |
+| `lint`        | `eslint . --fix` | Linter พร้อม auto-fix                                        |
+| `type-check`  | `nuxt typecheck` | ตรวจสอบ type ผ่าน `vue-tsc`                                  |
 
 ### `apps/docs`
 
-| สคริปต์ | คำสั่ง | ทำอะไร |
-| --- | --- | --- |
-| `dev` | `vitepress dev` | Dev server ของเอกสารในเครื่อง |
-| `build` | `vitepress build` | Static build เป็น `.vitepress/dist/` |
-| `preview` | `vitepress preview` | รันเอกสารที่ build แล้วในเครื่อง |
+| สคริปต์     | คำสั่ง                 | ทำอะไร                               |
+| --------- | ------------------- | ----------------------------------- |
+| `dev`     | `vitepress dev`     | Dev server ของเอกสารในเครื่อง         |
+| `build`   | `vitepress build`   | Static build เป็น `.vitepress/dist/` |
+| `preview` | `vitepress preview` | รันเอกสารที่ build แล้วในเครื่อง          |
 
 ## Node script ใน `scripts/`
 

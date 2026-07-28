@@ -29,11 +29,11 @@ Only `.env.example` files live in the repo — actual `.env` files are created b
 
 The same service can have **up to three different ports**, depending on the run context — this isn't duplication or a typo, each one has its own role:
 
-| Layer | Variable | File | Meaning |
-| --- | --- | --- | --- |
-| Dev port | `PORT` | `apps/backend/.env`, `apps/frontend/.env`, `apps/docs/.env` | What the process listens on during `pnpm dev` |
-| Internal port | `BACKEND_INTERNAL_PORT`, `FRONTEND_INTERNAL_PORT`, `DOCS_INTERNAL_PORT` | `.env` (root) | What the process listens on **inside the container** in Docker |
-| Host port | `BACKEND_HOST_PORT`, `FRONTEND_HOST_PORT`, `DOCS_HOST_PORT` | `.env` (root) | What the service is visible on **outside** Docker (`localhost:<host-port>` on the machine) |
+| Layer         | Variable                                                                | File                                                        | Meaning                                                                                    |
+| ------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Dev port      | `PORT`                                                                  | `apps/backend/.env`, `apps/frontend/.env`, `apps/docs/.env` | What the process listens on during `pnpm dev`                                              |
+| Internal port | `BACKEND_INTERNAL_PORT`, `FRONTEND_INTERNAL_PORT`, `DOCS_INTERNAL_PORT` | `.env` (root)                                               | What the process listens on **inside the container** in Docker                             |
+| Host port     | `BACKEND_HOST_PORT`, `FRONTEND_HOST_PORT`, `DOCS_HOST_PORT`             | `.env` (root)                                               | What the service is visible on **outside** Docker (`localhost:<host-port>` on the machine) |
 
 Why not a single variable: `pnpm dev` and Docker are different run processes with different requirements. In Docker, the process inside the container and the address the host machine reaches it at are two numbers connected via NAT-style port mapping (`ports: "<host-port>:<internal-port>"`), while `pnpm dev` is just one process on the bare machine with one port.
 
@@ -51,37 +51,37 @@ For more detail, with a `docker-compose.yml` example — see [Docker → Host po
 
 ### `.env` (root)
 
-| Variable | Value | Comment |
-| --- | --- | --- |
-| `BACKEND_HOST_PORT` | `3500` | Backend host port — what the service is visible on outside Docker |
-| `FRONTEND_HOST_PORT` | `3600` | Frontend host port |
-| `DOCS_HOST_PORT` | `3700` | Docs host port |
-| `BACKEND_INTERNAL_PORT` | `3100` | Port backend listens on **inside the container** |
-| `FRONTEND_INTERNAL_PORT` | `3200` | Port frontend listens on inside the container |
-| `DOCS_INTERNAL_PORT` | `3300` | Port nginx (docs) listens on inside the container |
+| Variable                 | Value  | Comment                                                           |
+| ------------------------ | ------ | ----------------------------------------------------------------- |
+| `BACKEND_HOST_PORT`      | `3500` | Backend host port — what the service is visible on outside Docker |
+| `FRONTEND_HOST_PORT`     | `3600` | Frontend host port                                                |
+| `DOCS_HOST_PORT`         | `3700` | Docs host port                                                    |
+| `BACKEND_INTERNAL_PORT`  | `3100` | Port backend listens on **inside the container**                  |
+| `FRONTEND_INTERNAL_PORT` | `3200` | Port frontend listens on inside the container                     |
+| `DOCS_INTERNAL_PORT`     | `3300` | Port nginx (docs) listens on inside the container                 |
 
 ### `apps/backend/.env`
 
-| Variable | Value (dev) | Comment |
-| --- | --- | --- |
-| `NODE_ENV` | `development` | Controls, among other things, Swagger UI availability (`/api/docs` — only outside `production`). Always `production` in Docker — set in `apps/backend/Dockerfile` (`ENV NODE_ENV=production`), not via `.env`/`docker-compose.yml` |
-| `PORT` | `3100` | Backend port during `pnpm dev`. Overridden by `BACKEND_INTERNAL_PORT` from the root `.env` in Docker |
-| `CORS_ORIGIN_SCHEME_HOST` | `http://localhost` | Allowed CORS origin — scheme+host. Unchanged in Docker |
-| `CORS_ORIGIN_PORT` | `3200` | Allowed CORS origin — frontend's port. Overridden by `FRONTEND_HOST_PORT` in Docker |
+| Variable                  | Value (dev)        | Comment                                                                                                                                                                                                                            |
+| ------------------------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `NODE_ENV`                | `development`      | Controls, among other things, Swagger UI availability (`/api/docs` — only outside `production`). Always `production` in Docker — set in `apps/backend/Dockerfile` (`ENV NODE_ENV=production`), not via `.env`/`docker-compose.yml` |
+| `PORT`                    | `3100`             | Backend port during `pnpm dev`. Overridden by `BACKEND_INTERNAL_PORT` from the root `.env` in Docker                                                                                                                               |
+| `CORS_ORIGIN_SCHEME_HOST` | `http://localhost` | Allowed CORS origin — scheme+host. Unchanged in Docker                                                                                                                                                                             |
+| `CORS_ORIGIN_PORT`        | `3200`             | Allowed CORS origin — frontend's port. Overridden by `FRONTEND_HOST_PORT` in Docker                                                                                                                                                |
 
 ### `apps/frontend/.env`
 
-| Variable | Value (dev) | Comment |
-| --- | --- | --- |
-| `PORT` | `3200` | Frontend port during `pnpm dev`. Overridden by `FRONTEND_INTERNAL_PORT` from the root `.env` in Docker |
-| `NUXT_PUBLIC_API_BASE` | `/api/backend` | Prefix for the server-side proxy to backend (the browser hits this, not backend directly) |
-| `NUXT_BACKEND_URL` | `http://localhost:3100` | Backend address for Nuxt SSR (server). Overridden in Docker to `http://backend:${BACKEND_INTERNAL_PORT}` — by service name, since `localhost` is unreachable inside the Docker network |
-| `NUXT_PUBLIC_BACKEND_PORT` | `3100` | Backend port only, for the link shown in DevPanel (not used for requests). Overridden by `BACKEND_HOST_PORT` in Docker |
-| `NUXT_PUBLIC_APP_ENV` | `development` | Client-side environment mode (e.g. showing the Swagger link in DevPanel). Hardcoded to `production` in Docker — set in `docker-compose.yml` |
-| `NUXT_PUBLIC_DOCS_URL` | `http://localhost:5173` | Link to the VitePress docs (menu item, DevPanel). Overridden in Docker to `http://localhost:${DOCS_HOST_PORT}` |
+| Variable                   | Value (dev)             | Comment                                                                                                                                                                                |
+| -------------------------- | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PORT`                     | `3200`                  | Frontend port during `pnpm dev`. Overridden by `FRONTEND_INTERNAL_PORT` from the root `.env` in Docker                                                                                 |
+| `NUXT_PUBLIC_API_BASE`     | `/api/backend`          | Prefix for the server-side proxy to backend (the browser hits this, not backend directly)                                                                                              |
+| `NUXT_BACKEND_URL`         | `http://localhost:3100` | Backend address for Nuxt SSR (server). Overridden in Docker to `http://backend:${BACKEND_INTERNAL_PORT}` — by service name, since `localhost` is unreachable inside the Docker network |
+| `NUXT_PUBLIC_BACKEND_PORT` | `3100`                  | Backend port only, for the link shown in DevPanel (not used for requests). Overridden by `BACKEND_HOST_PORT` in Docker                                                                 |
+| `NUXT_PUBLIC_APP_ENV`      | `development`           | Client-side environment mode (e.g. showing the Swagger link in DevPanel). Hardcoded to `production` in Docker — set in `docker-compose.yml`                                            |
+| `NUXT_PUBLIC_DOCS_URL`     | `http://localhost:5173` | Link to the VitePress docs (menu item, DevPanel). Overridden in Docker to `http://localhost:${DOCS_HOST_PORT}`                                                                         |
 
 ### `apps/docs/.env`
 
-| Variable | Value | Comment |
-| --- | --- | --- |
-| `PORT` | `5173` | VitePress dev server port. Read via `dotenv` in `.vitepress/config.ts` — VitePress itself doesn't load `.env`. Not used in Docker |
+| Variable | Value  | Comment                                                                                                                           |
+| -------- | ------ | --------------------------------------------------------------------------------------------------------------------------------- |
+| `PORT`   | `5173` | VitePress dev server port. Read via `dotenv` in `.vitepress/config.ts` — VitePress itself doesn't load `.env`. Not used in Docker |

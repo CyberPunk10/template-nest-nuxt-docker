@@ -6,49 +6,49 @@ The monorepo has four `package.json` files — the root one and one per `apps/*`
 
 ### Root
 
-| Script | Command | What it does |
-| --- | --- | --- |
-| `env:copy` | `node scripts/copy-env-cli.mjs` | Creates any missing `.env` files from `.env.example` — doesn't run or check anything else |
-| `predev` | `node scripts/predev.mjs` | Runs automatically before `dev` (npm `pre*` convention) |
-| `dev` | `node scripts/dev.mjs` | Brings up backend, frontend, and docs in parallel (via `concurrently`) |
-| `predocker:up` | `node scripts/predocker.mjs` | Runs automatically before `docker:up` |
-| `docker:up` | `docker compose up` | Brings up all three services in Docker |
-| `build` | `pnpm -r build` | Builds all workspace packages (runs `build` in each `apps/*`) |
-| `lint` | `pnpm -r lint` | Runs the linter across all workspace packages |
-| `type-check` | `pnpm -r type-check` | Type-checks all workspace packages |
-| `reinstall` | `node scripts/reinstall.mjs` | Removes `node_modules`/`pnpm-lock.yaml` and reinstalls dependencies from scratch |
-| `prepare` | `husky` | Sets up git hooks (runs automatically on `pnpm install`) |
+| Script         | Command                         | What it does                                                                              |
+| -------------- | ------------------------------- | ----------------------------------------------------------------------------------------- |
+| `env:copy`     | `node scripts/copy-env-cli.mjs` | Creates any missing `.env` files from `.env.example` — doesn't run or check anything else |
+| `predev`       | `node scripts/predev.mjs`       | Runs automatically before `dev` (npm `pre*` convention)                                   |
+| `dev`          | `node scripts/dev.mjs`          | Brings up backend, frontend, and docs in parallel (via `concurrently`)                    |
+| `predocker:up` | `node scripts/predocker.mjs`    | Runs automatically before `docker:up`                                                     |
+| `docker:up`    | `docker compose up`             | Brings up all three services in Docker                                                    |
+| `build`        | `pnpm -r build`                 | Builds all workspace packages (runs `build` in each `apps/*`)                             |
+| `lint`         | `pnpm -r lint`                  | Runs the linter across all workspace packages                                             |
+| `type-check`   | `pnpm -r type-check`            | Type-checks all workspace packages                                                        |
+| `reinstall`    | `node scripts/reinstall.mjs`    | Removes `node_modules`/`pnpm-lock.yaml` and reinstalls dependencies from scratch          |
+| `prepare`      | `husky`                         | Sets up git hooks (runs automatically on `pnpm install`)                                  |
 
 ### `apps/backend`
 
-| Script | Command | What it does |
-| --- | --- | --- |
-| `dev` | `nest start --watch` | Local development with hot-reload |
-| `build` | `nest build` | Production build into `dist/` |
-| `start` | `nest start` | Runs the built `dist/` without watch mode |
-| `start:prod` | `node dist/main` | Runs in production mode (what the `Dockerfile` uses) |
-| `lint` | `eslint ... --fix` | Linter with auto-fix |
-| `type-check` | `tsc --noEmit` | Type-checks without building |
-| `test` / `test:watch` / `test:cov` / `test:e2e` | `jest ...` | Unit and e2e tests |
+| Script                                          | Command              | What it does                                         |
+| ----------------------------------------------- | -------------------- | ---------------------------------------------------- |
+| `dev`                                           | `nest start --watch` | Local development with hot-reload                    |
+| `build`                                         | `nest build`         | Production build into `dist/`                        |
+| `start`                                         | `nest start`         | Runs the built `dist/` without watch mode            |
+| `start:prod`                                    | `node dist/main`     | Runs in production mode (what the `Dockerfile` uses) |
+| `lint`                                          | `eslint ... --fix`   | Linter with auto-fix                                 |
+| `type-check`                                    | `tsc --noEmit`       | Type-checks without building                         |
+| `test` / `test:watch` / `test:cov` / `test:e2e` | `jest ...`           | Unit and e2e tests                                   |
 
 ### `apps/frontend`
 
-| Script | Command | What it does |
-| --- | --- | --- |
-| `dev` | `nuxt dev` | Local development with hot-reload |
-| `build` | `nuxt build` | Production build into `.output/` |
-| `preview` | `nuxt preview` | Runs the production build locally |
-| `postinstall` | `nuxt prepare` | Generates `.nuxt/` (types, aliases) — runs automatically after `pnpm install` |
-| `lint` | `eslint . --fix` | Linter with auto-fix |
-| `type-check` | `nuxt typecheck` | Type-checks via `vue-tsc` |
+| Script        | Command          | What it does                                                                  |
+| ------------- | ---------------- | ----------------------------------------------------------------------------- |
+| `dev`         | `nuxt dev`       | Local development with hot-reload                                             |
+| `build`       | `nuxt build`     | Production build into `.output/`                                              |
+| `preview`     | `nuxt preview`   | Runs the production build locally                                             |
+| `postinstall` | `nuxt prepare`   | Generates `.nuxt/` (types, aliases) — runs automatically after `pnpm install` |
+| `lint`        | `eslint . --fix` | Linter with auto-fix                                                          |
+| `type-check`  | `nuxt typecheck` | Type-checks via `vue-tsc`                                                     |
 
 ### `apps/docs`
 
-| Script | Command | What it does |
-| --- | --- | --- |
-| `dev` | `vitepress dev` | Local docs dev server |
-| `build` | `vitepress build` | Static build into `.vitepress/dist/` |
-| `preview` | `vitepress preview` | Runs the built docs locally |
+| Script    | Command             | What it does                         |
+| --------- | ------------------- | ------------------------------------ |
+| `dev`     | `vitepress dev`     | Local docs dev server                |
+| `build`   | `vitepress build`   | Static build into `.vitepress/dist/` |
+| `preview` | `vitepress preview` | Runs the built docs locally          |
 
 ## Node scripts in `scripts/`
 

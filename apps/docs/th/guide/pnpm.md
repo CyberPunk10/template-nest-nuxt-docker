@@ -17,12 +17,12 @@
 
 ในเครื่องเดียว pnpm สามารถติดตั้งได้อย่างน้อย 3 วิธี และแต่ละวิธี **ไม่รู้จักกัน**:
 
-| วิธี                                  | ตัวอย่าง path                                     | ใครจัดการ           |
-| ---------------------------------------- | ------------------------------------------------ | -------------------------- |
-| Standalone script (`get.pnpm.io/install.sh`) | `~/.local/share/pnpm/pnpm`                    | จัดการตัวเอง version ถูกล็อกตอนติดตั้ง |
-| `npm install -g pnpm`                    | `~/.nvm/versions/node/vX.Y.Z/bin/pnpm`          | Node version ที่ active อยู่ใน nvm ตอนนั้น |
-| System package / global npm         | `/usr/bin/pnpm` → `/usr/lib/node_modules/pnpm`  | Node ของระบบ นอก nvm    |
-| **Corepack**                             | shim ที่แทน version จาก `packageManager`   | `package.json` ของ **แต่ละ** โปรเจกต์ |
+| วิธี                                           | ตัวอย่าง path                                    | ใครจัดการ                             |
+| -------------------------------------------- | ---------------------------------------------- | ------------------------------------ |
+| Standalone script (`get.pnpm.io/install.sh`) | `~/.local/share/pnpm/pnpm`                     | จัดการตัวเอง version ถูกล็อกตอนติดตั้ง      |
+| `npm install -g pnpm`                        | `~/.nvm/versions/node/vX.Y.Z/bin/pnpm`         | Node version ที่ active อยู่ใน nvm ตอนนั้น |
+| System package / global npm                  | `/usr/bin/pnpm` → `/usr/lib/node_modules/pnpm` | Node ของระบบ นอก nvm                 |
+| **Corepack**                                 | shim ที่แทน version จาก `packageManager`         | `package.json` ของ **แต่ละ** โปรเจกต์  |
 
 ถ้ามีหลายวิธีติดตั้งพร้อมกัน การเรียก `pnpm ...` ใน terminal จะรันตัวที่ **มาก่อนใน `$PATH`** — ไม่จำเป็นต้องเป็นตัวที่โปรเจกต์ปัจจุบันต้องการ การติดตั้งแบบ standalone ผ่าน `~/.zshrc` (`export PATH="$PNPM_HOME:$PATH"`) จะจงใจเอาตัวเองไปไว้หน้าสุดของ `PATH` เลย ทำให้ intercept การเรียกก่อนที่ Corepack shim จะได้ทำงาน
 

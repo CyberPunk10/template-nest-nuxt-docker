@@ -29,11 +29,11 @@ template-nest-nuxt/
 
 Один и тот же сервис имеет **до трёх разных портов**, в зависимости от контекста запуска — это не дублирование и не опечатка, у каждого своя роль:
 
-| Слой | Переменная | Файл | Что означает |
-| --- | --- | --- | --- |
-| Dev-порт | `PORT` | `apps/backend/.env`, `apps/frontend/.env`, `apps/docs/.env` | На чём слушает процесс при `pnpm dev` |
-| Внутренний порт | `BACKEND_INTERNAL_PORT`, `FRONTEND_INTERNAL_PORT`, `DOCS_INTERNAL_PORT` | `.env` (корень) | На чём слушает процесс **внутри контейнера** в Docker |
-| Хост-порт | `BACKEND_HOST_PORT`, `FRONTEND_HOST_PORT`, `DOCS_HOST_PORT` | `.env` (корень) | На чём сервис виден **снаружи** Docker (`localhost:<host-порт>` на машине) |
+| Слой            | Переменная                                                              | Файл                                                        | Что означает                                                               |
+| --------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------- | -------------------------------------------------------------------------- |
+| Dev-порт        | `PORT`                                                                  | `apps/backend/.env`, `apps/frontend/.env`, `apps/docs/.env` | На чём слушает процесс при `pnpm dev`                                      |
+| Внутренний порт | `BACKEND_INTERNAL_PORT`, `FRONTEND_INTERNAL_PORT`, `DOCS_INTERNAL_PORT` | `.env` (корень)                                             | На чём слушает процесс **внутри контейнера** в Docker                      |
+| Хост-порт       | `BACKEND_HOST_PORT`, `FRONTEND_HOST_PORT`, `DOCS_HOST_PORT`             | `.env` (корень)                                             | На чём сервис виден **снаружи** Docker (`localhost:<host-порт>` на машине) |
 
 Почему нельзя одной переменной: `pnpm dev` и Docker — разные процессы запуска с разными требованиями. В Docker сам процесс внутри контейнера и адрес, по которому до него достучится хост-машина — это система из двух чисел с NAT-проксированием между ними (`ports: "<хост-порт>:<внутренний порт>"`), а `pnpm dev` — это просто один процесс на голой машине с одним портом.
 
@@ -51,38 +51,38 @@ template-nest-nuxt/
 
 ### `.env` (корень)
 
-| Переменная | Значение | Комментарий |
-| --- | --- | --- |
-| `BACKEND_HOST_PORT` | `3500` | Хост-порт backend — на чём сервис виден снаружи Docker |
-| `FRONTEND_HOST_PORT` | `3600` | Хост-порт frontend |
-| `DOCS_HOST_PORT` | `3700` | Хост-порт docs |
-| `BACKEND_INTERNAL_PORT` | `3100` | Порт, на котором backend слушает **внутри контейнера** |
-| `FRONTEND_INTERNAL_PORT` | `3200` | Порт, на котором frontend слушает внутри контейнера |
-| `DOCS_INTERNAL_PORT` | `3300` | Порт, на котором nginx (docs) слушает внутри контейнера |
+| Переменная               | Значение | Комментарий                                             |
+| ------------------------ | -------- | ------------------------------------------------------- |
+| `BACKEND_HOST_PORT`      | `3500`   | Хост-порт backend — на чём сервис виден снаружи Docker  |
+| `FRONTEND_HOST_PORT`     | `3600`   | Хост-порт frontend                                      |
+| `DOCS_HOST_PORT`         | `3700`   | Хост-порт docs                                          |
+| `BACKEND_INTERNAL_PORT`  | `3100`   | Порт, на котором backend слушает **внутри контейнера**  |
+| `FRONTEND_INTERNAL_PORT` | `3200`   | Порт, на котором frontend слушает внутри контейнера     |
+| `DOCS_INTERNAL_PORT`     | `3300`   | Порт, на котором nginx (docs) слушает внутри контейнера |
 
 ### `apps/backend/.env`
 
-| Переменная | Значение (dev) | Комментарий |
-| --- | --- | --- |
-| `NODE_ENV` | `development` | Управляет, среди прочего, доступностью Swagger UI (`/api/docs` — в `production` не показываем, подразумевая, что документация только для разработчкика). В Docker всегда `production` — задаётся в `apps/backend/Dockerfile` (`ENV NODE_ENV=production`), а не через `.env`/`docker-compose.yml` |
-| `PORT` | `3100` | Порт backend при `pnpm dev`. В Docker переопределяется `BACKEND_INTERNAL_PORT` из корневого `.env` |
-| `CORS_ORIGIN_SCHEME_HOST` | `http://localhost` | Разрешённый origin для CORS — протокол+хост. Не меняется в Docker |
-| `CORS_ORIGIN_PORT` | `3200` | Разрешённый origin для CORS — порт frontend'а. В Docker переопределяется `FRONTEND_HOST_PORT` |
+| Переменная                | Значение (dev)     | Комментарий                                                                                                                                                                                                                                                                                      |
+| ------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `NODE_ENV`                | `development`      | Управляет, среди прочего, доступностью Swagger UI (`/api/docs` — в `production` не показываем, подразумевая, что документация только для разработчкика). В Docker всегда `production` — задаётся в `apps/backend/Dockerfile` (`ENV NODE_ENV=production`), а не через `.env`/`docker-compose.yml` |
+| `PORT`                    | `3100`             | Порт backend при `pnpm dev`. В Docker переопределяется `BACKEND_INTERNAL_PORT` из корневого `.env`                                                                                                                                                                                               |
+| `CORS_ORIGIN_SCHEME_HOST` | `http://localhost` | Разрешённый origin для CORS — протокол+хост. Не меняется в Docker                                                                                                                                                                                                                                |
+| `CORS_ORIGIN_PORT`        | `3200`             | Разрешённый origin для CORS — порт frontend'а. В Docker переопределяется `FRONTEND_HOST_PORT`                                                                                                                                                                                                    |
 
 ### `apps/frontend/.env`
 
-| Переменная | Значение (dev) | Комментарий |
-| --- | --- | --- |
-| `PORT` | `3200` | Порт frontend при `pnpm dev`. В Docker переопределяется `FRONTEND_INTERNAL_PORT` из корневого `.env` |
-| `NUXT_PUBLIC_API_BASE` | `/api/backend` | Префикс для server-side прокси на backend (браузер ходит сюда, не напрямую на backend) |
-| `NUXT_BACKEND_URL` | `http://localhost:3100` | Адрес backend для Nuxt SSR (сервер). В Docker переопределяется на `http://backend:${BACKEND_INTERNAL_PORT}` — по имени сервиса, `localhost` внутри Docker-сети недостижим |
-| `NUXT_PUBLIC_BACKEND_PORT` | `3100` | Только порт backend, для ссылки в DevPanel (не для запросов). В Docker переопределяется `BACKEND_HOST_PORT` |
-| `NUXT_PUBLIC_APP_ENV` | `development` | Определяет режим окружения на клиенте (например, показ Swagger-ссылки в DevPanel). В Docker жёстко `production` — задаётся в `docker-compose.yml` |
-| `NUXT_PUBLIC_DOCS_URL` | `http://localhost:5173` | Ссылка на VitePress-документацию (пункт меню, DevPanel). В Docker переопределяется на `http://localhost:${DOCS_HOST_PORT}` |
+| Переменная                 | Значение (dev)          | Комментарий                                                                                                                                                               |
+| -------------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PORT`                     | `3200`                  | Порт frontend при `pnpm dev`. В Docker переопределяется `FRONTEND_INTERNAL_PORT` из корневого `.env`                                                                      |
+| `NUXT_PUBLIC_API_BASE`     | `/api/backend`          | Префикс для server-side прокси на backend (браузер ходит сюда, не напрямую на backend)                                                                                    |
+| `NUXT_BACKEND_URL`         | `http://localhost:3100` | Адрес backend для Nuxt SSR (сервер). В Docker переопределяется на `http://backend:${BACKEND_INTERNAL_PORT}` — по имени сервиса, `localhost` внутри Docker-сети недостижим |
+| `NUXT_PUBLIC_BACKEND_PORT` | `3100`                  | Только порт backend, для ссылки в DevPanel (не для запросов). В Docker переопределяется `BACKEND_HOST_PORT`                                                               |
+| `NUXT_PUBLIC_APP_ENV`      | `development`           | Определяет режим окружения на клиенте (например, показ Swagger-ссылки в DevPanel). В Docker жёстко `production` — задаётся в `docker-compose.yml`                         |
+| `NUXT_PUBLIC_DOCS_URL`     | `http://localhost:5173` | Ссылка на VitePress-документацию (пункт меню, DevPanel). В Docker переопределяется на `http://localhost:${DOCS_HOST_PORT}`                                                |
 
 ### `apps/docs/.env`
 
-| Переменная | Значение | Комментарий |
-| --- | --- | --- |
-| `PORT` | `5173` | Порт VitePress dev-сервера. Читается через `dotenv` в `.vitepress/config.ts` — сам VitePress `.env` не грузит. Не используется в Docker |
+| Переменная | Значение | Комментарий                                                                                                                             |
+| ---------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `PORT`     | `5173`   | Порт VitePress dev-сервера. Читается через `dotenv` в `.vitepress/config.ts` — сам VitePress `.env` не грузит. Не используется в Docker |
 
