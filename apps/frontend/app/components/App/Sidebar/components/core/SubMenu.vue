@@ -51,6 +51,12 @@ function onClickOutsideSubMenu() {
   if (!props.notCollapsedItems[props.item.id!]) return
   emit('click-outside-submenu', props.item)
 }
+
+function getSubItemKey(item: SidebarMenuItem, subitem: SidebarMenuItem, index: number) {
+  if (subitem.spacer) return `app-spacer-${item.id}-${index}`
+  if (subitem.items) return `submenu_${subitem.id}_${index}`
+  return `subitem_${item.id}_${index}`
+}
 </script>
 
 <template>
@@ -71,15 +77,16 @@ function onClickOutsideSubMenu() {
       </div>
 
       <div class="sidebar-dropdown__scroll --custom-css-scrollbar" :class="`--level-${level}`">
-        <template v-for="(subitem, index) in item.items">
+        <template
+          v-for="(subitem, index) in item.items"
+          :key="getSubItemKey(item, subitem, index)"
+        >
           <app-spacer
             v-if="subitem.spacer"
-            :key="`app-spacer-${item.id}-${index}`"
           />
 
           <SidebarLink
             v-else
-            :key="`subitem_${item.id}_${index}`"
             :class="subitem.classes"
             :chevron="!!subitem.items"
             :external="subitem.external"
@@ -98,7 +105,6 @@ function onClickOutsideSubMenu() {
 
           <SubMenu
             v-if="subitem.items"
-            :key="`submenu_${subitem.id}_${index}`"
             :item="subitem"
             :level="level + 1"
             :to="subitem.url"
