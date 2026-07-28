@@ -1,4 +1,4 @@
-import type { SidebarMenuItem } from '../Sidebar/config/sidebar-menu'
+import type { SidebarMenuItem } from '../../Sidebar/config/sidebar-menu'
 
 export interface SidebarDivider {
   id: string
