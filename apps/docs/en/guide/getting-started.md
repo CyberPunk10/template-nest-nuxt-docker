@@ -2,10 +2,10 @@
 
 Two ways to run the project — **pnpm** or **Docker**, each with its own dev/production flavor:
 
-|                | Development                                                                | Production                                                                     |
-| -------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| **pnpm**       | [`pnpm dev`](#pnpm-dev) — everyday development, hot-reload, the fastest path  | [`pnpm build`](#pnpm-build-production-build-without-docker) — check the production build without containers |
-| **Docker**     | not set up — see the note in the [Docker](#docker-—-all-services) section                 | [`docker compose up`](#docker-—-all-services) — production stack in containers, as in deployment        |
+|            | Development                                                                  | Production                                                                                                  |
+| ---------- | ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| **pnpm**   | [`pnpm dev`](#pnpm-dev) — everyday development, hot-reload, the fastest path | [`pnpm build`](#pnpm-build-production-build-without-docker) — check the production build without containers |
+| **Docker** | not set up — see the note in the [Docker](#docker-—-all-services) section    | [`docker compose up`](#docker-—-all-services) — production stack in containers, as in deployment            |
 
 ## Prerequisites
 
@@ -94,10 +94,10 @@ pnpm dev
 One command brings up everything natively, with hot-reload for each service. Before starting, `predev.mjs` runs (see step 5 above): creates `.env` files if they're missing and resolves port conflicts.
 
 | Service  | URL                     | Technology       |
-| -------- | ------------------------ | ----------------- |
-| Backend  | `http://localhost:3100` | NestJS `--watch`  |
-| Frontend | `http://localhost:3200` | Nuxt dev          |
-| Docs     | `http://localhost:5173` | VitePress dev     |
+| -------- | ----------------------- | ---------------- |
+| Backend  | `http://localhost:3100` | NestJS `--watch` |
+| Frontend | `http://localhost:3200` | Nuxt dev         |
+| Docs     | `http://localhost:5173` | VitePress dev    |
 
 ::: tip
 When switching branches, the local `.env` doesn't update automatically — it may be missing variables introduced by the new branch. Compare it against `.env.example` and add whatever's missing.

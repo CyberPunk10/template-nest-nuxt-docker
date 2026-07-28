@@ -6,48 +6,48 @@
 
 ### Корневой
 
-| Скрипт | Команда | Что делает |
-| --- | --- | --- |
-| `env:copy` | `node scripts/copy-env-cli.mjs` | Создаёт все `.env` из `.env.example`, которых ещё нет — ничего не запускает и не проверяет |
-| `predev` | `node scripts/predev.mjs` | Запускается автоматически перед `dev` (npm `pre*`-конвенция) |
-| `dev` | `node scripts/dev.mjs` | Параллельно поднимает backend, frontend и docs (через `concurrently`) |
-| `predocker:up` | `node scripts/predocker.mjs` | Запускается автоматически перед `docker:up` |
-| `docker:up` | `docker compose up` | Поднимает все три сервиса в Docker |
-| `build` | `pnpm -r build` | Собирает все workspace-пакеты (запускает `build` в каждом `apps/*`) |
-| `lint` | `pnpm -r lint` | Линтер по всем workspace-пакетам |
-| `type-check` | `pnpm -r type-check` | Проверка типов по всем workspace-пакетам |
-| `reinstall` | `node scripts/reinstall.mjs` | Удаляет `node_modules`/`pnpm-lock.yaml` и переустанавливает зависимости с нуля |
-| `prepare` | `husky` | Настраивает git-хуки (вызывается автоматически при `pnpm install`) |
+| Скрипт         | Команда                         | Что делает                                                                                 |
+| -------------- | ------------------------------- | ------------------------------------------------------------------------------------------ |
+| `env:copy`     | `node scripts/copy-env-cli.mjs` | Создаёт все `.env` из `.env.example`, которых ещё нет — ничего не запускает и не проверяет |
+| `predev`       | `node scripts/predev.mjs`       | Запускается автоматически перед `dev` (npm `pre*`-конвенция)                               |
+| `dev`          | `node scripts/dev.mjs`          | Параллельно поднимает backend, frontend и docs (через `concurrently`)                      |
+| `predocker:up` | `node scripts/predocker.mjs`    | Запускается автоматически перед `docker:up`                                                |
+| `docker:up`    | `docker compose up`             | Поднимает все три сервиса в Docker                                                         |
+| `build`        | `pnpm -r build`                 | Собирает все workspace-пакеты (запускает `build` в каждом `apps/*`)                        |
+| `lint`         | `pnpm -r lint`                  | Линтер по всем workspace-пакетам                                                           |
+| `type-check`   | `pnpm -r type-check`            | Проверка типов по всем workspace-пакетам                                                   |
+| `reinstall`    | `node scripts/reinstall.mjs`    | Удаляет `node_modules`/`pnpm-lock.yaml` и переустанавливает зависимости с нуля             |
+| `prepare`      | `husky`                         | Настраивает git-хуки (вызывается автоматически при `pnpm install`)                         |
 
 ### `apps/backend`
 
-| Скрипт | Команда | Что делает |
-| --- | --- | --- |
-| `dev` | `nest start --watch` | Локальная разработка с hot-reload |
-| `build` | `nest build` | Production-сборка в `dist/` |
-| `start` | `nest start` | Запуск собранного `dist/` без watch |
-| `start:prod` | `node dist/main` | Запуск в production-режиме (то, что использует `Dockerfile`) |
-| `lint` | `eslint ... --fix` | Линтер с автофиксом |
-| `type-check` | `tsc --noEmit` | Проверка типов без сборки |
-| `test` / `test:watch` / `test:cov` / `test:e2e` | `jest ...` | Юнит- и e2e-тесты |
+| Скрипт                                          | Команда              | Что делает                                                   |
+| ----------------------------------------------- | -------------------- | ------------------------------------------------------------ |
+| `dev`                                           | `nest start --watch` | Локальная разработка с hot-reload                            |
+| `build`                                         | `nest build`         | Production-сборка в `dist/`                                  |
+| `start`                                         | `nest start`         | Запуск собранного `dist/` без watch                          |
+| `start:prod`                                    | `node dist/main`     | Запуск в production-режиме (то, что использует `Dockerfile`) |
+| `lint`                                          | `eslint ... --fix`   | Линтер с автофиксом                                          |
+| `type-check`                                    | `tsc --noEmit`       | Проверка типов без сборки                                    |
+| `test` / `test:watch` / `test:cov` / `test:e2e` | `jest ...`           | Юнит- и e2e-тесты                                            |
 
 ### `apps/frontend`
 
-| Скрипт | Команда | Что делает |
-| --- | --- | --- |
-| `dev` | `nuxt dev` | Локальная разработка с hot-reload |
-| `build` | `nuxt build` | Production-сборка в `.output/` |
-| `preview` | `nuxt preview` | Локальный запуск production-сборки |
-| `postinstall` | `nuxt prepare` | Генерирует `.nuxt/` (типы, алиасы) — запускается автоматически после `pnpm install` |
-| `lint` | `eslint . --fix` | Линтер с автофиксом |
-| `type-check` | `nuxt typecheck` | Проверка типов через `vue-tsc` |
+| Скрипт        | Команда          | Что делает                                                                          |
+| ------------- | ---------------- | ----------------------------------------------------------------------------------- |
+| `dev`         | `nuxt dev`       | Локальная разработка с hot-reload                                                   |
+| `build`       | `nuxt build`     | Production-сборка в `.output/`                                                      |
+| `preview`     | `nuxt preview`   | Локальный запуск production-сборки                                                  |
+| `postinstall` | `nuxt prepare`   | Генерирует `.nuxt/` (типы, алиасы) — запускается автоматически после `pnpm install` |
+| `lint`        | `eslint . --fix` | Линтер с автофиксом                                                                 |
+| `type-check`  | `nuxt typecheck` | Проверка типов через `vue-tsc`                                                      |
 
 ### `apps/docs`
 
-| Скрипт | Команда | Что делает |
-| --- | --- | --- |
-| `dev` | `vitepress dev` | Локальный dev-сервер документации |
-| `build` | `vitepress build` | Статическая сборка в `.vitepress/dist/` |
+| Скрипт    | Команда             | Что делает                              |
+| --------- | ------------------- | --------------------------------------- |
+| `dev`     | `vitepress dev`     | Локальный dev-сервер документации       |
+| `build`   | `vitepress build`   | Статическая сборка в `.vitepress/dist/` |
 | `preview` | `vitepress preview` | Локальный запуск собранной документации |
 
 ## Node-скрипты в `scripts/`

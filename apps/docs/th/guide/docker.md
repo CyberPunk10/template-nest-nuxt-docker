@@ -143,9 +143,9 @@ frontend:
 
 ในแต่ละ service มีพอร์ตอิสระสองแบบ และการสับสนระหว่างสองแบบนี้เป็นสาเหตุที่พบบ่อยของอาการ "container ขึ้นแล้วแต่ไม่ตอบสนอง":
 
-| อะไร                          | ตัวแปร                                  | อยู่ที่ไหน      | ใครอ่าน |
-| ----------------------------- | -------------------------------------------- | -------------- | ---------- |
-| Host port (นอก Docker)    | `BACKEND_HOST_PORT`, `FRONTEND_HOST_PORT`, `DOCS_HOST_PORT` | `.env` (root) | เฉพาะ `docker-compose.yml` ฝั่งซ้ายของ `ports:` |
+| อะไร                               | ตัวแปร                                                                   | อยู่ที่ไหน        | ใครอ่าน                                                                           |
+| ---------------------------------- | ----------------------------------------------------------------------- | ------------- | -------------------------------------------------------------------------------- |
+| Host port (นอก Docker)             | `BACKEND_HOST_PORT`, `FRONTEND_HOST_PORT`, `DOCS_HOST_PORT`             | `.env` (root) | เฉพาะ `docker-compose.yml` ฝั่งซ้ายของ `ports:`                                     |
 | Internal port (พอร์ตที่ process ฟังอยู่) | `BACKEND_INTERNAL_PORT`, `FRONTEND_INTERNAL_PORT`, `DOCS_INTERNAL_PORT` | `.env` (root) | `docker-compose.yml` — สองที่พร้อมกัน: ฝั่งขวาของ `ports:` **และ** `environment: PORT` |
 
 ทำไม internal port ไม่ได้อ่านตรงจาก `apps/backend/.env` (ที่มี `PORT` อยู่แล้ว) แต่อ่านจากตัวแปรแยกใน `.env` ที่ root: `ports:` จะถูก Compose resolve **ตอนอ่าน YAML** ก่อน container start ในขณะที่ `env_file:` จะส่งเนื้อหาไฟล์เข้า container แค่ **ตอน** start เท่านั้น สองจุดนี้เป็นเวลาที่ต่างกัน — Compose ไม่สามารถแทนค่าจาก `apps/backend/.env` ลงใน `ports:` ได้จริงๆ ทางเดียวที่จะรับประกันว่าทั้งสองส่วน (`ports:` กับค่าที่เข้าไปใน `PORT` จริงๆ) ตรงกัน คือต้องเอามาจากแหล่งเดียวกันที่ Compose มองเห็นได้ตอน interpolation ด้วยเหตุนี้ `environment: PORT` ใน `docker-compose.yml` จึง override `PORT` ที่ปกติจะมาจาก `apps/*/.env` ผ่าน `env_file:` อย่างชัดเจน
@@ -259,11 +259,11 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s \
   CMD wget -qO- http://127.0.0.1:${PORT}/health || exit 1
 ```
 
-| Service   | Path ที่ตรวจสอบ        |
-| -------- | ------------------------ |
-| backend  | `http://127.0.0.1:${PORT}/health` |
+| Service  | Path ที่ตรวจสอบ                         |
+| -------- | ------------------------------------- |
+| backend  | `http://127.0.0.1:${PORT}/health`     |
 | frontend | `http://127.0.0.1:${PORT}/api/health` |
-| docs     | `http://127.0.0.1:${PORT}/` |
+| docs     | `http://127.0.0.1:${PORT}/`           |
 
 `${PORT}` ใน `HEALTHCHECK CMD` ไม่ใช่การแทนค่าตอน build — แต่เป็น shell variable ธรรมดา อ่านจากค่า `PORT` จริงภายใน container ตอนที่ตรวจสอบ (ค่าเดียวกับที่กำหนดผ่าน `environment:` ใน `docker-compose.yml`)
 

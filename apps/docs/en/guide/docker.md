@@ -143,10 +143,10 @@ For more on which variables match and which get overridden — see [ENV variable
 
 There are two independent ports per service here, and mixing them up is a common cause of "the container started but doesn't respond":
 
-| What | Variable | Where it lives | Who reads it |
-| ----------------------------- | -------------------------------------------- | -------------- | ---------- |
-| Host port (outside Docker) | `BACKEND_HOST_PORT`, `FRONTEND_HOST_PORT`, `DOCS_HOST_PORT` | `.env` (root) | only `docker-compose.yml`, the left side of `ports:` |
-| Internal port (what the process listens on) | `BACKEND_INTERNAL_PORT`, `FRONTEND_INTERNAL_PORT`, `DOCS_INTERNAL_PORT` | `.env` (root) | `docker-compose.yml` — in two places at once: the right side of `ports:` **and** `environment: PORT` |
+| What                                        | Variable                                                                | Where it lives | Who reads it                                                                                         |
+| ------------------------------------------- | ----------------------------------------------------------------------- | -------------- | ---------------------------------------------------------------------------------------------------- |
+| Host port (outside Docker)                  | `BACKEND_HOST_PORT`, `FRONTEND_HOST_PORT`, `DOCS_HOST_PORT`             | `.env` (root)  | only `docker-compose.yml`, the left side of `ports:`                                                 |
+| Internal port (what the process listens on) | `BACKEND_INTERNAL_PORT`, `FRONTEND_INTERNAL_PORT`, `DOCS_INTERNAL_PORT` | `.env` (root)  | `docker-compose.yml` — in two places at once: the right side of `ports:` **and** `environment: PORT` |
 
 Why the internal port isn't read straight from `apps/backend/.env` (which already has `PORT`) but from a separate variable in the root `.env`: `ports:` is resolved by Compose **while reading the YAML**, before the container starts, while `env_file:` only passes the file's contents **into** the container at startup. These are two different points in time — Compose physically can't substitute into `ports:` something that lives in `apps/backend/.env`. The only way to guarantee both halves (`ports:` and the `PORT` passed inside) match is to take them from one source visible to Compose at interpolation time. Hence `environment: PORT` in `docker-compose.yml` explicitly overrides the `PORT` that would otherwise come from `apps/*/.env` via `env_file:`.
 
@@ -259,11 +259,11 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s \
   CMD wget -qO- http://127.0.0.1:${PORT}/health || exit 1
 ```
 
-| Service  | Path checked        |
-| -------- | ------------------------ |
-| backend  | `http://127.0.0.1:${PORT}/health` |
+| Service  | Path checked                          |
+| -------- | ------------------------------------- |
+| backend  | `http://127.0.0.1:${PORT}/health`     |
 | frontend | `http://127.0.0.1:${PORT}/api/health` |
-| docs     | `http://127.0.0.1:${PORT}/` |
+| docs     | `http://127.0.0.1:${PORT}/`           |
 
 `${PORT}` in `HEALTHCHECK CMD` isn't a build-time substitution — it's a plain shell variable, read from the actual `PORT` value inside the container at check time (the same value set via `environment:` in `docker-compose.yml`).
 

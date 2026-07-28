@@ -17,12 +17,12 @@
 
 On a single machine, pnpm can be installed at least three different ways, and they **don't know about each other**:
 
-| Method                                  | Example path                                     | Managed by           |
-| ---------------------------------------- | ------------------------------------------------ | -------------------------- |
-| Standalone script (`get.pnpm.io/install.sh`) | `~/.local/share/pnpm/pnpm`                    | itself, version fixed at install time |
-| `npm install -g pnpm`                    | `~/.nvm/versions/node/vX.Y.Z/bin/pnpm`          | the currently active nvm Node version |
-| System package / global npm         | `/usr/bin/pnpm` → `/usr/lib/node_modules/pnpm`  | system Node, outside nvm    |
-| **Corepack**                             | a shim that substitutes the version from `packageManager`   | **each** project's `package.json` |
+| Method                                       | Example path                                              | Managed by                            |
+| -------------------------------------------- | --------------------------------------------------------- | ------------------------------------- |
+| Standalone script (`get.pnpm.io/install.sh`) | `~/.local/share/pnpm/pnpm`                                | itself, version fixed at install time |
+| `npm install -g pnpm`                        | `~/.nvm/versions/node/vX.Y.Z/bin/pnpm`                    | the currently active nvm Node version |
+| System package / global npm                  | `/usr/bin/pnpm` → `/usr/lib/node_modules/pnpm`            | system Node, outside nvm              |
+| **Corepack**                                 | a shim that substitutes the version from `packageManager` | **each** project's `package.json`     |
 
 If several of these exist at once, running `pnpm ...` in a terminal runs **whichever comes first in `$PATH`** — not necessarily the one the current project needs. A standalone install via `~/.zshrc` (`export PATH="$PNPM_HOME:$PATH"`) deliberately puts itself at the front of `PATH`, so it intercepts the call before the Corepack shim gets a chance to run.
 
