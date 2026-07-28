@@ -1,3 +1,5 @@
 import { copyEnvFiles } from './copy-env.mjs'
 
-copyEnvFiles()
+const force = process.argv.includes('--force')
+
+copyEnvFiles(force)

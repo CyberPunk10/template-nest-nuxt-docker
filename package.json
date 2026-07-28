@@ -12,6 +12,7 @@
   "description": "",
   "scripts": {
     "env:copy": "node scripts/copy-env-cli.mjs",
+    "env:copy:force": "node scripts/copy-env-cli.mjs --force",
     "predev": "node scripts/predev.mjs",
     "dev": "node scripts/dev.mjs",
     "predocker:up": "node scripts/predocker.mjs",

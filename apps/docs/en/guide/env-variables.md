@@ -19,7 +19,11 @@ template-nest-nuxt/
 
 Each app reads **only its own** `.env`, unaware the others exist. The root `.env` is needed for docker-compose.
 
-Only `.env.example` files live in the repo — actual `.env` files are created by copying: manually via `pnpm env:copy`, or automatically on the first `pnpm dev`/`pnpm docker:up` (see [`predev.mjs`, `predocker.mjs`](/en/guide/scripts#predev-mjs-predocker-mjs) in the [Scripts](/en/guide/scripts) guide). Copying is always safe — existing `.env` files are never overwritten.
+Only `.env.example` files live in the repo — actual `.env` files are created by copying: manually via `pnpm env:copy`, or automatically on the first `pnpm dev`/`pnpm docker:up` (see [`predev.mjs`, `predocker.mjs`](/en/guide/scripts#predev-mjs-predocker-mjs) in the [Scripts](/en/guide/scripts) guide). Copying is safe by default — existing `.env` files are never overwritten. To force-overwrite all `.env` files with the values from `.env.example`, use `pnpm env:copy:force`.
+
+::: warning
+`pnpm env:copy:force` overwrites `.env` files **entirely**, with the values from `.env.example` — including any custom changes you made (your own ports, secrets, etc). Use with caution.
+:::
 
 ## Three layers of ports
 
@@ -60,6 +64,7 @@ For more detail, with a `docker-compose.yml` example — see [Docker → Host po
 
 | Variable | Value (dev) | Comment |
 | --- | --- | --- |
+| `NODE_ENV` | `development` | Controls, among other things, Swagger UI availability (`/api/docs` — only outside `production`). Always `production` in Docker — set in `apps/backend/Dockerfile` (`ENV NODE_ENV=production`), not via `.env`/`docker-compose.yml` |
 | `PORT` | `3100` | Backend port during `pnpm dev`. Overridden by `BACKEND_INTERNAL_PORT` from the root `.env` in Docker |
 | `CORS_ORIGIN_SCHEME_HOST` | `http://localhost` | Allowed CORS origin — scheme+host. Unchanged in Docker |
 | `CORS_ORIGIN_PORT` | `3200` | Allowed CORS origin — frontend's port. Overridden by `FRONTEND_HOST_PORT` in Docker |
@@ -70,8 +75,10 @@ For more detail, with a `docker-compose.yml` example — see [Docker → Host po
 | --- | --- | --- |
 | `PORT` | `3200` | Frontend port during `pnpm dev`. Overridden by `FRONTEND_INTERNAL_PORT` from the root `.env` in Docker |
 | `NUXT_PUBLIC_API_BASE` | `/api/backend` | Prefix for the server-side proxy to backend (the browser hits this, not backend directly) |
-| `BACKEND_URL` | `http://localhost:3100` | Backend address for Nuxt SSR (server). Overridden in Docker to `http://backend:${BACKEND_INTERNAL_PORT}` — by service name, since `localhost` is unreachable inside the Docker network |
+| `NUXT_BACKEND_URL` | `http://localhost:3100` | Backend address for Nuxt SSR (server). Overridden in Docker to `http://backend:${BACKEND_INTERNAL_PORT}` — by service name, since `localhost` is unreachable inside the Docker network |
 | `NUXT_PUBLIC_BACKEND_PORT` | `3100` | Backend port only, for the link shown in DevPanel (not used for requests). Overridden by `BACKEND_HOST_PORT` in Docker |
+| `NUXT_PUBLIC_APP_ENV` | `development` | Client-side environment mode (e.g. showing the Swagger link in DevPanel). Hardcoded to `production` in Docker — set in `docker-compose.yml` |
+| `NUXT_PUBLIC_DOCS_URL` | `http://localhost:5173` | Link to the VitePress docs (menu item, DevPanel). Overridden in Docker to `http://localhost:${DOCS_HOST_PORT}` |
 
 ### `apps/docs/.env`
 
