@@ -10,7 +10,7 @@ import {
   Put,
 } from '@nestjs/common'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
-import { Task } from './task.entity'
+import { Task } from '../../generated/prisma/client'
 import { CurrentUser } from '../auth/decorators/current-user.decorator'
 import { JwtPayload } from '../auth/strategies/jwt.strategy'
 import { CreateTaskDto } from './dto/create-task.dto'

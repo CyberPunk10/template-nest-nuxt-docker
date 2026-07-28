@@ -52,10 +52,6 @@ export default defineNuxtConfig({
       // Переопределяется через NUXT_PUBLIC_BACKEND_PORT
       backendPort: '3100',
 
-      // Адрес VitePress-документации. Dev — отдельный порт, prod — подпуть /docs.
-      // Переопределяется через NUXT_PUBLIC_DOCS_URL
-      docsUrl: 'http://localhost:5173',
-
       // Переопределяется через NUXT_PUBLIC_APP_ENV
       appEnv: 'development',
 

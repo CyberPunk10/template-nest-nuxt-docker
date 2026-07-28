@@ -7,16 +7,16 @@
 - **Cookies:** `access_token` (JWT, 15 นาที) และ `refresh_token` (7 วัน) — ทั้งคู่เป็น httpOnly เข้าถึงจาก JS ไม่ได้
 - **Route ที่ป้องกันไว้:** `JwtAuthGuard` แบบ global ตรวจสอบ `access_token` ในทุก request
 - **Refresh:** เมื่อ access token หมดอายุ frontend จะเรียก `POST /auth/refresh` อัตโนมัติ refresh token จะถูก rotate ทุกครั้งที่มีการ refresh
-- **Session:** refresh token แต่ละตัวถูกเก็บไว้ใน memory ของ process (`SessionsStore`) เป็น HMAC hash ทุกครั้งที่ refresh token record เดิมจะถูกทำเครื่องหมาย `isUsed: true` แล้วสร้าง record ใหม่ขึ้นมา การ logout จะลบ session ที่ active อยู่ออกจาก store
+- **Session:** refresh token แต่ละตัวถูกเก็บในตาราง `Session` เป็น HMAC hash ทุกครั้งที่ refresh token record เดิมจะถูกทำเครื่องหมาย `isUsed: true` แล้วสร้าง record ใหม่ขึ้นมา การ logout จะลบ session ที่ active อยู่ออกจาก DB
 - **Reuse detection:** ถ้า refresh token ที่ถูกใช้ไปแล้วถูกนำมาแสดงซ้ำอีกครั้ง — เป็นสัญญาณว่า token ถูกขโมย session ทั้งหมดในตระกูลเดียวกัน (`familyId`) จะถูก invalidate
 
-### ทำไมต้องเก็บ session ไว้
+### ทำไมต้องเก็บ session ไว้ใน DB
 
 JWT ไม่สามารถ invalidate ก่อนหมดอายุได้ — นี่คือคุณสมบัติพื้นฐานของมาตรฐาน ถ้าผู้ใช้ logout ออกไปหรือเปลี่ยนรหัสผ่าน access token ก็ยังคง valid อยู่ได้จนถึง 15 นาที
 
-การเก็บ refresh token ไว้ฝั่งเซิร์ฟเวอร์แก้ปัญหานี้: เมื่อ logout หรือเปลี่ยนรหัสผ่าน session จะถูกลบออกจาก store และไม่สามารถขอ access token ใหม่ได้อีก ด้วยวิธีนี้เวลา "รอด" สูงสุดของ token ที่ถูก compromise จะถูกจำกัดไว้ที่อายุของ access token (15 นาที)
+refresh token ใน DB แก้ปัญหานี้: เมื่อ logout หรือเปลี่ยนรหัสผ่าน session จะถูกลบออกจาก DB และไม่สามารถขอ access token ใหม่ได้อีก ด้วยวิธีนี้เวลา "รอด" สูงสุดของ token ที่ถูก compromise จะถูกจำกัดไว้ที่อายุของ access token (15 นาที)
 
-ความสามารถเพิ่มเติมที่ `SessionsStore` มอบให้:
+ความสามารถเพิ่มเติมที่ตาราง `Session` มอบให้:
 
 - **ออกจากระบบจากทุกอุปกรณ์** — ลบ session ทั้งหมดของผู้ใช้
 - **รายการ session ที่ active** — แสดงให้ผู้ใช้เห็นว่าเข้าสู่ระบบอยู่ที่ไหนบ้าง (browser, IP, เวลา)
@@ -26,7 +26,7 @@ JWT ไม่สามารถ invalidate ก่อนหมดอายุไ�
 
 ทุกครั้งที่เรียก `POST /auth/refresh` จะเกิด **การ rotate**: refresh token เดิมถูกปิดใช้งาน แล้วออกตัวใหม่ให้ นี่คือมาตรฐาน RFC 9700 (OAuth 2.0 Security BCP)
 
-**record ของ `SessionsStore` สำหรับผู้ใช้คนเดียวมีหน้าตาอย่างไร:**
+**ตาราง `Session` ของผู้ใช้คนเดียวมีหน้าตาอย่างไร:**
 
 ```
 | เหตุการณ์                | familyId | hash               | isUsed                            |
@@ -56,15 +56,15 @@ Refresh (ผู้โจมตีขโมย token "A" แล้วนำมา
   → session ของโน้ตบุ๊ก (f2) ไม่ได้รับผลกระทบ
 ```
 
-record ที่มี `isUsed: true` จำเป็นแค่ในฐานะกับดักเท่านั้น ตราบใดที่ token ต้นฉบับยังอาจมีชีวิตอยู่ได้ Cron job จะลบทุก record ที่ `expiresAt < now` — ทั้งกับดัก `isUsed: true` และ session ที่ active ของผู้ใช้ที่ไม่ได้เข้ามานาน (ดู [การล้าง session ที่หมดอายุ](#การล้าง-session-ที่หมดอายุ)) record ทั้งหมดนี้อยู่ใน memory ของ process เท่านั้น — สาย `familyId` จะไม่รอดข้ามการ restart ของ backend
+record ที่มี `isUsed: true` จำเป็นแค่ในฐานะกับดักเท่านั้น ตราบใดที่ token ต้นฉบับยังอาจมีชีวิตอยู่ได้ Cron job จะลบทุก record ที่ `expiresAt < now` — ทั้งกับดัก `isUsed: true` และ session ที่ active ของผู้ใช้ที่ไม่ได้เข้ามานาน (ดู [การล้าง session ที่หมดอายุ](#การล้าง-session-ที่หมดอายุ))
 
 **`familyId`** รวมทุกการ rotate ของการเข้าสู่ระบบครั้งเดียวกันเข้าไว้ด้วยกัน ด้วยเหตุนี้เมื่อเกิดการ compromise จะมีเฉพาะสายที่ถูก compromise เท่านั้นที่ถูก invalidate ไม่ใช่ทุกอุปกรณ์ของผู้ใช้พร้อมกัน
 
 ### ทำไมใช้ HMAC ไม่ใช่ bcrypt สำหรับ refresh token
 
-bcrypt ไม่ deterministic — ให้ hash ต่างกันทุกครั้ง จึงไม่สามารถค้นหา session จาก hash โดยตรงได้ ต้องไล่ตรวจ session ทั้งหมดใน store ทีละตัว — เป็นการเปรียบเทียบแบบ O(n)
+bcrypt ไม่ deterministic — ให้ hash ต่างกันทุกครั้ง จึงไม่สามารถค้นหา session ใน DB จาก hash โดยตรงได้ ต้องโหลด session ทั้งหมดออกมาแล้วไล่ตรวจทีละตัว — เป็นการ query แบบ O(n)
 
-HMAC เป็น deterministic: token หนึ่งตัว + secret หนึ่งตัว = ได้ hash เดียวกันเสมอ ทำให้ค้นหา session ได้จากค่า `refreshTokenHash` โดยตรง (ดู `SessionsStore.findByRefreshTokenHash`)
+HMAC เป็น deterministic: token หนึ่งตัว + secret หนึ่งตัว = ได้ hash เดียวกันเสมอ ทำให้ค้นหา session ได้ในการ query ครั้งเดียว: `WHERE refreshTokenHash = hmac(token, secret)`
 
 ข้อแลกเปลี่ยน: ถ้า `REFRESH_TOKEN_SECRET` รั่วไหล — refresh token ทั้งหมดมีโอกาสถูก compromise พร้อมกัน วิธีบรรเทา (Mitigation): เก็บ secret ไว้ในที่จัดเก็บที่ปลอดภัย (Vault, AWS Secrets Manager) และ rotate มันเป็นระยะ
 
@@ -233,21 +233,16 @@ pnpm test:e2e:throttle  # throttle-test (throttler เปิด)
 
 ## การล้าง session ที่หมดอายุ
 
-ทุกครั้งที่ rotate record เดิมจะยังคงอยู่ใน `SessionsStore` โดยมี `isUsed: true` ถ้าผู้ใช้ refresh วันละครั้งตลอด 7 วัน — จะสะสมได้ 7 record ต่อหนึ่งสาย ถ้าไม่ล้าง Map ภายใน `SessionsStore` จะโตขึ้นไม่มีที่สิ้นสุด (memory leak ของ process)
+ทุกครั้งที่ rotate record เดิมจะยังคงอยู่ในตาราง `Session` โดยมี `isUsed: true` ถ้าผู้ใช้ refresh วันละครั้งตลอด 7 วัน — จะสะสมได้ 7 record ต่อหนึ่งสาย ถ้าไม่ล้าง ตารางจะโตขึ้นไม่มีที่สิ้นสุด
 
 `SessionCleanupService` รัน cron job ทุกคืนเวลา 03:00 น. และลบทุก record ที่ `expiresAt < now`:
 
 ```typescript
 @Cron(CronExpression.EVERY_DAY_AT_3AM)
-async cleanupExpiredSessions(): Promise<void> {
-  try {
-    const { count } = await this.sessions.deleteExpired()
-    if (count > 0) {
-      this.logger.log(`Deleted ${count} expired sessions`)
-    }
-  } catch (err) {
-    this.logger.error('Failed to cleanup expired sessions', err)
-  }
+async cleanupExpiredSessions() {
+  await this.prisma.session.deleteMany({
+    where: { expiresAt: { lt: new Date() } },
+  })
 }
 ```
 
@@ -277,7 +272,7 @@ async cleanupExpiredSessions(): Promise<void> {
 - `GET /auth/me`: มี token และไม่มี
 - Refresh: rotate token, invalidate ตัวเก่า, token ใหม่ valid
 - Reuse detection: การนำ token เก่ามาใช้ซ้ำจะ invalidate ทั้งตระกูล; session ของอุปกรณ์อื่นไม่ได้รับผลกระทบ
-- Logout: ล้าง session ใน store, idempotent, ทำงานได้แม้ไม่มี token
+- Logout: ล้าง session ใน DB, idempotent, ทำงานได้แม้ไม่มี token
 
 **`test/throttle/throttle.e2e-spec.ts`** — rate limiting (throttler เปิด รายละเอียดในหัวข้อ Rate limiting → การทดสอบ)
 
