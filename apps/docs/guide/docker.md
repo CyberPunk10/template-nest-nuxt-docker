@@ -59,7 +59,7 @@ docker run -d -p 3200:3200 \
   -e PORT=3200 \
   -e NUXT_PUBLIC_API_BASE=/api/backend \
   -e NUXT_PUBLIC_BACKEND_PORT=3100 \
-  -e BACKEND_URL=http://localhost:3100 \
+  -e NUXT_BACKEND_URL=http://localhost:3100 \
   --name frontend-preview frontend-preview
 ```
 
@@ -72,7 +72,7 @@ curl http://localhost:3200/api/health
 Или откройте: [http://localhost:3200](http://localhost:3200)
 
 ::: warning
-Запущенный так, отдельно от `backend`, frontend не сможет проксировать запросы к API — если backend-контейнер не поднят и не достижим по `BACKEND_URL`. Для полноценной проверки связки поднимайте через [docker compose](#docker-compose) или оба контейнера в одной Docker-сети.
+Запущенный так, отдельно от `backend`, frontend не сможет проксировать запросы к API — если backend-контейнер не поднят и не достижим по `NUXT_BACKEND_URL`. Для полноценной проверки связки поднимайте через [docker compose](#docker-compose) или оба контейнера в одной Docker-сети.
 :::
 
 Остановить и убрать:
@@ -128,13 +128,13 @@ backend:
 
 Файлы `.env` обязательны — без них `docker compose up` откажется стартовать (`env file ... not found`).
 
-Иногда значение должно **отличаться** для Docker — например, `BACKEND_URL`: в `apps/frontend/.env` он `http://localhost:3100` (верно для `pnpm dev`, где всё на хосте), но внутри Docker-сети `localhost` для frontend-контейнера — это сам контейнер, а не backend. Для таких случаев `environment:` в `docker-compose.yml` **явно переопределяет** значение из файла — `environment:` всегда важнее `env_file:`:
+Иногда значение должно **отличаться** для Docker — например, `NUXT_BACKEND_URL`: в `apps/frontend/.env` он `http://localhost:3100` (верно для `pnpm dev`, где всё на хосте), но внутри Docker-сети `localhost` для frontend-контейнера — это сам контейнер, а не backend. Для таких случаев `environment:` в `docker-compose.yml` **явно переопределяет** значение из файла — `environment:` всегда важнее `env_file:`:
 
 ```yaml
 frontend:
   env_file: apps/frontend/.env
   environment:
-    BACKEND_URL: http://backend:3100   # переопределяет localhost:3100 из .env
+    NUXT_BACKEND_URL: http://backend:3100   # переопределяет localhost:3100 из .env
 ```
 
 Подробнее про то, какие переменные совпадают, а какие переопределяются — см. [ENV-переменные](/guide/env-variables).

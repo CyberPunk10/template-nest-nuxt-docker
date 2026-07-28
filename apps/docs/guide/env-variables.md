@@ -19,7 +19,11 @@ template-nest-nuxt/
 
 Каждое приложение читает **только свой** `.env`, не зная о существовании остальных. Корневой `.env` нужен для docker-compose.
 
-В репозитории лежат только `.env.example` — реальные `.env` создаются копированием: вручную через `pnpm env:copy`, либо автоматически при первом `pnpm dev`/`pnpm docker:up` (см. [`predev.mjs`, `predocker.mjs`](/guide/scripts#predev-mjs-predocker-mjs) в гайде [Скрипты](/guide/scripts)). Копирование всегда безопасно — существующие `.env` не перезаписываются.
+В репозитории лежат только `.env.example` — реальные `.env` создаются копированием: вручную через `pnpm env:copy`, либо автоматически при первом `pnpm dev`/`pnpm docker:up` (см. [`predev.mjs`, `predocker.mjs`](/guide/scripts#predev-mjs-predocker-mjs) в гайде [Скрипты](/guide/scripts)). Копирование по умолчанию безопасно — существующие `.env` не перезаписываются. Чтобы принудительно перезаписать все `.env` значениями из `.env.example`, используйте `pnpm env:copy:force`.
+
+::: warning
+`pnpm env:copy:force` перезаписывает `.env` файлы **полностью**, значениями из `.env.example` — включая любые пользовательские изменения (свои порты, секреты и т.п.). Используйте с осторожностью.
+:::
 
 ## Три слоя портов
 
@@ -60,6 +64,7 @@ template-nest-nuxt/
 
 | Переменная | Значение (dev) | Комментарий |
 | --- | --- | --- |
+| `NODE_ENV` | `development` | Управляет, среди прочего, доступностью Swagger UI (`/api/docs` — в `production` не показываем, подразумевая, что документация только для разработчкика). В Docker всегда `production` — задаётся в `apps/backend/Dockerfile` (`ENV NODE_ENV=production`), а не через `.env`/`docker-compose.yml` |
 | `PORT` | `3100` | Порт backend при `pnpm dev`. В Docker переопределяется `BACKEND_INTERNAL_PORT` из корневого `.env` |
 | `CORS_ORIGIN_SCHEME_HOST` | `http://localhost` | Разрешённый origin для CORS — протокол+хост. Не меняется в Docker |
 | `CORS_ORIGIN_PORT` | `3200` | Разрешённый origin для CORS — порт frontend'а. В Docker переопределяется `FRONTEND_HOST_PORT` |
@@ -70,8 +75,10 @@ template-nest-nuxt/
 | --- | --- | --- |
 | `PORT` | `3200` | Порт frontend при `pnpm dev`. В Docker переопределяется `FRONTEND_INTERNAL_PORT` из корневого `.env` |
 | `NUXT_PUBLIC_API_BASE` | `/api/backend` | Префикс для server-side прокси на backend (браузер ходит сюда, не напрямую на backend) |
-| `BACKEND_URL` | `http://localhost:3100` | Адрес backend для Nuxt SSR (сервер). В Docker переопределяется на `http://backend:${BACKEND_INTERNAL_PORT}` — по имени сервиса, `localhost` внутри Docker-сети недостижим |
+| `NUXT_BACKEND_URL` | `http://localhost:3100` | Адрес backend для Nuxt SSR (сервер). В Docker переопределяется на `http://backend:${BACKEND_INTERNAL_PORT}` — по имени сервиса, `localhost` внутри Docker-сети недостижим |
 | `NUXT_PUBLIC_BACKEND_PORT` | `3100` | Только порт backend, для ссылки в DevPanel (не для запросов). В Docker переопределяется `BACKEND_HOST_PORT` |
+| `NUXT_PUBLIC_APP_ENV` | `development` | Определяет режим окружения на клиенте (например, показ Swagger-ссылки в DevPanel). В Docker жёстко `production` — задаётся в `docker-compose.yml` |
+| `NUXT_PUBLIC_DOCS_URL` | `http://localhost:5173` | Ссылка на VitePress-документацию (пункт меню, DevPanel). В Docker переопределяется на `http://localhost:${DOCS_HOST_PORT}` |
 
 ### `apps/docs/.env`
 

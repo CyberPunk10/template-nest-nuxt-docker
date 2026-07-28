@@ -59,7 +59,7 @@ docker run -d -p 3200:3200 \
   -e PORT=3200 \
   -e NUXT_PUBLIC_API_BASE=/api/backend \
   -e NUXT_PUBLIC_BACKEND_PORT=3100 \
-  -e BACKEND_URL=http://localhost:3100 \
+  -e NUXT_BACKEND_URL=http://localhost:3100 \
   --name frontend-preview frontend-preview
 ```
 
@@ -72,7 +72,7 @@ curl http://localhost:3200/api/health
 Or open: [http://localhost:3200](http://localhost:3200)
 
 ::: warning
-Run this way, separately from `backend`, frontend won't be able to proxy API requests — unless the backend container is up and reachable at `BACKEND_URL`. To properly check the whole setup, bring both up via [docker compose](#docker-compose) or put both containers on the same Docker network.
+Run this way, separately from `backend`, frontend won't be able to proxy API requests — unless the backend container is up and reachable at `NUXT_BACKEND_URL`. To properly check the whole setup, bring both up via [docker compose](#docker-compose) or put both containers on the same Docker network.
 :::
 
 Stop and remove:
@@ -128,13 +128,13 @@ backend:
 
 `.env` files are required — without them `docker compose up` refuses to start (`env file ... not found`).
 
-Sometimes a value needs to **differ** for Docker — for example, `BACKEND_URL`: in `apps/frontend/.env` it's `http://localhost:3100` (correct for `pnpm dev`, where everything runs on the host), but inside the Docker network, `localhost` for the frontend container means the container itself, not backend. For cases like this, `environment:` in `docker-compose.yml` **explicitly overrides** the value from the file — `environment:` always wins over `env_file:`:
+Sometimes a value needs to **differ** for Docker — for example, `NUXT_BACKEND_URL`: in `apps/frontend/.env` it's `http://localhost:3100` (correct for `pnpm dev`, where everything runs on the host), but inside the Docker network, `localhost` for the frontend container means the container itself, not backend. For cases like this, `environment:` in `docker-compose.yml` **explicitly overrides** the value from the file — `environment:` always wins over `env_file:`:
 
 ```yaml
 frontend:
   env_file: apps/frontend/.env
   environment:
-    BACKEND_URL: http://backend:3100   # overrides localhost:3100 from .env
+    NUXT_BACKEND_URL: http://backend:3100   # overrides localhost:3100 from .env
 ```
 
 For more on which variables match and which get overridden — see [ENV variables](/en/guide/env-variables).

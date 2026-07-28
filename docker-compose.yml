@@ -22,10 +22,15 @@ services:
     environment:
       NUXT_PUBLIC_APP_ENV: production
       PORT: '${FRONTEND_INTERNAL_PORT}'
-      # BACKEND_URL специально переопределяется здесь, а не в .env: внутри
+      # NUXT_BACKEND_URL специально переопределяется здесь, а не в .env — внутри
       # Docker-сети backend недостижим по localhost — только по имени сервиса.
-      BACKEND_URL: 'http://backend:${BACKEND_INTERNAL_PORT}'
+      # Префикс NUXT_ обязателен: только с ним Nuxt runtimeConfig.backendUrl
+      # переопределяется env-переменной (без префикса Nuxt её игнорирует).
+      NUXT_BACKEND_URL: http://backend:${BACKEND_INTERNAL_PORT}
       NUXT_PUBLIC_BACKEND_PORT: '${BACKEND_HOST_PORT}'
+      # Внутри Docker-сети docs крутится на своём внутреннем порту, а наружу
+      # смотрит через DOCS_HOST_PORT — так же, как backend/frontend.
+      NUXT_PUBLIC_DOCS_URL: 'http://localhost:${DOCS_HOST_PORT}'
     depends_on:
       - backend
     networks:

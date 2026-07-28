@@ -59,7 +59,7 @@ docker run -d -p 3200:3200 \
   -e PORT=3200 \
   -e NUXT_PUBLIC_API_BASE=/api/backend \
   -e NUXT_PUBLIC_BACKEND_PORT=3100 \
-  -e BACKEND_URL=http://localhost:3100 \
+  -e NUXT_BACKEND_URL=http://localhost:3100 \
   --name frontend-preview frontend-preview
 ```
 
@@ -72,7 +72,7 @@ curl http://localhost:3200/api/health
 หรือเปิด: [http://localhost:3200](http://localhost:3200)
 
 ::: warning
-รันแบบนี้แยกจาก `backend` frontend จะ proxy request ไปที่ API ไม่ได้ ถ้า container ของ backend ไม่ได้เปิดอยู่หรือเข้าถึงผ่าน `BACKEND_URL` ไม่ได้ ถ้าต้องการทดสอบทั้งคู่พร้อมกันจริงๆ ให้เปิดผ่าน [docker compose](#docker-compose) หรือใช้ Docker network เดียวกันทั้งสอง container
+รันแบบนี้แยกจาก `backend` frontend จะ proxy request ไปที่ API ไม่ได้ ถ้า container ของ backend ไม่ได้เปิดอยู่หรือเข้าถึงผ่าน `NUXT_BACKEND_URL` ไม่ได้ ถ้าต้องการทดสอบทั้งคู่พร้อมกันจริงๆ ให้เปิดผ่าน [docker compose](#docker-compose) หรือใช้ Docker network เดียวกันทั้งสอง container
 :::
 
 หยุดและลบ:
@@ -128,13 +128,13 @@ backend:
 
 ไฟล์ `.env` จำเป็นต้องมี — ถ้าไม่มี `docker compose up` จะปฏิเสธไม่ start (`env file ... not found`)
 
-บางครั้งค่าต้อง **ต่างกัน** สำหรับ Docker — เช่น `BACKEND_URL`: ใน `apps/frontend/.env` เป็น `http://localhost:3100` (ถูกต้องสำหรับ `pnpm dev` ที่ทุกอย่างอยู่บน host) แต่ภายใน Docker network `localhost` สำหรับ container ของ frontend หมายถึงตัว container เอง ไม่ใช่ backend สำหรับกรณีแบบนี้ `environment:` ใน `docker-compose.yml` จะ **override ค่าจากไฟล์อย่างชัดเจน** — `environment:` สำคัญกว่า `env_file:` เสมอ:
+บางครั้งค่าต้อง **ต่างกัน** สำหรับ Docker — เช่น `NUXT_BACKEND_URL`: ใน `apps/frontend/.env` เป็น `http://localhost:3100` (ถูกต้องสำหรับ `pnpm dev` ที่ทุกอย่างอยู่บน host) แต่ภายใน Docker network `localhost` สำหรับ container ของ frontend หมายถึงตัว container เอง ไม่ใช่ backend สำหรับกรณีแบบนี้ `environment:` ใน `docker-compose.yml` จะ **override ค่าจากไฟล์อย่างชัดเจน** — `environment:` สำคัญกว่า `env_file:` เสมอ:
 
 ```yaml
 frontend:
   env_file: apps/frontend/.env
   environment:
-    BACKEND_URL: http://backend:3100   # override localhost:3100 จาก .env
+    NUXT_BACKEND_URL: http://backend:3100   # override localhost:3100 จาก .env
 ```
 
 รายละเอียดเพิ่มเติมว่าตัวแปรไหนตรงกัน ตัวแปรไหนถูก override — ดู [ตัวแปรสภาพแวดล้อม (ENV)](/th/guide/env-variables)

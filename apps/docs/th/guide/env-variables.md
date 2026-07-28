@@ -19,7 +19,11 @@ template-nest-nuxt/
 
 แต่ละแอปอ่าน **เฉพาะ** `.env` ของตัวเองเท่านั้น ไม่รู้จักไฟล์ของแอปอื่น ส่วน `.env` ที่ root จำเป็นสำหรับ docker-compose
 
-ใน repo จะมีแค่ไฟล์ `.env.example` — ส่วน `.env` จริงจะถูกสร้างขึ้นด้วยการคัดลอก ไม่ว่าจะทำมือผ่าน `pnpm env:copy` หรืออัตโนมัติตอนรัน `pnpm dev`/`pnpm docker:up` ครั้งแรก (ดู [`predev.mjs`, `predocker.mjs`](/th/guide/scripts#predev-mjs-predocker-mjs) ในคู่มือ [สคริปต์](/th/guide/scripts)) การคัดลอกปลอดภัยเสมอ — จะไม่เขียนทับ `.env` ที่มีอยู่แล้ว
+ใน repo จะมีแค่ไฟล์ `.env.example` — ส่วน `.env` จริงจะถูกสร้างขึ้นด้วยการคัดลอก ไม่ว่าจะทำมือผ่าน `pnpm env:copy` หรืออัตโนมัติตอนรัน `pnpm dev`/`pnpm docker:up` ครั้งแรก (ดู [`predev.mjs`, `predocker.mjs`](/th/guide/scripts#predev-mjs-predocker-mjs) ในคู่มือ [สคริปต์](/th/guide/scripts)) การคัดลอกปลอดภัยโดย default — จะไม่เขียนทับ `.env` ที่มีอยู่แล้ว ถ้าต้องการบังคับเขียนทับ `.env` ทั้งหมดด้วยค่าจาก `.env.example` ให้ใช้ `pnpm env:copy:force`
+
+::: warning
+`pnpm env:copy:force` จะเขียนทับไฟล์ `.env` **ทั้งหมด** ด้วยค่าจาก `.env.example` — รวมถึงการเปลี่ยนแปลงที่คุณทำเอง (พอร์ตของคุณเอง, secret ฯลฯ) ก็จะหายไปด้วย ใช้อย่างระมัดระวัง
+:::
 
 ## พอร์ต 3 ชั้น
 
@@ -60,6 +64,7 @@ Internal port ของ container **ไม่ได้** อ่านตรง�
 
 | ตัวแปร | ค่า (dev) | คอมเมนต์ |
 | --- | --- | --- |
+| `NODE_ENV` | `development` | ควบคุม (นอกเหนือจากอย่างอื่น) การเปิดใช้งาน Swagger UI (`/api/docs` — เฉพาะตอนไม่ใช่ `production`) ใน Docker จะเป็น `production` เสมอ — กำหนดใน `apps/backend/Dockerfile` (`ENV NODE_ENV=production`) ไม่ใช่ผ่าน `.env`/`docker-compose.yml` |
 | `PORT` | `3100` | พอร์ต backend ตอน `pnpm dev` ใน Docker จะถูก override ด้วย `BACKEND_INTERNAL_PORT` จาก `.env` ที่ root |
 | `CORS_ORIGIN_SCHEME_HOST` | `http://localhost` | Origin ที่อนุญาตสำหรับ CORS — scheme+host ไม่เปลี่ยนใน Docker |
 | `CORS_ORIGIN_PORT` | `3200` | Origin ที่อนุญาตสำหรับ CORS — พอร์ตของ frontend ใน Docker จะถูก override ด้วย `FRONTEND_HOST_PORT` |
@@ -70,8 +75,10 @@ Internal port ของ container **ไม่ได้** อ่านตรง�
 | --- | --- | --- |
 | `PORT` | `3200` | พอร์ต frontend ตอน `pnpm dev` ใน Docker จะถูก override ด้วย `FRONTEND_INTERNAL_PORT` จาก `.env` ที่ root |
 | `NUXT_PUBLIC_API_BASE` | `/api/backend` | Prefix สำหรับ server-side proxy ไปที่ backend (browser เรียกมาที่นี่ ไม่ได้เรียก backend ตรง) |
-| `BACKEND_URL` | `http://localhost:3100` | Address ของ backend สำหรับ Nuxt SSR (ฝั่ง server) ใน Docker จะถูก override เป็น `http://backend:${BACKEND_INTERNAL_PORT}` — เรียกด้วยชื่อ service เพราะ `localhost` ภายใน Docker network เข้าไม่ถึง |
+| `NUXT_BACKEND_URL` | `http://localhost:3100` | Address ของ backend สำหรับ Nuxt SSR (ฝั่ง server) ใน Docker จะถูก override เป็น `http://backend:${BACKEND_INTERNAL_PORT}` — เรียกด้วยชื่อ service เพราะ `localhost` ภายใน Docker network เข้าไม่ถึง |
 | `NUXT_PUBLIC_BACKEND_PORT` | `3100` | พอร์ตของ backend เฉยๆ สำหรับลิงก์ใน DevPanel (ไม่ได้ใช้เรียก request) ใน Docker จะถูก override ด้วย `BACKEND_HOST_PORT` |
+| `NUXT_PUBLIC_APP_ENV` | `development` | โหมด environment ฝั่ง client (เช่น การแสดงลิงก์ Swagger ใน DevPanel) ใน Docker จะถูกกำหนดตายตัวเป็น `production` — กำหนดใน `docker-compose.yml` |
+| `NUXT_PUBLIC_DOCS_URL` | `http://localhost:5173` | ลิงก์ไปยังเอกสาร VitePress (เมนู, DevPanel) ใน Docker จะถูก override เป็น `http://localhost:${DOCS_HOST_PORT}` |
 
 ### `apps/docs/.env`
 
