@@ -44,9 +44,9 @@ git clone -b auth https://github.com/CyberPunk10/template-nest-nuxt-docker.git m
 ```
 template-nest-nuxt/
 ├── apps/
-│   ├── backend/        ← NestJS API (порт задаётся в .env)
-│   ├── frontend/       ← Nuxt 4 (порт задаётся в .env)
-│   └── docs/           ← VitePress-документация (порт задаётся в .env)
+│   ├── backend/        ← NestJS API
+│   ├── frontend/       ← Nuxt 4
+│   └── docs/           ← VitePress-документация
 ├── packages/
 │   ├── shared/         ← @repo/shared — общие типы и i18n переводы
 │   └── ui/             ← @repo/ui — общие Vue компоненты
