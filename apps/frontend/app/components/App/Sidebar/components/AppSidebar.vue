@@ -205,8 +205,6 @@ function toggleSideBarWidth() {
             <SidebarLink
               :to="item.url"
               :external="item.external"
-              :params="item.params"
-              :ignoreParams="item.ignoreParams"
               :class="item.classes"
               :opened="notCollapsedItems[item.id!]"
               :tooltipText="$t(item.title)"

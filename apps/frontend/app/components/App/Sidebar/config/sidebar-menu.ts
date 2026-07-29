@@ -5,8 +5,6 @@ export interface SidebarMenuItem {
   url?: string
   classes?: string
   spacer?: boolean
-  params?: Record<string, string>
-  ignoreParams?: boolean
   external?: boolean
   items?: SidebarMenuItem[]
 }

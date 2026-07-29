@@ -93,8 +93,6 @@ function getSubItemKey(item: SidebarMenuItem, subitem: SidebarMenuItem, index: n
             :icon="subitem.icon"
             :levelSidebarLink="level + 1"
             :opened="notCollapsedItems[subitem.id!]"
-            :params="subitem.params"
-            :ignoreParams="subitem.ignoreParams"
             :to="subitem.url"
             @click-section="onClickSection(subitem)"
             @set-active="onToggleCollapse(subitem, $event)"

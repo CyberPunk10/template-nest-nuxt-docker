@@ -10,10 +10,8 @@ const props = withDefaults(
     icon?: string
     levelSidebarLink?: number
     opened?: boolean
-    params?: Record<string, string>
     to?: string
     tooltipText?: string
-    ignoreParams?: boolean
   }>(),
   {
     levelSidebarLink: 1,
@@ -26,26 +24,9 @@ const emit = defineEmits<{
   'set-active': [value: boolean]
 }>()
 
-const $route = useRoute()
+const route = useRoute()
 
-const { $globalEvents } = useNuxtApp()
 const { isCollapsed } = useSidebar()
-
-const excludedParams = [
-  'metrics',
-  'sort',
-  'order',
-  'learning',
-  'period',
-  'page',
-  'force',
-  'groupBy',
-]
-
-const url = computed(() => {
-  const params = Object.entries(props.params || {}).map(data => data.join('='))
-  return `${props.to || ''}${props.params ? '?' : ''}${params.join('&')}`
-})
 
 const linkComponent = computed(() => {
   if (props.to && props.external) return 'a'
@@ -57,11 +38,11 @@ const linkAttrs = computed(() => {
   const attrs: Record<string, string> = {}
 
   if (linkComponent.value === 'a') {
-    attrs.href = url.value
+    attrs.href = props.to
   }
 
   if (linkComponent.value === NuxtLink) {
-    attrs.to = url.value
+    attrs.to = props.to
   }
 
   if (props.external) {
@@ -73,54 +54,8 @@ const linkAttrs = computed(() => {
 })
 
 const isActive = computed(() => {
-  const { query } = $route
-  const notExcluded = (key: string) => !excludedParams.includes(key)
-  const withoutExcluded = Object.keys(query).filter(notExcluded)
-
-  const isSamePath = $route.path === props.to
-
-  if (props.params) {
-    const checkParam = ([key, value]: [string, string]) => {
-      // таблицы с конструкторами отчетов
-      // проверяем параметр checked перебором
-      if (key === 'checked' && $route.query.checked) {
-        // убираем из выборки столбцы с датой и автоматические колонки
-        // для избранных отчетов
-        const autoColumns = ['dm_offer_currency', 'dm_offer_status']
-        const excludeCol = (col: string) =>
-          !/^dm_lead_date.*/.test(col) && !autoColumns.includes(col)
-
-        const arChecked = value.split(',').filter(excludeCol)
-        const routeChecked = ($route.query.checked as string).split(',').filter(excludeCol)
-        const notInRoute = arChecked.filter(col => !routeChecked.includes(col))
-        const notChecked = routeChecked.filter(col => !arChecked.includes(col))
-
-        return !notInRoute.length && !notChecked.length
-      }
-
-      return $route.query[key] === value.toString()
-    }
-    const linkHasAllParams = Object.entries(props.params)
-      .filter(([key]) => !excludedParams.includes(key))
-      .every(checkParam)
-
-    // если в двух одинаковых отчетах в одном есть валюта, а в другом нет
-    // и выбран отчет с валютой, не выделять отчет без валюты
-    if (
-      linkHasAllParams
-      && withoutExcluded.includes('stats_currency')
-      && !props.params.stats_currency
-    ) {
-      return false
-    }
-
-    const linkParamsKeys = Object.keys(props.params).filter(key => !excludedParams.includes(key))
-    const isSameParams = withoutExcluded.every(queryKey => linkParamsKeys.includes(queryKey))
-
-    return linkHasAllParams && isSamePath && isSameParams
-  }
-
-  return isSamePath && (!withoutExcluded.length || props.ignoreParams)
+  const isSamePath = route.path === props.to
+  return isSamePath
 })
 
 watch(
@@ -144,13 +79,6 @@ function handlerSidebarLink() {
 
   if (!props.external) {
     emit('click-section')
-  }
-
-  if (linkComponent.value === NuxtLink) {
-    $globalEvents.emit('sidebar-click-link', {
-      url: props.to,
-      query: { ...props.params },
-    })
   }
 }
 </script>
