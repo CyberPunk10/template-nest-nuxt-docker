@@ -69,6 +69,7 @@ export default defineConfigWithTheme<ThemeConfig>({
               { text: 'Переменные окружения', link: '/guide/env-variables' },
               { text: 'Docker', link: '/guide/docker' },
               { text: 'Скрипты', link: '/guide/scripts' },
+              { text: 'База данных', link: '/guide/database' },
             ],
           },
           {
@@ -110,6 +111,7 @@ export default defineConfigWithTheme<ThemeConfig>({
               { text: 'Environment variables', link: '/en/guide/env-variables' },
               { text: 'Docker', link: '/en/guide/docker' },
               { text: 'Scripts', link: '/en/guide/scripts' },
+              { text: 'Database', link: '/en/guide/database' },
             ],
           },
           {
@@ -151,6 +153,7 @@ export default defineConfigWithTheme<ThemeConfig>({
               { text: 'ตัวแปรสภาพแวดล้อม', link: '/th/guide/env-variables' },
               { text: 'Docker', link: '/th/guide/docker' },
               { text: 'สคริปต์', link: '/th/guide/scripts' },
+              { text: 'ฐานข้อมูล', link: '/th/guide/database' },
             ],
           },
           {
