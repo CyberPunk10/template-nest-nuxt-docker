@@ -10,9 +10,15 @@
     "<rootDir>/default/**/*.e2e-spec.ts"
   ],
   "transform": {
-    "^.+\\.(t|j)s$": "ts-jest"
+    "^.+\\.(t|j)s$": [
+      "ts-jest",
+      {
+        "tsconfig": "tsconfig.e2e.json"
+      }
+    ]
   },
   "setupFiles": [
-    "<rootDir>/setup-env.ts"
+    "<rootDir>/setup-env.ts",
+    "./setup-e2e.ts"
   ]
 }
