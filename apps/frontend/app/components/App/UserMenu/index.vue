@@ -7,7 +7,7 @@ withDefaults(defineProps<{ placement?: 'up' | 'down' }>(), {
   placement: 'up',
 })
 
-const { user } = useUserMock()
+const { user } = useAuth()
 const { isCollapsed } = useSidebar()
 
 const avatar = computed(() => user.value?.name.charAt(0).toUpperCase() ?? '?')
