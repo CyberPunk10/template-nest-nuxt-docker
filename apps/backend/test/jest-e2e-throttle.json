@@ -2,9 +2,9 @@
   "moduleFileExtensions": ["js", "json", "ts"],
   "rootDir": ".",
   "testEnvironment": "node",
-  "testMatch": ["<rootDir>/default/**/*.e2e-spec.ts"],
+  "testMatch": ["<rootDir>/throttle/**/*.e2e-spec.ts"],
   "transform": {
     "^.+\\.(t|j)s$": ["ts-jest", { "tsconfig": "tsconfig.e2e.json" }]
   },
-  "setupFiles": ["./setup-e2e.ts"]
+  "setupFiles": ["./setup-e2e-throttle.ts"]
 }
