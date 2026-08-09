@@ -7,7 +7,7 @@ withDefaults(defineProps<{ context?: 'sidebar' | 'header' }>(), {
   context: 'sidebar',
 })
 
-const { user } = useUserMock()
+const { user } = useAuth()
 
 const avatar = computed(() => user.value?.name.charAt(0).toUpperCase() ?? '?')
 
