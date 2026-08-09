@@ -14,7 +14,7 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator'
 import { JwtPayload } from '../auth/strategies/jwt.strategy'
 import { CreateTaskDto } from './dto/create-task.dto'
 import { UpdateTaskDto } from './dto/update-task.dto'
-import { Task } from './task.entity'
+import { Task } from '../../generated/prisma/client'
 import { TasksService } from './tasks.service'
 
 @ApiTags('Tasks')
