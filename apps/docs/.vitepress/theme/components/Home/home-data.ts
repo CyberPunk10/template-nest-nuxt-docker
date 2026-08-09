@@ -59,7 +59,10 @@ export const branches: Branch[] = [
         'Passport.js',
         'JWT + bcrypt',
       ],
-      Frontend: [],
+      Frontend: [
+        'useAuth',
+        'Route middleware',
+      ],
       Shared: [],
       Infra: [],
     },
