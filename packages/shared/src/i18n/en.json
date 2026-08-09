@@ -4,6 +4,8 @@
     "subtitle": "read-only snapshot",
     "cols": {
       "id": "ID",
+      "name": "Name",
+      "email": "Email",
       "title": "Title",
       "description": "Description",
       "createdAt": "Created",
@@ -21,6 +23,9 @@
     "descriptionField": "Description",
     "add": "Add",
     "error": "Couldn't complete the operation. Please try again."
+  },
+  "users": {
+    "title": "Users"
   },
   "stub": {
     "title": "Under construction",
