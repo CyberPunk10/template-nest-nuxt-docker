@@ -9,8 +9,6 @@
     "subtitle": "read-only snapshot",
     "cols": {
       "id": "ID",
-      "name": "Name",
-      "email": "Email",
       "title": "Title",
       "description": "Description",
       "author": "Author",
@@ -28,9 +26,6 @@
     "description": "Description (optional)",
     "descriptionField": "Description",
     "add": "Add"
-  },
-  "users": {
-    "title": "Users"
   },
   "stub": {
     "title": "Under construction",

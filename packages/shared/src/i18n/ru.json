@@ -9,8 +9,6 @@
     "subtitle": "только чтение",
     "cols": {
       "id": "ID",
-      "name": "Имя",
-      "email": "Email",
       "title": "Название",
       "description": "Описание",
       "author": "Автор",
@@ -28,9 +26,6 @@
     "description": "Описание (необязательно)",
     "descriptionField": "Описание",
     "add": "Добавить"
-  },
-  "users": {
-    "title": "Пользователи"
   },
   "stub": {
     "title": "В разработке",

@@ -1,12 +1,4 @@
 <script setup lang="ts">
-interface User {
-  id: string
-  name: string
-  email: string
-  createdAt: string
-  updatedAt: string
-}
-
 interface GlobalTask {
   id: string
   title: string
@@ -16,10 +8,6 @@ interface GlobalTask {
 }
 
 const { t, locale } = useI18n()
-
-const { data: users } = await useApi<User[]>('/users', {
-  default: () => [],
-})
 
 const { data: allTasks } = await useApi<GlobalTask[]>('/tasks', {
   key: QUERY_KEYS.allTasks,
@@ -44,35 +32,6 @@ function formatDate(value: string): string {
     <h2 class="heading">
       {{ t('db.title') }} <span class="heading-sub">← {{ t('db.subtitle') }}</span>
     </h2>
-
-    <div class="section">
-      <div class="section__header">
-        <span class="section__title">{{ t('users.title') }}</span>
-        <span class="section__badge">{{ users?.length ?? 0 }}</span>
-      </div>
-      <div class="table">
-        <div class="table__grid table__grid--users">
-          <div class="table__head">
-            <span class="col">{{ t('db.cols.id') }}</span>
-            <span class="col">{{ t('db.cols.name') }}</span>
-            <span class="col">{{ t('db.cols.email') }}</span>
-            <span class="col col--right">{{ t('db.cols.createdAt') }}</span>
-            <span class="col col--right">{{ t('db.cols.updatedAt') }}</span>
-          </div>
-          <div
-            v-for="item in users"
-            :key="item.id"
-            class="table__row"
-          >
-            <span class="col col--id" :title="item.id">{{ shortId(item.id) }}</span>
-            <span class="col col--name">{{ item.name }}</span>
-            <span class="col" :title="item.email">{{ item.email }}</span>
-            <span class="col col--date">{{ formatDate(item.createdAt) }}</span>
-            <span class="col col--date">{{ formatDate(item.updatedAt) }}</span>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <div class="section">
       <div class="section__header">
@@ -173,15 +132,6 @@ function formatDate(value: string): string {
     // сетка занимает всю доступную ширину; min-width = сумма минимумов колонок,
     // поэтому при узком контейнере она не сжимается ниже него и включается скролл
     width: 100%;
-
-    // широкая колонка = minmax(10rem, 1fr): забирает остаток, но не уже 10rem —
-    // на этом минимуме длинный текст переносится на вторую строку
-    // id · name · email · created · updated
-    &--users {
-      // 76 + 96 + 160(10rem) + 100 + 100 + паддинги ≈ 34rem
-      grid-template-columns: 76px minmax(6rem, 0.6fr) minmax(10rem, 1fr) 100px 100px;
-      min-width: 34rem;
-    }
 
     // id · title · description · created · updated
     &--tasks {

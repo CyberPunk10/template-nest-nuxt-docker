@@ -47,12 +47,12 @@ docker run -p 3100:3100 my-backend
 ```
 src/
 ├── modules/
-│   └── users/          ← Users CRUD (GET/POST/PUT/DELETE /users)
+│   └── tasks/          ← Tasks CRUD (GET/POST/PUT/DELETE /tasks)
 │       ├── dto/
-│       ├── user.entity.ts
-│       ├── users.controller.ts
-│       ├── users.module.ts
-│       └── users.service.ts
+│       ├── task.entity.ts
+│       ├── tasks.controller.ts
+│       ├── tasks.module.ts
+│       └── tasks.service.ts
 ├── app.controller.ts   ← GET / и GET /health
 ├── app.module.ts
 ├── app.service.ts

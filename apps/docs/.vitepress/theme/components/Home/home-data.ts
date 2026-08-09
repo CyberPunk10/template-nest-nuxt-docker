@@ -29,10 +29,25 @@ export const branches: Branch[] = [
     name: 'main',
     current: false,
     stack: {
-      Backend: ['NestJS', 'Joi validation', 'Swagger/OpenAPI', 'Exception filter'],
-      Frontend: ['Nuxt 4', 'Vue 3', 'TypeScript'],
-      Shared: ['@repo/shared', 'i18n (ru/en/th)'],
-      Infra: ['Docker (multi-stage)', 'pnpm 11 workspaces'],
+      Backend: [
+        'NestJS',
+        'Joi validation',
+        'Swagger/OpenAPI',
+        'Exception filter',
+      ],
+      Frontend: [
+        'Nuxt 4',
+        'Vue 3',
+        'TypeScript',
+      ],
+      Shared: [
+        '@repo/shared',
+        'i18n (ru/en/th)',
+      ],
+      Infra: [
+        'Docker (multi-stage)',
+        'pnpm 11 workspaces',
+      ],
     },
   },
   {
@@ -41,20 +56,12 @@ export const branches: Branch[] = [
     current: true,
     stack: {
       Backend: [
-        'NestJS',
         'Passport.js',
         'JWT + bcrypt',
-        'Swagger/OpenAPI',
       ],
-      Frontend: [
-        'Nuxt 4',
-        'Vue 3',
-        'TypeScript',
-        'useAuth',
-        'Route middleware',
-      ],
-      Shared: ['@repo/shared', 'i18n (ru/en/th)'],
-      Infra: ['Docker (multi-stage)', 'pnpm 11 workspaces'],
+      Frontend: [],
+      Shared: [],
+      Infra: [],
     },
   },
   {
@@ -62,10 +69,15 @@ export const branches: Branch[] = [
     name: 'postgres-prisma',
     current: false,
     stack: {
-      Backend: ['NestJS', 'Prisma 7', '@prisma/adapter-pg', 'Swagger/OpenAPI'],
-      Frontend: ['Nuxt 4', 'Vue 3', 'TypeScript'],
-      Shared: ['@repo/shared', 'i18n (ru/en/th)'],
-      Infra: ['Docker (multi-stage)', 'pnpm 11 workspaces', 'PostgreSQL 17'],
+      Backend: [
+        'Prisma 7',
+        '@prisma/adapter-pg',
+      ],
+      Frontend: [],
+      Shared: [],
+      Infra: [
+        'PostgreSQL 17',
+      ],
     },
   },
 ]

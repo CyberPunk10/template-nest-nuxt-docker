@@ -9,8 +9,6 @@
     "subtitle": "อ่านอย่างเดียว",
     "cols": {
       "id": "ID",
-      "name": "ชื่อ",
-      "email": "อีเมล",
       "title": "หัวข้อ",
       "description": "รายละเอียด",
       "author": "ผู้สร้าง",
@@ -28,9 +26,6 @@
     "description": "คำอธิบาย (ไม่บังคับ)",
     "descriptionField": "คำอธิบาย",
     "add": "เพิ่ม"
-  },
-  "users": {
-    "title": "ผู้ใช้"
   },
   "stub": {
     "title": "อยู่ระหว่างการพัฒนา",
