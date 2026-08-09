@@ -164,6 +164,7 @@ const config: LocaleEntry = {
               { text: 'Фронтенд', link: '/guide/auth/frontend' },
             ],
           },
+          { text: 'База данных', link: '/guide/database' },
         ],
       },
       {

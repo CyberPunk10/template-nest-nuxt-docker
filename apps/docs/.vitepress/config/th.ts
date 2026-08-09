@@ -162,6 +162,7 @@ const config: LocaleEntry = {
               { text: 'Frontend', link: '/th/guide/auth/frontend' },
             ],
           },
+          { text: 'ฐานข้อมูล', link: '/th/guide/database' },
         ],
       },
       {

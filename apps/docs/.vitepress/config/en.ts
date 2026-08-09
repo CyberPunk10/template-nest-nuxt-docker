@@ -162,6 +162,7 @@ const config: LocaleEntry = {
               { text: 'Frontend', link: '/en/guide/auth/frontend' },
             ],
           },
+          { text: 'Database', link: '/en/guide/database' },
         ],
       },
       {

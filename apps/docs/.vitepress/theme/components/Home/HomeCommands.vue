@@ -25,7 +25,13 @@ const groups = computed<CommandGroup[]>(() => {
   return [
     {
       label: c.groups.dev,
-      commands: [{ cmd: 'pnpm dev', desc: c.items.pnpmDev }],
+      commands: [
+        { cmd: 'pnpm dev', desc: c.items.pnpmDev },
+        {
+          cmd: 'docker compose -f docker-compose.dev.yml up -d',
+          desc: c.items.dockerDev,
+        },
+      ],
     },
     {
       label: c.groups.prod,
@@ -40,6 +46,15 @@ const groups = computed<CommandGroup[]>(() => {
       commands: [
         { cmd: 'pnpm lint', desc: c.items.pnpmLint },
         { cmd: 'pnpm type-check', desc: c.items.pnpmTypeCheck },
+      ],
+    },
+    {
+      label: c.groups.prisma,
+      commands: [
+        {
+          cmd: 'cd apps/backend && pnpm prisma studio',
+          desc: c.items.prismaStudio,
+        },
       ],
     },
   ]
