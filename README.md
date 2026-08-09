@@ -21,20 +21,20 @@ NestJS + Nuxt 4 + Docker. Users CRUD in-memory, i18n, Swagger, ESLint, Husky. Б
 git clone https://github.com/CyberPunk10/template-nest-nuxt-docker.git my-app
 ```
 
+### `auth-session` — + JWT авторизация
+
+Всё из `main`, плюс Passport.js, email+пароль, httpOnly cookies, сессии in-memory, глобальный guard, `@Public()` декоратор.
+
+```bash
+git clone -b auth-session https://github.com/CyberPunk10/template-nest-nuxt-docker.git my-app
+```
+
 ### `postgres-prisma` — + PostgreSQL + Prisma
 
 Всё из `main`, плюс Prisma 7 + PostgreSQL 17, PrismaModule, миграции, docker-compose с БД.
 
 ```bash
 git clone -b postgres-prisma https://github.com/CyberPunk10/template-nest-nuxt-docker.git my-app
-```
-
-### `auth` — + JWT авторизация
-
-Всё из `postgres-prisma`, плюс Passport.js, email+пароль, httpOnly cookies, сессии в БД, глобальный guard, `@Public()` декоратор.
-
-```bash
-git clone -b auth https://github.com/CyberPunk10/template-nest-nuxt-docker.git my-app
 ```
 
 ---
