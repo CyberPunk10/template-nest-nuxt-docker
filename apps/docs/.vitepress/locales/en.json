@@ -51,7 +51,7 @@
       },
       "postgresPrisma": {
         "label": "PostgreSQL",
-        "desc": "Adds PostgreSQL and Prisma 7 on top of the base variant."
+        "desc": "Adds PostgreSQL and Prisma 7 on top of the Auth variant."
       },
       "auth": {
         "label": "Auth",

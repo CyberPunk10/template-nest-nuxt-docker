@@ -51,7 +51,7 @@
       },
       "postgresPrisma": {
         "label": "PostgreSQL",
-        "desc": "Подключает PostgreSQL и Prisma 7 поверх базового варианта."
+        "desc": "Подключает PostgreSQL и Prisma 7 поверх варианта Auth."
       },
       "auth": {
         "label": "Auth",

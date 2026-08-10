@@ -51,7 +51,7 @@
       },
       "postgresPrisma": {
         "label": "PostgreSQL",
-        "desc": "เพิ่ม PostgreSQL และ Prisma 7 ต่อยอดจากตัวแปรพื้นฐาน"
+        "desc": "เพิ่ม PostgreSQL และ Prisma 7 ต่อยอดจากตัวแปร Auth"
       },
       "auth": {
         "label": "Auth",
