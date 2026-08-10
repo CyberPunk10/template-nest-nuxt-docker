@@ -3,7 +3,6 @@ import { Role } from './role.enum'
 import { Prisma, User } from '../../generated/prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
 import { UpdateUserDto } from './dto/update-user.dto'
-import { CreateUserDto } from './dto/create-user.dto'
 
 export type SafeUser = Omit<User, 'passwordHash'>
 
@@ -22,17 +21,6 @@ export class UsersService {
 
   findAll(): Promise<SafeUser[]> {
     return this.prisma.user.findMany({ select: safeUserSelect })
-  }
-
-  async create(dto: CreateUserDto): Promise<SafeUser> {
-    try {
-      return await this.prisma.user.create({ data: dto, select: safeUserSelect })
-    } catch (e: unknown) {
-      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {
-        throw new ConflictException('Email already in use')
-      }
-      throw e
-    }
   }
 
   async findOne(id: string): Promise<SafeUser> {
