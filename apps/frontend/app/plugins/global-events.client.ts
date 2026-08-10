@@ -1,5 +1,11 @@
 import mitt from 'mitt'
 
+interface GlobalEvent {
+  name: string
+  callback: (...args: unknown[]) => void
+  args?: unknown
+}
+
 /*
 Плагин для возможности общения между вкладками
 this.$globalSyncEvents.emit('event-name', data);
@@ -7,15 +13,15 @@ this.$globalSyncEvents.on('event-name', callbackFn);
 this.$globalSyncEvents.off('event-name', callbackFn);
  */
 class GlobalEvents {
+  EVENT_EXISTS = 'GlobalEvents: Event already exists.'
+
+  eventIsRunning = false
+  storage = window.localStorage
+  eventStack: GlobalEvent[] = []
+  boundEventListener = this.eventListener.bind(this)
+
   constructor() {
-    this.unlisten()
     this.listen()
-
-    this.EVENT_EXISTS = 'GlobalEvents: Event already exists.'
-
-    this.eventIsRunning = false
-    this.storage = window.localStorage
-    this.eventStack = []
   }
 
   emit(eventName, transportObject) {
@@ -30,7 +36,7 @@ class GlobalEvents {
 
   on(eventName, callback, args) {
     if (this.findByName(eventName)) {
-      throw this.EVENT_EXISTS
+      throw new Error(this.EVENT_EXISTS)
     } else {
       const event = {
         name: eventName,
@@ -47,6 +53,7 @@ class GlobalEvents {
 
   off(eventName) {
     const event = this.findByName(eventName)
+    if (!event) return
     const idx = this.eventStack.indexOf(event)
     this.eventStack.splice(idx, 1)
   }
@@ -95,11 +102,11 @@ class GlobalEvents {
   }
 
   listen() {
-    window.addEventListener('storage', this.eventListener.bind(this))
+    window.addEventListener('storage', this.boundEventListener)
   }
 
   unlisten() {
-    window.removeEventListener('storage', this.eventListener.bind(this))
+    window.removeEventListener('storage', this.boundEventListener)
   }
 }
 

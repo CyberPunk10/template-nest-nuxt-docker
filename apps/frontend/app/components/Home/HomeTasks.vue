@@ -17,8 +17,10 @@ const { data: tasks, refresh } = await useApi<Task[]>('/tasks', { default: () =>
 const form = reactive({ title: '', description: '' })
 const editingId = ref<string | null>(null)
 const editForm = reactive({ title: '', description: '' })
+const error = ref('')
 
 async function createTask() {
+  error.value = ''
   try {
     await $api('/tasks', {
       method: 'POST',
@@ -27,8 +29,8 @@ async function createTask() {
     form.title = ''
     form.description = ''
     await Promise.all([refresh(), refreshNuxtData(QUERY_KEYS.allTasks)])
-  } catch (e) {
-    console.log('createTask error', e)
+  } catch {
+    error.value = t('tasks.error')
   }
 }
 
@@ -43,6 +45,7 @@ function cancelEdit() {
 }
 
 async function saveEdit(id: string) {
+  error.value = ''
   try {
     await $api(`/tasks/${id}`, {
       method: 'PUT',
@@ -50,17 +53,18 @@ async function saveEdit(id: string) {
     })
     editingId.value = null
     await Promise.all([refresh(), refreshNuxtData(QUERY_KEYS.allTasks)])
-  } catch (e) {
-    console.log('saveEdit error', e)
+  } catch {
+    error.value = t('tasks.error')
   }
 }
 
 async function removeTask(id: string) {
+  error.value = ''
   try {
     await $api(`/tasks/${id}`, { method: 'DELETE' })
     await Promise.all([refresh(), refreshNuxtData(QUERY_KEYS.allTasks)])
-  } catch (e) {
-    console.log('removeTask error', e)
+  } catch {
+    error.value = t('tasks.error')
   }
 }
 </script>
@@ -86,6 +90,8 @@ async function removeTask(id: string) {
       <UiButton type="submit">{{ t('tasks.add') }}</UiButton>
     </form>
   </UiCard>
+
+  <p v-if="error" class="form__error">{{ error }}</p>
 
   <UiCard :title="t('tasks.list')">
     <div v-if="!tasks?.length" class="empty">{{ t('tasks.empty') }}</div>
@@ -200,6 +206,12 @@ async function removeTask(id: string) {
 .empty {
   font-size: 13px;
   color: var(--text-muted);
+}
+
+.form__error {
+  font-size: 13px;
+  color: var(--status-danger);
+  margin: 0;
 }
 
 .tasks {

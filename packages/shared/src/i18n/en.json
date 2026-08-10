@@ -25,28 +25,13 @@
     "titleField": "Title",
     "description": "Description (optional)",
     "descriptionField": "Description",
-    "add": "Add"
+    "add": "Add",
+    "error": "Couldn't complete the operation. Please try again."
   },
   "stub": {
     "title": "Under construction",
     "desc": "This section is not implemented yet — it's a template placeholder. Replace this page with real content when you're ready.",
     "route": "route",
     "back": "Back to home"
-  },
-  "nav": {
-    "home": "Home",
-    "analytics": "Analytics",
-    "users": "Users",
-    "usersList": "All users",
-    "usersRoles": "Roles",
-    "usersInvites": "Invites",
-    "catalog": "Catalog",
-    "catalogItems": "Items",
-    "catalogCategories": "Categories",
-    "orders": "Orders",
-    "reports": "Reports",
-    "settings": "Settings",
-    "profile": "Profile",
-    "about": "About"
   }
 }

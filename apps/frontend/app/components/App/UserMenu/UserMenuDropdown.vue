@@ -11,12 +11,8 @@ defineEmits<{ close: [] }>()
 
 const { t } = useI18n()
 
-async function handleLogout() {
-  try {
-    console.log('Logout: not implemented in main — see auth-session branch or add your own')
-  } catch (e) {
-    console.log('logout error', e)
-  }
+function handleLogout() {
+  console.log('Logout: not implemented in main — see auth-session branch or add your own')
 }
 </script>
 
