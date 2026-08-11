@@ -11,7 +11,9 @@ import {
 } from '@nestjs/common'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { CurrentUser } from '../auth/decorators/current-user.decorator'
+import { Roles } from '../auth/decorators/roles.decorator'
 import { JwtPayload } from '../auth/strategies/jwt.strategy'
+import { Role } from './role.enum'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { SafeUser, UsersService } from './users.service'
 
@@ -20,8 +22,10 @@ import { SafeUser, UsersService } from './users.service'
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @ApiOperation({ summary: 'Получить всех пользователей' })
+  @ApiOperation({ summary: 'Получить всех пользователей (только admin)' })
   @ApiResponse({ status: 200, description: 'Список пользователей' })
+  @ApiResponse({ status: 403, description: 'Требуется роль admin' })
+  @Roles(Role.Admin)
   @Get()
   findAll(): Promise<SafeUser[]> {
     return this.usersService.findAll()
