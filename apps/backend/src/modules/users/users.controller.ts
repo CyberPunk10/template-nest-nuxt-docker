@@ -1,5 +1,17 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, ParseUUIDPipe, Put } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Delete,
+  ForbiddenException,
+  Get,
+  HttpCode,
+  Param,
+  ParseUUIDPipe,
+  Put,
+} from '@nestjs/common'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { CurrentUser } from '../auth/decorators/current-user.decorator'
+import { JwtPayload } from '../auth/strategies/jwt.strategy'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { SafeUser, UsersService } from './users.service'
 
@@ -17,26 +29,46 @@ export class UsersController {
 
   @ApiOperation({ summary: 'Получить пользователя по ID' })
   @ApiResponse({ status: 200, description: 'Пользователь найден' })
+  @ApiResponse({ status: 403, description: 'Чужой пользователь' })
   @ApiResponse({ status: 404, description: 'Пользователь не найден' })
   @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string): Promise<SafeUser> {
+  findOne(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser() user: JwtPayload,
+  ): Promise<SafeUser> {
+    this.assertSelf(id, user)
     return this.usersService.findOne(id)
   }
 
   @ApiOperation({ summary: 'Обновить пользователя' })
   @ApiResponse({ status: 200, description: 'Пользователь обновлён' })
+  @ApiResponse({ status: 403, description: 'Чужой пользователь' })
   @ApiResponse({ status: 404, description: 'Пользователь не найден' })
   @Put(':id')
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateUserDto): Promise<SafeUser> {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: UpdateUserDto,
+    @CurrentUser() user: JwtPayload,
+  ): Promise<SafeUser> {
+    this.assertSelf(id, user)
     return this.usersService.update(id, dto)
   }
 
   @ApiOperation({ summary: 'Удалить пользователя' })
   @ApiResponse({ status: 204, description: 'Пользователь удалён' })
+  @ApiResponse({ status: 403, description: 'Чужой пользователь' })
   @ApiResponse({ status: 404, description: 'Пользователь не найден' })
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+  remove(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser() user: JwtPayload,
+  ): Promise<void> {
+    this.assertSelf(id, user)
     return this.usersService.remove(id)
+  }
+
+  private assertSelf(id: string, user: JwtPayload): void {
+    if (user.sub !== id) throw new ForbiddenException()
   }
 }
