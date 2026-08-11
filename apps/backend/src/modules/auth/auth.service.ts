@@ -137,7 +137,11 @@ export class AuthService implements OnModuleInit {
       ...this.getSessionMeta(req),
     })
 
-    const payload: JwtPayload = { sub: user.id, email: user.email }
+    const payload: JwtPayload = {
+      sub: user.id,
+      email: user.email,
+      role: user.role,
+    }
     const accessToken = this.jwtService.sign(payload)
 
     this.setTokenCookies(res, accessToken, newRefreshToken, expiresInDays)
@@ -155,7 +159,11 @@ export class AuthService implements OnModuleInit {
   }
 
   private async issueTokens(user: SafeUser, req: Request, res: Response): Promise<void> {
-    const payload: JwtPayload = { sub: user.id, email: user.email }
+    const payload: JwtPayload = {
+      sub: user.id,
+      email: user.email,
+      role: user.role,
+    }
     const accessToken = this.jwtService.sign(payload)
 
     const refreshToken = randomUUID()

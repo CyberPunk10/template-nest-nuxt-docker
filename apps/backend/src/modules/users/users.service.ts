@@ -1,6 +1,7 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common'
 import { randomUUID } from 'crypto'
 import { User } from './user.entity'
+import { Role } from './role.enum'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { CreateUserDto } from './dto/create-user.dto'
 
@@ -28,6 +29,9 @@ export class UsersService {
       name: dto.name,
       email: dto.email,
       passwordHash: dto.password,
+      // Стартер без БД/сидов: первый зарегистрированный пользователь — admin,
+      // чтобы demo-эндпоинты (GET /users, GET /tasks/all) были доступны из коробки.
+      role: this.users.length === 0 ? Role.Admin : Role.User,
       createdAt: now,
       updatedAt: now,
     }

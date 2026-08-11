@@ -9,6 +9,7 @@ import { UsersModule } from './modules/users/users.module'
 import { AuthModule } from './modules/auth/auth.module'
 import { TasksModule } from './modules/tasks/tasks.module'
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard'
+import { RolesGuard } from './modules/auth/guards/roles.guard'
 import { envValidationSchema } from './config/env.validation'
 
 @Module({
@@ -35,8 +36,12 @@ import { envValidationSchema } from './config/env.validation'
   controllers: [AppController],
   providers: [
     AppService,
+    // Порядок важен: APP_GUARD применяются в порядке регистрации.
+    // JwtAuthGuard должен идти раньше RolesGuard — он заполняет request.user,
+    // на который RolesGuard опирается при проверке роли.
     { provide: APP_GUARD, useClass: ThrottlerGuard },
     { provide: APP_GUARD, useClass: JwtAuthGuard },
+    { provide: APP_GUARD, useClass: RolesGuard },
   ],
 })
 export class AppModule {}
