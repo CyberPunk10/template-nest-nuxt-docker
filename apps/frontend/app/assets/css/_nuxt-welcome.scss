@@ -97,7 +97,8 @@
   html.dark,
   html.dark-slate,
   html.dark-midnight,
-  html.dark-ocean {
+  html.dark-ocean,
+  html.dark-nuxt {
     .nuxt-welcome-component.antialiased {
       --un-bg-opacity: 1;
       background-color: rgb(2 4 32/var(--un-bg-opacity));
