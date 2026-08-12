@@ -26,7 +26,7 @@ export class TasksService {
       .map(task => ({ ...task, user: { name: nameById.get(task.userId) ?? '' } }))
   }
 
-  async findOne(id: string, userId: string): Promise<Task> {
+  findOne(id: string, userId: string): Task {
     const task = this.tasks.find(t => t.id === id)
     if (!task) throw new NotFoundException(`Task ${id} not found`)
     if (task.userId !== userId) throw new ForbiddenException()
@@ -48,8 +48,7 @@ export class TasksService {
   }
 
   async update(id: string, dto: UpdateTaskDto, userId: string): Promise<Task> {
-    await this.findOne(id, userId)
-    const task = this.tasks.find(t => t.id === id)!
+    const task = this.findOne(id, userId)
     // ValidationPipe с transform: true отдаёт экземпляр DTO, где непереданные
     // необязательные поля присутствуют как undefined. Спред такого объекта
     // затёр бы ими существующие значения, поэтому отбираем только заданные.
@@ -59,7 +58,7 @@ export class TasksService {
   }
 
   async remove(id: string, userId: string): Promise<void> {
-    await this.findOne(id, userId)
+    this.findOne(id, userId)
     const index = this.tasks.findIndex(t => t.id === id)
     this.tasks.splice(index, 1)
   }

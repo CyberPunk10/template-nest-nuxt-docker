@@ -13,6 +13,7 @@ export class AppController {
     private readonly config: ConfigService,
   ) {}
 
+  @Public()
   @Get()
   getHello(): string {
     return this.appService.getHello()

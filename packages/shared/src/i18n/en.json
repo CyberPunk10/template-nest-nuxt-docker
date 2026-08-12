@@ -27,6 +27,28 @@
   "users": {
     "title": "Users"
   },
+  "auth": {
+    "login": {
+      "title": "Sign in",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign in",
+      "noAccount": "No account? Sign up"
+    },
+    "register": {
+      "title": "Sign up",
+      "name": "Name",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign up",
+      "haveAccount": "Already have an account? Sign in"
+    },
+    "errors": {
+      "invalidCredentials": "Invalid email or password",
+      "emailTaken": "This email is already in use",
+      "registerFailed": "Couldn't sign up. Please try again."
+    }
+  },
   "stub": {
     "title": "Under construction",
     "desc": "This section is not implemented yet — it's a template placeholder. Replace this page with real content when you're ready.",
