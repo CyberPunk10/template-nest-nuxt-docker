@@ -231,6 +231,38 @@ pnpm test:e2e           # test หลัก (throttler ปิด)
 pnpm test:e2e:throttle  # throttle-test (throttler เปิด)
 ```
 
+## RBAC (Role-Based Access Control) และ ownership
+
+### Roles (บทบาท)
+
+ผู้ใช้แต่ละคนมี role (`Role.Admin` หรือ `Role.User`) ซึ่งถูกฝังไว้ใน payload ของ JWT ตอน login และเข้าถึงได้ผ่าน `req.user.role` (ดู `JwtStrategy`)
+
+**Starter แบบไม่มี DB/ไม่มี seed:** ผู้ใช้คนแรกที่ลงทะเบียนสำเร็จจะได้ `Role.Admin` โดยอัตโนมัติ (ดู `UsersService.create`) — ทำแบบนี้เพื่อให้ demo endpoint (`GET /users`, `GET /tasks/all`) ใช้งานได้ทันทีโดยไม่ต้องมีขั้นตอน seed แยก
+
+> **สำคัญสำหรับ production:** นี่คือ dev convenience ไม่ใช่ bootstrap ที่ปลอดภัย กฎนี้ใช้กับ *ใครก็ตาม* ที่ `POST /auth/register` สำเร็จเป็นคนแรก ไม่ใช่เจ้าของระบบโดยเฉพาะ — ถ้า database ว่างเปล่า (เช่น หลัง reset หรือก่อน deploy ครั้งแรก) สิทธิ์ admin จะตกเป็นของใครก็ตามที่ลงทะเบียนก่อน ก่อนใช้งานจริงควรแทนที่ด้วยการ seed admin อย่างชัดเจน (ผ่าน environment variable, migration หรือคำสั่ง CLI แยก) แทนการพึ่งลำดับการลงทะเบียน
+
+### `RolesGuard` และ `@Roles()`
+
+`RolesGuard` ถูก register เป็น global guard ผ่าน `APP_GUARD` **ต่อจาก** `JwtAuthGuard` — เพื่อให้แน่ใจว่า `req.user` ถูกกำหนดค่าแล้วก่อนที่จะตรวจสอบ role guard นี้อ่าน metadata `@Roles()` ผ่าน `Reflector` ถ้าไม่มี decorator นี้ — จะปล่อยผ่านโดยไม่ตรวจสอบ role
+
+```typescript
+@Roles(Role.Admin)
+@Get()
+findAll(): Promise<SafeUser[]> {
+  return this.usersService.findAll()
+}
+```
+
+ใช้กับ `GET /users` และ `GET /tasks/all` — ทั้งสองคืนข้อมูลของผู้ใช้ทุกคน และจำกัดไว้ให้ใช้ได้แค่ `admin`
+
+### การตรวจสอบ ownership
+
+ต่างจาก role การเข้าถึง resource เฉพาะ (profile ของผู้ใช้เอง, task) ไม่ได้ตรวจผ่าน decorator — แต่ผูกกับความเป็นเจ้าของ:
+
+- **`UsersController`**: `assertSelf` เทียบ `id` จาก URL กับ `user.sub` จาก JWT และ throw `ForbiddenException` ถ้าไม่ตรงกัน — ใช้กับ `PUT/DELETE /users/:id` เท่านั้น หมายความว่ามีแค่เจ้าของ profile เท่านั้นที่แก้ไขหรือลบได้ ไม่ว่า role จะเป็นอะไร (รวมถึง `admin`)
+- **`GET /users/:id`** ใช้การตรวจสอบที่ผ่อนปรนกว่าคือ `assertSelfOrAdmin` — เข้าถึงได้ทั้งเจ้าของ profile **หรือ** `admin` คนไหนก็ได้ (เช่น เพื่อ support/moderation) ความไม่สมมาตรนี้ตั้งใจทำ: การอ่านข้อมูลของคนอื่นมีความเสี่ยงต่ำ ในขณะที่การเขียนลง profile ของคนอื่นผ่าน self-service route เป็นความเสี่ยงที่ไม่ควรให้แบบ implicit ถ้าต้องการให้ admin เขียนข้อมูลของผู้ใช้คนอื่นได้เต็มรูปแบบ ต้องทำเป็น feature แยกต่างหาก (เช่น endpoint สำหรับ admin โดยเฉพาะที่มี audit trail ของตัวเอง) ไม่ใช่การขยาย `assertSelf`
+- **`TasksController`** (`PUT/DELETE /tasks/:id`): `TasksService.findOne(id, userId)` ตรวจว่า task เป็นของผู้ใช้คนปัจจุบันจริง และ throw `ForbiddenException` ถ้าไม่ตรงกัน `GET /tasks/all` (เฉพาะ `admin`) เป็นทางเดียวที่จะเห็น task ของผู้ใช้ทุกคน
+
 ## การล้าง session ที่หมดอายุ
 
 ทุกครั้งที่ rotate record เดิมจะยังคงอยู่ใน `SessionsStore` โดยมี `isUsed: true` ถ้าผู้ใช้ refresh วันละครั้งตลอด 7 วัน — จะสะสมได้ 7 record ต่อหนึ่งสาย ถ้าไม่ล้าง Map ภายใน `SessionsStore` จะโตขึ้นไม่มีที่สิ้นสุด (memory leak ของ process)

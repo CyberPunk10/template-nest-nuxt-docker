@@ -71,6 +71,13 @@ describe('Auth (e2e)', () => {
     await users.removeByEmails(TEST_EMAILS)
   }
 
+  // Полностью очищает in-memory хранилище пользователей — нужно там, где важно
+  // гарантировать, что следующий registerRequest() станет первым (и получит Role.Admin).
+  async function clearAllUsers() {
+    const all = await users.findAll()
+    for (const u of all) await users.remove(u.id)
+  }
+
   afterAll(async () => {
     delete process.env.THROTTLE_LIMIT
     await cleanupTestData()
@@ -120,6 +127,14 @@ describe('Auth (e2e)', () => {
 
     it('возвращает 400 при невалидных данных', async () => {
       const res = await registerRequest({ email: 'not-an-email', password: '123' })
+      expect(res.status).toBe(400)
+    })
+
+    it('возвращает 400 для пароля из многобайтовых символов длиннее 72 байт UTF-8', async () => {
+      // 30 эмодзи по 4 байта = 120 байт, но 30 символов по .length — уложился бы
+      // в MaxLength(72), но не в реальный bcrypt-лимит на 72 байта.
+      const password = '😀'.repeat(30)
+      const res = await registerRequest({ password })
       expect(res.status).toBe(400)
     })
   })
@@ -410,6 +425,85 @@ describe('Auth (e2e)', () => {
         .send({ email: 'test@example.com' })
 
       expect(res.status).toBe(409)
+    })
+
+    describe('доступ к чужому профилю', () => {
+      it('обычный пользователь получает 403 на GET /users/:id чужого профиля', async () => {
+        await clearAllUsers()
+        // Первый регистрант — admin, поэтому регистрируем второго, чтобы получить обычную роль.
+        await registerRequest({ email: 'test@example.com' })
+        const resBob = await registerRequest({
+          name: 'Bob',
+          email: 'other@example.com',
+          password: 'password123',
+        })
+        const bobCookies = buildCookieHeader(resBob.headers['set-cookie'])
+
+        const alice = await users.findByEmail('test@example.com')
+
+        const res = await request(app.getHttpServer())
+          .get(`/users/${alice?.id}`)
+          .set('Cookie', bobCookies)
+
+        expect(res.status).toBe(403)
+      })
+
+      it('admin получает 200 на GET /users/:id чужого профиля', async () => {
+        await clearAllUsers()
+        // Первый регистрант — admin (см. UsersService.create).
+        const admin = await registerRequest({ email: 'test@example.com' })
+        const adminCookies = buildCookieHeader(admin.headers['set-cookie'])
+        const resBob = await registerRequest({
+          name: 'Bob',
+          email: 'other@example.com',
+          password: 'password123',
+        })
+        const bobId = resBob.body.id
+
+        const res = await request(app.getHttpServer())
+          .get(`/users/${bobId}`)
+          .set('Cookie', adminCookies)
+
+        expect(res.status).toBe(200)
+        expect(res.body.id).toBe(bobId)
+      })
+
+      it('admin получает 403 на PUT /users/:id чужого профиля', async () => {
+        await clearAllUsers()
+        const admin = await registerRequest({ email: 'test@example.com' })
+        const adminCookies = buildCookieHeader(admin.headers['set-cookie'])
+        const resBob = await registerRequest({
+          name: 'Bob',
+          email: 'other@example.com',
+          password: 'password123',
+        })
+        const bobId = resBob.body.id
+
+        const res = await request(app.getHttpServer())
+          .put(`/users/${bobId}`)
+          .set('Cookie', adminCookies)
+          .send({ name: 'Renamed by admin' })
+
+        expect(res.status).toBe(403)
+      })
+
+      it('admin получает 403 на DELETE /users/:id чужого профиля', async () => {
+        await clearAllUsers()
+        const admin = await registerRequest({ email: 'test@example.com' })
+        const adminCookies = buildCookieHeader(admin.headers['set-cookie'])
+        const resBob = await registerRequest({
+          name: 'Bob',
+          email: 'other@example.com',
+          password: 'password123',
+        })
+        const bobId = resBob.body.id
+
+        const res = await request(app.getHttpServer())
+          .delete(`/users/${bobId}`)
+          .set('Cookie', adminCookies)
+
+        expect(res.status).toBe(403)
+      })
     })
   })
 })

@@ -31,16 +31,16 @@ export class UsersController {
     return this.usersService.findAll()
   }
 
-  @ApiOperation({ summary: 'Получить пользователя по ID' })
+  @ApiOperation({ summary: 'Получить пользователя по ID (свой профиль или admin — любой)' })
   @ApiResponse({ status: 200, description: 'Пользователь найден' })
-  @ApiResponse({ status: 403, description: 'Чужой пользователь' })
+  @ApiResponse({ status: 403, description: 'Чужой пользователь (и текущий пользователь не admin)' })
   @ApiResponse({ status: 404, description: 'Пользователь не найден' })
   @Get(':id')
   findOne(
     @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser() user: JwtPayload,
   ): Promise<SafeUser> {
-    this.assertSelf(id, user)
+    this.assertSelfOrAdmin(id, user)
     return this.usersService.findOne(id)
   }
 
@@ -74,5 +74,12 @@ export class UsersController {
 
   private assertSelf(id: string, user: JwtPayload): void {
     if (user.sub !== id) throw new ForbiddenException()
+  }
+
+  // Admin может просматривать чужие профили (поддержка/модерация), но не менять
+  // и не удалять их через self-service роуты — только владелец управляет своими данными.
+  private assertSelfOrAdmin(id: string, user: JwtPayload): void {
+    if (user.role === Role.Admin) return
+    this.assertSelf(id, user)
   }
 }

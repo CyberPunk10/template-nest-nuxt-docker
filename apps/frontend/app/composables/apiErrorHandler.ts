@@ -21,6 +21,17 @@ export function createAuthErrorHandler(navigateToLogin: () => unknown) {
       return
     }
 
+    // На SSR server/middleware/auth.ts уже сделал silent refresh до рендера —
+    // access_token к этому моменту либо свежий, либо refresh_token мёртв/инвалидирован.
+    // Повторная попытка здесь ничего не даст: $fetch на сервере не видит браузерные
+    // cookies без явного forward, так что уйдёт без refresh_token и всегда провалится.
+    if (import.meta.server) {
+      options.retry = 0
+      const { user } = useAuth()
+      user.value = null
+      return
+    }
+
     const { refresh } = useRefreshToken()
     const refreshed = await refresh()
 
