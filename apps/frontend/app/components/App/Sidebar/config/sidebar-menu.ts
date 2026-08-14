@@ -25,6 +25,13 @@ export const playground = {
   icon: 'lucide:flask-conical',
 } satisfies SidebarItem
 
+export const dbTables = {
+  id: 'db-tables',
+  title: 'nav.dbTables',
+  url: '/db-tables',
+  icon: 'lucide:database',
+} satisfies SidebarItem
+
 export const analytics = {
   id: 'analytics',
   title: 'nav.analytics',

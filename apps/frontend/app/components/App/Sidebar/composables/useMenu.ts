@@ -3,6 +3,7 @@ import {
   bigSection,
   catalog,
   dashboard,
+  dbTables,
   orders,
   playground,
   reports,
@@ -29,6 +30,7 @@ export function useMenu() {
     const sections: SidebarMenuItem[] = [
       dashboard,
       playground,
+      dbTables,
       analytics,
       users,
       catalog,

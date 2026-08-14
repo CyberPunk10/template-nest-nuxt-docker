@@ -1,17 +1,17 @@
 <script setup lang="ts">
-definePageMeta({ title: 'nav.playground' })
+definePageMeta({ title: 'nav.dbTables' })
 </script>
 
 <template>
-  <div class="playground-page">
-    <div class="playground-page__content">
-      <HomeTasks />
+  <div class="db-tables-page">
+    <div class="db-tables-page__content">
+      <HomeDbTables />
     </div>
   </div>
 </template>
 
 <style lang="scss">
-.playground-page {
+.db-tables-page {
   flex: 1;
   min-height: 0;
   overflow: auto;

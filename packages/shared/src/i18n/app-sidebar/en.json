@@ -2,6 +2,7 @@
   "nav": {
     "home": "Home",
     "playground": "Playground",
+    "dbTables": "DB Tables",
     "analytics": "Analytics",
     "users": "Users",
     "usersList": "All Users",
