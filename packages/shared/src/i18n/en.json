@@ -2,6 +2,7 @@
   "db": {
     "title": "Database",
     "subtitle": "read-only snapshot",
+    "restrictedNotice": "Showing data for the current user. The full list is admins only",
     "cols": {
       "id": "ID",
       "name": "Name",
