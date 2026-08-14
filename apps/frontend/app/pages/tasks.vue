@@ -1,17 +1,17 @@
 <script setup lang="ts">
-definePageMeta({ title: 'nav.playground' })
+definePageMeta({ title: 'nav.tasks' })
 </script>
 
 <template>
-  <div class="playground-page">
-    <div class="playground-page__content">
+  <div class="tasks-page">
+    <div class="tasks-page__content">
       <HomeTasks />
     </div>
   </div>
 </template>
 
 <style lang="scss">
-.playground-page {
+.tasks-page {
   flex: 1;
   min-height: 0;
   overflow: auto;

@@ -18,11 +18,11 @@ export const dashboard = {
   icon: 'home',
 } satisfies SidebarItem
 
-export const playground = {
-  id: 'playground',
-  title: 'nav.playground',
-  url: '/playground',
-  icon: 'lucide:flask-conical',
+export const tasks = {
+  id: 'tasks',
+  title: 'nav.tasks',
+  url: '/tasks',
+  icon: 'lucide:list-todo',
 } satisfies SidebarItem
 
 export const dbTables = {

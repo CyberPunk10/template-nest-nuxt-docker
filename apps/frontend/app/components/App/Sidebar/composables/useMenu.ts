@@ -5,9 +5,9 @@ import {
   dashboard,
   dbTables,
   orders,
-  playground,
   reports,
   settings,
+  tasks,
   users,
   type SidebarMenuItem,
 } from '../config/sidebar-menu'
@@ -29,7 +29,7 @@ export function useMenu() {
   const leftMenu = computed(() => {
     const sections: SidebarMenuItem[] = [
       dashboard,
-      playground,
+      tasks,
       dbTables,
       analytics,
       users,
