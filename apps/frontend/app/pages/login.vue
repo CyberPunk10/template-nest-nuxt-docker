@@ -39,5 +39,12 @@ async function submit() {
       <button class="auth__btn" type="submit">{{ t('auth.login.submit') }}</button>
       <NuxtLink class="auth__link" to="/register">{{ t('auth.login.noAccount') }}</NuxtLink>
     </form>
+
+    <div class="auth__hint">
+      <p class="auth__hint-title">{{ t('auth.login.devAdminHint.title') }}</p>
+      <p>{{ t('auth.login.devAdminHint.credentials') }}</p>
+      <p>{{ t('auth.login.devAdminHint.autoCreate') }}</p>
+      <p>{{ t('auth.login.devAdminHint.noDb') }}</p>
+    </div>
   </div>
 </template>

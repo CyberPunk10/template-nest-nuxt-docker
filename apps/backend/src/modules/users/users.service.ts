@@ -20,6 +20,10 @@ export class UsersService {
   }
 
   async create(dto: CreateUserDto): Promise<SafeUser> {
+    return this.createWithRole(dto, Role.User)
+  }
+
+  async createWithRole(dto: CreateUserDto, role: Role): Promise<SafeUser> {
     if (this.users.some(u => u.email === dto.email)) {
       throw new ConflictException('Email already in use')
     }
@@ -29,9 +33,7 @@ export class UsersService {
       name: dto.name,
       email: dto.email,
       passwordHash: dto.password,
-      // Стартер без БД/сидов: первый зарегистрированный пользователь — admin,
-      // чтобы demo-эндпоинты (GET /users, GET /tasks/all) были доступны из коробки.
-      role: this.users.length === 0 ? Role.Admin : Role.User,
+      role,
       createdAt: now,
       updatedAt: now,
     }
