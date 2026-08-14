@@ -2,6 +2,7 @@ export interface AuthUser {
   id: string
   name: string
   email: string
+  role: 'admin' | 'user'
   createdAt: string
   updatedAt: string
 }
@@ -10,6 +11,7 @@ export function useAuth() {
   const { $api } = useNuxtApp()
   const router = useRouter()
   const user = useState<AuthUser | null>('auth.user', () => null)
+  const isAdmin = computed(() => user.value?.role === 'admin')
 
   async function login(email: string, password: string) {
     await $api('/auth/login', { method: 'POST', body: { email, password } })
@@ -29,5 +31,5 @@ export function useAuth() {
     user.value = me
   }
 
-  return { user, login, logout, register }
+  return { user, isAdmin, login, logout, register }
 }

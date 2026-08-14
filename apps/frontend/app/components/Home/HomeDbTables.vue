@@ -7,25 +7,37 @@ interface User {
   updatedAt: string
 }
 
-interface GlobalTask {
+interface Task {
   id: string
   title: string
   description: string | null
   createdAt: string
   updatedAt: string
+}
+
+interface GlobalTask extends Task {
   user: { name: string }
 }
 
 const { t, locale } = useI18n()
+const { isAdmin, user: currentUser } = useAuth()
 
-const { data: users } = await useApi<User[]>('/users', {
-  default: () => [],
-})
+let users: Ref<User[]>
+if (isAdmin.value) {
+  ({ data: users } = await useApi<User[]>('/users', { default: () => [] }))
+} else {
+  const { data: ownUser } = await useApi<User>(`/users/${currentUser.value!.id}`)
+  users = computed(() => (ownUser.value ? [ownUser.value] : []))
+}
 
-const { data: allTasks } = await useApi<GlobalTask[]>('/tasks/all', {
-  key: QUERY_KEYS.allTasks,
-  default: () => [],
-})
+const { data: tasks } = isAdmin.value
+  ? await useApi<GlobalTask[]>('/tasks/all', {
+      key: QUERY_KEYS.allTasks,
+      default: () => [],
+    })
+  : await useApi<Task[]>('/tasks', {
+      default: () => [],
+    })
 
 function shortId(id: string): string {
   return id.slice(0, 8)
@@ -51,6 +63,7 @@ function formatDate(value: string): string {
         <span class="section__title">{{ t('users.title') }}</span>
         <span class="section__badge">{{ users?.length ?? 0 }}</span>
       </div>
+      <p v-if="!isAdmin" class="section__notice">{{ t('db.restrictedNotice') }}</p>
       <div class="table">
         <div class="table__grid table__grid--users">
           <div class="table__head">
@@ -78,8 +91,9 @@ function formatDate(value: string): string {
     <div class="section">
       <div class="section__header">
         <span class="section__title">{{ t('tasks.title') }}</span>
-        <span class="section__badge">{{ allTasks?.length ?? 0 }}</span>
+        <span class="section__badge">{{ tasks?.length ?? 0 }}</span>
       </div>
+      <p v-if="!isAdmin" class="section__notice">{{ t('db.restrictedNotice') }}</p>
       <div class="table">
         <div class="table__grid table__grid--tasks">
           <div class="table__head">
@@ -91,7 +105,7 @@ function formatDate(value: string): string {
             <span class="col col--right">{{ t('db.cols.updatedAt') }}</span>
           </div>
           <div
-            v-for="item in allTasks"
+            v-for="item in tasks"
             :key="item.id"
             class="table__row"
           >
@@ -100,7 +114,7 @@ function formatDate(value: string): string {
             <span class="col col--muted" :title="item.description ?? ''">
               {{ item.description || '—' }}
             </span>
-            <span class="col col--name">{{ item.user.name }}</span>
+            <span class="col col--name">{{ isAdmin ? (item as GlobalTask).user.name : currentUser?.name }}</span>
             <span class="col col--date">{{ formatDate(item.createdAt) }}</span>
             <span class="col col--date">{{ formatDate(item.updatedAt) }}</span>
           </div>
@@ -164,6 +178,15 @@ function formatDate(value: string): string {
     background: var(--border-subtle);
     border-radius: 20px;
     padding: 1px 8px;
+  }
+
+  &__notice {
+    margin: 0;
+    padding: 8px 14px;
+    font-size: 12px;
+    color: var(--status-warning);
+    background: var(--status-warning-subtle);
+    border-bottom: 1px solid var(--border-subtle);
   }
 }
 
