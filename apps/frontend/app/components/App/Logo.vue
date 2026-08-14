@@ -1,8 +1,5 @@
 <script setup lang="ts">
 defineProps<{ collapsed?: boolean }>()
-const {
-  public: { appVersion },
-} = useRuntimeConfig()
 </script>
 
 <template>
@@ -15,7 +12,6 @@ const {
     <span class="logo__text" :class="{ 'logo__text--hidden': collapsed }">
       <span class="logo__title">
         Monorepo <span class="logo__accent">Template</span>
-        <span class="logo__version">v{{ appVersion }}</span>
       </span>
       <span class="logo__sub"> NestJS + Nuxt 4 </span>
     </span>
@@ -66,12 +62,6 @@ const {
 
   &__accent {
     color: var(--accent);
-  }
-
-  &__version {
-    font-size: 11px;
-    font-weight: 400;
-    color: var(--text-muted);
   }
 
   &__sub {

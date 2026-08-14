@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import DevPanelViewport from './DevPanelViewport.vue'
 
+// меняется вручную при переключении на другую ветку шаблона
+const appBranch = 'main'
+
 const {
-  public: { apiBase, backendPort, appEnv, docsUrl },
+  public: { apiBase, backendPort, appEnv, docsUrl, appVersion },
 } = useRuntimeConfig()
 const { data: backendHealth, error: backendError } = await useFetch<{ status: string }>('/health', {
   baseURL: apiBase,
@@ -49,6 +52,18 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
 
 <template>
   <div class="panel">
+    <div class="panel__section">
+      <h2 class="panel__heading">О приложении</h2>
+      <div class="nav-meta">
+        <span class="nav-meta__label">Версия:</span>
+        <code class="nav-meta__value">{{ appVersion }}</code>
+      </div>
+      <div class="nav-meta">
+        <span class="nav-meta__label">Ветка:</span>
+        <code class="nav-meta__value">{{ appBranch }}</code>
+      </div>
+    </div>
+
     <div class="panel__section">
       <h2 class="panel__heading">Окружение</h2>
       <div class="env-row">
