@@ -1,16 +1,21 @@
 {
   "db": {
-    "title": "Database",
+    "title": "DB Tables",
     "subtitle": "read-only snapshot",
     "restrictedNotice": "Showing data for the current user. The full list is admins only",
     "cols": {
       "id": "ID",
       "name": "Name",
       "email": "Email",
+      "role": "Role",
       "title": "Title",
       "description": "Description",
       "createdAt": "Created",
       "updatedAt": "Updated"
+    },
+    "roles": {
+      "admin": "Admin",
+      "user": "User"
     }
   },
   "tasks": {
