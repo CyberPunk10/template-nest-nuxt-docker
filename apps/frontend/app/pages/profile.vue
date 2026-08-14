@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { t } = useI18n()
-const { user } = useAuth()
+const { user, isAdmin } = useAuth()
 
 const avatar = computed(() => user.value?.name.charAt(0).toUpperCase() ?? '?')
 
@@ -44,6 +44,7 @@ const sessions = computed(() => [
       :avatar="avatar"
       :name="user?.name"
       :email="user?.email"
+      :is-admin="isAdmin"
     />
 
     <div class="body">
