@@ -76,7 +76,7 @@ function formatDate(value: string): string {
             <span class="col col--id" :title="item.id">{{ shortId(item.id) }}</span>
             <span class="col col--name">{{ item.name }}</span>
             <span class="col" :title="item.email">{{ item.email }}</span>
-            <span class="col col--muted">{{ t(`db.roles.${item.role}`) }}</span>
+            <span class="col col--muted">{{ item.role }}</span>
             <span class="col col--date">{{ formatDate(item.createdAt) }}</span>
             <span class="col col--date">{{ formatDate(item.updatedAt) }}</span>
           </div>
@@ -107,10 +107,10 @@ function formatDate(value: string): string {
           >
             <span class="col col--id" :title="item.id">{{ shortId(item.id) }}</span>
             <span class="col col--name">{{ item.title }}</span>
-            <span class="col col--muted" :title="item.description ?? ''">
+            <span class="col col" :title="item.description ?? ''">
               {{ item.description || '—' }}
             </span>
-            <span class="col col--name">{{ isAdmin ? (item as GlobalTask).user.name : currentUser?.name }}</span>
+            <span class="col col--name col--muted">{{ isAdmin ? (item as GlobalTask).user.name : currentUser?.name }}</span>
             <span class="col col--date">{{ formatDate(item.createdAt) }}</span>
             <span class="col col--date">{{ formatDate(item.updatedAt) }}</span>
           </div>
@@ -148,7 +148,7 @@ function formatDate(value: string): string {
   border: 1px solid var(--border-subtle);
   border-radius: 12px;
   overflow: hidden;
-  background: #0d1424;
+  background: var(--surface-panel);
 
   &__header {
     display: flex;
@@ -252,7 +252,9 @@ function formatDate(value: string): string {
 .col {
   padding: 8px 6px;
   font-size: var(--text-sm);
-  color: #cbd5e1;
+  // color: #cbd5e1;
+  // font-size: 13px;
+  color: var(--text-primary);
   // длинный текст переносится на следующую строку внутри ячейки
   overflow-wrap: anywhere;
   word-break: break-word;

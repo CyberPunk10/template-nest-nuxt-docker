@@ -14,8 +14,7 @@
       "updatedAt": "Updated"
     },
     "roles": {
-      "admin": "Admin",
-      "user": "User"
+      "admin": "Admin"
     }
   },
   "tasks": {
