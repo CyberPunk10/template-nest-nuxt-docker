@@ -5,8 +5,10 @@ import request from 'supertest'
 import { App } from 'supertest/types'
 import { AppModule } from '../../src/app.module'
 import { HttpExceptionFilter } from '../../src/common/filters/http-exception.filter'
+import * as bcrypt from 'bcrypt'
 import { SessionsStore } from '../../src/modules/auth/sessions.store'
 import { UsersService } from '../../src/modules/users/users.service'
+import { Role } from '../../src/modules/users/role.enum'
 
 // supertest типизирует headers как Record<string, string>, но set-cookie —
 // массив строк. Приводим через unknown и нормализуем вручную.
@@ -71,13 +73,6 @@ describe('Auth (e2e)', () => {
     await users.removeByEmails(TEST_EMAILS)
   }
 
-  // Полностью очищает in-memory хранилище пользователей — нужно там, где важно
-  // гарантировать, что следующий registerRequest() станет первым (и получит Role.Admin).
-  async function clearAllUsers() {
-    const all = await users.findAll()
-    for (const u of all) await users.remove(u.id)
-  }
-
   afterAll(async () => {
     delete process.env.THROTTLE_LIMIT
     await cleanupTestData()
@@ -101,6 +96,18 @@ describe('Auth (e2e)', () => {
   async function loginCookies(): Promise<string> {
     const res = await registerRequest()
     expect(res.status).toBe(201)
+    return buildCookieHeader(res.headers['set-cookie'])
+  }
+
+  // Регистрация не даёт Role.Admin никому — создаём admin-пользователя напрямую
+  // через сервис (так же, как это делает UsersSeedService), затем логинимся через HTTP.
+  async function registerAdmin(email = 'test@example.com'): Promise<string> {
+    const password = 'password123'
+    const passwordHash = await bcrypt.hash(password, 4)
+    await users.createWithRole({ name: 'Admin', email, password: passwordHash }, Role.Admin)
+
+    const res = await request(app.getHttpServer()).post('/auth/login').send({ email, password })
+    expect(res.status).toBe(200)
     return buildCookieHeader(res.headers['set-cookie'])
   }
 
@@ -364,8 +371,7 @@ describe('Auth (e2e)', () => {
 
   describe('Users (e2e)', () => {
     it('GET /users возвращает 200 и не содержит passwordHash', async () => {
-      const regRes = await registerRequest()
-      const cookies = buildCookieHeader(regRes.headers['set-cookie'])
+      const cookies = await registerAdmin()
 
       const res = await request(app.getHttpServer()).get('/users').set('Cookie', cookies)
 
@@ -429,8 +435,6 @@ describe('Auth (e2e)', () => {
 
     describe('доступ к чужому профилю', () => {
       it('обычный пользователь получает 403 на GET /users/:id чужого профиля', async () => {
-        await clearAllUsers()
-        // Первый регистрант — admin, поэтому регистрируем второго, чтобы получить обычную роль.
         await registerRequest({ email: 'test@example.com' })
         const resBob = await registerRequest({
           name: 'Bob',
@@ -449,10 +453,7 @@ describe('Auth (e2e)', () => {
       })
 
       it('admin получает 200 на GET /users/:id чужого профиля', async () => {
-        await clearAllUsers()
-        // Первый регистрант — admin (см. UsersService.create).
-        const admin = await registerRequest({ email: 'test@example.com' })
-        const adminCookies = buildCookieHeader(admin.headers['set-cookie'])
+        const adminCookies = await registerAdmin()
         const resBob = await registerRequest({
           name: 'Bob',
           email: 'other@example.com',
@@ -469,9 +470,7 @@ describe('Auth (e2e)', () => {
       })
 
       it('admin получает 403 на PUT /users/:id чужого профиля', async () => {
-        await clearAllUsers()
-        const admin = await registerRequest({ email: 'test@example.com' })
-        const adminCookies = buildCookieHeader(admin.headers['set-cookie'])
+        const adminCookies = await registerAdmin()
         const resBob = await registerRequest({
           name: 'Bob',
           email: 'other@example.com',
@@ -488,9 +487,7 @@ describe('Auth (e2e)', () => {
       })
 
       it('admin получает 403 на DELETE /users/:id чужого профиля', async () => {
-        await clearAllUsers()
-        const admin = await registerRequest({ email: 'test@example.com' })
-        const adminCookies = buildCookieHeader(admin.headers['set-cookie'])
+        const adminCookies = await registerAdmin()
         const resBob = await registerRequest({
           name: 'Bob',
           email: 'other@example.com',

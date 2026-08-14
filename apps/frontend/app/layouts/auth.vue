@@ -17,8 +17,10 @@
 .auth {
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 20px;
 
   &__form {
     display: flex;
@@ -80,6 +82,29 @@
 
     &:hover {
       color: var(--text-secondary);
+    }
+  }
+
+  &__hint {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 320px;
+    padding: 12px 14px;
+    background: var(--status-warning-subtle);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+
+    p {
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.4;
+      color: var(--text-muted);
+
+      &.auth__hint-title {
+        font-weight: 600;
+        color: var(--status-warning);
+      }
     }
   }
 }

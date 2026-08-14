@@ -39,7 +39,13 @@
       "email": "Email",
       "password": "Password",
       "submit": "Sign in",
-      "noAccount": "No account? Sign up"
+      "noAccount": "No account? Sign up",
+      "devAdminHint": {
+        "title": "Signing in as admin",
+        "credentials": "Credentials come from the ADMIN_EMAIL and ADMIN_PASSWORD variables in apps/backend/.env",
+        "autoCreate": "The admin with these credentials is created automatically on every backend startup",
+        "noDb": "The auth-session branch isn't connected to a database — all data (except the configured admin) is kept in memory and reset on every backend restart"
+      }
     },
     "register": {
       "title": "Sign up",

@@ -36,10 +36,12 @@ function shortId(id: string): string {
 }
 
 function formatDate(value: string): string {
-  return new Date(value).toLocaleDateString(locale.value, {
+  return new Date(value).toLocaleString(locale.value, {
     day: '2-digit',
     month: 'short',
     year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
   })
 }
 </script>
@@ -202,10 +204,10 @@ function formatDate(value: string): string {
         90px
         minmax(6rem, 0.6fr)
         minmax(10rem, 1fr)
-        minmax(7rem, 0.6fr)
-        100px
-        100px;
-      min-width: 40rem;
+        minmax(8rem, 0.8fr)
+        130px
+        130px;
+      min-width: 44rem;
     }
 
     // id · title · description · author · created · updated
@@ -214,10 +216,10 @@ function formatDate(value: string): string {
         90px
         minmax(8rem, 0.8fr)
         minmax(10rem, 1fr)
-        minmax(7rem, 0.6fr)
-        100px
-        100px;
-      min-width: 42rem;
+        minmax(8rem, 0.8fr)
+        130px
+        130px;
+      min-width: 46rem;
     }
   }
 
