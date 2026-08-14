@@ -1,12 +1,4 @@
 <script setup lang="ts">
-interface User {
-  id: string
-  name: string
-  email: string
-  createdAt: string
-  updatedAt: string
-}
-
 interface Task {
   id: string
   title: string
@@ -22,11 +14,11 @@ interface GlobalTask extends Task {
 const { t, locale } = useI18n()
 const { isAdmin, user: currentUser } = useAuth()
 
-let users: Ref<User[]>
+let users: Ref<AuthUser[]>
 if (isAdmin.value) {
-  ({ data: users } = await useApi<User[]>('/users', { default: () => [] }))
+  ({ data: users } = await useApi<AuthUser[]>('/users', { default: () => [] }))
 } else {
-  const { data: ownUser } = await useApi<User>(`/users/${currentUser.value!.id}`)
+  const { data: ownUser } = await useApi<AuthUser>(`/users/${currentUser.value!.id}`)
   users = computed(() => (ownUser.value ? [ownUser.value] : []))
 }
 
@@ -70,6 +62,7 @@ function formatDate(value: string): string {
             <span class="col">{{ t('db.cols.id') }}</span>
             <span class="col">{{ t('db.cols.name') }}</span>
             <span class="col">{{ t('db.cols.email') }}</span>
+            <span class="col">{{ t('db.cols.role') }}</span>
             <span class="col col--right">{{ t('db.cols.createdAt') }}</span>
             <span class="col col--right">{{ t('db.cols.updatedAt') }}</span>
           </div>
@@ -81,6 +74,7 @@ function formatDate(value: string): string {
             <span class="col col--id" :title="item.id">{{ shortId(item.id) }}</span>
             <span class="col col--name">{{ item.name }}</span>
             <span class="col" :title="item.email">{{ item.email }}</span>
+            <span class="col col--muted">{{ t(`db.roles.${item.role}`) }}</span>
             <span class="col col--date">{{ formatDate(item.createdAt) }}</span>
             <span class="col col--date">{{ formatDate(item.updatedAt) }}</span>
           </div>
@@ -202,17 +196,27 @@ function formatDate(value: string): string {
 
     // широкая колонка = minmax(10rem, 1fr): забирает остаток, но не уже 10rem —
     // на этом минимуме длинный текст переносится на вторую строку
-    // id · name · email · created · updated
+    // id · name · email · role · created · updated
     &--users {
-      // 76 + 96 + 160(10rem) + 100 + 100 + паддинги ≈ 34rem
-      grid-template-columns: 76px minmax(6rem, 0.6fr) minmax(10rem, 1fr) 100px 100px;
-      min-width: 34rem;
+      grid-template-columns:
+        90px
+        minmax(6rem, 0.6fr)
+        minmax(10rem, 1fr)
+        minmax(7rem, 0.6fr)
+        100px
+        100px;
+      min-width: 40rem;
     }
 
     // id · title · description · author · created · updated
     &--tasks {
-      // 76 + 128 + 160 + 96 + 100 + 100 ≈ 42rem
-      grid-template-columns: 76px minmax(8rem, 0.8fr) minmax(10rem, 1fr) minmax(6rem, 0.6fr) 100px 100px;
+      grid-template-columns:
+        90px
+        minmax(8rem, 0.8fr)
+        minmax(10rem, 1fr)
+        minmax(7rem, 0.6fr)
+        100px
+        100px;
       min-width: 42rem;
     }
   }
