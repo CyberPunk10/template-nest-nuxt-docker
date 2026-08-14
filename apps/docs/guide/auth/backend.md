@@ -255,18 +255,16 @@ pnpm test:e2e:throttle  # throttle-тесты (throttler включён)
 
 ### Роли
 
-Пользователь имеет роль (`Role.Admin` или `Role.User`), которая попадает в payload JWT при логине и доступна как `req.user.role` (см. `JwtStrategy`).
+Пользователь имеет роль (`Role.admin` или `Role.user` — Prisma-enum, сгенерированный из `schema.prisma`), которая попадает в payload JWT при логине и доступна как `req.user.role` (см. `JwtStrategy`). По умолчанию (`@default(user)` в схеме) новый пользователь через `POST /auth/register` всегда получает `Role.user` — обычная регистрация никогда не создаёт admin.
 
-**Стартер без БД/сидов:** первый зарегистрированный пользователь автоматически получает `Role.Admin` (см. `UsersService.create`) — это сделано, чтобы demo-эндпоинты (`GET /users`, `GET /tasks/all`) были доступны из коробки без отдельного шага сидирования.
-
-> **Важно для продакшена:** это dev-convenience, а не безопасный bootstrap. Правило применяется к *любому* первому успешному `POST /auth/register`, а не к конкретному владельцу — если БД пуста (например, после сброса или перед первым деплоем), admin получит тот, кто зарегистрируется первым. Перед реальным использованием замените это на явный сид администратора (переменная окружения, миграция или отдельная CLI-команда), а не на порядок регистрации.
+Единственный способ завести admin-аккаунт — сид (см. [Seed: создание admin-аккаунта](#seed-создание-admin-аккаунта) ниже).
 
 ### `RolesGuard` и `@Roles()`
 
 `RolesGuard` зарегистрирован глобально через `APP_GUARD` **после** `JwtAuthGuard` — это гарантирует, что `req.user` уже заполнен к моменту проверки роли. Guard проверяет метаданные `@Roles()` через `Reflector`; если декоратора нет — пропускает запрос без проверки роли.
 
 ```typescript
-@Roles(Role.Admin)
+@Roles(Role.admin)
 @Get()
 findAll(): Promise<SafeUser[]> {
   return this.usersService.findAll()
@@ -285,21 +283,52 @@ findAll(): Promise<SafeUser[]> {
 
 ## Seed: создание admin-аккаунта
 
-Обычная регистрация (`POST /auth/register`) всегда выдаёт роль `user` — `UsersService.create()` жёстко передаёт `Role.User`. Значит без отдельного шага в системе не появится ни одного `admin`, а роуты под `@Roles(Role.Admin)` (`GET /users`, `GET /tasks/all`) окажутся недостижимы.
+### Зачем
 
-Эту задачу закрывает `UsersSeedService`. В отличие от веток с БД, где сид запускается отдельной командой, здесь хранилище in-memory и пересоздаётся при каждом старте — поэтому админ заводится в `onModuleInit`, то есть при запуске приложения:
+Обычная регистрация (`POST /auth/register`) всегда создаёт пользователя с ролью `user` — это гарантия Prisma-схемы (`role Role @default(user)`), а не проверка в коде, так что её невозможно обойти опечаткой в бизнес-логике. Значит без отдельного шага в системе никогда не появится ни одного `admin`, а роуты вроде `GET /users` и `GET /tasks/all` (защищённые `@Roles(Role.admin)`) окажутся недостижимы ни для кого.
+
+Сид (`prisma/seed.ts`) закрывает именно эту задачу: заводит один admin-аккаунт вне обычного пользовательского флоу, при подготовке окружения, а не во время работы приложения.
+
+### Как это работает
+
+`prisma/seed.ts` — обычный Node-скрипт, который подключается к БД напрямую (тот же `PrismaPg`-адаптер, что и `PrismaService`) и делает upsert-по-факту:
 
 ```typescript
-const email = this.config.get<string>('ADMIN_EMAIL')
-const password = this.config.get<string>('ADMIN_PASSWORD')
-if (!email || !password) return          // не задано — просто пропускаем
+const existing = await prisma.user.findUnique({ where: { email } })
+if (existing) return // уже есть — ничего не делаем
 
-if (await this.usersService.findByEmail(normalizedEmail)) return   // уже есть
+await prisma.user.create({
+  data: { name: 'Admin', email, passwordHash, role: 'admin' },
+})
 ```
 
-Пароль хешируется через `BCRYPT_ROUNDS`, email приводится к нижнему регистру. Повторный старт существующего админа не трогает.
+Email и пароль берутся из `ADMIN_EMAIL`/`ADMIN_PASSWORD` (см. `.env`). Если хотя бы одна из переменных не задана — сид просто печатает предупреждение и завершается без ошибки: приложение прекрасно работает и без admin-аккаунта, это не обязательный шаг.
 
-`ADMIN_EMAIL`/`ADMIN_PASSWORD` в `.env.example` — плейсхолдеры, как `JWT_SECRET`: перед реальным использованием задайте свои значения.
+Скрипт **идемпотентен** — повторный запуск, когда admin уже создан, не создаёт дубликат и не трогает его пароль, только печатает, что он уже есть.
+
+### Как запустить
+
+Сид не запускается автоматически ни `migrate dev`, ни `migrate reset` — его нужно вызывать отдельно, каждый раз заново:
+
+```bash
+pnpm prisma migrate reset   # пересоздать БД (если нужно)
+pnpm prisma db seed         # затем явно создать admin-аккаунт
+```
+
+Команда сида задаётся в `prisma.config.ts` — именно её выполняет `prisma db seed`:
+
+```typescript
+migrations: {
+  path: 'prisma/migrations',
+  seed: 'ts-node --transpile-only --project prisma/tsconfig.seed.json prisma/seed.ts',
+},
+```
+
+> **`prisma/tsconfig.seed.json`:** `seed.ts` лежит вне `src/`, а основной `tsconfig.json` включает только `src`/`test` — при прямом запуске `ts-node` для файла вне этих директорий не может определить `rootDir` (ошибка TS5011). Отдельный конфиг для сида решает это, не трогая основной `tsconfig.json`.
+
+### Продакшен
+
+`ADMIN_EMAIL`/`ADMIN_PASSWORD` в `.env.example` — обычные плейсхолдеры, как `JWT_SECRET`. Перед реальным использованием задайте собственные значения; после первого успешного запуска сида имеет смысл сменить пароль admin-аккаунта через обычный флоу приложения (или просто не хранить продакшен-пароль в `.env` дольше, чем нужно для самого запуска сида).
 
 ## Очистка истёкших сессий
 
@@ -323,15 +352,17 @@ async cleanupExpiredSessions() {
 
 ## ENV переменные
 
-| Переменная                   | Описание                                       | По умолчанию    |
-| ---------------------------- | ---------------------------------------------- | --------------- |
-| `THROTTLE_TTL`               | Окно rate limiting (мс)                        | `60000`         |
-| `THROTTLE_LIMIT`             | Максимум запросов за окно (глобально)          | `100`           |
-| `JWT_SECRET`                 | Секрет для подписи JWT (min 32 символа)        | — (обязательно) |
-| `JWT_EXPIRES_IN`             | Время жизни access token                       | `15m`           |
-| `REFRESH_TOKEN_SECRET`       | Секрет для HMAC refresh token (min 32 символа) | — (обязательно) |
-| `REFRESH_TOKEN_EXPIRES_DAYS` | Время жизни refresh token (дней)               | `7`             |
-| `BCRYPT_ROUNDS`              | Cost-фактор bcrypt для хэширования паролей     | `12`            |
+| Переменная                   | Описание                                                                          | По умолчанию    |
+| ---------------------------- | --------------------------------------------------------------------------------- | --------------- |
+| `THROTTLE_TTL`               | Окно rate limiting (мс)                                                           | `60000`         |
+| `THROTTLE_LIMIT`             | Максимум запросов за окно (глобально)                                             | `100`           |
+| `JWT_SECRET`                 | Секрет для подписи JWT (min 32 символа)                                           | — (обязательно) |
+| `JWT_EXPIRES_IN`             | Время жизни access token                                                          | `15m`           |
+| `REFRESH_TOKEN_SECRET`       | Секрет для HMAC refresh token (min 32 символа)                                    | — (обязательно) |
+| `REFRESH_TOKEN_EXPIRES_DAYS` | Время жизни refresh token (дней)                                                  | `7`             |
+| `BCRYPT_ROUNDS`              | Cost-фактор bcrypt для хэширования паролей                                        | `12`            |
+| `ADMIN_EMAIL`                | Email admin-аккаунта, создаётся сидом (см. [Seed](#seed-создание-admin-аккаунта)) | — (опционально) |
+| `ADMIN_PASSWORD`             | Пароль admin-аккаунта, создаётся сидом                                            | — (опционально) |
 
 ## E2E тесты
 

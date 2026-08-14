@@ -99,6 +99,20 @@ pnpm prisma generate
 Prisma generate client ไว้ที่ `src/generated/prisma` — โฟลเดอร์นี้อยู่ใน `.gitignore`
 ใน Prisma 7 client **จะไม่ถูก generate อัตโนมัติ** ตอน `migrate dev` — ต้องรัน `prisma generate` เองหลังจากเปลี่ยน schema สามารถตั้งค่าให้รันอัตโนมัติได้ผ่าน `afterApply` ใน `prisma.config.ts`
 
+### Seed: admin account
+
+การลงทะเบียนปกติ (`POST /auth/register`) จะสร้างผู้ใช้ด้วย role `user` เสมอ (รับประกันโดย schema — `role Role @default(user)`) ดังนั้นถ้าไม่มีขั้นตอนแยก database จะไม่มี `admin` เลยแม้แต่คนเดียว นี่คือสิ่งที่ `prisma/seed.ts` มีไว้แก้ — รันเป็นคำสั่งแยก รวมถึงหลัง `migrate reset` ด้วย:
+
+```bash
+cd apps/backend
+pnpm prisma migrate reset   # สร้าง database ใหม่ (ถ้าจำเป็น)
+pnpm prisma db seed         # จากนั้น seed admin account อย่างชัดเจน
+```
+
+script นี้ idempotent (upsert ตาม email) และอ่านข้อมูลจาก `ADMIN_EMAIL`/`ADMIN_PASSWORD` ใน `.env`
+
+รายละเอียด (วิธีทำงาน, ข้อควรระวังสำหรับ production) — ดูที่ [Auth → Backend: Seed](./auth/backend.md#seed-สร้าง-admin-account)
+
 ---
 
 ## Migration

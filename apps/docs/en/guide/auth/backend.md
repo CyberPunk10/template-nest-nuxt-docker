@@ -255,18 +255,16 @@ pnpm test:e2e:throttle  # throttle tests (throttler enabled)
 
 ### Roles
 
-A user has a role (`Role.Admin` or `Role.User`), which is embedded in the JWT payload at login and available as `req.user.role` (see `JwtStrategy`).
+A user has a role (`Role.admin` or `Role.user` — a Prisma enum generated from `schema.prisma`), which is embedded in the JWT payload at login and available as `req.user.role` (see `JwtStrategy`). By default (`@default(user)` in the schema), a new user created via `POST /auth/register` always gets `Role.user` — regular registration never creates an admin.
 
-**No-DB/no-seeds starter:** the first user ever registered is automatically granted `Role.Admin` (see `UsersService.create`) — this exists so the demo endpoints (`GET /users`, `GET /tasks/all`) work out of the box without a separate seeding step.
-
-> **Important for production:** this is a dev convenience, not a secure bootstrap. The rule applies to *whoever* wins the first successful `POST /auth/register`, not to a specific owner — if the database is empty (e.g. after a reset or before the first deploy), admin goes to whoever registers first. Before real use, replace this with an explicit admin seed (an environment variable, a migration, or a dedicated CLI command) rather than relying on registration order.
+The only way to get an admin account is the seed (see [Seed: creating the admin account](#seed-creating-the-admin-account) below).
 
 ### `RolesGuard` and `@Roles()`
 
 `RolesGuard` is registered globally via `APP_GUARD` **after** `JwtAuthGuard` — this guarantees `req.user` is already populated by the time the role check runs. The guard reads `@Roles()` metadata via `Reflector`; if the decorator is absent, it lets the request through without a role check.
 
 ```typescript
-@Roles(Role.Admin)
+@Roles(Role.admin)
 @Get()
 findAll(): Promise<SafeUser[]> {
   return this.usersService.findAll()
@@ -285,21 +283,52 @@ Unlike roles, access to a specific resource (a user's own profile, a task) isn't
 
 ## Seed: creating the admin account
 
-Ordinary registration (`POST /auth/register`) always assigns the `user` role — `UsersService.create()` passes `Role.User` explicitly. Without a separate step no `admin` would ever exist, and the routes behind `@Roles(Role.Admin)` (`GET /users`, `GET /tasks/all`) would be unreachable.
+### Why
 
-`UsersSeedService` covers that. Unlike the database branches, where the seed is a separate command, storage here is in-memory and is recreated on every start — so the admin is created in `onModuleInit`, as the application boots:
+Regular registration (`POST /auth/register`) always creates a user with the `user` role — that's guaranteed by the Prisma schema (`role Role @default(user)`), not a code-level check, so it can't be bypassed by a mistake in business logic. That means without a separate step, the system would never have a single `admin`, and routes like `GET /users` and `GET /tasks/all` (guarded by `@Roles(Role.admin)`) would be unreachable for anyone.
+
+The seed (`prisma/seed.ts`) exists to solve exactly this: it creates one admin account outside the normal user flow, as part of environment setup rather than while the app is running.
+
+### How it works
+
+`prisma/seed.ts` is a plain Node script that connects to the database directly (the same `PrismaPg` adapter as `PrismaService`) and does an upsert-by-fact:
 
 ```typescript
-const email = this.config.get<string>('ADMIN_EMAIL')
-const password = this.config.get<string>('ADMIN_PASSWORD')
-if (!email || !password) return          // not set — simply skipped
+const existing = await prisma.user.findUnique({ where: { email } })
+if (existing) return // already there — do nothing
 
-if (await this.usersService.findByEmail(normalizedEmail)) return   // already there
+await prisma.user.create({
+  data: { name: 'Admin', email, passwordHash, role: 'admin' },
+})
 ```
 
-The password is hashed with `BCRYPT_ROUNDS` and the email is lowercased. A restart leaves an existing admin alone.
+The email and password come from `ADMIN_EMAIL`/`ADMIN_PASSWORD` (see `.env`). If either variable is missing, the seed just prints a warning and exits without an error — the app works fine without an admin account, this step isn't mandatory.
 
-`ADMIN_EMAIL`/`ADMIN_PASSWORD` in `.env.example` are placeholders, like `JWT_SECRET`: set your own values before real use.
+The script is **idempotent** — running it again on an already-seeded database doesn't create a duplicate and doesn't touch the existing admin's password, it just prints that one already exists.
+
+### How to run it
+
+Neither `migrate dev` nor `migrate reset` runs the seed automatically — you need to call it separately, every time:
+
+```bash
+pnpm prisma migrate reset   # recreate the database (if needed)
+pnpm prisma db seed         # then explicitly seed the admin account
+```
+
+The seed command is defined in `prisma.config.ts` — this is exactly what `prisma db seed` executes:
+
+```typescript
+migrations: {
+  path: 'prisma/migrations',
+  seed: 'ts-node --transpile-only --project prisma/tsconfig.seed.json prisma/seed.ts',
+},
+```
+
+> **`prisma/tsconfig.seed.json`:** `seed.ts` lives outside `src/`, and the main `tsconfig.json` only includes `src`/`test` — running `ts-node` directly on a file outside those directories can't determine `rootDir` (TS5011 error). A dedicated config for the seed fixes this without touching the main `tsconfig.json`.
+
+### Production
+
+`ADMIN_EMAIL`/`ADMIN_PASSWORD` in `.env.example` are plain placeholders, just like `JWT_SECRET`. Set your own values before real use; after the seed has run successfully once, it's worth rotating the admin account's password through the normal app flow (or simply not keeping the production password in `.env` any longer than needed to run the seed).
 
 ## Cleaning up expired sessions
 
@@ -323,15 +352,17 @@ This removes at the same time:
 
 ## ENV variables
 
-| Variable                     | Description                                      | Default      |
-| ---------------------------- | ------------------------------------------------ | ------------ |
-| `THROTTLE_TTL`               | Rate limiting window (ms)                        | `60000`      |
-| `THROTTLE_LIMIT`             | Max requests per window (global)                 | `100`        |
-| `JWT_SECRET`                 | Secret for signing JWTs (min 32 chars)           | — (required) |
-| `JWT_EXPIRES_IN`             | Access token lifetime                            | `15m`        |
-| `REFRESH_TOKEN_SECRET`       | Secret for the HMAC refresh token (min 32 chars) | — (required) |
-| `REFRESH_TOKEN_EXPIRES_DAYS` | Refresh token lifetime (days)                    | `7`          |
-| `BCRYPT_ROUNDS`              | bcrypt cost factor for hashing passwords         | `12`         |
+| Variable                     | Description                                                                             | Default      |
+| ---------------------------- | --------------------------------------------------------------------------------------- | ------------ |
+| `THROTTLE_TTL`               | Rate limiting window (ms)                                                               | `60000`      |
+| `THROTTLE_LIMIT`             | Max requests per window (global)                                                        | `100`        |
+| `JWT_SECRET`                 | Secret for signing JWTs (min 32 chars)                                                  | — (required) |
+| `JWT_EXPIRES_IN`             | Access token lifetime                                                                   | `15m`        |
+| `REFRESH_TOKEN_SECRET`       | Secret for the HMAC refresh token (min 32 chars)                                        | — (required) |
+| `REFRESH_TOKEN_EXPIRES_DAYS` | Refresh token lifetime (days)                                                           | `7`          |
+| `BCRYPT_ROUNDS`              | bcrypt cost factor for hashing passwords                                                | `12`         |
+| `ADMIN_EMAIL`                | Admin account email, created by the seed (see [Seed](#seed-creating-the-admin-account)) | — (optional) |
+| `ADMIN_PASSWORD`             | Admin account password, created by the seed                                             | — (optional) |
 
 ## E2E tests
 

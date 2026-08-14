@@ -1,5 +1,4 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common'
-import { Role } from './role.enum'
 import { Prisma, User } from '../../generated/prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
 import { UpdateUserDto } from './dto/update-user.dto'

@@ -16,7 +16,6 @@ const prismaMock = {
   user: {
     findMany: jest.fn(),
     findUnique: jest.fn(),
-    create: jest.fn(),
     update: jest.fn(),
     delete: jest.fn(),
   },
@@ -46,23 +45,6 @@ describe('UsersService', () => {
     const result = await service.findAll()
     expect(result).toEqual([mockUser])
     expect(prismaMock.user.findMany).toHaveBeenCalledTimes(1)
-  })
-
-  it('create — создаёт пользователя', async () => {
-    prismaMock.user.create.mockResolvedValue(mockUser)
-    const result = await service.create({
-      name: 'Alice',
-      email: 'alice@example.com',
-      password: 'supersecret',
-    })
-    expect(result).toEqual(mockUser)
-  })
-
-  it('create — выбрасывает ConflictException при дублирующемся email (P2002)', async () => {
-    prismaMock.user.create.mockRejectedValue(makePrismaError('P2002'))
-    await expect(
-      service.create({ name: 'Alice', email: 'taken@example.com', password: 'supersecret' }),
-    ).rejects.toThrow(ConflictException)
   })
 
   it('findOne — возвращает пользователя по id', async () => {

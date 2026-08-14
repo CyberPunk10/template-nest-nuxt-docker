@@ -255,18 +255,16 @@ pnpm test:e2e:throttle  # throttle-test (throttler เปิด)
 
 ### Roles (บทบาท)
 
-ผู้ใช้แต่ละคนมี role (`Role.Admin` หรือ `Role.User`) ซึ่งถูกฝังไว้ใน payload ของ JWT ตอน login และเข้าถึงได้ผ่าน `req.user.role` (ดู `JwtStrategy`)
+ผู้ใช้แต่ละคนมี role (`Role.admin` หรือ `Role.user` — Prisma enum ที่ generate มาจาก `schema.prisma`) ซึ่งถูกฝังไว้ใน payload ของ JWT ตอน login และเข้าถึงได้ผ่าน `req.user.role` (ดู `JwtStrategy`) โดยค่าเริ่มต้น (`@default(user)` ใน schema) ผู้ใช้ใหม่ที่สร้างผ่าน `POST /auth/register` จะได้ `Role.user` เสมอ — การลงทะเบียนปกติไม่สร้าง admin ได้เลย
 
-**Starter แบบไม่มี DB/ไม่มี seed:** ผู้ใช้คนแรกที่ลงทะเบียนสำเร็จจะได้ `Role.Admin` โดยอัตโนมัติ (ดู `UsersService.create`) — ทำแบบนี้เพื่อให้ demo endpoint (`GET /users`, `GET /tasks/all`) ใช้งานได้ทันทีโดยไม่ต้องมีขั้นตอน seed แยก
-
-> **สำคัญสำหรับ production:** นี่คือ dev convenience ไม่ใช่ bootstrap ที่ปลอดภัย กฎนี้ใช้กับ *ใครก็ตาม* ที่ `POST /auth/register` สำเร็จเป็นคนแรก ไม่ใช่เจ้าของระบบโดยเฉพาะ — ถ้า database ว่างเปล่า (เช่น หลัง reset หรือก่อน deploy ครั้งแรก) สิทธิ์ admin จะตกเป็นของใครก็ตามที่ลงทะเบียนก่อน ก่อนใช้งานจริงควรแทนที่ด้วยการ seed admin อย่างชัดเจน (ผ่าน environment variable, migration หรือคำสั่ง CLI แยก) แทนการพึ่งลำดับการลงทะเบียน
+วิธีเดียวที่จะได้ admin account คือผ่าน seed (ดู [Seed: สร้าง admin account](#seed-สร้าง-admin-account) ด้านล่าง)
 
 ### `RolesGuard` และ `@Roles()`
 
 `RolesGuard` ถูก register เป็น global guard ผ่าน `APP_GUARD` **ต่อจาก** `JwtAuthGuard` — เพื่อให้แน่ใจว่า `req.user` ถูกกำหนดค่าแล้วก่อนที่จะตรวจสอบ role guard นี้อ่าน metadata `@Roles()` ผ่าน `Reflector` ถ้าไม่มี decorator นี้ — จะปล่อยผ่านโดยไม่ตรวจสอบ role
 
 ```typescript
-@Roles(Role.Admin)
+@Roles(Role.admin)
 @Get()
 findAll(): Promise<SafeUser[]> {
   return this.usersService.findAll()
@@ -283,23 +281,54 @@ findAll(): Promise<SafeUser[]> {
 - **`GET /users/:id`** ใช้การตรวจสอบที่ผ่อนปรนกว่าคือ `assertSelfOrAdmin` — เข้าถึงได้ทั้งเจ้าของ profile **หรือ** `admin` คนไหนก็ได้ (เช่น เพื่อ support/moderation) ความไม่สมมาตรนี้ตั้งใจทำ: การอ่านข้อมูลของคนอื่นมีความเสี่ยงต่ำ ในขณะที่การเขียนลง profile ของคนอื่นผ่าน self-service route เป็นความเสี่ยงที่ไม่ควรให้แบบ implicit ถ้าต้องการให้ admin เขียนข้อมูลของผู้ใช้คนอื่นได้เต็มรูปแบบ ต้องทำเป็น feature แยกต่างหาก (เช่น endpoint สำหรับ admin โดยเฉพาะที่มี audit trail ของตัวเอง) ไม่ใช่การขยาย `assertSelf`
 - **`TasksController`** (`PUT/DELETE /tasks/:id`): `TasksService.findOne(id, userId)` ตรวจว่า task เป็นของผู้ใช้คนปัจจุบันจริง และ throw `ForbiddenException` ถ้าไม่ตรงกัน `GET /tasks/all` (เฉพาะ `admin`) เป็นทางเดียวที่จะเห็น task ของผู้ใช้ทุกคน
 
-## Seed: การสร้างบัญชี admin
+## Seed: สร้าง admin account
 
-การสมัครปกติ (`POST /auth/register`) จะให้ role `user` เสมอ — `UsersService.create()` ส่ง `Role.User` ไว้ตายตัว ถ้าไม่มีขั้นตอนแยก ระบบก็จะไม่มี `admin` เลยสักคน และ route ที่อยู่หลัง `@Roles(Role.Admin)` (`GET /users`, `GET /tasks/all`) ก็จะเข้าถึงไม่ได้
+### ทำไมต้องมี
 
-`UsersSeedService` มีไว้แก้เรื่องนี้ ต่างจาก branch ที่มีฐานข้อมูลซึ่ง seed เป็นคำสั่งแยก ที่นี่ storage เป็น in-memory และถูกสร้างใหม่ทุกครั้งที่ start — admin จึงถูกสร้างใน `onModuleInit` คือตอนที่แอปเริ่มทำงาน:
+การลงทะเบียนปกติ (`POST /auth/register`) จะสร้างผู้ใช้ด้วย role `user` เสมอ — นี่คือสิ่งที่ Prisma schema รับประกัน (`role Role @default(user)`) ไม่ใช่การตรวจสอบใน code ดังนั้นจึงไม่มีทางถูกข้ามด้วยความผิดพลาดใน business logic ได้ หมายความว่าถ้าไม่มีขั้นตอนแยก ระบบจะไม่มี `admin` เลยแม้แต่คนเดียว และ route อย่าง `GET /users` กับ `GET /tasks/all` (ที่ guard ไว้ด้วย `@Roles(Role.admin)`) จะเข้าถึงไม่ได้เลยสำหรับทุกคน
+
+seed (`prisma/seed.ts`) มีไว้เพื่อแก้ปัญหานี้โดยเฉพาะ: สร้าง admin account หนึ่งบัญชีนอก flow ปกติของผู้ใช้ เป็นส่วนหนึ่งของการเตรียม environment ไม่ใช่ตอนที่แอปกำลังรันอยู่
+
+### ทำงานอย่างไร
+
+`prisma/seed.ts` เป็น Node script ธรรมดาที่เชื่อมต่อ database ตรง (ใช้ `PrismaPg` adapter ตัวเดียวกับ `PrismaService`) และทำ upsert-by-fact:
 
 ```typescript
-const email = this.config.get<string>('ADMIN_EMAIL')
-const password = this.config.get<string>('ADMIN_PASSWORD')
-if (!email || !password) return          // ไม่ได้กำหนด — ข้ามไป
+const existing = await prisma.user.findUnique({ where: { email } })
+if (existing) return // มีอยู่แล้ว — ไม่ทำอะไร
 
-if (await this.usersService.findByEmail(normalizedEmail)) return   // มีอยู่แล้ว
+await prisma.user.create({
+  data: { name: 'Admin', email, passwordHash, role: 'admin' },
+})
 ```
 
-รหัสผ่านถูก hash ด้วย `BCRYPT_ROUNDS` และ email ถูกแปลงเป็นตัวพิมพ์เล็ก การ start ใหม่จะไม่แตะ admin ที่มีอยู่แล้ว
+email และ password มาจาก `ADMIN_EMAIL`/`ADMIN_PASSWORD` (ดู `.env`) ถ้าตัวแปรใดตัวแปรหนึ่งไม่ได้ตั้งค่าไว้ — seed จะแค่ print คำเตือนแล้วจบโดยไม่มี error แอปทำงานได้ปกติแม้ไม่มี admin account ขั้นตอนนี้ไม่ได้บังคับ
 
-`ADMIN_EMAIL`/`ADMIN_PASSWORD` ใน `.env.example` เป็นค่า placeholder เหมือน `JWT_SECRET`: ควรตั้งค่าของตัวเองก่อนใช้งานจริง
+script นี้ **idempotent** — รันซ้ำบน database ที่ seed ไปแล้วจะไม่สร้างซ้ำ และไม่แก้ password ของ admin ที่มีอยู่ แค่ print ว่ามีอยู่แล้ว
+
+### วิธีรัน
+
+ทั้ง `migrate dev` และ `migrate reset` ไม่รัน seed ให้อัตโนมัติ — ต้องเรียกแยกเองทุกครั้ง:
+
+```bash
+pnpm prisma migrate reset   # สร้าง database ใหม่ (ถ้าจำเป็น)
+pnpm prisma db seed         # จากนั้น seed admin account อย่างชัดเจน
+```
+
+คำสั่ง seed ถูกกำหนดไว้ใน `prisma.config.ts` — นี่คือสิ่งที่ `prisma db seed` รันจริง:
+
+```typescript
+migrations: {
+  path: 'prisma/migrations',
+  seed: 'ts-node --transpile-only --project prisma/tsconfig.seed.json prisma/seed.ts',
+},
+```
+
+> **`prisma/tsconfig.seed.json`:** `seed.ts` อยู่นอก `src/` และ `tsconfig.json` หลักมีแค่ `src`/`test` ใน include — การรัน `ts-node` ตรงกับไฟล์ที่อยู่นอก directory เหล่านี้จะกำหนด `rootDir` ไม่ได้ (error TS5011) config แยกสำหรับ seed แก้ปัญหานี้โดยไม่ต้องแก้ `tsconfig.json` หลัก
+
+### Production
+
+`ADMIN_EMAIL`/`ADMIN_PASSWORD` ใน `.env.example` เป็น placeholder ธรรมดา เหมือน `JWT_SECRET` ตั้งค่าของตัวเองก่อนใช้งานจริง หลังจาก seed รันสำเร็จครั้งแรก ควรเปลี่ยน password ของ admin account ผ่าน flow ปกติของแอป (หรือแค่ไม่เก็บ password production ไว้ใน `.env` นานเกินกว่าที่จำเป็นสำหรับรัน seed)
 
 ## การล้าง session ที่หมดอายุ
 
@@ -323,15 +352,17 @@ async cleanupExpiredSessions() {
 
 ## ตัวแปร ENV
 
-| ตัวแปร                        | คำอธิบาย                                             | ค่าเริ่มต้น  |
-| ---------------------------- | -------------------------------------------------- | -------- |
-| `THROTTLE_TTL`               | หน้าต่าง rate limiting (ms)                          | `60000`  |
-| `THROTTLE_LIMIT`             | จำนวน request สูงสุดต่อหน้าต่าง (global)                 | `100`    |
-| `JWT_SECRET`                 | secret สำหรับ sign JWT (อย่างน้อย 32 ตัวอักษร)           | — (บังคับ) |
-| `JWT_EXPIRES_IN`             | อายุของ access token                                | `15m`    |
-| `REFRESH_TOKEN_SECRET`       | secret สำหรับ HMAC refresh token (อย่างน้อย 32 ตัวอักษร) | — (บังคับ) |
-| `REFRESH_TOKEN_EXPIRES_DAYS` | อายุของ refresh token (วัน)                          | `7`      |
-| `BCRYPT_ROUNDS`              | cost factor ของ bcrypt สำหรับ hash รหัสผ่าน            | `12`     |
+| ตัวแปร                        | คำอธิบาย                                                                    | ค่าเริ่มต้น    |
+| ---------------------------- | ------------------------------------------------------------------------- | ---------- |
+| `THROTTLE_TTL`               | หน้าต่าง rate limiting (ms)                                                 | `60000`    |
+| `THROTTLE_LIMIT`             | จำนวน request สูงสุดต่อหน้าต่าง (global)                                        | `100`      |
+| `JWT_SECRET`                 | secret สำหรับ sign JWT (อย่างน้อย 32 ตัวอักษร)                                  | — (บังคับ)   |
+| `JWT_EXPIRES_IN`             | อายุของ access token                                                       | `15m`      |
+| `REFRESH_TOKEN_SECRET`       | secret สำหรับ HMAC refresh token (อย่างน้อย 32 ตัวอักษร)                        | — (บังคับ)   |
+| `REFRESH_TOKEN_EXPIRES_DAYS` | อายุของ refresh token (วัน)                                                 | `7`        |
+| `BCRYPT_ROUNDS`              | cost factor ของ bcrypt สำหรับ hash รหัสผ่าน                                   | `12`       |
+| `ADMIN_EMAIL`                | email ของ admin account สร้างโดย seed (ดู [Seed](#seed-สร้าง-admin-account)) | — (ไม่บังคับ) |
+| `ADMIN_PASSWORD`             | password ของ admin account สร้างโดย seed                                   | — (ไม่บังคับ) |
 
 ## E2E test
 

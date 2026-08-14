@@ -99,6 +99,20 @@ pnpm prisma generate
 Prisma generates the client into `src/generated/prisma` — this folder is in `.gitignore`.
 In Prisma 7 the client is **not generated automatically** on `migrate dev` — you need to run `prisma generate` manually after schema changes. Auto-generation can be configured via `afterApply` in `prisma.config.ts`.
 
+### Seed: the admin account
+
+Regular registration (`POST /auth/register`) always creates a user with the `user` role (guaranteed by the schema — `role Role @default(user)`), so without a separate step the database would never have a single `admin`. That's what `prisma/seed.ts` is for — run it as a separate command, including right after `migrate reset`:
+
+```bash
+cd apps/backend
+pnpm prisma migrate reset   # recreate the database (if needed)
+pnpm prisma db seed         # then explicitly seed the admin account
+```
+
+The script is idempotent (upsert by email) and reads its data from `ADMIN_EMAIL`/`ADMIN_PASSWORD` in `.env`.
+
+Details (how it works, production notes) — in [Auth → Backend: Seed](./auth/backend.md#seed-creating-the-admin-account).
+
 ---
 
 ## Migrations
