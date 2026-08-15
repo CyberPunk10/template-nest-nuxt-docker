@@ -47,6 +47,11 @@ services:
       # Снаружи фронтенд приходит через прокси, а не со своего порта.
       # Порт 80 в origin не пишется — браузер его тоже опускает.
       CORS_ORIGIN: http://localhost
+      # POSTGRES_HOST/PORT переопределяются здесь, а не в .env — в .env лежат
+      # значения для локальной разработки (порт проброшен на хост),
+      # а внутри Docker-сети Postgres доступен по имени сервиса на 5432.
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: '5432'
     networks:
       - app
 
