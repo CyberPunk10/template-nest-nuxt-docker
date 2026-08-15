@@ -126,41 +126,55 @@ export class AuthService implements OnModuleInit {
     const expiresInDays = this.refreshExpiresInDays
     const expiresAt = this.getRefreshExpiresAt()
 
-    // Atomic claim: updateMany is the single gate — only one concurrent request wins.
+    // Atomic claim + replacement: updateMany is the single gate — only one concurrent
+    // request wins — and the replacement session is created in the SAME transaction,
+    // so a crash between claim and create can no longer strand the family with no
+    // usable token on either side.
     // deleteMany (family wipe on reuse) runs OUTSIDE the transaction so it is not rolled back.
     const now = new Date()
-    const { count } = await this.prisma.session.updateMany({
-      where: { id: sess.id, isUsed: false, expiresAt: { gt: now } },
-      data: { isUsed: true, lastUsedAt: now },
-    })
+    let user: SafeUser | null
+    try {
+      user = await this.prisma.$transaction(async (tx) => {
+        const { count } = await tx.session.updateMany({
+          where: { id: sess.id, isUsed: false, expiresAt: { gt: now } },
+          data: { isUsed: true, lastUsedAt: now },
+        })
 
-    if (count === 0) {
+        if (count === 0) return null
+
+        const user = await tx.user.findUniqueOrThrow({
+          where: { id: sess.userId },
+          select: safeUserSelect,
+        })
+
+        await tx.session.create({
+          data: {
+            userId: user.id,
+            familyId: sess.familyId,
+            refreshTokenHash: newRefreshTokenHash,
+            expiresAt,
+            ...this.getSessionMeta(req),
+          },
+        })
+
+        return user
+      })
+    } catch (e: unknown) {
+      // Session outlived its user (e.g. deleted mid-refresh) — treat like any other invalid session.
+      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2025') {
+        this.clearCookies(res)
+        throw new UnauthorizedException()
+      }
+      throw e
+    }
+
+    if (!user) {
       // Either already used (reuse attack) or expired — wipe the entire family
       // to invalidate all tokens in the chain, then deny.
       await this.prisma.session.deleteMany({ where: { familyId: sess.familyId } })
       this.clearCookies(res)
       throw new UnauthorizedException()
     }
-
-    // Create new session; load user. These two ops run in a transaction for consistency.
-    const user = await this.prisma.$transaction(async (tx) => {
-      const user = await tx.user.findUniqueOrThrow({
-        where: { id: sess.userId },
-        select: safeUserSelect,
-      })
-
-      await tx.session.create({
-        data: {
-          userId: user.id,
-          familyId: sess.familyId,
-          refreshTokenHash: newRefreshTokenHash,
-          expiresAt,
-          ...this.getSessionMeta(req),
-        },
-      })
-
-      return user
-    })
 
     const payload: JwtPayload = {
       sub: user.id,
