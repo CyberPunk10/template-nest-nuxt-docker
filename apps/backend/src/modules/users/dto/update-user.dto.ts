@@ -14,6 +14,7 @@ export class UpdateUserDto {
 
   @ApiPropertyOptional({ example: 'alice@example.com' })
   @IsOptional()
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value.toLowerCase() : value))
   @IsEmail()
   @MaxLength(254)
   email?: string
