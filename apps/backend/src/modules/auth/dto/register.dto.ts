@@ -13,6 +13,7 @@ export class RegisterDto {
   name!: string
 
   @ApiProperty({ example: 'alice@example.com' })
+  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value.toLowerCase() : value))
   @IsEmail()
   email!: string
 
