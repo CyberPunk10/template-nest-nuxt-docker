@@ -1,4 +1,4 @@
-export default defineNuxtPlugin(async (nuxtApp) => {
+export default defineNuxtPlugin(async () => {
   const {
     public: { apiBase },
   } = useRuntimeConfig()
@@ -7,14 +7,14 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   const apiFetch = $fetch.create({ baseURL: apiBase as string })
 
   if (import.meta.server) {
-    // К этому моменту server/middleware/auth.ts уже обновил куки если нужно —
-    // /auth/me выполняется с актуальным access_token.
-    // Куки прокидываем вручную: $fetch на сервере работает в контексте Node.js
-    // и не имеет доступа к браузерным кукам — нужно явно взять их из входящего запроса.
-    const cookieHeader = nuxtApp.ssrContext?.event.headers.get('cookie') ?? ''
-    user.value = await apiFetch<AuthUser>('/auth/me', { headers: { cookie: cookieHeader } }).catch(
-      () => null,
-    )
+    // useRequestFetch форвардит заголовки входящего запроса (обычный $fetch их
+    // не видит и ушёл бы без токена). Если server/middleware/auth.ts обновил
+    // токены — берём свежие куки из context, они ещё не в заголовках запроса.
+    const requestFetch = useRequestFetch()
+    const refreshedCookie = useRequestEvent()?.context.refreshedCookie as string | undefined
+    user.value = await requestFetch<AuthUser>(`${apiBase}/auth/me`, {
+      headers: refreshedCookie ? { cookie: refreshedCookie } : undefined,
+    }).catch(() => null)
   } else {
     // Клиент: штатный сценарий — /auth/me проходит сразу (браузер получил Set-Cookie от Nitro).
     // Fallback на refresh нужен для edge-case: токен протух между SSR и гидратацией.
