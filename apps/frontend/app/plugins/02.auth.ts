@@ -3,6 +3,7 @@ export default defineNuxtPlugin(async () => {
     public: { apiBase },
   } = useRuntimeConfig()
   const { user } = useAuth()
+  const { refresh } = useRefreshToken()
 
   const apiFetch = $fetch.create({ baseURL: apiBase as string })
 
@@ -18,10 +19,7 @@ export default defineNuxtPlugin(async () => {
     // Куки не прокидываем вручную — браузер отправляет их автоматически.
     let me = await apiFetch<AuthUser>('/auth/me').catch(() => null)
     if (!me) {
-      const refreshed = await apiFetch('/auth/refresh', { method: 'POST' })
-        .then(() => true)
-        .catch(() => false)
-      if (refreshed) {
+      if (await refresh()) {
         me = await apiFetch<AuthUser>('/auth/me').catch(() => null)
       }
     }
