@@ -1,11 +1,12 @@
 import { ApiPropertyOptional } from '@nestjs/swagger'
 import { Transform } from 'class-transformer'
 import { IsEmail, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator'
+import { lowercaseString, trimString } from '../../../common/transforms/string.transforms'
 
 export class UpdateUserDto {
   @ApiPropertyOptional({ example: 'Alice' })
   @IsOptional()
-  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value.trim() : value))
+  @Transform(trimString)
   @IsString()
   @IsNotEmpty()
   @MinLength(2)
@@ -14,7 +15,7 @@ export class UpdateUserDto {
 
   @ApiPropertyOptional({ example: 'alice@example.com' })
   @IsOptional()
-  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value.toLowerCase() : value))
+  @Transform(lowercaseString)
   @IsEmail()
   @MaxLength(254)
   email?: string
