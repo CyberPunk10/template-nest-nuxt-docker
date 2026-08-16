@@ -41,10 +41,6 @@ export class UsersService {
     }
   }
 
-  findByEmail(email: string): Promise<User | null> {
-    return this.prisma.user.findUnique({ where: { email } })
-  }
-
   async remove(id: string): Promise<void> {
     try {
       await this.prisma.user.delete({ where: { id } })

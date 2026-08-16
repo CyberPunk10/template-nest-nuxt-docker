@@ -226,8 +226,12 @@ describe('Auth (e2e)', () => {
     it('возвращает 401 с просроченным токеном', async () => {
       const originalCookies = await loginCookies()
 
-      // Переводим expiresAt сессии в прошлое напрямую в БД
-      await prisma.session.updateMany({ data: { expiresAt: new Date(0) } })
+      // Переводим expiresAt сессии в прошлое напрямую в БД. where обязателен:
+      // без него просрочиваются все сессии в базе, включая чужие.
+      await prisma.session.updateMany({
+        where: { user: { email: DEFAULT_USER.email } },
+        data: { expiresAt: new Date(0) },
+      })
 
       const res = await request(app.getHttpServer())
         .post('/auth/refresh')
