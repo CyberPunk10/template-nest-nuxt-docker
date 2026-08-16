@@ -5,6 +5,12 @@ import { useRefreshToken } from '~/composables/useRefreshToken'
 // оба клиента используют одну и ту же ротацию refresh-токена, но по-разному
 // вызывают навигацию (navigateTo напрямую vs через nuxtApp.runWithContext).
 export function createAuthErrorHandler(navigateToLogin: () => unknown) {
+  // Композаблы вызываем здесь, при создании обработчика: фабрика работает в
+  // контексте плагина/setup, а сам onResponseError — асинхронный колбэк ofetch
+  // уже вне контекста Nuxt, и вызов композабла там даёт NUXT_E1001.
+  const { user } = useAuth()
+  const { refresh } = useRefreshToken()
+
   return async function onResponseError({ response, request, options }: {
     response: { status: number }
     request: string | Request
@@ -27,19 +33,16 @@ export function createAuthErrorHandler(navigateToLogin: () => unknown) {
     // cookies без явного forward, так что уйдёт без refresh_token и всегда провалится.
     if (import.meta.server) {
       options.retry = 0
-      const { user } = useAuth()
       user.value = null
       return
     }
 
-    const { refresh } = useRefreshToken()
     const refreshed = await refresh()
 
     // Refresh провалился — разлогиниваем
     if (!refreshed) {
       // Отменяем retry — повторный запрос всё равно упадёт с 401
       options.retry = 0
-      const { user } = useAuth()
       user.value = null
       await navigateToLogin()
     }

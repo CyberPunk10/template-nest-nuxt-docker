@@ -44,6 +44,7 @@ const { data } = await useFetch('/api/backend/tasks')
 | `plugins/01.api.ts`              | SPA      | `$api` с 401-retry для императивных запросов     |
 | `composables/useApi.ts`          | SPA      | `useApi` с 401-retry для декларативных запросов  |
 | `composables/useRefreshToken.ts` | —        | Дедупликация refresh: singleton промис           |
+| `composables/apiErrorHandler.ts` | SPA      | Общий 401-обработчик для `$api` и `useApi`       |
 | `plugins/02.auth.ts`             | Оба      | Заполняет `user` через `/auth/me` при старте     |
 | `composables/useAuth.ts`         | —        | `login`, `logout`, `register`, реактивный `user` |
 | `middleware/auth.global.ts`      | —        | Защита роутов: редирект на `/login` или `/`      |
@@ -145,11 +146,43 @@ async function refresh(): Promise<boolean> {
 }
 ```
 
+## composables/apiErrorHandler.ts
+
+Общий обработчик 401 для обоих клиентов — `$api` (`plugins/01.api.ts`) и `useApi` (`composables/useApi.ts`). Фабрика `createAuthErrorHandler()` принимает функцию навигации, потому что клиенты вызывают её по-разному: `useApi` — через `navigateTo` напрямую, `$api` — через `nuxtApp.runWithContext`.
+
+Логика по порядку:
+
+1. Не 401 — выходим сразу
+2. Запрос к `/auth/*` — отменяем retry (иначе бесконечный цикл: refresh падает с 401 → снова refresh)
+3. SSR — отменяем retry и обнуляем `user`: silent refresh уже отработал в Nitro middleware, повторять нечего
+4. Клиент — делаем refresh через дедуплицированный `useRefreshToken`, при неудаче разлогиниваем
+
+::: warning Композаблы вызываются в фабрике, а не в обработчике
+```typescript
+export function createAuthErrorHandler(navigateToLogin) {
+  const { user } = useAuth()          // ← здесь: контекст Nuxt есть
+  const { refresh } = useRefreshToken()
+
+  return async function onResponseError(...) {
+    // ← а здесь контекста уже нет: это асинхронный колбэк ofetch
+  }
+}
+```
+
+Вызов композабла внутри `onResponseError` даёт ошибку `NUXT_E1001: A composable that requires access to the Nuxt instance was called outside of a plugin, Nuxt hook, or Vue setup function`. Фабрика же выполняется в контексте плагина/setup, где композаблы легальны.
+:::
+
 ## plugins/02.auth.ts
 
 Выполняется при каждом старте приложения — на сервере (SSR) и на клиенте (после гидратации). Заполняет `useState('auth.user')` через `/auth/me`.
 
-**На сервере:** к этому моменту `server/middleware/auth.ts` уже обновил куки — `/auth/me` выполняется с актуальным `access_token`. Куки прокидываются вручную (`headers: { cookie: ... }`), потому что `$fetch` на сервере работает в контексте Node.js и не имеет доступа к браузерным кукам.
+**На сервере:** к этому моменту `server/middleware/auth.ts` уже обновил куки — `/auth/me` выполняется с актуальным `access_token`. Используется `useRequestFetch()`, а не `$fetch`: обычный `$fetch` на сервере работает в контексте Node.js и не видит браузерных кук, а `useRequestFetch` форвардит заголовки входящего запроса автоматически.
+
+::: tip Почему не читать куки вручную
+Раньше здесь было `nuxtApp.ssrContext?.event.headers.get('cookie')` с ручной передачей в `headers`. Это работало, но было хрупко: `event.headers` **кэширует** значение при первом чтении, поэтому если любое middleware выше по цепочке обратилось к нему раньше — плагин получал старый токен и пользователя выбрасывало на логин.
+
+`useRequestFetch()` этой проблемы лишён: внутри он доходит до `getRequestHeaders()`, который читает `event.node.req.headers` напрямую, минуя кэш.
+:::
 
 **На клиенте:** пробует `/auth/me`. Если 401 (edge-case: токен протух между SSR и гидратацией) — делает refresh, затем снова `/auth/me`. В штатном сценарии браузер уже получил новые токены в `Set-Cookie` от Nitro и `/auth/me` проходит сразу.
 
