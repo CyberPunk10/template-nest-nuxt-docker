@@ -25,17 +25,22 @@ export default defineEventHandler(async (event) => {
       appendHeader(event, 'set-cookie', cookie)
     }
 
-    // Обновляем cookie-заголовок текущего запроса, чтобы plugins/02.auth.ts
-    // увидел новый access_token при вызове /auth/me
+    // Кладём свежие куки в context — plugins/02.auth.ts возьмёт их оттуда для
+    // /auth/me. event.context — штатный канал h3 для передачи данных между
+    // обработчиками одного запроса, мутировать заголовки запроса не нужно.
     if (setCookieHeaders.length) {
-      const parsed = parseCookies(event)
+      const cookieJar = parseCookies(event)
       for (const raw of setCookieHeaders) {
-        const [nameValue] = raw.split(';')
-        const [name, value] = (nameValue ?? '').split('=')
-        if (name && value !== undefined) parsed[name.trim()] = value.trim()
+        // Первый сегмент до ';' — это "name=value", дальше атрибуты (Path, HttpOnly...).
+        // Режем по ПЕРВОМУ '=': значение может содержать свои (base64 с padding).
+        const nameValue = raw.split(';')[0] ?? ''
+        const eq = nameValue.indexOf('=')
+        if (eq < 1) continue
+        cookieJar[nameValue.slice(0, eq).trim()] = nameValue.slice(eq + 1).trim()
       }
-      event.node.req.headers['cookie'] = Object.entries(parsed)
-        .map(([k, v]) => `${k}=${v}`)
+
+      event.context.refreshedCookie = Object.entries(cookieJar)
+        .map(([name, value]) => `${name}=${value}`)
         .join('; ')
     }
   } catch {
