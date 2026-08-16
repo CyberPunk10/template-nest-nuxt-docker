@@ -20,6 +20,6 @@ USER node
 COPY --from=builder --chown=node:node /deploy/node_modules ./node_modules
 COPY --from=builder --chown=node:node /app/apps/backend/dist ./dist
 EXPOSE ${PORT}
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s \
+HEALTHCHECK --interval=5s --timeout=3s --start-period=60s \
   CMD wget -qO- http://127.0.0.1:${PORT}/health || exit 1
 CMD ["node", "dist/main"]
