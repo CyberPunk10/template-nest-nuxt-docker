@@ -7,14 +7,11 @@ export default defineNuxtPlugin(async () => {
   const apiFetch = $fetch.create({ baseURL: apiBase as string })
 
   if (import.meta.server) {
-    // useRequestFetch форвардит заголовки входящего запроса (обычный $fetch их
-    // не видит и ушёл бы без токена). Если server/middleware/auth.ts обновил
-    // токены — берём свежие куки из context, они ещё не в заголовках запроса.
+    // useRequestFetch форвардит заголовки входящего запроса, включая cookie
+    // (обычный $fetch их не видит и ушёл бы без токена). Если токены протухли,
+    // server/middleware/auth.ts уже подменил cookie в заголовках на свежие.
     const requestFetch = useRequestFetch()
-    const refreshedCookie = useRequestEvent()?.context.refreshedCookie as string | undefined
-    user.value = await requestFetch<AuthUser>(`${apiBase}/auth/me`, {
-      headers: refreshedCookie ? { cookie: refreshedCookie } : undefined,
-    }).catch(() => null)
+    user.value = await requestFetch<AuthUser>(`${apiBase}/auth/me`).catch(() => null)
   } else {
     // Клиент: штатный сценарий — /auth/me проходит сразу (браузер получил Set-Cookie от Nitro).
     // Fallback на refresh нужен для edge-case: токен протух между SSR и гидратацией.

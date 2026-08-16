@@ -44,6 +44,7 @@ The exception is public endpoints (`/auth/login`, `/auth/register`) and requests
 | `plugins/01.api.ts`              | SPA      | `$api` with 401-retry for imperative requests    |
 | `composables/useApi.ts`          | SPA      | `useApi` with 401-retry for declarative requests |
 | `composables/useRefreshToken.ts` | —        | Refresh deduplication: singleton promise         |
+| `composables/apiErrorHandler.ts` | SPA      | Shared 401 handler for `$api` and `useApi`       |
 | `plugins/02.auth.ts`             | Both     | Populates `user` via `/auth/me` on startup       |
 | `composables/useAuth.ts`         | —        | `login`, `logout`, `register`, reactive `user`   |
 | `middleware/auth.global.ts`      | —        | Route protection: redirect to `/login` or `/`    |
@@ -145,11 +146,43 @@ async function refresh(): Promise<boolean> {
 }
 ```
 
+## composables/apiErrorHandler.ts
+
+The shared 401 handler for both clients — `$api` (`plugins/01.api.ts`) and `useApi` (`composables/useApi.ts`). The `createAuthErrorHandler()` factory takes a navigation function, because the clients call it differently: `useApi` uses `navigateTo` directly, `$api` goes through `nuxtApp.runWithContext`.
+
+The logic, in order:
+
+1. Not a 401 — return immediately
+2. Request to `/auth/*` — cancel retry (otherwise an infinite loop: refresh fails with 401 → refresh again)
+3. SSR — cancel retry and clear `user`: silent refresh already ran in the Nitro middleware, nothing to repeat
+4. Client — refresh via the deduplicated `useRefreshToken`, log out on failure
+
+::: warning Composables are called in the factory, not in the handler
+```typescript
+export function createAuthErrorHandler(navigateToLogin) {
+  const { user } = useAuth()          // ← here: the Nuxt context exists
+  const { refresh } = useRefreshToken()
+
+  return async function onResponseError(...) {
+    // ← here it's already gone: this is an async ofetch callback
+  }
+}
+```
+
+Calling a composable inside `onResponseError` throws `NUXT_E1001: A composable that requires access to the Nuxt instance was called outside of a plugin, Nuxt hook, or Vue setup function`. The factory, on the other hand, runs in a plugin/setup context where composables are valid.
+:::
+
 ## plugins/02.auth.ts
 
 Runs on every application startup — on the server (SSR) and on the client (after hydration). Populates `useState('auth.user')` via `/auth/me`.
 
-**On the server:** by this point `server/middleware/auth.ts` has already refreshed the cookies — `/auth/me` runs with an up-to-date `access_token`. Cookies are forwarded manually (`headers: { cookie: ... }`) because `$fetch` on the server runs in a Node.js context and has no access to browser cookies.
+**On the server:** by this point `server/middleware/auth.ts` has already refreshed the cookies — `/auth/me` runs with an up-to-date `access_token`. It uses `useRequestFetch()` rather than `$fetch`: plain `$fetch` runs in a Node.js context on the server and never sees browser cookies, while `useRequestFetch` forwards the incoming request headers automatically.
+
+::: tip Why not read cookies manually
+This used to be `nuxtApp.ssrContext?.event.headers.get('cookie')` with the value passed into `headers` by hand. It worked, but was fragile: `event.headers` **caches** its value on first read, so if any middleware higher up the chain touched it earlier, the plugin would get the stale token and the user would be bounced to the login page.
+
+`useRequestFetch()` avoids this: internally it reaches `getRequestHeaders()`, which reads `event.node.req.headers` directly, bypassing the cache.
+:::
 
 **On the client:** it tries `/auth/me`. On a 401 (edge case: the token expired between SSR and hydration) — it refreshes, then calls `/auth/me` again. In the normal scenario the browser has already received new tokens in `Set-Cookie` from Nitro and `/auth/me` succeeds right away.
 

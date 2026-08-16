@@ -1,3 +1,5 @@
+import { parseSetCookie } from 'cookie-es'
+
 // Silent refresh перед SSR: если access_token протух, но refresh_token жив —
 // обновляем токены до того как Vue начнёт рендер. Это единственное место где
 // Set-Cookie гарантированно доходит до браузера вместе со страницей.
@@ -25,21 +27,22 @@ export default defineEventHandler(async (event) => {
       appendHeader(event, 'set-cookie', cookie)
     }
 
-    // Кладём свежие куки в context — plugins/02.auth.ts возьмёт их оттуда для
-    // /auth/me. event.context — штатный канал h3 для передачи данных между
-    // обработчиками одного запроса, мутировать заголовки запроса не нужно.
+    // Подменяем cookie входящего запроса на свежие токены. Именно заголовок
+    // запроса читают все SSR-вызовы ниже по цепочке: и plugins/02.auth.ts, и
+    // useApi() внутри компонентов. Без подмены они уйдут со старым access_token,
+    // получат 401 и обнулят user (см. composables/apiErrorHandler.ts).
+    // Записать cookie в ЗАПРОС средствами h3 нельзя: parseCookies читает req,
+    // setCookie/appendHeader пишут в res — симметричной функции нет, правим req напрямую.
     if (setCookieHeaders.length) {
       const cookieJar = parseCookies(event)
       for (const raw of setCookieHeaders) {
-        // Первый сегмент до ';' — это "name=value", дальше атрибуты (Path, HttpOnly...).
-        // Режем по ПЕРВОМУ '=': значение может содержать свои (base64 с padding).
-        const nameValue = raw.split(';')[0] ?? ''
-        const eq = nameValue.indexOf('=')
-        if (eq < 1) continue
-        cookieJar[nameValue.slice(0, eq).trim()] = nameValue.slice(eq + 1).trim()
+        // parseSetCookie отбрасывает атрибуты (Max-Age, Path, HttpOnly...) —
+        // в заголовок запроса идут только пары name=value, как их шлёт браузер.
+        const { name, value } = parseSetCookie(raw)
+        if (name) cookieJar[name] = value
       }
 
-      event.context.refreshedCookie = Object.entries(cookieJar)
+      event.node.req.headers['cookie'] = Object.entries(cookieJar)
         .map(([name, value]) => `${name}=${value}`)
         .join('; ')
     }

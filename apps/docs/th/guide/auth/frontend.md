@@ -44,6 +44,7 @@ const { data } = await useFetch('/api/backend/tasks')
 | `plugins/01.api.ts`              | SPA      | `$api` พร้อม 401-retry สำหรับ request แบบ imperative |
 | `composables/useApi.ts`          | SPA      | `useApi` พร้อม 401-retry สำหรับ request แบบ declarative |
 | `composables/useRefreshToken.ts` | —        | Deduplication ของ refresh: singleton promise     |
+| `composables/apiErrorHandler.ts` | SPA      | ตัวจัดการ 401 ร่วมของ `$api` และ `useApi`         |
 | `plugins/02.auth.ts`             | ทั้งสอง   | เติมค่า `user` ผ่าน `/auth/me` ตอนเริ่มต้น        |
 | `composables/useAuth.ts`         | —        | `login`, `logout`, `register`, `user` แบบ reactive |
 | `middleware/auth.global.ts`      | —        | การป้องกัน route: redirect ไปยัง `/login` หรือ `/` |
@@ -145,11 +146,43 @@ async function refresh(): Promise<boolean> {
 }
 ```
 
+## composables/apiErrorHandler.ts
+
+ตัวจัดการ 401 ที่ใช้ร่วมกันของทั้งสอง client — `$api` (`plugins/01.api.ts`) และ `useApi` (`composables/useApi.ts`) ฟังก์ชัน `createAuthErrorHandler()` รับฟังก์ชัน navigation เข้ามา เพราะแต่ละ client เรียกใช้ต่างกัน: `useApi` ใช้ `navigateTo` ตรง ๆ ส่วน `$api` ต้องผ่าน `nuxtApp.runWithContext`
+
+ลำดับการทำงาน:
+
+1. ไม่ใช่ 401 — จบทันที
+2. request ไปยัง `/auth/*` — ยกเลิก retry (ไม่งั้นจะวนไม่รู้จบ: refresh ล้มเหลวด้วย 401 → refresh อีก)
+3. SSR — ยกเลิก retry และล้างค่า `user`: silent refresh ทำงานไปแล้วใน Nitro middleware ไม่มีอะไรให้ทำซ้ำ
+4. Client — ทำ refresh ผ่าน `useRefreshToken` ที่ deduplicate แล้ว หากล้มเหลวจึง logout
+
+::: warning composable ถูกเรียกใน factory ไม่ใช่ใน handler
+```typescript
+export function createAuthErrorHandler(navigateToLogin) {
+  const { user } = useAuth()          // ← ตรงนี้: ยังมี context ของ Nuxt
+  const { refresh } = useRefreshToken()
+
+  return async function onResponseError(...) {
+    // ← ตรงนี้ไม่มีแล้ว: เป็น async callback ของ ofetch
+  }
+}
+```
+
+การเรียก composable ภายใน `onResponseError` จะเกิด error `NUXT_E1001: A composable that requires access to the Nuxt instance was called outside of a plugin, Nuxt hook, or Vue setup function` ส่วน factory ทำงานในบริบทของ plugin/setup ซึ่งเรียก composable ได้ถูกต้อง
+:::
+
 ## plugins/02.auth.ts
 
 ทำงานทุกครั้งที่แอปพลิเคชันเริ่มต้น — บน server (SSR) และบน client (หลัง hydration) เติมค่า `useState('auth.user')` ผ่าน `/auth/me`
 
-**บน server:** ณ จุดนี้ `server/middleware/auth.ts` ได้อัปเดต cookie ไปแล้ว — `/auth/me` ทำงานด้วย `access_token` ที่เป็นปัจจุบัน cookie ถูกส่งต่อด้วยตนเอง (`headers: { cookie: ... }`) เพราะ `$fetch` บน server ทำงานในบริบทของ Node.js และไม่มีสิทธิ์เข้าถึง cookie ของ browser
+**บน server:** ณ จุดนี้ `server/middleware/auth.ts` ได้อัปเดต cookie ไปแล้ว — `/auth/me` ทำงานด้วย `access_token` ที่เป็นปัจจุบัน ใช้ `useRequestFetch()` แทน `$fetch`: `$fetch` ธรรมดาบน server ทำงานในบริบทของ Node.js และไม่เห็น cookie ของ browser ส่วน `useRequestFetch` จะ forward header ของ request ขาเข้าให้อัตโนมัติ
+
+::: tip ทำไมไม่อ่าน cookie ด้วยตนเอง
+เดิมตรงนี้เคยเป็น `nuxtApp.ssrContext?.event.headers.get('cookie')` แล้วส่งค่าเข้า `headers` เอง วิธีนั้นใช้งานได้ แต่เปราะบาง: `event.headers` จะ **cache** ค่าไว้ตั้งแต่การอ่านครั้งแรก ดังนั้นหาก middleware ตัวใดก่อนหน้าไปแตะมันก่อน plugin จะได้ token เก่า และผู้ใช้จะถูกเด้งไปหน้า login
+
+`useRequestFetch()` ไม่มีปัญหานี้: ภายในมันเรียกไปถึง `getRequestHeaders()` ซึ่งอ่าน `event.node.req.headers` โดยตรง ข้าม cache ไป
+:::
 
 **บน client:** ลอง `/auth/me` หากได้ 401 (edge-case: token หมดอายุระหว่าง SSR กับ hydration) — จะทำ refresh แล้วจึงลอง `/auth/me` อีกครั้ง ในสถานการณ์ปกติ browser ได้รับ token ใหม่ใน `Set-Cookie` จาก Nitro แล้ว และ `/auth/me` ผ่านทันที
 

@@ -1,6 +1,6 @@
 # การยืนยันตัวตน (Authorization)
 
-> **Branch:** เอกสารนี้ใช้ได้เฉพาะสำหรับ branch `auth` เท่านั้น
+> **Branches:** `auth-session` (session ในหน่วยความจำ) และ `postgres-prisma` (session เดียวกัน แต่เก็บใน PostgreSQL ผ่าน Prisma) — รูปแบบการยืนยันตัวตนเหมือนกันทั้งสอง branch ต่างกันแค่ที่เก็บข้อมูล
 
 &nbsp;
 
@@ -54,3 +54,24 @@ Browser → API Gateway → Service A (orders)
 Gateway ตรวจสอบ JWT ครั้งเดียวที่ทางเข้า แต่ละ service จะได้รับ request ที่ผ่านการ verify แล้ว Refresh-token อยู่ใน Auth Service ที่รวมศูนย์ ส่วน service ต่าง ๆ ไม่ยุ่งกับ session เลย — มันไม่ใช่ความรับผิดชอบของพวกมัน
 
 ของเรามี backend เดียวที่จัดการทั้ง access และ refresh token เอง นี่เป็นสิ่งที่ถูกต้องสำหรับ monolith — การนำ pattern ของ microservices มาใช้ที่นี่จะเกินความจำเป็น
+
+&nbsp;
+
+## ทำไมไม่ใช้ "Nuxt อย่างเดียว"
+
+แอป Nuxt ส่วนใหญ่ทำงานได้ดีโดยไม่ต้องมี backend แยก: Nitro ให้บริการ API เอง และการยืนยันตัวตนจัดการโดย [nuxt-auth-utils](https://github.com/atinux/nuxt-auth-utils) ด้วย session cookie ที่เข้ารหัส วิธีนี้ง่ายกว่า — codebase เดียว deploy ครั้งเดียว และ SSR ก็ตรงไปตรงมา (server รู้จัก user อยู่แล้ว ไม่ต้อง forward อะไร)
+
+**ทำไม template นี้ต่างออกไป:** ที่นี่ NestJS เป็นเจ้าของ user, รหัสผ่าน และ session ส่วน `nuxt-auth-utils` ตั้งอยู่บนสมมติฐานว่า Nitro เป็นเจ้าของ session เอง ("This module only works with a Nuxt server running as it uses server API routes") การรวมสองอย่างเข้าด้วยกันหมายถึงต้องเก็บ session ไว้สองที่ — ทั้ง Nitro และ NestJS — นั่นคือมี source of truth สองแหล่ง
+
+แนวทางไหนเหมาะกับสถานการณ์ใด:
+
+| สถานการณ์                                          | เจ้าของ session                        |
+| --------------------------------------------------- | -------------------------------------- |
+| Fullstack Nuxt เข้าถึง DB จาก Nitro โดยตรง          | **Nitro** — `nuxt-auth-utils` เหมาะที่สุด |
+| OAuth ภายนอก ข้อมูลอยู่หลัง API Gateway             | **Nitro** เก็บ token ของ provider      |
+| ใช้ provider สำเร็จรูป (Auth0, Keycloak, Supabase)  | **provider**, Nitro แค่เก็บ token      |
+| Backend ของตัวเองที่มี user ← **กรณีของเรา**        | **backend** (NestJS)                   |
+
+Backend แยกจะคุ้มค่าเมื่อต้องการ: client หลายตัว (web + mobile app + partner API), แยกทีม frontend/backend, โครงสร้างพื้นฐานฝั่ง server (cron, queue, WebSocket, gRPC) หรือโครงสร้างสำหรับ codebase ขนาดใหญ่ (module, DI, guard)
+
+**ราคาของตัวเลือกนี้** คือความซับซ้อนที่อธิบายไว้ใน [Frontend](./frontend) และ [Backend](./backend): การ forward cookie ผ่านสองทอดตอน SSR, silent refresh ก่อน render, การ deduplicate refresh ที่เกิดพร้อมกัน ทั้งหมดนี้เป็นผลจากการที่เจ้าของ session กับตัว render เป็นคนละ process กัน
