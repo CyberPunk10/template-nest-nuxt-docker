@@ -14,12 +14,13 @@ interface GlobalTask extends Task {
 const { t, locale } = useI18n()
 const { isAdmin, user: currentUser } = useAuth()
 
+// Админ видит всех, остальные — только себя. Свой профиль уже есть в useAuth(),
+// поэтому запрос за ним не нужен: /users/:id вернул бы те же самые поля.
 let users: Ref<AuthUser[]>
 if (isAdmin.value) {
   ({ data: users } = await useApi<AuthUser[]>('/users', { default: () => [] }))
 } else {
-  const { data: ownUser } = await useApi<AuthUser>(`/users/${currentUser.value!.id}`)
-  users = computed(() => (ownUser.value ? [ownUser.value] : []))
+  users = computed(() => (currentUser.value ? [currentUser.value] : []))
 }
 
 const { data: tasks } = isAdmin.value
