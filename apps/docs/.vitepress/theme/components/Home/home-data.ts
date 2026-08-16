@@ -1,3 +1,9 @@
+import { repoUrl } from './site-data'
+
+function cloneCmd(branch: string) {
+  return `git clone ${repoUrl} && git checkout ${branch}`
+}
+
 export const layers = ['Backend', 'Frontend', 'Shared', 'Infra'] as const
 export type Layer = (typeof layers)[number]
 
@@ -86,10 +92,7 @@ export const quickstarts: Quickstart[] = [
   {
     branch: 'main',
     steps: [
-      {
-        id: 'clone',
-        cmd: 'git clone https://github.com/CyberPunk10/template-nest-nuxt-docker && git checkout main',
-      },
+      { id: 'clone', cmd: cloneCmd('main') },
       { id: 'install', cmd: 'pnpm install' },
       { id: 'run', cmd: 'pnpm dev' },
     ],
@@ -97,10 +100,7 @@ export const quickstarts: Quickstart[] = [
   {
     branch: 'auth-session',
     steps: [
-      {
-        id: 'clone',
-        cmd: 'git clone https://github.com/CyberPunk10/template-nest-nuxt-docker && git checkout auth-session',
-      },
+      { id: 'clone', cmd: cloneCmd('auth-session') },
       { id: 'install', cmd: 'pnpm install' },
       {
         id: 'envCheck',
@@ -112,10 +112,7 @@ export const quickstarts: Quickstart[] = [
   {
     branch: 'postgres-prisma',
     steps: [
-      {
-        id: 'clone',
-        cmd: 'git clone https://github.com/CyberPunk10/template-nest-nuxt-docker && git checkout postgres-prisma',
-      },
+      { id: 'clone', cmd: cloneCmd('postgres-prisma') },
       { id: 'install', cmd: 'pnpm install' },
       {
         id: 'envCheck',

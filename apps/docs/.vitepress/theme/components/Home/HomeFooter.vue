@@ -1,20 +1,22 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, inject, ref, type Ref } from 'vue'
 import { useData } from 'vitepress'
+import { repoUrl, authorUrl, sponsorUrl, installCmd, contacts, cryptoWallets } from './site-data'
 
 // Переводы стартовой страницы из themeConfig.home (реактивно к локали VitePress).
 const { theme } = useData()
 const home = computed(() => theme.value.home!)
 
-const repoUrl = 'https://github.com/CyberPunk10/template-nest-nuxt-docker'
-// Команда установки шаблона (заглушка — заменить на реальный create-скаффолдер).
-const installCmd = 'npx create-nest-nuxt my-app'
+// Копирование адреса — тот же механизм, что у блока команд (provide в CustomHome).
+const copied = inject<Ref<string | null>>('copied')!
+const copyCmd = inject<(cmd: string) => void>('copyCmd')!
 
-// TODO(автор): заменить заглушки на реальные ссылки, потом убрать пометки в вёрстке.
-const sponsorUrl = 'https://github.com/sponsors/CyberPunk10' // TODO: реальный спонсор-аккаунт
-const authorUrl = 'https://github.com/CyberPunk10'
-const contactEmail = 'you@example.com' // TODO: реальный email
-const contactTelegram = 'https://t.me/your_handle' // TODO: реальный Telegram
+const cryptoOpen = ref(false)
+
+// Показываем адрес усечённым: полный не влезает в колонку футера.
+function shortAddress(address: string) {
+  return `${address.slice(0, 6)}…${address.slice(-4)}`
+}
 
 // Год для копирайта. SSR подставит год сборки.
 const year = new Date().getFullYear()
@@ -42,17 +44,57 @@ const year = new Date().getFullYear()
 
       <nav class="footer__col">
         <p class="footer__col-title">{{ home.footer.supportTitle }}</p>
+        <p class="footer__support-intro">{{ home.footer.support.intro }}</p>
         <a :href="repoUrl" target="_blank" rel="noopener">⭐ {{ home.footer.support.star }}</a>
-        <!-- TODO(автор): sponsorUrl — заглушка (github.com/sponsors/CyberPunk10). Заменить на реальный спонсор-аккаунт. -->
         <a :href="sponsorUrl" target="_blank" rel="noopener">{{ home.footer.support.sponsor }}</a>
+
+        <button
+          type="button"
+          class="footer__crypto-toggle"
+          :aria-expanded="cryptoOpen"
+          @click="cryptoOpen = !cryptoOpen"
+        >
+          {{ home.footer.support.crypto }}
+          <Icon
+            name="lucide:chevron-down"
+            size="13"
+            class="footer__crypto-chevron"
+            :class="{ 'footer__crypto-chevron--open': cryptoOpen }"
+          />
+        </button>
+
+        <div
+          v-if="cryptoOpen"
+          class="footer__crypto"
+        >
+          <p class="footer__crypto-hint">{{ home.footer.support.cryptoHint }}</p>
+          <button
+            v-for="wallet in cryptoWallets"
+            :key="wallet.label"
+            type="button"
+            class="footer__wallet"
+            :title="wallet.address"
+            @click="copyCmd(wallet.address)"
+          >
+            <span class="footer__wallet-label">{{ wallet.label }}</span>
+            <code class="footer__wallet-address">{{ shortAddress(wallet.address) }}</code>
+            <Icon
+              :name="copied === wallet.address ? 'lucide:check' : 'lucide:copy'"
+              size="12"
+              class="footer__wallet-copy"
+              :class="{ 'footer__wallet-copy--done': copied === wallet.address }"
+            />
+          </button>
+        </div>
       </nav>
 
       <nav class="footer__col">
         <p class="footer__col-title">{{ home.footer.contactsTitle }}</p>
         <a :href="authorUrl" target="_blank" rel="noopener">{{ home.footer.contacts.author }}</a>
-        <!-- TODO(автор): email/telegram — заглушки. Вписать реальные или убрать. -->
-        <a :href="`mailto:${contactEmail}`">{{ home.footer.contacts.email }}</a>
-        <a :href="contactTelegram" target="_blank" rel="noopener">{{ home.footer.contacts.telegram }}</a>
+        <a :href="`mailto:${contacts.email}`">{{ home.footer.contacts.email }}</a>
+        <a :href="contacts.telegram" target="_blank" rel="noopener">
+          {{ home.footer.contacts.telegram }}
+        </a>
       </nav>
 
       <div class="footer__start">
@@ -138,6 +180,89 @@ const year = new Date().getFullYear()
 }
 .footer__col a:hover {
   color: var(--home-accent);
+}
+/* Вводная строка колонки «Поддержать» — объясняет, зачем все пункты ниже */
+.footer__support-intro {
+  font-size: 12px;
+  color: var(--home-text-muted);
+  line-height: 1.5;
+  margin: 0 0 4px;
+}
+/* Кнопка-раскрывашка выглядит как остальные ссылки колонки */
+.footer__crypto-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--home-text-soft);
+  transition: color 0.15s;
+}
+.footer__crypto-toggle:hover {
+  color: var(--home-accent);
+}
+.footer__crypto-chevron {
+  transition: transform 0.2s;
+}
+.footer__crypto-chevron--open {
+  transform: rotate(180deg);
+}
+.footer__crypto {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 2px;
+}
+.footer__crypto-hint {
+  font-size: 11px;
+  color: var(--home-text-dim);
+  margin: 0 0 2px;
+}
+.footer__wallet {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  border-radius: var(--home-radius-md);
+  background: var(--home-surface-deep);
+  border: 1px solid var(--home-border-2);
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  transition: border-color 0.15s;
+}
+.footer__wallet:hover {
+  border-color: var(--home-border-subtle);
+}
+.footer__wallet-label {
+  font-size: 11px;
+  color: var(--home-text-dim);
+  white-space: nowrap;
+}
+.footer__wallet-address {
+  font-family: monospace;
+  font-size: 11px;
+  color: var(--home-text-primary);
+  margin-left: auto;
+  white-space: nowrap;
+}
+.footer__wallet-copy {
+  flex-shrink: 0;
+  color: var(--home-text-muted);
+  opacity: 0;
+  transition: color 0.15s;
+}
+.footer__wallet:hover .footer__wallet-copy {
+  opacity: 1;
+}
+.footer__wallet-copy--done {
+  opacity: 1 !important;
+  color: var(--home-accent) !important;
+  transition: none;
 }
 .footer__start {
   display: flex;

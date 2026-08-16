@@ -7,6 +7,7 @@ import HomeBranches from './Home/HomeBranches.vue'
 import HomeStack from './Home/HomeStack.vue'
 import HomeCommands from './Home/HomeCommands.vue'
 import HomeTree from './Home/HomeTree.vue'
+import HomeSponsors from './Home/HomeSponsors.vue'
 import HomeFooter from './Home/HomeFooter.vue'
 
 const copied = ref<string | null>(null)
@@ -37,6 +38,7 @@ provide('copyCmd', copyCmd)
         <HomeTree />
       </div>
     </div>
+    <HomeSponsors />
     <HomeFooter />
   </div>
 </template>

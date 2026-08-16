@@ -83,6 +83,14 @@
     "tree": {
       "title": "Structure"
     },
+    "sponsors": {
+      "title": "Sponsors",
+      "lead": "Your logo could be here",
+      "desc": "A place for logos and ads from companies backing the project. The template is open source and built on enthusiasm — sponsorship helps dedicate time to it.",
+      "slot": "Your logo here",
+      "cta": "Become a sponsor",
+      "contact": "Discuss placement"
+    },
     "footer": {
       "tagline": "Production-ready monorepo template for a fast start.",
       "projectTitle": "Project",
@@ -98,8 +106,11 @@
       "supportTitle": "Support",
       "contactsTitle": "Contacts",
       "support": {
-        "star": "Star on GitHub",
-        "sponsor": "Sponsor"
+        "intro": "The template is free and open source. Help it grow:",
+        "star": "Star it on GitHub",
+        "sponsor": "Become a sponsor",
+        "crypto": "Donate with crypto",
+        "cryptoHint": "Click an address to copy it"
       },
       "contacts": {
         "author": "Author on GitHub",
