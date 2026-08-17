@@ -6,6 +6,7 @@ export interface SidebarMenuItem {
   classes?: string
   spacer?: boolean
   external?: boolean
+  newTab?: boolean
   items?: SidebarMenuItem[]
 }
 

@@ -37,6 +37,7 @@ const docsLink = computed(() => {
           <a
             class="hero__btn hero__btn--ghost"
             href="/"
+            target="_self"
           >
             <Icon name="lucide:log-in" size="15" />
             {{ hero.toDashboard }}

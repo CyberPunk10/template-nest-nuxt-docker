@@ -90,6 +90,7 @@ function getSubItemKey(item: SidebarMenuItem, subitem: SidebarMenuItem, index: n
             :class="subitem.classes"
             :chevron="!!subitem.items"
             :external="subitem.external"
+            :newTab="subitem.newTab"
             :icon="subitem.icon"
             :levelSidebarLink="level + 1"
             :opened="notCollapsedItems[subitem.id!]"

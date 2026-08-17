@@ -6,9 +6,12 @@ import { resolveIcon } from '../../config/icons'
 const props = withDefaults(
   defineProps<{
     chevron?: boolean
+    // Рендерить обычный <a> вместо NuxtLink, чтобы переход выполнил браузер,
+    // а не Vue Router — тот же смысл, что у одноимённого пропа NuxtLink.
     external?: boolean
     icon?: string
     levelSidebarLink?: number
+    newTab?: boolean
     opened?: boolean
     to?: string
     tooltipText?: string
@@ -45,7 +48,7 @@ const linkAttrs = computed(() => {
     attrs.to = props.to
   }
 
-  if (props.external) {
+  if (props.newTab) {
     attrs.target = '_blank'
     attrs.rel = 'noopener noreferrer'
   }

@@ -26,8 +26,10 @@ export function useMenu() {
       .filter(duplicateSpacersFilter)
   }
 
-  const leftMenu = computed(() => {
-    const sections: SidebarMenuItem[] = [
+  const { public: { docsUrl } } = useRuntimeConfig()
+
+  const sidebarMenu = computed(() => {
+    const sections: MenuItem[] = [
       dashboard,
       tasks,
       dbTables,
@@ -37,20 +39,14 @@ export function useMenu() {
       orders,
       reports,
       bigSection,
+      { spacer: true, id: 'before-settings' },
+      { ...settings, url: docsUrl, external: true },
     ]
 
     return getFilteredItems(sections)
   })
 
-  const { public: { docsUrl } } = useRuntimeConfig()
-
-  const rightMenu = computed((): MenuItem[] => [
-    { spacer: true, id: 'before-settings' },
-    { ...settings, url: docsUrl, external: true },
-  ])
-
   return {
-    leftMenu,
-    rightMenu,
+    sidebarMenu,
   }
 }

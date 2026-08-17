@@ -24,8 +24,8 @@ const isSidebarDesktop = computed(() => menuType.value === MENU_TYPE.DESKTOP)
 const triggerScrollHandler = ref(false)
 const notCollapsedItems = ref<Record<string, boolean>>({})
 
-const { leftMenu, rightMenu } = useMenu()
-const menu = computed((): MenuItem[] => [...leftMenu.value, ...rightMenu.value])
+const { sidebarMenu } = useMenu()
+const menu = computed((): MenuItem[] => [...sidebarMenu.value])
 
 watch(width, () => updateSidebarState())
 
@@ -205,6 +205,7 @@ function toggleSideBarWidth() {
             <SidebarLink
               :to="item.url"
               :external="item.external"
+              :newTab="item.newTab"
               :class="item.classes"
               :opened="notCollapsedItems[item.id!]"
               :tooltipText="$t(item.title)"
