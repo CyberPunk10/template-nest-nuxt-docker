@@ -2,86 +2,160 @@
 
 ## Files
 
-Four independent `.env` files — one per app, plus a root one for Docker:
+Four independent `.env` files — one per application plus a root one for Docker:
 
 ```
 template-nest-nuxt/
 ├── .env[.example]            ← read by docker-compose.yml
 ├── apps/
 │   ├── backend/
-│   │   └── .env[.example]    ← read directly by NestJS
+│   │   └── .env[.example]    ← read by NestJS directly
 │   ├── frontend/
-│   │   └── .env[.example]    ← read directly by Nuxt
+│   │   └── .env[.example]    ← read by Nuxt directly
 │   └── docs/
-│       └── .env[.example]    ← VitePress dev server (dotenv)
+│       └── .env[.example]    ← VitePress (dotenv in config.ts)
 └── ...
 ```
 
-Each app reads **only its own** `.env`, unaware the others exist. The root `.env` is needed for docker-compose.
+Each application reads **only its own** `.env`, unaware the others exist. The root `.env` is for docker-compose.
 
-Only `.env.example` files live in the repo — actual `.env` files are created by copying: manually via `pnpm env:copy`, or automatically on the first `pnpm dev`/`pnpm docker:up` (see [`predev.mjs`, `predocker.mjs`](/en/guide/scripts#predev-mjs-predocker-mjs) in the [Scripts](/en/guide/scripts) guide). Copying is safe by default — existing `.env` files are never overwritten. To force-overwrite all `.env` files with the values from `.env.example`, use `pnpm env:copy:force`.
+The repository holds only `.env.example` files. Working `.env` files have to be created, and there are three ways:
+
+- **automatically** — the first `pnpm dev` or `pnpm docker:up` creates them under the hood via [`predev.mjs` / `predocker.mjs`](/en/guide/structure/scripts/);
+- **by command** — `pnpm env:copy` creates all four at once without starting anything;
+- **by hand** — copy `.env.example` → `.env` in the root and in every `apps/*/`.
+
+Existing files are **never overwritten**: the command only creates the missing ones.
+
+If you specifically want the original values back:
+
+```bash
+pnpm env:copy:force
+```
 
 ::: warning
-`pnpm env:copy:force` overwrites `.env` files **entirely**, with the values from `.env.example` — including any custom changes you made (your own ports, secrets, etc). Use with caution.
+`pnpm env:copy:force` overwrites `.env` files **entirely** rather than filling in missing lines. Anything you changed by hand is lost.
 :::
-
-## Three layers of ports
-
-The same service can have **up to three different ports**, depending on the run context — this isn't duplication or a typo, each one has its own role:
-
-| Layer         | Variable                                                                | File                                                        | Meaning                                                                                    |
-| ------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| Dev port      | `PORT`                                                                  | `apps/backend/.env`, `apps/frontend/.env`, `apps/docs/.env` | What the process listens on during `pnpm dev`                                              |
-| Internal port | `BACKEND_INTERNAL_PORT`, `FRONTEND_INTERNAL_PORT`, `DOCS_INTERNAL_PORT` | `.env` (root)                                               | What the process listens on **inside the container** in Docker                             |
-| Host port     | `BACKEND_HOST_PORT`, `FRONTEND_HOST_PORT`, `DOCS_HOST_PORT`             | `.env` (root)                                               | What the service is visible on **outside** Docker (`localhost:<host-port>` on the machine) |
-
-Why not a single variable: `pnpm dev` and Docker are different run processes with different requirements. In Docker, the process inside the container and the address the host machine reaches it at are two numbers connected via NAT-style port mapping (`ports: "<host-port>:<internal-port>"`), while `pnpm dev` is just one process on the bare machine with one port.
-
-### Why `PORT` isn't read from `apps/*/.env` in Docker
-
-The container's internal port is **not** read directly from `apps/backend/.env` (which already has its own `PORT`), even though `env_file:` does pass that whole file into the container. The reason is timing: `docker-compose.yml`'s `ports:` (where Docker should proxy to) is resolved by Compose while reading the YAML, **before** the container starts, while `env_file:` only passes variables into the container **at** startup. For both halves (`ports:` and what actually ends up in `PORT` inside the container) to reliably match, both must come from a single source visible to Compose at interpolation time — the root `.env`. Hence `environment: PORT: '${BACKEND_INTERNAL_PORT}'` in `docker-compose.yml`, which explicitly overrides what would otherwise come from `apps/backend/.env` via `env_file:` (`environment:` in Compose always wins over `env_file:`).
-
-Practical consequence: changing `PORT` in `apps/backend/.env` breaks nothing for `pnpm dev`, but changes nothing for Docker either — `environment:` still wins with the value from `BACKEND_INTERNAL_PORT`. To actually change the port for Docker, you need to change `BACKEND_INTERNAL_PORT`/`FRONTEND_INTERNAL_PORT`/`DOCS_INTERNAL_PORT` in the root `.env`.
-
-`docs` has an extra wrinkle: inside the container `nginx` runs, and it doesn't read environment variables on its own — `PORT` reaches the config via `envsubst`, which renders `apps/docs/nginx.conf.template` (`listen ${PORT};`) into a real `nginx.conf` when the container starts.
-
-For more detail, with a `docker-compose.yml` example — see [Docker → Host ports, internal port, and why there are two](/en/guide/docker#host-ports-internal-port-and-why-there-are-two).
 
 ## Variables by file
 
-### `.env` (root)
+- [`.env`](/en/guide/structure/env-example) — the root one, for docker compose
+- [`apps/backend/.env`](/en/guide/structure/apps/backend/env-example)
+- [`apps/frontend/.env`](/en/guide/structure/apps/frontend/env-example)
+- [`apps/docs/.env`](/en/guide/structure/apps/docs/env-example)
 
-| Variable                 | Value  | Comment                                                           |
-| ------------------------ | ------ | ----------------------------------------------------------------- |
-| `BACKEND_HOST_PORT`      | `3500` | Backend host port — what the service is visible on outside Docker |
-| `FRONTEND_HOST_PORT`     | `3600` | Frontend host port                                                |
-| `DOCS_HOST_PORT`         | `3700` | Docs host port                                                    |
-| `BACKEND_INTERNAL_PORT`  | `3100` | Port backend listens on **inside the container**                  |
-| `FRONTEND_INTERNAL_PORT` | `3200` | Port frontend listens on inside the container                     |
-| `DOCS_INTERNAL_PORT`     | `3300` | Port nginx (docs) listens on inside the container                 |
+## Ports
 
-### `apps/backend/.env`
+The project runs in two ways, and ports mean different things in each.
 
-| Variable                  | Value (dev)        | Comment                                                                                                                                                                                                                            |
-| ------------------------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `NODE_ENV`                | `development`      | Controls, among other things, Swagger UI availability (`/api/docs` — only outside `production`). Always `production` in Docker — set in `apps/backend/Dockerfile` (`ENV NODE_ENV=production`), not via `.env`/`docker-compose.yml` |
-| `PORT`                    | `3100`             | Backend port during `pnpm dev`. Overridden by `BACKEND_INTERNAL_PORT` from the root `.env` in Docker                                                                                                                               |
-| `CORS_ORIGIN_SCHEME_HOST` | `http://localhost` | Allowed CORS origin — scheme+host. Unchanged in Docker                                                                                                                                                                             |
-| `CORS_ORIGIN_PORT`        | `3200`             | Allowed CORS origin — frontend's port. Overridden by `FRONTEND_HOST_PORT` in Docker                                                                                                                                                |
+**`pnpm dev`** — three processes straight on your machine, each with its own port:
 
-### `apps/frontend/.env`
+```
+localhost:3100   backend
+localhost:3200   frontend
+localhost:5173   docs
+```
 
-| Variable                   | Value (dev)             | Comment                                                                                                                                                                                |
-| -------------------------- | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `PORT`                     | `3200`                  | Frontend port during `pnpm dev`. Overridden by `FRONTEND_INTERNAL_PORT` from the root `.env` in Docker                                                                                 |
-| `NUXT_PUBLIC_API_BASE`     | `/api/backend`          | Prefix for the server-side proxy to backend (the browser hits this, not backend directly)                                                                                              |
-| `NUXT_BACKEND_URL`         | `http://localhost:3100` | Backend address for Nuxt SSR (server). Overridden in Docker to `http://backend:${BACKEND_INTERNAL_PORT}` — by service name, since `localhost` is unreachable inside the Docker network |
-| `NUXT_PUBLIC_BACKEND_PORT` | `3100`                  | Backend port only, for the link shown in DevPanel (not used for requests). Overridden by `BACKEND_HOST_PORT` in Docker                                                                 |
-| `NUXT_PUBLIC_APP_ENV`      | `development`           | Client-side environment mode (e.g. showing the Swagger link in DevPanel). Hardcoded to `production` in Docker — set in `docker-compose.yml`                                            |
-| `NUXT_PUBLIC_DOCS_URL`     | `http://localhost:5173` | Link to the VitePress docs (menu item, DevPanel). Overridden in Docker to `http://localhost:${DOCS_HOST_PORT}`                                                                         |
+You open whichever address you need directly. The ports come from `PORT` — one in each `apps/*/.env`.
 
-### `apps/docs/.env`
+**Docker** — the same applications in containers, but only **one** port faces outward: the reverse proxy on `80`. It routes requests to the services:
 
-| Variable | Value  | Comment                                                                                                                           |
-| -------- | ------ | --------------------------------------------------------------------------------------------------------------------------------- |
-| `PORT`   | `5173` | VitePress dev server port. Read via `dotenv` in `.vitepress/config.ts` — VitePress itself doesn't load `.env`. Not used in Docker |
+```
+localhost/            → frontend
+localhost/api/docs    → backend (Swagger)
+localhost/dev/docs/   → documentation static files
+```
+
+Inside the network the applications still listen on ports, but they're addressed by service name — `http://backend:3100`. From outside those ports are unreachable. They're set in the root `.env`, because Docker Compose needs them, not the applications themselves.
+
+### Summary
+
+| Variable | File | What it sets |
+| --- | --- | --- |
+| `PORT` | `apps/*/.env` | The process port under `pnpm dev` |
+| `*_INTERNAL_PORT` | `.env` (root) | The process port inside the container |
+| `NGINX_HOST_PORT` | `.env` (root) | The only outward-facing port under Docker |
+
+The documentation has no `*_INTERNAL_PORT`: under Docker its static files sit inside the proxy image, so there's no separate process. In dev, VitePress runs its own server — hence `PORT=5173`.
+
+### Why the values can't be merged
+
+The numbers match (3100 and 3200 in both modes), but they mean different things. In dev the port is taken on your machine and another application can claim it. In a container the port lives in an isolated network namespace: nothing to clash with, and it isn't visible from outside anyway.
+
+Practical consequence: if your local 3200 is taken, change `PORT` in `apps/frontend/.env` — Docker is unaffected.
+
+### Why backend and frontend have no host port
+
+`docker-compose.yml` uses `expose` for them rather than `ports`: the port is declared but not forwarded to the host. They're reachable only through the reverse proxy — [why that is](/en/guide/reverse-proxy#why-the-app-ports-are-closed).
+
+### Why `PORT` from `apps/*/.env` doesn't apply under Docker
+
+The file does reach the container — through `env_file` in compose. But the `environment: PORT` line overrides it at startup: in Compose, `environment` always beats `env_file`.
+
+That's deliberate. Otherwise a local `PORT`, tweaked for your own needs, would travel into the container and break the link with nginx. [Detailed breakdown](/en/guide/structure/docker-compose#internal-ports).
+
+## CORS_ORIGIN
+
+Of all the variables, this one causes non-obvious breakage most often.
+
+A browser won't let a page on one address read responses from another unless the server explicitly allows it. The permission comes as an `Access-Control-Allow-Origin` header, and the backend takes its value from `CORS_ORIGIN`. The comparison is strict and character-by-character.
+
+The breakage is silent: the server responds **200**, the logs look fine, but in the browser the request is marked as failed and the data never reaches the application. It's easy to hunt through code when the cause is one line in `.env`.
+
+### What the value must match
+
+| Mode | Value | Matches |
+| --- | --- | --- |
+| `pnpm dev` | `http://localhost:3200` | `PORT` in `apps/frontend/.env` |
+| Docker | `http://localhost` | `NGINX_HOST_PORT` in the root `.env` |
+
+Change the frontend port in dev — fix `CORS_ORIGIN` in `apps/backend/.env`. Change the proxy port — fix the value in `docker-compose.yml`.
+
+### Why there's no port under Docker
+
+The browser **omits the standard port**: `:80` for http, `:443` for https. Opening `http://localhost`, it sends `Origin: http://localhost` — no port. A stored `http://localhost:80` wouldn't match, and every API call would be blocked.
+
+### In production the port doesn't participate
+
+Once the frontend and backend move to separate domains:
+
+```
+frontend:  https://app.example.com    ← this is what the browser sends
+backend:   https://api.example.com
+CORS_ORIGIN=https://app.example.com
+```
+
+The addresses differ by domain, the port is standard and never appears in the header. `PORT` in `apps/frontend/.env` hasn't gone anywhere — Nuxt still listens on 3200, just behind a proxy.
+
+So the "`CORS_ORIGIN` ↔ frontend port" link only exists while both are on `localhost`.
+
+### How to check
+
+```bash
+curl -sI -H "Origin: http://localhost:3200" http://localhost:3100/health | grep -i access-control
+```
+
+No `Access-Control-Allow-Origin` with your address means the value is wrong.
+
+## Linked variables
+
+Some variables point at a neighbouring application's port. Change a port — fix whatever looks at it.
+
+**Frontend port** (`PORT` in `apps/frontend/.env`)
+
+- `CORS_ORIGIN` in `apps/backend/.env` — otherwise the backend rejects requests from a different origin
+- `DASHBOARD_URL` in `apps/docs/.env` — otherwise the "go to dashboard" button leads nowhere
+
+**Backend port** (`PORT` in `apps/backend/.env`)
+
+- `NUXT_BACKEND_URL` in `apps/frontend/.env` — otherwise SSR can't reach the API
+
+::: tip No links under Docker
+There, addresses are service names (`http://backend:3100`), not host ports. Ports only need checking for `pnpm dev`.
+:::
+
+## Empty values
+
+Backend variables with defaults (`NODE_ENV`, `APP_ENV`, `PORT`, `SWAGGER_ENABLED`) are marked `.empty('')` in the Joi schema. Writing `FOO=` — the usual way to clear a variable in compose or CI — is treated as "not set", and the default applies.
+
+The required `CORS_ORIGIN` deliberately has no such mark: an empty origin is a configuration error, and the application should fail at startup.

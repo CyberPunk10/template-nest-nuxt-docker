@@ -29,10 +29,6 @@ export function useThemePreference() {
     nuxtColorMode.preference = id
   }
 
-  watch(activeTheme, (id) => {
-    applyTheme(id)
-  }, { immediate: true })
-
   function setFollowSystem(val: boolean) {
     followSystem.value = val
   }

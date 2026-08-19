@@ -3,6 +3,7 @@ import type { EnhanceAppContext } from 'vitepress'
 import Layout from './Layout.vue'
 import Icon from './components/Icon.vue'
 import './custom.css'
+import './sidebar-icons.css'
 
 export default {
   extends: DefaultTheme,

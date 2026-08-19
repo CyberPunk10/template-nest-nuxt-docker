@@ -1,0 +1,57 @@
+# Запуск через pnpm
+
+Основной режим разработки: приложения работают нативно, каждое со своим hot-reload. Docker не нужен.
+
+Перед первым запуском — [Подготовка](/guide/getting-started/setup).
+
+## pnpm dev
+
+```bash
+pnpm dev
+```
+
+Одна команда поднимает все три приложения. Перед стартом отрабатывает `predev.mjs`: создаёт недостающие `.env` и разруливает конфликты портов.
+
+| Сервис   | URL                               | Технология       |
+| -------- | --------------------------------- | ---------------- |
+| Backend  | `http://localhost:3100`           | NestJS `--watch` |
+| Frontend | `http://localhost:3200`           | Nuxt dev         |
+| Docs     | `http://localhost:5173/dev/docs/` | VitePress dev    |
+
+Каждое приложение слушает свой порт: reverse proxy в этом режиме не участвует — [почему](/guide/reverse-proxy#в-dev-режиме-прокси-нет).
+
+Запросы к API идут через BFF-прокси Nuxt (`/api/backend/*`), как и в Docker — этот путь одинаков в обоих режимах.
+
+## Отдельное приложение
+
+`pnpm dev` поднимает всё сразу, но при необходимости можно запустить что-то одно:
+
+```bash
+pnpm --filter backend dev
+pnpm --filter frontend dev
+pnpm --filter @repo/docs dev
+```
+
+## pnpm build
+
+Проверить production-сборку без контейнеров:
+
+```bash
+pnpm build
+
+# запустить backend
+cd apps/backend && pnpm start:prod
+
+# запустить frontend (в другом терминале)
+cd apps/frontend && node .output/server/index.mjs
+```
+
+Это ближе к проду, чем `pnpm dev`, но всё ещё не то же самое: нет reverse proxy, приложения доступны напрямую по своим портам. Полноценная репетиция прода — [запуск через Docker](/guide/getting-started/run-docker).
+
+## Остановка
+
+`Ctrl+C` в терминале, где запущен `pnpm dev` — `concurrently` остановит все три процесса разом.
+
+::: warning
+Если процесс был убит не через `Ctrl+C` (например, закрыт терминал), дочерние процессы могут остаться и держать порты. `predev.mjs` при следующем запуске это обнаружит и предложит их завершить.
+:::

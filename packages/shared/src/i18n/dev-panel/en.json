@@ -1,0 +1,13 @@
+{
+  "about": "About",
+  "version": "Version:",
+  "branch": "Branch:",
+  "environment": "Environment",
+  "services": "Services",
+  "tools": "Tools",
+  "docs": "Documentation (VitePress)",
+  "onlyDev": "only dev",
+  "navigation": "Navigation",
+  "layout": "Layout:",
+  "viewport": "Viewport"
+}

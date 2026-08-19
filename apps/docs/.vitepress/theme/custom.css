@@ -25,6 +25,17 @@
 }
 
 /**
+ * Ширина колонки с текстом.
+ */
+.VPDoc.has-aside .content-container {
+  max-width: 810px !important;
+}
+
+.VPDoc .content {
+  max-width: 810px !important;
+}
+
+/**
  * Геройский блок на главной (обычная страница, но крупный заголовок).
  */
 .home-hero {

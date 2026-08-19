@@ -2,25 +2,50 @@ import { resolve, dirname } from 'path'
 import { fileURLToPath } from 'url'
 import { config as loadEnv } from 'dotenv'
 import { defineConfigWithTheme } from 'vitepress'
-import type { DefaultTheme } from 'vitepress'
-import ruLocale from './locales/ru.json'
-import enLocale from './locales/en.json'
-import thLocale from './locales/th.json'
+import type { DefaultTheme, LocaleConfig } from 'vitepress'
+import ruLocaleJson from './locales/ru.json'
+import ru from './config/ru'
+import en from './config/en'
+import th from './config/th'
+
+// Расширяем тему дефолтной + переводы стартовой страницы в themeConfig.home.
+// VitePress отдаёт их через useData().theme реактивно к локали — вместо vue-i18n.
+// Переводы лежат в locales/*.json (единый источник для витрины и config).
+export interface ThemeConfig extends DefaultTheme.Config {
+  home?: typeof ruLocaleJson.home
+  // Адрес кабинета (фронтенда) для кнопки на стартовой странице.
+  dashboardUrl?: string
+}
 
 // apps/docs/.env не грузится автоматически (в отличие от Nest ConfigModule
 // и Nuxt) — читаем его явно, чтобы PORT управлял портом `vitepress dev` так же,
 // как для backend/frontend.
 loadEnv({ path: resolve(dirname(fileURLToPath(import.meta.url)), '../.env') })
 
-// Расширяем тему дефолтной + переводы стартовой страницы в themeConfig.home.
-// VitePress отдаёт их через useData().theme реактивно к локали — вместо vue-i18n.
-// Переводы лежат в locales/*.json (единый источник для витрины и config).
-interface ThemeConfig extends DefaultTheme.Config {
-  home?: typeof ruLocale.home
+// Куда ведёт кнопка «Перейти в кабинет». Доки — статический сайт, рантайм-конфига
+// у них нет, поэтому адрес вшивается в сборку из переменной окружения:
+//   dev    — http://localhost:3200 из apps/docs/.env (Nuxt на соседнем порту);
+//   Docker — '/' из apps/docs/Dockerfile (фронтенд за тем же reverse proxy);
+//   внешний хостинг (Netlify и т.п.) — полный URL фронтенда.
+const dashboardUrl = process.env.DASHBOARD_URL
+if (!dashboardUrl) {
+  throw new Error('DASHBOARD_URL is not set — see apps/docs/.env.example')
 }
 
+// ── Языки ─────────────────────────────────────────────────────────────
+// Единственное место, где перечислены локали. Чтобы убрать язык из сборки:
+// удалить его строку здесь, файл config/<код>.ts и папку со страницами.
+// Чтобы добавить — создать config/<код>.ts по образцу и дописать сюда.
+export type LocaleEntry = LocaleConfig<ThemeConfig>[string] & { key: string }
+
+const LOCALES: LocaleEntry[] = [ru, en, th]
+
+const locales: LocaleConfig<ThemeConfig> = Object.fromEntries(
+  LOCALES.map(({ key, ...locale }) => [key, locale]),
+)
+
 export default defineConfigWithTheme<ThemeConfig>({
-  base: '/',
+  base: '/dev/docs/',
   title: 'NestJS + Nuxt Template',
   description: 'Документация монорепо-шаблона',
 
@@ -40,6 +65,10 @@ export default defineConfigWithTheme<ThemeConfig>({
 
   // Общие для всех локалей настройки темы (переопределяются в locales.*).
   themeConfig: {
+    // Адрес кабинета одинаков для всех языков — держим в общей секции.
+    // Локальные themeConfig его не переопределяют, поэтому он доступен
+    // из любой локали через useData().theme.
+    dashboardUrl,
     // Убираем нижнюю навигацию «предыдущая/следующая» — лишний шум для линейного чтения.
     docFooter: { prev: false, next: false },
 
@@ -51,130 +80,5 @@ export default defineConfigWithTheme<ThemeConfig>({
 
   // Мультиязычность: root = русский (в корне), en/th — в папках-локалях.
   // VitePress сам добавляет переключатель языка в шапку и класс lang на <html>.
-  locales: {
-    root: {
-      label: 'Русский',
-      lang: 'ru',
-      themeConfig: {
-        outline: { level: 'deep', label: 'На странице' },
-        // Переводы стартовой страницы. Кладём в themeConfig — VitePress отдаёт
-        // их через useData().theme, реактивно к локали. Заменяет vue-i18n.
-        home: ruLocale.home,
-        sidebar: [
-          {
-            text: 'Документация',
-            items: [
-              { text: 'Запуск проекта', link: '/guide/getting-started' },
-              { text: 'Архитектура', link: '/guide/architecture' },
-              { text: 'Переменные окружения', link: '/guide/env-variables' },
-              { text: 'Docker', link: '/guide/docker' },
-              { text: 'Скрипты', link: '/guide/scripts' },
-            ],
-          },
-          {
-            text: 'Дополнительная информация',
-            items: [
-              { text: 'pnpm и Corepack', link: '/guide/pnpm' },
-            ],
-          },
-          {
-            text: 'Примеры',
-            items: [
-              { text: 'Markdown', link: '/markdown-examples' },
-              { text: 'Runtime API', link: '/api-examples' },
-            ],
-          },
-        ],
-        docFooter: {
-          prev: 'Предыдущая страница',
-          next: 'Следующая страница',
-        },
-        returnToTopLabel: 'Наверх',
-        darkModeSwitchLabel: 'Тема',
-        sidebarMenuLabel: 'Меню',
-      },
-    },
-
-    en: {
-      label: 'English',
-      lang: 'en',
-      themeConfig: {
-        outline: { level: 'deep', label: 'On this page' },
-        home: enLocale.home,
-        sidebar: [
-          {
-            text: 'Documentation',
-            items: [
-              { text: 'Getting Started', link: '/en/guide/getting-started' },
-              { text: 'Architecture', link: '/en/guide/architecture' },
-              { text: 'Environment variables', link: '/en/guide/env-variables' },
-              { text: 'Docker', link: '/en/guide/docker' },
-              { text: 'Scripts', link: '/en/guide/scripts' },
-            ],
-          },
-          {
-            text: 'Additional Information',
-            items: [
-              { text: 'pnpm and Corepack', link: '/en/guide/pnpm' },
-            ],
-          },
-          {
-            text: 'Examples',
-            items: [
-              { text: 'Markdown Examples', link: '/en/markdown-examples' },
-              { text: 'Runtime API Examples', link: '/en/api-examples' },
-            ],
-          },
-        ],
-        docFooter: {
-          prev: 'Previous page',
-          next: 'Next page',
-        },
-        returnToTopLabel: 'Return to top',
-        darkModeSwitchLabel: 'Appearance',
-        sidebarMenuLabel: 'Menu',
-      },
-    },
-
-    th: {
-      label: 'ไทย',
-      lang: 'th',
-      themeConfig: {
-        outline: { level: 'deep', label: 'ในหน้านี้' },
-        home: thLocale.home,
-        sidebar: [
-          {
-            text: 'เอกสาร',
-            items: [
-              { text: 'เริ่มต้นใช้งาน', link: '/th/guide/getting-started' },
-              { text: 'สถาปัตยกรรม', link: '/th/guide/architecture' },
-              { text: 'ตัวแปรสภาพแวดล้อม', link: '/th/guide/env-variables' },
-              { text: 'Docker', link: '/th/guide/docker' },
-              { text: 'สคริปต์', link: '/th/guide/scripts' },
-            ],
-          },
-          {
-            text: 'ข้อมูลเพิ่มเติม',
-            items: [
-              { text: 'pnpm และ Corepack', link: '/th/guide/pnpm' },
-            ],
-          },
-          {
-            text: 'ตัวอย่าง',
-            items: [
-              { text: 'Markdown', link: '/th/markdown-examples' },
-              { text: 'Runtime API', link: '/th/api-examples' },
-            ],
-          },
-        ],
-        docFooter: {
-          prev: 'หน้าก่อนหน้า',
-          next: 'หน้าถัดไป',
-        },
-        returnToTopLabel: 'กลับขึ้นด้านบน',
-        darkModeSwitchLabel: 'ธีม',
-        sidebarMenuLabel: 'เมนู',
-      },
-    },
-  },
+  locales,
 })

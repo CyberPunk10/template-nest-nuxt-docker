@@ -1,15 +1,52 @@
 services:
+  nginx:
+    build:
+      context: .
+      dockerfile: infra/nginx/Dockerfile
+      # Статику документации собирает apps/docs/Dockerfile — она приезжает сюда
+      # готовым build-контекстом, а не отдельным сервисом: Compose сам собирает
+      # docs-builder первым и подставляет его результат в COPY --from=docs.
+      additional_contexts:
+        docs: service:docs-builder
+    restart: unless-stopped
+    ports:
+      - '${NGINX_HOST_PORT}:${NGINX_INTERNAL_PORT}'
+    environment:
+      NGINX_INTERNAL_PORT: '${NGINX_INTERNAL_PORT}'
+      FRONTEND_INTERNAL_PORT: '${FRONTEND_INTERNAL_PORT}'
+      BACKEND_INTERNAL_PORT: '${BACKEND_INTERNAL_PORT}'
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - app
+
+  docs-builder:
+    build:
+      context: .
+      dockerfile: apps/docs/Dockerfile
+    # Не поднимаем контейнер: сервис нужен только как источник образа.
+    scale: 0
+    # Сеть указана не ради связи (контейнера нет), а чтобы Compose
+    # не заводил для этого сервиса отдельную сеть по умолчанию.
+    networks:
+      - app
+
   backend:
     build:
       context: .
       dockerfile: apps/backend/Dockerfile
     restart: unless-stopped
-    ports:
-      - '${BACKEND_HOST_PORT}:${BACKEND_INTERNAL_PORT}'
+    expose:
+      - '${BACKEND_INTERNAL_PORT}'
     env_file: apps/backend/.env
     environment:
+      NODE_ENV: production
+      APP_ENV: production
       PORT: '${BACKEND_INTERNAL_PORT}'
-      CORS_ORIGIN_PORT: '${FRONTEND_HOST_PORT}'
+      # Снаружи фронтенд приходит через прокси, а не со своего порта.
+      # Порт 80 в origin не пишется — браузер его тоже опускает.
+      CORS_ORIGIN: http://localhost
     networks:
       - app
 
@@ -18,37 +55,20 @@ services:
       context: .
       dockerfile: apps/frontend/Dockerfile
     restart: unless-stopped
-    ports:
-      - '${FRONTEND_HOST_PORT}:${FRONTEND_INTERNAL_PORT}'
+    expose:
+      - '${FRONTEND_INTERNAL_PORT}'
     env_file: apps/frontend/.env
     environment:
       NUXT_PUBLIC_APP_ENV: production
       PORT: '${FRONTEND_INTERNAL_PORT}'
-      # NUXT_BACKEND_URL специально переопределяется здесь, а не в .env — внутри
-      # Docker-сети backend недостижим по localhost — только по имени сервиса.
-      # Префикс NUXT_ обязателен: только с ним Nuxt runtimeConfig.backendUrl
-      # переопределяется env-переменной (без префикса Nuxt её игнорирует).
+      # Внутри сети backend доступен только по имени сервиса, не по localhost.
+      # Префикс NUXT_ обязателен — без него Nuxt переменную игнорирует.
       NUXT_BACKEND_URL: http://backend:${BACKEND_INTERNAL_PORT}
-      NUXT_PUBLIC_BACKEND_PORT: '${BACKEND_HOST_PORT}'
-      # Внутри Docker-сети docs крутится на своём внутреннем порту, а наружу
-      # смотрит через DOCS_HOST_PORT — так же, как backend/frontend.
-      NUXT_PUBLIC_DOCS_URL: 'http://localhost:${DOCS_HOST_PORT}'
+      # Относительный путь: доки отдаёт тот же прокси, что и фронтенд.
+      NUXT_PUBLIC_DOCS_URL: /dev/docs/
     depends_on:
       backend:
         condition: service_healthy
-    networks:
-      - app
-
-  docs:
-    build:
-      context: .
-      dockerfile: apps/docs/Dockerfile
-    restart: unless-stopped
-    ports:
-      - '${DOCS_HOST_PORT}:${DOCS_INTERNAL_PORT}'
-    env_file: apps/docs/.env
-    environment:
-      PORT: '${DOCS_INTERNAL_PORT}'
     networks:
       - app
 
@@ -57,7 +77,8 @@ networks:
     # Явное имя сети — без него Docker генерирует имя из папки проекта.
     # Фиксированное имя нужно когда к сети нужно подключить контейнеры
     # из другого compose-файла (например, отдельный compose для БД):
-    #   docker network connect template-nest-nuxt_app <container>
+    #   docker network connect $COMPOSE_NETWORK_NAME <container>
     # или через external: true в другом compose.
-    name: template-nest-nuxt_app
+    # Сеть создаётся вручную или через добавленный в проект скрипт: `pnpm docker:up`.
+    name: ${COMPOSE_NETWORK_NAME}
     external: true

@@ -1,0 +1,13 @@
+{
+  "about": "เกี่ยวกับแอป",
+  "version": "เวอร์ชัน:",
+  "branch": "Branch:",
+  "environment": "สภาพแวดล้อม",
+  "services": "Service",
+  "tools": "เครื่องมือ",
+  "docs": "เอกสาร (VitePress)",
+  "onlyDev": "only dev",
+  "navigation": "การนำทาง",
+  "layout": "Layout:",
+  "viewport": "Viewport"
+}

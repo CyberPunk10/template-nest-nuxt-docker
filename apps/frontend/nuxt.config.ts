@@ -45,19 +45,16 @@ export default defineNuxtConfig({
       // Переопределяется через NUXT_PUBLIC_API_BASE
       apiBase: '/api/backend',
 
-      // Только для отображения ссылки в DevPanel — НЕ использовать для fetch,
-      // это просто число порта, а не готовый URL. Реальные запросы к backend
-      // идут через apiBase (server-side proxy, см. server/api/backend/[...path].ts),
-      // который использует отдельную серверную переменную backendUrl (см. выше).
-      // Переопределяется через NUXT_PUBLIC_BACKEND_PORT
-      backendPort: '3100',
-
       // Переопределяется через NUXT_PUBLIC_APP_ENV
       appEnv: 'development',
 
       // Ссылка на VitePress-документацию (пункт меню, DevPanel).
-      // Переопределяется через NUXT_PUBLIC_DOCS_URL
-      docsUrl: 'http://localhost:5173',
+      // Абсолютный URL — значение для локального dev, где доки поднимаются
+      // отдельным процессом (`pnpm dev`) и прокси нет. Путь /dev/docs/ в конце
+      // обязателен: base доков задан как '/dev/docs/', в корне 5173 сайта нет.
+      // В Docker переопределяется на относительный /dev/docs/ через
+      // NUXT_PUBLIC_DOCS_URL — там всё приходит на общий reverse proxy.
+      docsUrl: 'http://localhost:5173/dev/docs/',
 
       // версия приложения для наглядности в интерфейсе
       appVersion,

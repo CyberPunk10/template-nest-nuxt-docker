@@ -16,11 +16,9 @@ async function bootstrap() {
       transform: true, // приводить типы (string → number, plain → class)
     }),
   )
-  app.enableCors({
-    origin: `${config.get<string>('CORS_ORIGIN_SCHEME_HOST')}:${config.get<number>('CORS_ORIGIN_PORT')}`,
-  })
+  app.enableCors({ origin: config.get<string>('CORS_ORIGIN') })
 
-  if (config.get('NODE_ENV') !== 'production') {
+  if (config.get<boolean>('SWAGGER_ENABLED')) {
     const document = SwaggerModule.createDocument(
       app,
       new DocumentBuilder().setTitle('template-nest-nuxt API').setVersion('1.0').build(),

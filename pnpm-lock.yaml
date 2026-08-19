@@ -91,7 +91,7 @@ importers:
         specifier: ^30.0.0
         version: 30.0.0
       '@types/node':
-        specifier: ^24.0.0
+        specifier: ^24.13.3
         version: 24.13.3
       '@types/supertest':
         specifier: ^7.0.0
@@ -120,6 +120,9 @@ importers:
 
   apps/docs:
     devDependencies:
+      '@types/node':
+        specifier: ^24.13.3
+        version: 24.13.3
       dotenv:
         specifier: ^17.4.2
         version: 17.4.2
@@ -129,6 +132,9 @@ importers:
       vue:
         specifier: ^3.5.35
         version: 3.5.41(typescript@6.0.3)
+      vue-tsc:
+        specifier: ^3.3.3
+        version: 3.3.9(typescript@6.0.3)
 
   apps/frontend:
     dependencies:

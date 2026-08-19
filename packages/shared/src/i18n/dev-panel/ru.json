@@ -1,0 +1,13 @@
+{
+  "about": "О приложении",
+  "version": "Версия:",
+  "branch": "Ветка:",
+  "environment": "Окружение",
+  "services": "Сервисы",
+  "tools": "Инструменты",
+  "docs": "Документация (VitePress)",
+  "onlyDev": "only dev",
+  "navigation": "Навигация",
+  "layout": "Layout:",
+  "viewport": "Viewport"
+}

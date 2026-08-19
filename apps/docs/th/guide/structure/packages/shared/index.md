@@ -1,0 +1,22 @@
+# packages/shared
+
+Type และคำแปลที่ใช้ร่วมกัน เป็น package เดียวที่ใช้โดย **ทั้งสอง** แอปพลิเคชัน
+
+```
+packages/shared/
+├── src/
+│   ├── i18n/           คำแปล: ru, en, th
+│   └── index.ts        type (DTO) และจุด export
+├── package.json
+└── tsconfig.json       extend base เพิ่ม resolveJsonModule
+```
+
+## ควรเก็บอะไรไว้ที่นี่
+
+ทุกอย่างที่ต้องตรงกันทั้งฝั่ง client และ server: รูปแบบ request/response, enum ของสถานะ, ข้อความใน UI ถ้า type ใช้แค่ฝั่งเดียว ก็ควรอยู่ในแอปนั้น ไม่ใช่ที่นี่
+
+## ใช้เป็นซอร์สโดยตรง
+
+`main` และ `types` ชี้ไปที่ `src/index.ts` ตรง ๆ และ alias `@repo/shared` ใน `tsconfig.base.json` ก็ชี้ที่เดียวกัน ไม่มีขั้นตอน build: แอปพลิเคชัน compile ซอร์สเป็นส่วนหนึ่งของ build ตัวเอง
+
+Manifest ของ package — [package.json](/th/guide/structure/packages/shared/package-json)

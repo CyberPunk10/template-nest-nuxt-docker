@@ -1,23 +1,26 @@
 <script setup lang="ts">
 import DevPanelViewport from './DevPanelViewport.vue'
+import { useDevLinks } from './composables/useDevLinks'
 
 // меняется вручную при переключении на другую ветку шаблона
 const appBranch = 'main'
 
+const { t } = useI18n()
+
 const {
-  public: { apiBase, backendPort, appEnv, docsUrl, appVersion },
+  public: { appEnv, docsUrl, appVersion },
 } = useRuntimeConfig()
-const { data: backendHealth, error: backendError } = await useFetch<{ status: string }>('/health', {
-  baseURL: apiBase,
-})
-const backendOnline = computed(() => backendHealth.value?.status === 'ok' && !backendError.value)
-const requestUrl = useRequestURL()
-const frontendUrl = requestUrl.origin
-// Только для отображения ссылки: реальный backend всегда доступен браузеру
-// на том же хосте, что и frontend, но на своём порту — не завязано на то,
-// запущено через pnpm dev или docker compose (там разные внутренние адреса).
-const backendUrl = `${requestUrl.protocol}//${requestUrl.hostname}:${backendPort}`
-const swaggerEnabled = appEnv === 'development'
+
+const frontendUrl = useRequestURL().origin
+
+// Адреса сервисов приходят от самого бэкенда — фронтенду не нужно знать
+// ни его порт, ни способ развёртывания.
+const {
+  backendHealthUrl,
+  backendOnline,
+  swaggerEnabled,
+  swaggerUrl,
+} = useDevLinks()
 
 const route = useRoute()
 const router = useRouter()
@@ -53,19 +56,19 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
 <template>
   <div class="panel">
     <div class="panel__section">
-      <h2 class="panel__heading">О приложении</h2>
+      <h2 class="panel__heading">{{ t('devPanel.about') }}</h2>
       <div class="nav-meta">
-        <span class="nav-meta__label">Версия:</span>
+        <span class="nav-meta__label">{{ t('devPanel.version') }}</span>
         <code class="nav-meta__value">{{ appVersion }}</code>
       </div>
       <div class="nav-meta">
-        <span class="nav-meta__label">Ветка:</span>
+        <span class="nav-meta__label">{{ t('devPanel.branch') }}</span>
         <code class="nav-meta__value">{{ appBranch }}</code>
       </div>
     </div>
 
     <div class="panel__section">
-      <h2 class="panel__heading">Окружение</h2>
+      <h2 class="panel__heading">{{ t('devPanel.environment') }}</h2>
       <div class="env-row">
         <span class="env-row__key">APP_ENV</span>
         <code class="env-row__value" :class="`env-row__value--${appEnv}`">{{ appEnv }}</code>
@@ -73,10 +76,10 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
     </div>
 
     <div class="panel__section">
-      <h2 class="panel__heading">Сервисы</h2>
+      <h2 class="panel__heading">{{ t('devPanel.services') }}</h2>
       <a
         class="service"
-        :href="`${backendUrl}/health`"
+        :href="backendHealthUrl"
         target="_blank"
       >
         <span
@@ -84,7 +87,7 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
           :class="backendOnline ? 'service__dot--online' : 'service__dot--offline'"
         />
         <span class="service__name">Backend (NestJS)</span>
-        <code class="service__url">{{ backendUrl }}/health</code>
+        <code class="service__url">{{ backendHealthUrl }}</code>
       </a>
       <a
         class="service"
@@ -98,11 +101,11 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
     </div>
 
     <div class="panel__section">
-      <h2 class="panel__heading">Инструменты</h2>
+      <h2 class="panel__heading">{{ t('devPanel.tools') }}</h2>
       <a
         class="service"
         :class="{ 'service--muted': !swaggerEnabled }"
-        :href="swaggerEnabled ? `${backendUrl}/api/docs` : undefined"
+        :href="swaggerEnabled ? swaggerUrl : undefined"
         :target="swaggerEnabled ? '_blank' : undefined"
       >
         <span
@@ -111,9 +114,9 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
         />
         <span class="service__name">
           Swagger UI
-          <span v-if="!swaggerEnabled" class="service__badge">only dev</span>
+          <span v-if="!swaggerEnabled" class="service__badge">{{ t('devPanel.onlyDev') }}</span>
         </span>
-        <code class="service__url">{{ backendUrl }}/api/docs</code>
+        <code class="service__url">{{ swaggerUrl }}</code>
       </a>
       <a
         class="service"
@@ -121,15 +124,15 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
         target="_blank"
       >
         <span class="service__dot service__dot--static" style="background: #38bdf8" />
-        <span class="service__name">Документация (VitePress)</span>
+        <span class="service__name">{{ t('devPanel.docs') }}</span>
         <code class="service__url">{{ docsUrl }}</code>
       </a>
     </div>
 
     <div class="panel__section">
-      <h2 class="panel__heading">Навигация</h2>
+      <h2 class="panel__heading">{{ t('devPanel.navigation') }}</h2>
       <div class="nav-meta">
-        <span class="nav-meta__label">Layout:</span>
+        <span class="nav-meta__label">{{ t('devPanel.layout') }}</span>
         <code class="nav-meta__value">{{ currentLayout }}</code>
       </div>
       <NuxtLink
@@ -151,7 +154,7 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
     </div>
 
     <div class="panel__section">
-      <h2 class="panel__heading">Viewport</h2>
+      <h2 class="panel__heading">{{ t('devPanel.viewport') }}</h2>
       <DevPanelViewport />
     </div>
   </div>

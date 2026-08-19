@@ -1,8 +1,0 @@
-server {
-    listen ${PORT};
-    root /srv/docs;
-
-    location / {
-        try_files $uri $uri.html $uri/ /404.html;
-    }
-}

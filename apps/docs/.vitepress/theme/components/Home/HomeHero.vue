@@ -9,11 +9,14 @@ const { theme, lang } = useData()
 const hero = computed(() => theme.value.home!.hero)
 
 // Ссылка на документацию с учётом текущей локали: ru — в корне (без префикса),
-// en/th — в своих папках. withBase добавит base '/docs/'.
+// en/th — в своих папках. withBase добавит base '/dev/docs/'.
 const docsLink = computed(() => {
   const prefix = lang.value === 'ru' ? '' : `/${lang.value}`
   return withBase(`${prefix}/guide/getting-started`)
 })
+
+// Адрес кабинета задаётся при сборке через DASHBOARD_URL (см. config.ts).
+const dashboardLink = computed(() => theme.value.dashboardUrl)
 </script>
 
 <template>
@@ -34,9 +37,12 @@ const docsLink = computed(() => {
             <Icon name="lucide:book-open" size="15" />
             {{ hero.docs }}
           </a>
+          <!-- target="_self" обязателен: иначе роутер VitePress сочтёт ссылку
+               внутренней, перехватит клик и попробует найти такую страницу
+               у себя вместо перехода на фронтенд. -->
           <a
             class="hero__btn hero__btn--ghost"
-            href="/"
+            :href="dashboardLink"
             target="_self"
           >
             <Icon name="lucide:log-in" size="15" />

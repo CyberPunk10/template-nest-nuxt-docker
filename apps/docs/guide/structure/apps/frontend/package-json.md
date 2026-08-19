@@ -1,0 +1,14 @@
+# package.json
+
+Манифест frontend-приложения. Скрипты работают только внутри своего воркспейса — из корня вызываются через фильтр (`pnpm --filter frontend dev`) или транзитивно из корневых команд.
+
+| Скрипт        | Команда          | Что делает                                                                          |
+| ------------- | ---------------- | ----------------------------------------------------------------------------------- |
+| `dev`         | `nuxt dev`       | Локальная разработка с hot-reload                                                   |
+| `build`       | `nuxt build`     | Production-сборка в `.output/`                                                      |
+| `preview`     | `nuxt preview`   | Локальный запуск production-сборки                                                  |
+| `postinstall` | `nuxt prepare`   | Генерирует `.nuxt/` (типы, алиасы) — запускается автоматически после `pnpm install` |
+| `lint`        | `eslint . --fix` | Линтер с автофиксом                                                                 |
+| `type-check`  | `nuxt typecheck` | Проверка типов через `vue-tsc`                                                      |
+
+Что где лежит — [apps/frontend](/guide/structure/apps/frontend/).
