@@ -1,0 +1,33 @@
+# package.json
+
+Manifest ที่ root ของ monorepo สคริปต์ในนี้ควบคุมทั้ง repository: `pnpm -r ...` ครอบทุก workspace, Docker, การเตรียม `.env`
+
+| สคริปต์          | คำสั่ง                             | ทำอะไร                                                                 |
+| -------------- | ------------------------------- | --------------------------------------------------------------------- |
+| `env:copy`     | `node scripts/copy-env-cli.mjs` | สร้าง `.env` ที่ขาดหายทั้งหมดจาก `.env.example` — ไม่รันหรือตรวจสอบอะไรอย่างอื่น |
+| `predev`       | `node scripts/predev.mjs`       | รันอัตโนมัติก่อน `dev` (npm `pre*` convention)                             |
+| `dev`          | `node scripts/dev.mjs`          | เปิด backend, frontend และ docs พร้อมกัน (ผ่าน `concurrently`)            |
+| `predocker:up` | `node scripts/predocker.mjs`    | รันอัตโนมัติก่อน `docker:up`                                               |
+| `docker:up`    | `docker compose up`             | เปิดทั้งสาม service ใน Docker                                            |
+| `build`        | `pnpm -r build`                 | Build workspace package ทั้งหมด (รัน `build` ใน `apps/*` แต่ละตัว)         |
+| `lint`         | `pnpm -r lint`                  | รัน linter กับ workspace package ทั้งหมด                                  |
+| `type-check`   | `pnpm -r type-check`            | ตรวจสอบ type ของ workspace package ทั้งหมด                              |
+| `reinstall`    | `node scripts/reinstall.mjs`    | ลบ `node_modules`/`pnpm-lock.yaml` แล้วติดตั้ง dependency ใหม่ทั้งหมด        |
+| `prepare`      | `husky`                         | ตั้งค่า git hook (เรียกอัตโนมัติตอน `pnpm install`)                          |
+
+สคริปต์เหล่านี้ไม่ทับกับสคริปต์ของ application: ตัวที่ root ทำงานกับทั้ง monorepo ส่วน per-app ทำงานเฉพาะใน workspace ของตัวเอง และถูกเรียกผ่าน filter (`pnpm --filter backend dev`) หรือโดยอ้อมจากคำสั่งที่ root
+
+คำสั่งส่วนใหญ่มี [Node script](/th/guide/structure/scripts/) ใน `scripts/` อยู่เบื้องหลัง
+
+## เวอร์ชันของเครื่องมือ
+
+```json
+"packageManager": "pnpm@11.12.0",
+"engines": {
+  "node": ">=24",
+  "pnpm": ">=11",
+  "npm": "please-use-pnpm"
+}
+```
+
+`packageManager` ตรึงเวอร์ชัน pnpm ผ่าน Corepack ส่วน `engines` ร่วมกับ `engine-strict=true` ใน `.npmrc` ป้องกันการติดตั้ง dependency บน Node เวอร์ชันที่ไม่รองรับ — [pnpm และ Corepack](/th/guide/pnpm)

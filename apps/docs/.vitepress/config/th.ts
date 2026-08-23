@@ -25,6 +25,108 @@ const config: LocaleEntry = {
               { text: 'ด้วย Docker', link: '/th/guide/getting-started/run-docker' },
             ],
           },
+          {
+            text: 'โครงสร้างโปรเจกต์',
+            link: '/th/guide/structure/',
+            collapsed: true,
+            items: [
+              {
+                text: 'apps',
+                link: '/th/guide/structure/apps/',
+                collapsed: true,
+                items: [
+                  {
+                    text: 'backend',
+                    link: '/th/guide/structure/apps/backend/',
+                    collapsed: true,
+                    items: [
+                      { text: 'Dockerfile', link: '/th/guide/structure/apps/backend/docker-image' },
+                      { text: '.env.example', link: '/th/guide/structure/apps/backend/env-example' },
+                      { text: 'package.json', link: '/th/guide/structure/apps/backend/package-json' },
+                    ],
+                  },
+                  {
+                    text: 'frontend',
+                    link: '/th/guide/structure/apps/frontend/',
+                    collapsed: true,
+                    items: [
+                      { text: 'Dockerfile', link: '/th/guide/structure/apps/frontend/docker-image' },
+                      { text: '.env.example', link: '/th/guide/structure/apps/frontend/env-example' },
+                      { text: 'package.json', link: '/th/guide/structure/apps/frontend/package-json' },
+                    ],
+                  },
+                  {
+                    text: 'docs',
+                    link: '/th/guide/structure/apps/docs/',
+                    collapsed: true,
+                    items: [
+                      { text: 'Dockerfile', link: '/th/guide/structure/apps/docs/docker-image' },
+                      { text: '.env.example', link: '/th/guide/structure/apps/docs/env-example' },
+                      { text: 'package.json', link: '/th/guide/structure/apps/docs/package-json' },
+                    ],
+                  },
+                ],
+              },
+              {
+                text: 'packages',
+                link: '/th/guide/structure/packages/',
+                collapsed: true,
+                items: [
+                  {
+                    text: 'shared',
+                    link: '/th/guide/structure/packages/shared/',
+                    collapsed: true,
+                    items: [
+                      { text: 'package.json', link: '/th/guide/structure/packages/shared/package-json' },
+                    ],
+                  },
+                  {
+                    text: 'ui',
+                    link: '/th/guide/structure/packages/ui/',
+                    collapsed: true,
+                    items: [
+                      { text: 'package.json', link: '/th/guide/structure/packages/ui/package-json' },
+                    ],
+                  },
+                ],
+              },
+              {
+                text: 'infra',
+                link: '/th/guide/structure/infra/',
+                collapsed: true,
+                items: [
+                  {
+                    text: 'nginx',
+                    link: '/th/guide/structure/infra/nginx/',
+                    collapsed: true,
+                    items: [
+                      { text: 'Dockerfile', link: '/th/guide/structure/infra/nginx/docker-image' },
+                    ],
+                  },
+                ],
+              },
+              {
+                text: 'scripts',
+                link: '/th/guide/structure/scripts/',
+                collapsed: true,
+                items: [
+                  { text: 'predev.mjs', link: '/th/guide/structure/scripts/predev' },
+                  { text: 'predocker.mjs', link: '/th/guide/structure/scripts/predocker' },
+                  { text: 'copy-env.mjs', link: '/th/guide/structure/scripts/copy-env' },
+                  { text: 'copy-env-cli.mjs', link: '/th/guide/structure/scripts/copy-env-cli' },
+                  { text: 'check-ports.mjs', link: '/th/guide/structure/scripts/check-ports' },
+                  { text: 'ensure-network.mjs', link: '/th/guide/structure/scripts/ensure-network' },
+                  { text: 'dev.mjs', link: '/th/guide/structure/scripts/dev' },
+                  { text: 'reinstall.mjs', link: '/th/guide/structure/scripts/reinstall' },
+                ],
+              },
+              { text: '.husky', link: '/th/guide/structure/husky/' },
+              { text: 'docker-compose.yml', link: '/th/guide/structure/docker-compose' },
+              { text: 'tsconfig.base.json', link: '/th/guide/structure/tsconfig-base' },
+              { text: '.env.example', link: '/th/guide/structure/env-example' },
+              { text: 'package.json', link: '/th/guide/structure/package-json' },
+            ],
+          },
           { text: 'สถาปัตยกรรม', link: '/th/guide/architecture' },
           { text: 'ตัวแปรสภาพแวดล้อม', link: '/th/guide/env-variables' },
           {

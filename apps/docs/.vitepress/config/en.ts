@@ -25,6 +25,108 @@ const config: LocaleEntry = {
               { text: 'With Docker', link: '/en/guide/getting-started/run-docker' },
             ],
           },
+          {
+            text: 'Project structure',
+            link: '/en/guide/structure/',
+            collapsed: true,
+            items: [
+              {
+                text: 'apps',
+                link: '/en/guide/structure/apps/',
+                collapsed: true,
+                items: [
+                  {
+                    text: 'backend',
+                    link: '/en/guide/structure/apps/backend/',
+                    collapsed: true,
+                    items: [
+                      { text: 'Dockerfile', link: '/en/guide/structure/apps/backend/docker-image' },
+                      { text: '.env.example', link: '/en/guide/structure/apps/backend/env-example' },
+                      { text: 'package.json', link: '/en/guide/structure/apps/backend/package-json' },
+                    ],
+                  },
+                  {
+                    text: 'frontend',
+                    link: '/en/guide/structure/apps/frontend/',
+                    collapsed: true,
+                    items: [
+                      { text: 'Dockerfile', link: '/en/guide/structure/apps/frontend/docker-image' },
+                      { text: '.env.example', link: '/en/guide/structure/apps/frontend/env-example' },
+                      { text: 'package.json', link: '/en/guide/structure/apps/frontend/package-json' },
+                    ],
+                  },
+                  {
+                    text: 'docs',
+                    link: '/en/guide/structure/apps/docs/',
+                    collapsed: true,
+                    items: [
+                      { text: 'Dockerfile', link: '/en/guide/structure/apps/docs/docker-image' },
+                      { text: '.env.example', link: '/en/guide/structure/apps/docs/env-example' },
+                      { text: 'package.json', link: '/en/guide/structure/apps/docs/package-json' },
+                    ],
+                  },
+                ],
+              },
+              {
+                text: 'packages',
+                link: '/en/guide/structure/packages/',
+                collapsed: true,
+                items: [
+                  {
+                    text: 'shared',
+                    link: '/en/guide/structure/packages/shared/',
+                    collapsed: true,
+                    items: [
+                      { text: 'package.json', link: '/en/guide/structure/packages/shared/package-json' },
+                    ],
+                  },
+                  {
+                    text: 'ui',
+                    link: '/en/guide/structure/packages/ui/',
+                    collapsed: true,
+                    items: [
+                      { text: 'package.json', link: '/en/guide/structure/packages/ui/package-json' },
+                    ],
+                  },
+                ],
+              },
+              {
+                text: 'infra',
+                link: '/en/guide/structure/infra/',
+                collapsed: true,
+                items: [
+                  {
+                    text: 'nginx',
+                    link: '/en/guide/structure/infra/nginx/',
+                    collapsed: true,
+                    items: [
+                      { text: 'Dockerfile', link: '/en/guide/structure/infra/nginx/docker-image' },
+                    ],
+                  },
+                ],
+              },
+              {
+                text: 'scripts',
+                link: '/en/guide/structure/scripts/',
+                collapsed: true,
+                items: [
+                  { text: 'predev.mjs', link: '/en/guide/structure/scripts/predev' },
+                  { text: 'predocker.mjs', link: '/en/guide/structure/scripts/predocker' },
+                  { text: 'copy-env.mjs', link: '/en/guide/structure/scripts/copy-env' },
+                  { text: 'copy-env-cli.mjs', link: '/en/guide/structure/scripts/copy-env-cli' },
+                  { text: 'check-ports.mjs', link: '/en/guide/structure/scripts/check-ports' },
+                  { text: 'ensure-network.mjs', link: '/en/guide/structure/scripts/ensure-network' },
+                  { text: 'dev.mjs', link: '/en/guide/structure/scripts/dev' },
+                  { text: 'reinstall.mjs', link: '/en/guide/structure/scripts/reinstall' },
+                ],
+              },
+              { text: '.husky', link: '/en/guide/structure/husky/' },
+              { text: 'docker-compose.yml', link: '/en/guide/structure/docker-compose' },
+              { text: 'tsconfig.base.json', link: '/en/guide/structure/tsconfig-base' },
+              { text: '.env.example', link: '/en/guide/structure/env-example' },
+              { text: 'package.json', link: '/en/guide/structure/package-json' },
+            ],
+          },
           { text: 'Architecture', link: '/en/guide/architecture' },
           { text: 'Environment variables', link: '/en/guide/env-variables' },
           {

@@ -1,0 +1,113 @@
+/* Значки в боковом меню раздела «Структура проекта».
+
+   И папки, и файлы рисуются одним псевдоэлементом ::before в боксе 16×16 —
+   поэтому отступ до текста одинаковый. Папки получают эмодзи 📂, файлы —
+   свою SVG-иконку.
+
+   SVG лежат в public/icons/ (набор vscode-icons, MIT).
+   Добавить иконку файлу: положить .svg рядом и дописать правило ниже.
+
+   Селекторы матчат href по вхождению, а не по окончанию: в собранном
+   сайте у страниц появляется расширение (.../root.html), а в dev-сервере
+   его нет — `*=` покрывает оба случая. */
+
+/* По умолчанию всё в разделе — папка. */
+.VPSidebarItem a[href*='/guide/structure'] .text::before {
+  content: '📂';
+  display: inline-block;
+  width: 16px;
+  margin-right: 7px;
+  line-height: inherit;
+  text-align: center;
+}
+
+/* Файлы: вместо эмодзи — фоновая картинка в том же боксе. */
+.VPSidebarItem a[href*='/env-example'] .text::before,
+.VPSidebarItem a[href*='/tsconfig-base'] .text::before,
+.VPSidebarItem a[href*='/package-json'] .text::before,
+.VPSidebarItem a[href*='/structure/scripts/']:not([href$='/scripts/']) .text::before,
+.VPSidebarItem a[href*='/structure/'][href*='/docker-image'] .text::before,
+.VPSidebarItem a[href*='/structure/docker-compose'] .text::before {
+  content: '';
+  height: 16px;
+  vertical-align: -3px;
+  background: center / contain no-repeat;
+}
+
+.VPSidebarItem a[href*='/package-json'] .text::before {
+  background-image: url('/dev/docs/icons/npm.svg');
+}
+
+.VPSidebarItem a[href*='/structure/scripts/']:not([href$='/scripts/']) .text::before {
+  background-image: url('/dev/docs/icons/js.svg');
+}
+
+.VPSidebarItem a[href*='/structure/'][href*='/docker-image'] .text::before,
+.VPSidebarItem a[href*='/structure/docker-compose'] .text::before {
+  background-image: url('/dev/docs/icons/docker.svg');
+}
+
+.VPSidebarItem a[href*='/env-example'] .text::before {
+  background-image: url('/dev/docs/icons/dotenv.svg');
+}
+
+.VPSidebarItem a[href*='/tsconfig-base'] .text::before {
+  background-image: url('/dev/docs/icons/tsconfig.svg');
+}
+
+/* ── Значки разделов верхнего уровня ──
+   Иконки lucide, монохромные: рисуются через mask с currentColor,
+   поэтому принимают цвет текста меню и подсвечиваются вместе с ним.
+   Файловые иконки выше — наоборот, цветные background-image. */
+.VPSidebarItem a[href$='/guide/getting-started/'] .text::before,
+.VPSidebarItem a[href$='/guide/structure/'] .text::before,
+.VPSidebarItem a[href*='/guide/architecture'] .text::before,
+.VPSidebarItem a[href*='/guide/env-variables'] .text::before,
+.VPSidebarItem a[href$='/guide/docker/'] .text::before,
+.VPSidebarItem a[href*='/guide/reverse-proxy'] .text::before,
+.VPSidebarItem a[href*='/guide/pnpm'] .text::before {
+  content: '';
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 7px;
+  vertical-align: -3px;
+  background: currentColor;
+  -webkit-mask: center / contain no-repeat;
+  mask: center / contain no-repeat;
+}
+
+.VPSidebarItem a[href$='/guide/getting-started/'] .text::before {
+  -webkit-mask-image: url('/dev/docs/icons/nav-rocket.svg');
+  mask-image: url('/dev/docs/icons/nav-rocket.svg');
+}
+
+.VPSidebarItem a[href$='/guide/structure/'] .text::before {
+  -webkit-mask-image: url('/dev/docs/icons/nav-folder-tree.svg');
+  mask-image: url('/dev/docs/icons/nav-folder-tree.svg');
+}
+
+.VPSidebarItem a[href*='/guide/architecture'] .text::before {
+  -webkit-mask-image: url('/dev/docs/icons/nav-network.svg');
+  mask-image: url('/dev/docs/icons/nav-network.svg');
+}
+
+.VPSidebarItem a[href*='/guide/env-variables'] .text::before {
+  -webkit-mask-image: url('/dev/docs/icons/nav-settings.svg');
+  mask-image: url('/dev/docs/icons/nav-settings.svg');
+}
+
+.VPSidebarItem a[href$='/guide/docker/'] .text::before {
+  -webkit-mask-image: url('/dev/docs/icons/nav-container.svg');
+  mask-image: url('/dev/docs/icons/nav-container.svg');
+}
+
+.VPSidebarItem a[href*='/guide/reverse-proxy'] .text::before {
+  -webkit-mask-image: url('/dev/docs/icons/nav-route.svg');
+  mask-image: url('/dev/docs/icons/nav-route.svg');
+}
+
+.VPSidebarItem a[href*='/guide/pnpm'] .text::before {
+  -webkit-mask-image: url('/dev/docs/icons/nav-package-2.svg');
+  mask-image: url('/dev/docs/icons/nav-package-2.svg');
+}
