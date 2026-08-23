@@ -1,6 +1,5 @@
 <script setup lang="ts">
-const { locale, locales, setLocale } = useI18n()
-const { t } = useI18n()
+const { t, locale, locales, setLocale } = useI18n()
 
 const show = ref(false)
 let closeTimer: ReturnType<typeof setTimeout> | null = null

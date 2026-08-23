@@ -1,0 +1,120 @@
+# Dockerfile
+
+Four independent `Dockerfile`s — one per application plus the reverse proxy. They're built differently because they solve different problems:
+
+| File                       | What it does                                                          |
+| -------------------------- | ----------------------------------------------------------------------- |
+| `apps/backend/Dockerfile`  | builds NestJS, final image — only `dist/` and production dependencies |
+| `apps/frontend/Dockerfile` | builds Nuxt, final image — `.output/` with the Nitro server           |
+| `apps/docs/Dockerfile`     | builds the VitePress static output, nothing to run                    |
+| `infra/nginx/Dockerfile`   | takes `nginx:alpine`, adds the config and the documentation files     |
+
+**Multi-stage** for backend and frontend: the `builder` stage installs dependencies and produces the production artifact, the `runner` stage copies only the result out of it. The final image stays lean — no sources, no dev dependencies.
+
+**A single stage** for docs and nginx: the first has nothing to run (the proxy picks up its result), the second has nothing to build (the image already exists).
+
+All build commands run **from the monorepo root** — the context is always the whole repo, because the images need the shared lockfile and workspace packages.
+
+## Layer order
+
+The steps inside `builder` go like this:
+
+```
+COPY manifests  →  pnpm install --frozen-lockfile  →  COPY sources  →  build
+```
+
+The order isn't accidental: Docker caches layer by layer, so when sources change `install` comes from cache. It only re-runs when `package.json` or the lockfile changes.
+
+## What ends up in the final image
+
+**Backend** additionally runs `pnpm deploy --prod /deploy` — copying only `@repo/backend`'s dependencies out of `node_modules`, without the rest of the monorepo. The runner gets a clean, flat `node_modules`:
+
+```
+/app/
+├── node_modules/     ← only @repo/backend dependencies (pnpm deploy)
+└── dist/
+    └── main.js       ← compiled code
+
+CMD: node dist/main
+```
+
+**Frontend** doesn't do that — Nuxt packs all dependencies into `.output` at build time:
+
+```
+/app/
+└── .output/
+    ├── server/index.mjs   ← entry point (Node.js server)
+    └── public/            ← static files (JS, CSS, assets)
+
+CMD: node .output/server/index.mjs
+```
+
+`node_modules` isn't needed in the runner at all — `.output` can be copied to a server and run without pnpm.
+
+**The reverse proxy** receives only files; the process is started by the `nginx:alpine` image itself:
+
+```
+/srv/docs/            ← VitePress static output, came from docs-builder
+/etc/nginx/templates/ ← config template, envsubst processes it at startup
+```
+
+## Base image versions
+
+Base images are pinned to a minor version:
+
+```dockerfile
+FROM node:24.18-alpine
+FROM nginx:1.31-alpine
+```
+
+Not the floating `node:24-alpine`/`nginx:alpine` — otherwise builds on different days produce different results. And not a hard digest pin either: security patches would stop arriving until someone updates the hash by hand. A minor tag is the middle ground: the version is fixed, patches still come in.
+
+## Unprivileged user
+
+The `backend` and `frontend` runner stages run as `USER node` — the built-in unprivileged user that already exists in the `node:*-alpine` image:
+
+```dockerfile
+FROM node:24.18-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+USER node
+COPY --from=builder --chown=node:node /deploy/node_modules ./node_modules
+COPY --from=builder --chown=node:node /app/apps/backend/dist ./dist
+```
+
+Why: without it the process inside the container runs as `root`. If an RCE (remote code execution) is found in the app, the attacker gets root in the container straight away — which widens the blast radius: container escape, mounted volumes and the rest become easier to exploit. `USER node` cuts that risk at no cost.
+
+`--chown=node:node` in `COPY` is mandatory: `WORKDIR /app` is created as `root` **before** `USER node`, and without `--chown` the `node` process can't read the files.
+
+`nginx` needs no separate `USER` — the image already runs its worker processes as the unprivileged `nginx` user.
+
+## HEALTHCHECK
+
+Every `Dockerfile` with a running process has a `HEALTHCHECK` — without one, Docker or an orchestrator (Kubernetes readiness probe, Docker Swarm, `depends_on: condition: service_healthy`) can't tell "the process started" from "the app answers requests".
+
+```dockerfile
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s \
+  CMD wget -qO- http://127.0.0.1:${PORT}/health || exit 1
+```
+
+| Service  | Checked path                               |
+| -------- | ------------------------------------------ |
+| backend  | `http://127.0.0.1:${PORT}/health`          |
+| frontend | `http://127.0.0.1:${PORT}/api/health`      |
+| nginx    | `http://127.0.0.1:${NGINX_INTERNAL_PORT}/` |
+
+`docs-builder` has no healthcheck — there's nothing to check, the image ends at the build stage.
+
+`${PORT}` in `HEALTHCHECK CMD` is not a build-time substitution but an ordinary shell variable: it's read from the actual value inside the container at check time.
+
+`wget` was chosen because it's already in the base images — no need to install `curl` separately.
+
+::: tip
+The explicit `127.0.0.1` instead of `localhost` isn't a stylistic nitpick. Inside the container `/etc/hosts` resolves `localhost` to both `127.0.0.1` and `::1`, and `wget` may try `::1` first. If the service listens on IPv4 only (the usual behaviour for nginx and Node), that attempt gets `Connection refused` and the healthcheck goes `unhealthy` — even though the service is alive. Verified live.
+:::
+
+Check a running container's status:
+
+```bash
+docker inspect --format='{{json .State.Health}}' backend-preview
+```

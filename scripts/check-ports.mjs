@@ -1,21 +1,7 @@
 import { createServer } from 'net'
-import { readFileSync, existsSync } from 'fs'
 import { execSync } from 'child_process'
 import { intro, select, outro, cancel, isCancel } from '@clack/prompts'
-
-// Парсит .env файл в объект { KEY: 'value' }
-function parseEnv(filePath) {
-  if (!existsSync(filePath)) return {}
-  return Object.fromEntries(
-    readFileSync(filePath, 'utf8')
-      .split('\n')
-      .filter(l => l && !l.startsWith('#') && l.includes('='))
-      .map((l) => {
-        const idx = l.indexOf('=')
-        return [l.slice(0, idx).trim(), l.slice(idx + 1).trim()]
-      }),
-  )
-}
+import { parseEnv } from './copy-env.mjs'
 
 // Проверяет, свободен ли порт
 export function isPortFree(port) {

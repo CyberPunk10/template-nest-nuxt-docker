@@ -1,16 +1,20 @@
 import { ROOT_ENV, copyEnvFiles } from './copy-env.mjs'
 import { checkPorts } from './check-ports.mjs'
+import { ensureNetwork } from './ensure-network.mjs'
 
 async function main() {
   // Шаг 1: создать .env из .env.example если отсутствует
   copyEnvFiles()
 
   // Шаг 2: проверить хост-порты и разрешить конфликты
+  // Проверять нужно только порт reverse proxy: наружу публикуется он один,
+  // остальные сервисы живут во внутренней сети и хост-портов не занимают.
   await checkPorts([
-    { name: 'backend', envPath: ROOT_ENV, key: 'BACKEND_HOST_PORT' },
-    { name: 'frontend', envPath: ROOT_ENV, key: 'FRONTEND_HOST_PORT' },
-    { name: 'docs', envPath: ROOT_ENV, key: 'DOCS_HOST_PORT' },
+    { name: 'nginx', envPath: ROOT_ENV, key: 'NGINX_HOST_PORT' },
   ])
+
+  // Шаг 3: создать Docker-сеть, если её ещё нет
+  ensureNetwork()
 }
 
 main().catch((e) => {

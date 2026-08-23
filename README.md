@@ -15,7 +15,7 @@
 
 ### `main` — базовый шаблон
 
-NestJS + Nuxt 4 + Docker. Users CRUD in-memory, i18n, Swagger, ESLint, Husky. Без БД.
+NestJS + Nuxt 4 + Docker. Tasks CRUD in-memory, i18n, Swagger, ESLint, Husky. Без БД.
 
 ```bash
 git clone https://github.com/CyberPunk10/template-nest-nuxt-docker.git my-app
@@ -101,7 +101,7 @@ template-nest-nuxt/
 - **@repo/shared** — общие TypeScript типы (DTO) и i18n переводы (ru/en/th)
 - **@repo/ui** — библиотека Vue компонентов (`UiButton`, `UiBadge`, `UiCard`)
 - **Proxy** — Nuxt server route проксирует `/api/backend/*` → NestJS, без CORS в dev
-- **Users CRUD** — полный REST на бекенде (`GET/POST/PUT/DELETE /users`), UI на фронтенде
+- **Tasks CRUD** — полный REST на бекенде (`GET/POST/PUT/DELETE /tasks`), UI на фронтенде
 
 ### Backend
 
@@ -112,8 +112,8 @@ template-nest-nuxt/
 
 ### Инфраструктура
 
-- **Docker** — multi-stage образы для backend, frontend и docs
-- **docker compose** — поднимает все три сервиса вместе, в общей сети
+- **Docker** — multi-stage образы для backend и frontend, reverse proxy как единая точка входа; документация собирается в статику и раздаётся им же
+- **docker compose** — поднимает nginx, backend и frontend в общей сети; наружу публикуется только порт nginx, приложения доступны лишь через него
 - **`pnpm docker:up`** — обёртка над `docker compose up`: создаёт корневой `.env` из `.env.example`, проверяет занятость хост-портов
 
 ---

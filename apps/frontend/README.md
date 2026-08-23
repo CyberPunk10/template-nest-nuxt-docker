@@ -4,13 +4,12 @@ Nuxt 4 frontend. Работает на порту `3200`.
 
 ## Переменные окружения
 
-| Переменная                 | По умолчанию            | Описание                              |
-| -------------------------- | ----------------------- | ------------------------------------- |
-| `NUXT_PUBLIC_API_BASE`     | `/api/backend`          | Префикс API для клиента (публичная)   |
-| `NUXT_BACKEND_URL`         | `http://localhost:3100` | URL бекенда для server-side proxy     |
-| `NUXT_PUBLIC_BACKEND_PORT` | `3100`                  | Порт бекенда для ссылки в DevPanel    |
-| `NUXT_PUBLIC_APP_ENV`      | `development`           | Режим окружения на клиенте (DevPanel) |
-| `NUXT_PUBLIC_DOCS_URL`     | `http://localhost:5173` | Ссылка на VitePress-документацию      |
+| Переменная                       | По умолчанию                      | Описание                                                                                       |
+| -------------------------------- | --------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `NUXT_PUBLIC_API_BASE`           | `/api/backend`                    | Префикс API для клиента (публичная)                                                            |
+| `NUXT_BACKEND_URL`               | `http://localhost:3100`           | URL бекенда для server-side proxy                                                              |
+| `NUXT_PUBLIC_APP_ENV`            | `development`                     | Режим окружения на клиенте (DevPanel)                                                          |
+| `NUXT_PUBLIC_DOCS_URL`           | `http://localhost:5173/dev/docs/` | Ссылка на VitePress-документацию. В Docker — относительный `/dev/docs/`                        |
 
 Скопируйте `.env.example` в `.env` и заполните нужные значения.
 
