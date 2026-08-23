@@ -13,6 +13,7 @@
 | `lint`         | `pnpm -r lint`                  | Линтер по всем workspace-пакетам                                                           |
 | `type-check`   | `pnpm -r type-check`            | Проверка типов по всем workspace-пакетам                                                   |
 | `reinstall`    | `node scripts/reinstall.mjs`    | Удаляет `node_modules`/`pnpm-lock.yaml` и переустанавливает зависимости с нуля             |
+| `deps:sync`    | `pnpm update -r`                | Подтягивает диапазоны в `package.json` к реально установленным версиям                     |
 | `prepare`      | `husky`                         | Настраивает git-хуки (вызывается автоматически при `pnpm install`)                         |
 
 Скрипты не пересекаются со скриптами приложений: корневые работают со всем монорепо, per-app — только внутри своего воркспейса и вызываются через фильтр (`pnpm --filter backend dev`) или транзитивно из корневых.

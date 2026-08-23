@@ -13,6 +13,7 @@ The monorepo's root manifest. Its scripts orchestrate the whole repository: `pnp
 | `lint`         | `pnpm -r lint`                  | Runs the linter across all workspace packages                                             |
 | `type-check`   | `pnpm -r type-check`            | Type-checks all workspace packages                                                        |
 | `reinstall`    | `node scripts/reinstall.mjs`    | Removes `node_modules`/`pnpm-lock.yaml` and reinstalls dependencies from scratch          |
+| `deps:sync`    | `pnpm update -r`                | Aligns the ranges in `package.json` with the versions actually installed                  |
 | `prepare`      | `husky`                         | Sets up git hooks (runs automatically on `pnpm install`)                                  |
 
 These don't overlap with the application scripts: the root ones work across the whole monorepo, per-app ones only inside their own workspace and are called through a filter (`pnpm --filter backend dev`) or transitively from the root commands.

@@ -13,6 +13,7 @@ Manifest ที่ root ของ monorepo สคริปต์ในนี้�
 | `lint`         | `pnpm -r lint`                  | รัน linter กับ workspace package ทั้งหมด                                  |
 | `type-check`   | `pnpm -r type-check`            | ตรวจสอบ type ของ workspace package ทั้งหมด                              |
 | `reinstall`    | `node scripts/reinstall.mjs`    | ลบ `node_modules`/`pnpm-lock.yaml` แล้วติดตั้ง dependency ใหม่ทั้งหมด        |
+| `deps:sync`    | `pnpm update -r`                | ปรับช่วงเวอร์ชันใน `package.json` ให้ตรงกับที่ติดตั้งจริง                    |
 | `prepare`      | `husky`                         | ตั้งค่า git hook (เรียกอัตโนมัติตอน `pnpm install`)                          |
 
 สคริปต์เหล่านี้ไม่ทับกับสคริปต์ของ application: ตัวที่ root ทำงานกับทั้ง monorepo ส่วน per-app ทำงานเฉพาะใน workspace ของตัวเอง และถูกเรียกผ่าน filter (`pnpm --filter backend dev`) หรือโดยอ้อมจากคำสั่งที่ root
