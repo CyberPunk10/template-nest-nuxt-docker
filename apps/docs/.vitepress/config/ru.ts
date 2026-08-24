@@ -45,6 +45,8 @@ const config: LocaleEntry = {
                       { text: 'Dockerfile', link: '/guide/structure/apps/backend/docker-image' },
                       { text: '.env.example', link: '/guide/structure/apps/backend/env-example' },
                       { text: 'package.json', link: '/guide/structure/apps/backend/package-json' },
+                      { text: 'tsconfig.json', link: '/guide/structure/apps/backend/tsconfig' },
+                      { text: 'tsconfig.build.json', link: '/guide/structure/apps/backend/tsconfig-build' },
                     ],
                   },
                   {
@@ -55,6 +57,7 @@ const config: LocaleEntry = {
                       { text: 'Dockerfile', link: '/guide/structure/apps/frontend/docker-image' },
                       { text: '.env.example', link: '/guide/structure/apps/frontend/env-example' },
                       { text: 'package.json', link: '/guide/structure/apps/frontend/package-json' },
+                      { text: 'tsconfig.json', link: '/guide/structure/apps/frontend/tsconfig' },
                     ],
                   },
                   {
@@ -65,6 +68,7 @@ const config: LocaleEntry = {
                       { text: 'Dockerfile', link: '/guide/structure/apps/docs/docker-image' },
                       { text: '.env.example', link: '/guide/structure/apps/docs/env-example' },
                       { text: 'package.json', link: '/guide/structure/apps/docs/package-json' },
+                      { text: 'tsconfig.json', link: '/guide/structure/apps/docs/tsconfig' },
                     ],
                   },
                 ],
@@ -80,6 +84,7 @@ const config: LocaleEntry = {
                     collapsed: true,
                     items: [
                       { text: 'package.json', link: '/guide/structure/packages/shared/package-json' },
+                      { text: 'tsconfig.json', link: '/guide/structure/packages/shared/tsconfig' },
                     ],
                   },
                   {
@@ -88,6 +93,7 @@ const config: LocaleEntry = {
                     collapsed: true,
                     items: [
                       { text: 'package.json', link: '/guide/structure/packages/ui/package-json' },
+                      { text: 'tsconfig.json', link: '/guide/structure/packages/ui/tsconfig' },
                     ],
                   },
                 ],

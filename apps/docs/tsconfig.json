@@ -1,22 +1,10 @@
 {
-  // Отдельный конфиг, не наследует tsconfig.base.json: документация —
-  // это Vue-приложение (тема VitePress), ему нужны DOM-либы и типы Vue,
-  // которых в базовом конфиге бекенда нет.
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "strict": true,
     "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
     "lib": ["ESNext", "DOM"],
-    // vitepress/client реэкспортирует vite/client, где объявлены модули
-    // *.vue и *.css — без него импорты компонентов и стилей в theme/index.ts
-    // подсвечиваются как ошибка. node нужен конфигу: process.env, path, url.
     "types": ["vitepress/client", "node"],
-    // Локали лежат в locales/*.json и импортируются напрямую
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    // Проверка типов, без сборки — собирает сам VitePress
-    "noEmit": true
+    "resolveJsonModule": true
   },
   "include": [".vitepress/**/*.ts", ".vitepress/**/*.vue"],
   "exclude": [".vitepress/dist", ".vitepress/cache"]

@@ -1,46 +1,145 @@
 # tsconfig.base.json
 
+Конфигов TypeScript в репозитории семь. Чтобы в них не путаться, полезно держать в голове один принцип: **все они, кроме одного, служат только проверке типов**. Компилируют код другие инструменты — `nest build`, Nuxt, VitePress. Единственное исключение — [`apps/backend/tsconfig.build.json`](/guide/structure/apps/backend/tsconfig-build).
+
+## Как устроено наследование
+
 ```
-tsconfig.base.json               ← корень монорепо, только для IDE и type-check
-│  strict, ES2022
-│  paths: {
-│    "@repo/shared" → packages/shared/src/index.ts
-│    "@repo/ui"     → packages/ui/src/index.ts
-│  }
-│  Оба пакета source-only: указывают на исходники, сборка им не нужна.
-│  Эти пути нужны только IDE для резолва типов.
-│  В рантайме модули резолвятся через pnpm workspace (package.json → main).
+template-nest-nuxt/
+├── tsconfig.base.json          ← общее основание
 │
-├── shared/tsconfig.json    ← наследует base, добавляет resolveJsonModule
-│      resolveJsonModule нужен для переводов: i18n лежит в .json
+├── apps/
+│   ├── backend/
+│   │   ├── tsconfig.json
+│   │   └── tsconfig.build.json ← наследует tsconfig.json выше, а не base
+│   ├── frontend/
+│   │   └── tsconfig.json
+│   └── docs/
+│       └── tsconfig.json
 │
-├── ui/tsconfig.json        ← НЕ наследует base (нужен jsx + DOM lib)
-│      source-only пакет, dist не нужен — Nuxt/Vite обрабатывает .vue напрямую
-│      Используется только для vue-tsc --noEmit (type-check).
-│
-├── docs/tsconfig.json      ← НЕ наследует base (Vue-приложение, нужен DOM)
-│      types: ["vitepress/client", "node"]
-│      vitepress/client реэкспортирует vite/client — оттуда объявления
-│      модулей *.vue и *.css, без них импорты в theme/ считаются ошибкой.
-│      Проверяется через vue-tsc --noEmit, как и ui.
-│
-├── frontend/tsconfig.json  ← только точка входа для IDE
-│      Реальные конфиги Nuxt генерирует в .nuxt/ при nuxt prepare,
-│      этот файл лишь ссылается на них через references.
-│
-└── backend/tsconfig.json        ← для IDE и type-check, noEmit: true
-       module: commonjs
-       experimentalDecorators: true   ← нужно для NestJS декораторов
-       │
-       └── backend/tsconfig.build.json   ← для nest build, noEmit: false
-              rootDir: ./src             ← даёт чистый dist/main.js
-              outDir: ./dist             ← без вложенных путей apps/backend/src/...
+└── packages/
+    ├── shared/
+    │   └── tsconfig.json
+    └── ui/
+        └── tsconfig.json
 ```
 
-Проверка типов запускается одной командой из корня:
+Базовый конфиг наследуют все, кроме `apps/frontend`: его настоящие конфиги генерирует Nuxt в `.nuxt/`, а сам файл лишь ссылается на них. Ничего не наследует и генератор — Nuxt прописывает все опции целиком, включая те же `strict`, `moduleResolution` и `noEmit`, что и здесь. [Подробнее](/guide/structure/apps/frontend/tsconfig).
+
+Каждый файл содержит **только то, что отличает его** от базового. Если опция не упомянута — она наследуется, и это осознанно: дублировать `strict` в каждом конфиге значит однажды получить пакет, где его случайно нет.
+
+## Что лежит в базовом
+
+```json
+{
+  "compilerOptions": {
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "bundler",
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "noEmit": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true
+  }
+}
+```
+
+| Опция | Зачем |
+| --- | --- |
+| `strict` | Строгие проверки целиком, включая `strictNullChecks` |
+| `esModuleInterop` | Импорт CommonJS-пакетов через `import x from` без `* as` |
+| `forceConsistentCasingInFileNames` | Регистр в путях: на macOS ошибка не всплывёт, в Docker сборка упадёт |
+| `moduleResolution: bundler` | Резолв как у Vite и esbuild: `exports` из package.json, импорты без расширений |
+| `skipLibCheck` | Не проверять типы внутри `node_modules` — быстрее и без чужих ошибок |
+| `noEmit` | Ничего не генерировать |
+| `noImplicitOverride` | Переопределение метода требует ключевого слова `override` |
+| `noFallthroughCasesInSwitch` | Запрещает «проваливание» между `case` без `break` |
+
+### Почему `noEmit` в базовом, а не в каждом файле
+
+Без него любой прямой запуск `tsc` — руками, из IDE, из незнакомого инструмента — разложит `.js` рядом с исходниками. Скрипт `type-check` передаёт `--noEmit` флагом, но защита, живущая только в команде, не срабатывает, когда команду не используют.
+
+Конфиг сборки отменяет это явно: `"noEmit": false`.
+
+### Две проверки сверх `strict`
+
+`noImplicitOverride` и `noFallthroughCasesInSwitch` в `strict` не входят — их включают отдельно.
+
+Первая требует помечать переопределение явно:
+
+```ts
+class Child extends Base {
+  handle() { }           // ошибка
+  override handle() { }  // так правильно
+}
+```
+
+Смысл не в формальности: без неё легко молча перекрыть родительский метод, думая, что пишешь новый. Обратный случай опаснее — переименовали метод в базовом классе, и переопределение в наследнике тихо перестало вызываться.
+
+Вторая ловит забытый `break`:
+
+```ts
+switch (status) {
+  case 'active':
+    doSomething()      // ошибка: провалится в 'archived'
+  case 'archived':
+    cleanup()
+}
+```
+
+Намеренное объединение веток при этом разрешено — пустой `case` без кода ошибкой не считается.
+
+## Чего в базовом намеренно нет
+
+### `paths` для `@repo/*`
+
+Соблазнительно прописать пути к workspace-пакетам:
+
+```json
+// так НЕ надо
+"paths": {
+  "@repo/shared": ["./packages/shared/src/index.ts"]
+}
+```
+
+Это не нужно и вредно. Не нужно — потому что pnpm кладёт симлинки в `node_modules/@repo/`, а `package.json` пакета указывает `main` прямо на `src/index.ts`; TypeScript находит его сам. Вредно — потому что `paths` ведёт на **исходники соседнего пакета**, и при сборке бэкенда `tsc` пытается компилировать их вместе с ним:
+
+```
+error TS6059: File '.../packages/shared/src/types/api.ts' is not under
+rootDir '.../apps/backend/src'. 'rootDir' is expected to contain all source files.
+```
+
+Лечить это пришлось бы сбросом `"paths": {}` в конфиге сборки — костыль, который существует только чтобы обойти ненужную настройку.
+
+### `target` и `lib`
+
+У бэкенда среда — Node, у Vue-пакетов — браузер. Общего значения нет, поэтому каждый задаёт своё.
+
+## Конфиги пакетов
+
+Что добавляет каждый поверх базового:
+
+| Конфиг | Отличия |
+| --- | --- |
+| [`apps/backend`](/guide/structure/apps/backend/tsconfig) | commonjs, декораторы, типы jest |
+| [`apps/backend/tsconfig.build.json`](/guide/structure/apps/backend/tsconfig-build) | единственный, кто компилирует |
+| [`apps/frontend`](/guide/structure/apps/frontend/tsconfig) | не наследует базовый — конфиги генерирует Nuxt |
+| [`apps/docs`](/guide/structure/apps/docs/tsconfig) | DOM lib, типы VitePress |
+| [`packages/shared`](/guide/structure/packages/shared/tsconfig) | resolveJsonModule для переводов |
+| [`packages/ui`](/guide/structure/packages/ui/tsconfig) | DOM lib для компонентов |
+
+## Проверка типов
 
 ```bash
 pnpm type-check
 ```
 
-Она обходит все воркспейсы: `tsc --noEmit` для backend и shared, `vue-tsc --noEmit` для ui и docs (обычный `tsc` не разбирает `.vue`), `nuxt typecheck` для frontend.
+Обходит все воркспейсы, но инструмент у каждого свой:
+
+| Пакет | Команда | Почему |
+| --- | --- | --- |
+| `backend`, `shared` | `tsc --noEmit` | Чистый TypeScript |
+| `ui`, `docs` | `vue-tsc --noEmit` | `tsc` не разбирает `.vue` |
+| `frontend` | `nuxt typecheck` | Нужны сгенерированные типы из `.nuxt/` |

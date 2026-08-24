@@ -23,7 +23,7 @@
 
 /* Файлы: вместо эмодзи — фоновая картинка в том же боксе. */
 .VPSidebarItem a[href*='/env-example'] .text::before,
-.VPSidebarItem a[href*='/tsconfig-base'] .text::before,
+.VPSidebarItem a[href*='/tsconfig'] .text::before,
 .VPSidebarItem a[href*='/package-json'] .text::before,
 .VPSidebarItem a[href*='/structure/scripts/']:not([href$='/scripts/']) .text::before,
 .VPSidebarItem a[href*='/structure/'][href*='/docker-image'] .text::before,
@@ -51,7 +51,9 @@
   background-image: url('/dev/docs/icons/dotenv.svg');
 }
 
-.VPSidebarItem a[href*='/tsconfig-base'] .text::before {
+/* Одно правило на все конфиги: tsconfig.base.json, tsconfig.json пакетов
+   и tsconfig.build.json — у всех в пути есть `tsconfig`. */
+.VPSidebarItem a[href*='/tsconfig'] .text::before {
   background-image: url('/dev/docs/icons/tsconfig.svg');
 }
 

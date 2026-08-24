@@ -1,18 +1,13 @@
 {
-  // Базовый конфиг для всего монорепо — только для проверки типов, не для сборки.
-  // Каждый пакет/приложение наследует его через "extends" и добавляет своё.
   "compilerOptions": {
     "strict": true,
-    "target": "ES2022",
     "esModuleInterop": true,
-    // Не проверять типы в node_modules — ускоряет type-check и избегает чужих ошибок
-    "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    // Оба пакета указывают на src — Nuxt/Vite обрабатывает .ts напрямую без build-шага
-    // Пути указаны от корня монорепо, где лежит этот файл
-    "paths": {
-      "@repo/shared": ["./packages/shared/src/index.ts"],
-      "@repo/ui": ["./packages/ui/src/index.ts"]
-    }
+    "moduleResolution": "bundler",
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "noEmit": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true
   }
 }
