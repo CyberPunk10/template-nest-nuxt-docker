@@ -69,6 +69,56 @@ export default defineConfigWithTheme<ThemeConfig>({
     // Локальные themeConfig его не переопределяют, поэтому он доступен
     // из любой локали через useData().theme.
     dashboardUrl,
+
+    // Локальный поиск: индекс собирается при билде и лежит рядом со статикой,
+    // внешние сервисы (Algolia) не нужны. Подписи интерфейса — на каждую
+    // локаль свои, иначе поиск на любом языке будет говорить по-английски.
+    search: {
+      provider: 'local',
+      // Подробный вывод (excerpt с фрагментом текста под каждым результатом)
+      // включён по умолчанию. Пользователь может выключить его кнопкой в модалке —
+      // выбор запоминается в localStorage, поэтому это именно значение по умолчанию,
+      // а не принудительный режим. 'auto' (штатное) дало бы обратное: свёрнутый
+      // список, пока пользователь сам не развернёт.
+      options: {
+        detailedView: true,
+        locales: {
+          root: {
+            translations: {
+              button: { buttonText: 'Поиск', buttonAriaLabel: 'Поиск по документации' },
+              modal: {
+                displayDetails: 'Показать подробности',
+                resetButtonTitle: 'Сбросить поиск',
+                backButtonTitle: 'Закрыть поиск',
+                noResultsText: 'Ничего не найдено',
+                footer: {
+                  selectText: 'выбрать',
+                  navigateText: 'навигация',
+                  closeText: 'закрыть',
+                },
+              },
+            },
+          },
+          th: {
+            translations: {
+              button: { buttonText: 'ค้นหา', buttonAriaLabel: 'ค้นหาในเอกสาร' },
+              modal: {
+                displayDetails: 'แสดงรายละเอียด',
+                resetButtonTitle: 'ล้างการค้นหา',
+                backButtonTitle: 'ปิดการค้นหา',
+                noResultsText: 'ไม่พบผลลัพธ์',
+                footer: {
+                  selectText: 'เลือก',
+                  navigateText: 'เลื่อน',
+                  closeText: 'ปิด',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+
     // Убираем нижнюю навигацию «предыдущая/следующая» — лишний шум для линейного чтения.
     docFooter: { prev: false, next: false },
 
