@@ -27,7 +27,11 @@ export class TasksService {
   update(id: string, dto: UpdateTaskDto): Task {
     const index = this.tasks.findIndex(t => t.id === id)
     if (index === -1) throw new NotFoundException(`Task ${id} not found`)
-    this.tasks[index] = { ...this.tasks[index], ...dto, updatedAt: new Date() }
+    // ValidationPipe с transform: true отдаёт экземпляр DTO, где непереданные
+    // необязательные поля присутствуют как undefined. Спред такого объекта
+    // затёр бы ими существующие значения, поэтому отбираем только заданные.
+    const changes = Object.fromEntries(Object.entries(dto).filter(([, v]) => v !== undefined))
+    this.tasks[index] = { ...this.tasks[index], ...changes, updatedAt: new Date() }
     return this.tasks[index]
   }
 

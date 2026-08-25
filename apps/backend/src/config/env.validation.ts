@@ -4,7 +4,7 @@ import Joi from 'joi'
 // в окружении (`FOO=` — обычный способ «сбросить» переменную).
 // Пустая строка означает «не задано» — подставится дефолт.
 export const envValidationSchema = Joi.object({
-  NODE_ENV: Joi.string().valid('development', 'production').empty('').default('production'),
+  NODE_ENV: Joi.string().valid('development', 'production', 'test').empty('').default('production'),
   APP_ENV: Joi.string().valid('development', 'production', 'prod_qa', 'test').empty('').default('production'),
 
   // Swagger по умолчанию выключен на production и включён в остальных окружениях,

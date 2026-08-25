@@ -1,21 +1,13 @@
 import { NestFactory } from '@nestjs/core'
 import { ConfigService } from '@nestjs/config'
-import { ValidationPipe } from '@nestjs/common'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { AppModule } from './app.module'
-import { HttpExceptionFilter } from './common/filters/http-exception.filter'
+import { setupApp } from './setup-app'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
   const config = app.get(ConfigService)
-  app.useGlobalFilters(new HttpExceptionFilter())
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true, // удалять поля, которых нет в DTO
-      forbidNonWhitelisted: true, // 400 вместо тихого удаления лишних полей
-      transform: true, // приводить типы (string → number, plain → class)
-    }),
-  )
+  setupApp(app)
   app.enableCors({ origin: config.get<string>('CORS_ORIGIN') })
 
   if (config.get<boolean>('SWAGGER_ENABLED')) {

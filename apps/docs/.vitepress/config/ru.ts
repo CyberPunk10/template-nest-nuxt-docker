@@ -146,6 +146,14 @@ const config: LocaleEntry = {
             ],
           },
           { text: 'Reverse proxy', link: '/guide/reverse-proxy' },
+          {
+            text: 'Тестирование',
+            link: '/guide/testing/',
+            collapsed: true,
+            items: [
+              { text: 'Тесты backend', link: '/guide/testing/backend' },
+            ],
+          },
         ],
       },
       {
