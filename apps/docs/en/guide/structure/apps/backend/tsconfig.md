@@ -6,11 +6,13 @@ Type checking for the backend — what the IDE sees and what `pnpm type-check` r
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "node16",
+    "moduleResolution": "node16",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "target": "ES2023",
-    "types": ["jest", "node"]
+    "types": ["jest", "node"],
+    "resolveJsonModule": true
   },
   "include": ["src", "test"]
 }
@@ -18,19 +20,32 @@ Type checking for the backend — what the IDE sees and what `pnpm type-check` r
 
 Everything else — `strict`, `skipLibCheck`, `noEmit` — comes from the [base config](/en/guide/structure/tsconfig-base).
 
-## Why commonjs
+## Why node16
 
-NestJS relies on decorators: `@Module`, `@Controller`, `@Injectable`. Dependency injection works thanks to the type metadata `emitDecoratorMetadata` generates — and that flag is incompatible with native ESM modules.
+Nest loads modules through `require`, so both the format and the resolution follow Node's rules. `node16` sets both with one value: it looks at the `type` field in `package.json`, there is none — so the format is CommonJS.
 
-So three options travel together:
+Both options are spelled out together: TypeScript requires them to agree. [How these options are distributed across packages](/en/guide/structure/tsconfig-base).
+
+## Decorators
+
+NestJS is built on decorators: `@Module`, `@Controller`, `@Injectable`. Dependency injection works thanks to type metadata — and two options turn it on:
 
 | Option | What it does |
 | --- | --- |
-| `module: commonjs` | The module format Nest works with |
 | `experimentalDecorators` | Enables decorator syntax |
 | `emitDecoratorMetadata` | Keeps parameter types at runtime — DI reads them to know what to inject |
 
-The base config sets `module: ESNext`; it's overridden here.
+`emitDecoratorMetadata` is incompatible with native ESM — one more reason the backend stays on CommonJS.
+
+## resolveJsonModule
+
+`@repo/shared` ships without a build step: its `package.json` points `main` straight at `src/index.ts`, so the backend compiles those sources along with its own. And they import translations:
+
+```ts
+import ru from './ru.json'
+```
+
+Shared's own config takes no part in that compilation — the backend's config applies, so the option belongs here. Without it `tsc` fails on a neighbouring package's files.
 
 ## Why ES2023
 

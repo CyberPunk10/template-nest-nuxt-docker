@@ -6,11 +6,13 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "node16",
+    "moduleResolution": "node16",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "target": "ES2023",
-    "types": ["jest", "node"]
+    "types": ["jest", "node"],
+    "resolveJsonModule": true
   },
   "include": ["src", "test"]
 }
@@ -18,19 +20,32 @@
 
 ที่เหลือ — `strict`, `skipLibCheck`, `noEmit` — มาจาก [config พื้นฐาน](/th/guide/structure/tsconfig-base)
 
-## ทำไมต้อง commonjs
+## ทำไมต้อง node16
 
-NestJS พึ่งพา decorator: `@Module`, `@Controller`, `@Injectable` ระบบ dependency injection ทำงานได้เพราะ metadata ของ type ที่ `emitDecoratorMetadata` สร้างขึ้น — และ flag นี้ใช้ร่วมกับ ESM แบบ native ไม่ได้
+Nest โหลดโมดูลผ่าน `require` ทั้งรูปแบบโมดูลและการ resolve จึงเป็นไปตามกฎของ Node `node16` กำหนดทั้งสองอย่างด้วยค่าเดียว: มันดู field `type` ใน `package.json` ซึ่งไม่มีอยู่ — รูปแบบจึงเป็น CommonJS
 
-สามออปชันนี้จึงมาด้วยกัน:
+ทั้งสองออปชันระบุไว้ด้วยกัน เพราะ TypeScript บังคับให้สอดคล้องกัน [การกระจายออปชันเหล่านี้ตามแพ็กเกจ](/th/guide/structure/tsconfig-base)
+
+## Decorator
+
+NestJS สร้างขึ้นบน decorator: `@Module`, `@Controller`, `@Injectable` ระบบ dependency injection ทำงานได้เพราะ metadata ของ type ซึ่งเปิดใช้ด้วยสองออปชันนี้:
 
 | ออปชัน | ทำอะไร |
 | --- | --- |
-| `module: commonjs` | รูปแบบโมดูลที่ Nest ทำงานด้วย |
 | `experimentalDecorators` | เปิดใช้ syntax ของ decorator |
 | `emitDecoratorMetadata` | เก็บ type ของพารามิเตอร์ไว้ถึง runtime — DI อ่านค่านี้เพื่อรู้ว่าต้อง inject อะไร |
 
-Config พื้นฐานกำหนด `module: ESNext` ไว้ ที่นี่จึง override
+`emitDecoratorMetadata` ใช้ร่วมกับ ESM แบบ native ไม่ได้ — เป็นอีกเหตุผลที่ backend ยังคงอยู่บน CommonJS
+
+## resolveJsonModule
+
+`@repo/shared` เป็นแพ็กเกจที่ไม่มีขั้นตอน build: `package.json` ของมันชี้ `main` ตรงไปที่ `src/index.ts` ดังนั้น backend จึง compile ซอร์สเหล่านั้นไปพร้อมกับของตัวเอง และในนั้นมีการ import คำแปล:
+
+```ts
+import ru from './ru.json'
+```
+
+Config ของ shared ไม่ได้มีส่วนร่วมใน compilation นั้น — ที่ใช้คือ config ของ backend ออปชันนี้จึงต้องอยู่ที่นี่ ถ้าไม่มี `tsc` จะล้มที่ไฟล์ของแพ็กเกจข้างเคียง
 
 ## ทำไม ES2023
 

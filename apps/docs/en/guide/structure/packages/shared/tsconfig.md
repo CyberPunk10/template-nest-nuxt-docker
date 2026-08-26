@@ -1,11 +1,15 @@
 # tsconfig.json
 
-The shortest config in the repository — the package needs almost nothing beyond the [base one](/en/guide/structure/tsconfig-base):
+The package needs little beyond the [base one](/en/guide/structure/tsconfig-base) — just a description of where it travels:
 
 ```json
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "target": "ESNext",
+    "lib": ["ESNext"],
     "resolveJsonModule": true
   },
   "include": ["src"]
@@ -22,11 +26,25 @@ import ru from './ru.json'
 
 Without this option TypeScript refuses to resolve such an import. It also types the result from the file's contents — the shape of a translation is inferred automatically.
 
-## Why nothing else is needed
+## module, moduleResolution and target
 
-The package is source-only: `main` and `types` in `package.json` point straight at `src/index.ts`, and there's no build step. The consumers — Nuxt through Vite, the backend through `nest build` — compile the sources themselves, each for its own environment.
+The package is source-only: `main` and `types` in `package.json` point straight at `src/index.ts`, and there is no build. Consumers compile the sources themselves — Nuxt through Vite, the docs through VitePress, the backend as part of `nest build`.
 
-That's why there's no `target`, no `lib`, no `outDir`: the package isn't tied to a runtime. The same code travels to both the browser and Node.
+Values are still needed: `pnpm type-check` and the IDE both work from this config. Here they describe the primary scenario, a bundler build:
+
+| Option | Value |
+| --- | --- |
+| `module` | `ESNext` — native ES modules, what Vite expects |
+| `moduleResolution` | `bundler` — resolution as in Vite and Rollup |
+| `target` | `ESNext` — no reason to lower it, the consumer transpiles |
+
+No `outDir` is needed: the package builds nothing, and `noEmit` comes from the base config.
+
+When the backend compiles these sources, [its config](/en/guide/structure/apps/backend/tsconfig) applies instead, with Node resolution — same files, different rules. So the code here is written to pass both checks.
+
+## Why lib without DOM
+
+The neighbouring [`packages/ui`](/en/guide/structure/packages/ui/tsconfig) adds `DOM` to `lib`; its absence here is deliberate. This package travels to the browser and to Node alike — reaching for `window` or `document` in shared code would break the backend at runtime. Without `DOM` such an attempt becomes a type error instead of a server-side surprise.
 
 ## Type checking
 

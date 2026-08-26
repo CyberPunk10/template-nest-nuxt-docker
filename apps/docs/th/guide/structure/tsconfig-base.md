@@ -24,7 +24,7 @@ template-nest-nuxt/
         └── tsconfig.json
 ```
 
-ทุก config extends ตัวพื้นฐาน ยกเว้น `apps/frontend`: config จริงของมัน Nuxt เป็นคนสร้างไว้ใน `.nuxt/` ส่วนไฟล์นั้นเพียง reference ถึงพวกมัน และตัวที่ generate มาก็ไม่ได้ extends อะไรเช่นกัน — Nuxt เขียนทุกออปชันไว้ครบ รวมถึง `strict`, `moduleResolution` และ `noEmit` ชุดเดียวกับที่นี่ [รายละเอียด](/th/guide/structure/apps/frontend/tsconfig)
+ทุก config extends ตัวพื้นฐาน ยกเว้น `apps/frontend`: config จริงของมัน Nuxt เป็นคนสร้างไว้ใน `.nuxt/` ส่วนไฟล์นั้นเพียง reference ถึงพวกมัน และตัวที่ generate มาก็ไม่ได้ extends อะไรเช่นกัน — Nuxt เขียนทุกออปชันไว้ครบ รวมถึง `strict` และ `noEmit` ชุดเดียวกับที่นี่ [รายละเอียด](/th/guide/structure/apps/frontend/tsconfig)
 
 แต่ละไฟล์เก็บ **เฉพาะสิ่งที่ต่างจาก base** เท่านั้น ออปชันที่ไม่ได้เขียนไว้จะถูกสืบทอดมา และนี่เป็นความตั้งใจ — การเขียน `strict` ซ้ำในทุกไฟล์คือหนทางที่ทำให้สักวันหนึ่งมีแพ็กเกจที่ลืมใส่ไปเงียบ ๆ
 
@@ -36,8 +36,6 @@ template-nest-nuxt/
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "bundler",
-    "module": "ESNext",
     "skipLibCheck": true,
     "noEmit": true,
     "noImplicitOverride": true,
@@ -51,7 +49,6 @@ template-nest-nuxt/
 | `strict` | เปิดการตรวจสอบเข้มงวดทั้งหมด รวมถึง `strictNullChecks` |
 | `esModuleInterop` | import แพ็กเกจ CommonJS ด้วย `import x from` โดยไม่ต้องใช้ `* as` |
 | `forceConsistentCasingInFileNames` | ตัวพิมพ์เล็กใหญ่ในพาธ: บน macOS ไม่มีปัญหา แต่ build ใน Docker จะพัง |
-| `moduleResolution: bundler` | resolve แบบเดียวกับ Vite และ esbuild: ใช้ `exports` และ import โดยไม่ต้องมีนามสกุล |
 | `skipLibCheck` | ไม่ตรวจ type ใน `node_modules` — เร็วกว่าและไม่ติด error ของคนอื่น |
 | `noEmit` | ไม่สร้างไฟล์ใด ๆ |
 | `noImplicitOverride` | การ override method ต้องใส่คีย์เวิร์ด `override` |
@@ -113,6 +110,17 @@ rootDir '.../apps/backend/src'. 'rootDir' is expected to contain all source file
 
 ทางแก้คือต้องรีเซ็ต `"paths": {}` ใน config ของ build ซึ่งเป็นการแก้ขัดที่มีอยู่เพียงเพื่อลบล้างการตั้งค่าที่ไม่ควรมีตั้งแต่แรก
 
+### `module` กับ `moduleResolution`
+
+สองออปชันนี้อธิบายว่าโค้ดถูกโหลดตอน runtime อย่างไร — และ runtime ของแต่ละแพ็กเกจไม่เหมือนกัน จึงไม่มีค่ากลางที่ใช้ร่วมได้
+
+| แพ็กเกจ | ค่า | อะไรโหลดโค้ด |
+| --- | --- | --- |
+| `apps/backend` | `node16` | Node ผ่าน `require` |
+| `packages/shared`, `packages/ui`, `apps/docs` | `ESNext` + `bundler` | Vite, Rollup, VitePress |
+
+แต่ละแพ็กเกจประกาศทั้งสองออปชันเอง วางอยู่ติดกัน — ทำให้แยกออกจากกันไม่ได้เพราะแก้ตัวหนึ่งแล้วลืมอีกตัว
+
 ### `target` และ `lib`
 
 Backend รันบน Node ส่วนแพ็กเกจ Vue รันในเบราว์เซอร์ ไม่มีค่ากลางที่ใช้ร่วมกันได้ แต่ละไฟล์จึงกำหนดของตัวเอง
@@ -123,12 +131,12 @@ Backend รันบน Node ส่วนแพ็กเกจ Vue รันใ�
 
 | Config | ความต่าง |
 | --- | --- |
-| [`apps/backend`](/th/guide/structure/apps/backend/tsconfig) | commonjs, decorator, type ของ jest |
+| [`apps/backend`](/th/guide/structure/apps/backend/tsconfig) | resolve แบบ `node16`, decorator, type ของ jest |
 | [`apps/backend/tsconfig.build.json`](/th/guide/structure/apps/backend/tsconfig-build) | ตัวเดียวที่ compile จริง |
 | [`apps/frontend`](/th/guide/structure/apps/frontend/tsconfig) | ไม่ extends base — Nuxt สร้าง config ให้ |
-| [`apps/docs`](/th/guide/structure/apps/docs/tsconfig) | DOM lib, type ของ VitePress |
-| [`packages/shared`](/th/guide/structure/packages/shared/tsconfig) | resolveJsonModule สำหรับคำแปล |
-| [`packages/ui`](/th/guide/structure/packages/ui/tsconfig) | DOM lib สำหรับ component |
+| [`apps/docs`](/th/guide/structure/apps/docs/tsconfig) | resolve แบบ bundler, DOM lib, type ของ VitePress |
+| [`packages/shared`](/th/guide/structure/packages/shared/tsconfig) | resolve แบบ bundler, resolveJsonModule สำหรับคำแปล |
+| [`packages/ui`](/th/guide/structure/packages/ui/tsconfig) | resolve แบบ bundler, DOM lib สำหรับ component |
 
 ## การตรวจสอบ type
 

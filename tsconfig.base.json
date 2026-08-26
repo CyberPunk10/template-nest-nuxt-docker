@@ -3,8 +3,6 @@
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "bundler",
-    "module": "ESNext",
     "skipLibCheck": true,
     "noEmit": true,
     "noImplicitOverride": true,

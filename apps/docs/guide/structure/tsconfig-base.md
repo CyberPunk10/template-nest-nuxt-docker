@@ -24,7 +24,7 @@ template-nest-nuxt/
         └── tsconfig.json
 ```
 
-Базовый конфиг наследуют все, кроме `apps/frontend`: его настоящие конфиги генерирует Nuxt в `.nuxt/`, а сам файл лишь ссылается на них. Ничего не наследует и генератор — Nuxt прописывает все опции целиком, включая те же `strict`, `moduleResolution` и `noEmit`, что и здесь. [Подробнее](/guide/structure/apps/frontend/tsconfig).
+Базовый конфиг наследуют все, кроме `apps/frontend`: его настоящие конфиги генерирует Nuxt в `.nuxt/`, а сам файл лишь ссылается на них. Ничего не наследует и генератор — Nuxt прописывает все опции целиком, включая те же `strict` и `noEmit`, что и здесь. [Подробнее](/guide/structure/apps/frontend/tsconfig).
 
 Каждый файл содержит **только то, что отличает его** от базового. Если опция не упомянута — она наследуется, и это осознанно: дублировать `strict` в каждом конфиге значит однажды получить пакет, где его случайно нет.
 
@@ -36,8 +36,6 @@ template-nest-nuxt/
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "bundler",
-    "module": "ESNext",
     "skipLibCheck": true,
     "noEmit": true,
     "noImplicitOverride": true,
@@ -51,7 +49,6 @@ template-nest-nuxt/
 | `strict` | Строгие проверки целиком, включая `strictNullChecks` |
 | `esModuleInterop` | Импорт CommonJS-пакетов через `import x from` без `* as` |
 | `forceConsistentCasingInFileNames` | Регистр в путях: на macOS ошибка не всплывёт, в Docker сборка упадёт |
-| `moduleResolution: bundler` | Резолв как у Vite и esbuild: `exports` из package.json, импорты без расширений |
 | `skipLibCheck` | Не проверять типы внутри `node_modules` — быстрее и без чужих ошибок |
 | `noEmit` | Ничего не генерировать |
 | `noImplicitOverride` | Переопределение метода требует ключевого слова `override` |
@@ -113,6 +110,17 @@ rootDir '.../apps/backend/src'. 'rootDir' is expected to contain all source file
 
 Лечить это пришлось бы сбросом `"paths": {}` в конфиге сборки — костыль, который существует только чтобы обойти ненужную настройку.
 
+### `module` и `moduleResolution`
+
+Эти две опции описывают, как код грузится в рантайме — а рантайм у пакетов разный, поэтому общего значения нет.
+
+| Пакет | Значения | Кто грузит код |
+| --- | --- | --- |
+| `apps/backend` | `node16` | Node через `require` |
+| `packages/shared`, `packages/ui`, `apps/docs` | `ESNext` + `bundler` | Vite, Rollup, VitePress |
+
+Обе опции объявляет сам пакет, рядом друг с другом — их нельзя рассогласовать, поменяв одну и забыв вторую.
+
 ### `target` и `lib`
 
 У бэкенда среда — Node, у Vue-пакетов — браузер. Общего значения нет, поэтому каждый задаёт своё.
@@ -123,12 +131,12 @@ rootDir '.../apps/backend/src'. 'rootDir' is expected to contain all source file
 
 | Конфиг | Отличия |
 | --- | --- |
-| [`apps/backend`](/guide/structure/apps/backend/tsconfig) | commonjs, декораторы, типы jest |
+| [`apps/backend`](/guide/structure/apps/backend/tsconfig) | резолв `node16`, декораторы, типы jest |
 | [`apps/backend/tsconfig.build.json`](/guide/structure/apps/backend/tsconfig-build) | единственный, кто компилирует |
 | [`apps/frontend`](/guide/structure/apps/frontend/tsconfig) | не наследует базовый — конфиги генерирует Nuxt |
-| [`apps/docs`](/guide/structure/apps/docs/tsconfig) | DOM lib, типы VitePress |
-| [`packages/shared`](/guide/structure/packages/shared/tsconfig) | resolveJsonModule для переводов |
-| [`packages/ui`](/guide/structure/packages/ui/tsconfig) | DOM lib для компонентов |
+| [`apps/docs`](/guide/structure/apps/docs/tsconfig) | резолв `bundler`, DOM lib, типы VitePress |
+| [`packages/shared`](/guide/structure/packages/shared/tsconfig) | резолв `bundler`, resolveJsonModule для переводов |
+| [`packages/ui`](/guide/structure/packages/ui/tsconfig) | резолв `bundler`, DOM lib для компонентов |
 
 ## Проверка типов
 

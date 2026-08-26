@@ -1,11 +1,15 @@
 # tsconfig.json
 
-Config ที่สั้นที่สุดใน repo — แพ็กเกจนี้แทบไม่ต้องการอะไรเพิ่มจาก [ตัวพื้นฐาน](/th/guide/structure/tsconfig-base):
+แพ็กเกจนี้ต้องการเพิ่มจาก [ตัวพื้นฐาน](/th/guide/structure/tsconfig-base) ไม่มาก — แค่บอกว่ามันไปที่ไหน:
 
 ```json
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "target": "ESNext",
+    "lib": ["ESNext"],
     "resolveJsonModule": true
   },
   "include": ["src"]
@@ -22,11 +26,25 @@ import ru from './ru.json'
 
 ถ้าไม่มีออปชันนี้ TypeScript จะไม่ยอม resolve การ import แบบนั้น อีกทั้งยังให้ type ตามเนื้อหาไฟล์ — โครงสร้างของคำแปลถูก infer ให้อัตโนมัติ
 
-## ทำไมไม่ต้องมีอย่างอื่น
+## module, moduleResolution กับ target
 
-แพ็กเกจนี้เป็นแบบ source-only: `main` และ `types` ใน `package.json` ชี้ตรงไปที่ `src/index.ts` และไม่มีขั้นตอน build ผู้ใช้งาน — Nuxt ผ่าน Vite และ backend ผ่าน `nest build` — compile ซอร์สเอง แต่ละตัวตามสภาพแวดล้อมของตน
+แพ็กเกจนี้เป็น source-only: field `main` และ `types` ใน `package.json` ชี้ตรงไปที่ `src/index.ts` ไม่มีการ build ผู้ใช้งาน compile ซอร์สเอง — Nuxt ผ่าน Vite, docs ผ่าน VitePress, backend ในระหว่าง `nest build`
 
-จึงไม่ต้องมี `target`, `lib` หรือ `outDir`: แพ็กเกจไม่ผูกกับ runtime ใด โค้ดชุดเดียวกันไปได้ทั้งเบราว์เซอร์และ Node
+แต่ก็ยังต้องมีค่าของตัวเอง: `pnpm type-check` และ IDE ทำงานจาก config นี้ ค่าที่ตั้งไว้อธิบายสถานการณ์หลัก คือการ build ด้วย bundler:
+
+| ออปชัน | ค่า |
+| --- | --- |
+| `module` | `ESNext` — ES module แบบ native ตรงกับที่ Vite คาดหวัง |
+| `moduleResolution` | `bundler` — resolve แบบเดียวกับ Vite และ Rollup |
+| `target` | `ESNext` — ไม่มีเหตุผลต้องลด ผู้ใช้งานเป็นคน transpile |
+
+ไม่ต้องมี `outDir`: แพ็กเกจไม่ได้ build อะไร และ `noEmit` มาจาก config พื้นฐานแล้ว
+
+เวลาที่ backend เป็นคน compile ซอร์สเหล่านี้ จะใช้ [config ของมัน](/th/guide/structure/apps/backend/tsconfig) ที่ resolve แบบ Node แทน — ไฟล์เดียวกัน กฎต่างกัน โค้ดที่นี่จึงเขียนให้ผ่านการตรวจทั้งสองแบบ
+
+## ทำไม lib ไม่มี DOM
+
+[`packages/ui`](/th/guide/structure/packages/ui/tsconfig) ข้าง ๆ ใส่ `DOM` ไว้ใน `lib` ที่นี่ไม่มีโดยเจตนา แพ็กเกจนี้ไปทั้ง browser และ Node — การเรียก `window` หรือ `document` ในโค้ดส่วนกลางจะทำให้ backend พังตอน runtime เมื่อไม่มี `DOM` ความพยายามนั้นจะกลายเป็น type error แทนที่จะเป็นเรื่องเซอร์ไพรส์ฝั่ง server
 
 ## การตรวจสอบ type
 

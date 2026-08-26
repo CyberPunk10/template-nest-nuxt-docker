@@ -6,6 +6,8 @@ Config ของแพ็กเกจ Vue component:
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "target": "ESNext",
     "lib": ["ESNext", "DOM"]
   },

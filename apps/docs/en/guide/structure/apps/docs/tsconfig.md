@@ -6,6 +6,8 @@ Type checking for the VitePress theme: Vue components and `.vitepress/config.ts`
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "target": "ESNext",
     "lib": ["ESNext", "DOM"],
     "types": ["vitepress/client", "node"],

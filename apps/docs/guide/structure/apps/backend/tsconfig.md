@@ -6,11 +6,13 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "node16",
+    "moduleResolution": "node16",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "target": "ES2023",
-    "types": ["jest", "node"]
+    "types": ["jest", "node"],
+    "resolveJsonModule": true
   },
   "include": ["src", "test"]
 }
@@ -18,19 +20,32 @@
 
 Всё остальное — `strict`, `skipLibCheck`, `noEmit` — приходит из [базового конфига](/guide/structure/tsconfig-base).
 
-## Почему commonjs
+## Почему node16
 
-NestJS полагается на декораторы: `@Module`, `@Controller`, `@Injectable`. Внедрение зависимостей работает благодаря метаданным о типах, которые генерирует `emitDecoratorMetadata` — а он несовместим с нативными ESM-модулями.
+Nest грузит модули через `require`, поэтому и формат, и резолв — по правилам Node. `node16` задаёт это одним значением: он смотрит на поле `type` в `package.json`, там его нет — значит CommonJS.
 
-Поэтому три опции идут вместе:
+Обе опции указаны вместе: TypeScript требует, чтобы они были согласованы. [Как эти опции распределены по пакетам](/guide/structure/tsconfig-base).
+
+## Декораторы
+
+NestJS построен на декораторах: `@Module`, `@Controller`, `@Injectable`. Внедрение зависимостей работает благодаря метаданным о типах — их и включают две опции:
 
 | Опция | Что делает |
 | --- | --- |
-| `module: commonjs` | Формат модулей, с которым работает Nest |
 | `experimentalDecorators` | Включает синтаксис декораторов |
 | `emitDecoratorMetadata` | Сохраняет типы параметров в рантайм — из них DI понимает, что внедрять |
 
-Базовый конфиг задаёт `module: ESNext`, здесь он переопределён.
+`emitDecoratorMetadata` несовместим с нативными ESM — ещё одна причина, по которой бэкенд остаётся на CommonJS.
+
+## resolveJsonModule
+
+`@repo/shared` — пакет без сборки: его `package.json` указывает `main` прямо на `src/index.ts`, поэтому бэкенд компилирует эти исходники вместе со своими. А в них импортируются переводы:
+
+```ts
+import ru from './ru.json'
+```
+
+Своего конфига у shared в этой компиляции нет — действует конфиг бэкенда, значит опция нужна здесь. Без неё `tsc` падает на файлах соседнего пакета.
 
 ## Почему ES2023
 
