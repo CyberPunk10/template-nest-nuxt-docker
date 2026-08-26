@@ -179,7 +179,7 @@ Runs on every application startup — on the server (SSR) and on the client (aft
 **On the server:** by this point `server/middleware/auth.ts` has already refreshed the cookies — `/auth/me` runs with an up-to-date `access_token`. It uses `useRequestFetch()` rather than `$fetch`: plain `$fetch` runs in a Node.js context on the server and never sees browser cookies, while `useRequestFetch` forwards the incoming request headers automatically.
 
 ::: tip Why not read cookies manually
-This used to be `nuxtApp.ssrContext?.event.headers.get('cookie')` with the value passed into `headers` by hand. It worked, but was fragile: `event.headers` **caches** its value on first read, so if any middleware higher up the chain touched it earlier, the plugin would get the stale token and the user would be bounced to the login page.
+The obvious shortcut is to grab `nuxtApp.ssrContext?.event.headers.get('cookie')` and pass it into `headers` by hand. It works, but it is fragile: `event.headers` **caches** its value on first read, so if any middleware higher up the chain touched it earlier, the plugin gets the stale token and the user is bounced to the login page.
 
 `useRequestFetch()` avoids this: internally it reaches `getRequestHeaders()`, which reads `event.node.req.headers` directly, bypassing the cache.
 :::
