@@ -141,3 +141,59 @@ export const principles: Principle[] = [
   { id: 'production', icon: 'lucide:zap' },
   { id: 'starter', icon: 'lucide:rocket' },
 ]
+
+// ─────────────────────  Витрина стека (логотипы)  ─────────────────────
+
+export interface StackLogo {
+  id: string // ключ в home.showcase.items (подпись под логотипом)
+  /** Фирменный цвет технологии. Используется для логотипа и подсветки при hover. */
+  color: string
+  /** Ветка, начиная с которой технология присутствует. Показывается меткой на карточке. */
+  branch?: string
+}
+
+/**
+ * Порядок намеренный: сначала два фреймворка-героя (Nest, Nuxt), затем язык
+ * и рантайм-слой, в конце — инфраструктура. Логотипы рисует StackLogo.vue
+ * (inline-SVG, без внешних CDN — доки собираются в статику и раздаются nginx).
+ */
+export const stackLogos: StackLogo[] = [
+  { id: 'nest', color: '#e0234e' },
+  { id: 'nuxt', color: '#00dc82' },
+  { id: 'vue', color: '#42b883' },
+  { id: 'typescript', color: '#3178c6' },
+  { id: 'prisma', color: '#5a67d8', branch: 'postgres-prisma' },
+  { id: 'postgres', color: '#4169e1', branch: 'postgres-prisma' },
+  { id: 'docker', color: '#2496ed' },
+  { id: 'pnpm', color: '#f9ad00' },
+]
+
+// ────────────────────  Кому подходит / не подходит  ────────────────────
+
+export type FitVerdict = 'good' | 'bad' | 'mixed'
+
+export interface FitCase {
+  id: string // ключ в home.fit.cases
+  verdict: FitVerdict
+  icon: string
+}
+
+/**
+ * Честный разбор применимости шаблона. Смешанный порядок (не все «за», потом
+ * все «против») — намеренно: так секция читается как разбор, а не как реклама
+ * с дисклеймером в конце.
+ */
+export const fitCases: FitCase[] = [
+  { id: 'saas', verdict: 'good', icon: 'lucide:layout-dashboard' },
+  { id: 'admin', verdict: 'good', icon: 'lucide:table' },
+  { id: 'landing', verdict: 'bad', icon: 'lucide:megaphone' },
+  { id: 'mobileBackend', verdict: 'good', icon: 'lucide:smartphone' },
+  { id: 'contentSite', verdict: 'bad', icon: 'lucide:newspaper' },
+  { id: 'mvp', verdict: 'good', icon: 'lucide:rocket' },
+  { id: 'microservices', verdict: 'mixed', icon: 'lucide:boxes' },
+  { id: 'serverless', verdict: 'bad', icon: 'lucide:cloud-off' },
+  { id: 'learning', verdict: 'good', icon: 'lucide:graduation-cap' },
+  { id: 'highLoad', verdict: 'mixed', icon: 'lucide:gauge' },
+  { id: 'legacy', verdict: 'bad', icon: 'lucide:file-clock' },
+  { id: 'internalTools', verdict: 'good', icon: 'lucide:wrench' },
+]

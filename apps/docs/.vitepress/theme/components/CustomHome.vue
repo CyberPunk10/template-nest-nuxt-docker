@@ -5,6 +5,9 @@ import HomeQuickstart from './Home/HomeQuickstart.vue'
 import HomePrinciples from './Home/HomePrinciples.vue'
 import HomeBranches from './Home/HomeBranches.vue'
 import HomeStack from './Home/HomeStack.vue'
+import HomeShowcase from './Home/HomeShowcase.vue'
+import HomeArchitecture from './Home/HomeArchitecture.vue'
+import HomeFit from './Home/HomeFit.vue'
 import HomeCommands from './Home/HomeCommands.vue'
 import HomeTree from './Home/HomeTree.vue'
 import HomeSponsors from './Home/HomeSponsors.vue'
@@ -29,7 +32,10 @@ provide('copyCmd', copyCmd)
     <HomeHero />
     <div class="home__nav-line" />
     <div class="home__body">
+      <HomeShowcase />
       <HomePrinciples />
+      <HomeFit />
+      <HomeArchitecture />
       <HomeBranches />
       <HomeQuickstart />
       <HomeStack />

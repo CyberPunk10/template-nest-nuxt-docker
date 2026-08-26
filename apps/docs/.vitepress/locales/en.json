@@ -10,6 +10,44 @@
       "github": "GitHub",
       "docs": "Documentation"
     },
+    "showcase": {
+      "title": "What it's built on",
+      "lead": "Mature tools with large communities and active releases only. No experimental dependencies you'll have to rip out six months from now.",
+      "items": {
+        "nest": {
+          "name": "NestJS",
+          "role": "Backend framework: modules, DI, decorators"
+        },
+        "nuxt": {
+          "name": "Nuxt 4",
+          "role": "SSR, file-based routing, auto-imports"
+        },
+        "vue": {
+          "name": "Vue 3",
+          "role": "Composition API, reactivity"
+        },
+        "typescript": {
+          "name": "TypeScript",
+          "role": "Strict mode across every package"
+        },
+        "prisma": {
+          "name": "Prisma 7",
+          "role": "Type-safe database access and migrations"
+        },
+        "postgres": {
+          "name": "PostgreSQL 17",
+          "role": "Primary data store"
+        },
+        "docker": {
+          "name": "Docker",
+          "role": "Multi-stage builds, dev and prod"
+        },
+        "pnpm": {
+          "name": "pnpm 11",
+          "role": "Monorepo workspaces"
+        }
+      }
+    },
     "quickstart": {
       "title": "Quick Start",
       "steps": {
@@ -40,6 +78,101 @@
         "title": "Start for your ideas",
         "desc": "A ready foundation — clone it and build your product instead of spending weeks on boilerplate."
       }
+    },
+    "fit": {
+      "title": "Who it's for — and who it isn't",
+      "lead": "An honest breakdown instead of a feature list. The template commits you to a separate API server and an SSR frontend — a win where that architecture is needed, dead weight where it isn't.",
+      "verdicts": {
+        "good": "Great fit",
+        "mixed": "Workable, but think twice",
+        "bad": "Pick something else"
+      },
+      "altLabel": "Instead:",
+      "cases": {
+        "saas": {
+          "name": "SaaS with a user account area",
+          "why": "Exactly what the template was built for: sign-up, login, sessions, roles, a public side and a protected one. The auth-session branch covers authentication, leaving you the domain logic."
+        },
+        "admin": {
+          "name": "Admin panel, CRM, internal dashboard",
+          "why": "Lots of forms, tables and access rules. NestJS ships DTO validation and guards; Nuxt gives file-based routing and middleware to gate pages. SSR is a bonus here — the panel opens fast even on a slow laptop."
+        },
+        "landing": {
+          "name": "Landing or promo page",
+          "why": "A separate API server, a database and Docker plumbing for the sake of one contact form means weeks of upkeep for nothing — plus two running processes instead of static files on a CDN.",
+          "alt": "Astro, or Nuxt in static mode with a hosted form service."
+        },
+        "mobileBackend": {
+          "name": "Backend for a mobile app",
+          "why": "The NestJS side stands on its own: REST with a Swagger schema, validation, errors in a single shape. Keep the frontend as a content admin panel or drop it entirely — the backend doesn't change either way."
+        },
+        "contentSite": {
+          "name": "Blog, docs, content site",
+          "why": "Content belongs in files or a headless CMS, not in tables you design yourself. A NestJS backend does nothing here beyond serving text.",
+          "alt": "Astro, VitePress or Nuxt Content — these very docs run on VitePress."
+        },
+        "mvp": {
+          "name": "Startup MVP",
+          "why": "The first two weeks usually go to plumbing: configs, linters, auth, Docker, deployment. That's already here and documented, so you can test the hypothesis instead of configuring a build."
+        },
+        "microservices": {
+          "name": "Microservice system",
+          "why": "A pnpm workspaces monorepo handles several services well, and NestJS supports transports beyond HTTP. But the template brings no service discovery, no queues and no tracing — that's on you to build.",
+          "alt": "Starting from this monorepo is reasonable; budget for the infrastructure work."
+        },
+        "serverless": {
+          "name": "Serverless and edge functions",
+          "why": "NestJS builds a DI container at startup, which costs real hundreds of milliseconds on a cold start. A long-lived PostgreSQL connection pool fits that model poorly too.",
+          "alt": "Hono or Nuxt's Nitro routes, with an HTTP-protocol database driver."
+        },
+        "learning": {
+          "name": "Learning full-stack TypeScript",
+          "why": "The template's rule is no magic: every non-obvious decision has a comment in the code and a page in the docs. You can see how SSR, cookie sessions, guards and migrations connect — in real code, not a todo-app tutorial."
+        },
+        "highLoad": {
+          "name": "High traffic from day one",
+          "why": "The architecture scales horizontally just fine: a stateless API with sessions in the database. But there's no cache, no rate limiting, no queues and no metrics — under serious expected load you'll need to add those deliberately.",
+          "alt": "Plan Redis, a queue and monitoring before launch, not after."
+        },
+        "legacy": {
+          "name": "Adding a frontend to an existing backend",
+          "why": "Half the value here is the two apps wired together through shared types and one Docker setup. If the backend already exists and you're not rewriting it, all you'll take is the Nuxt half.",
+          "alt": "A plain nuxi init, porting individual solutions by hand."
+        },
+        "internalTools": {
+          "name": "Internal company tools",
+          "why": "Dashboards, export services, support panels. Traffic is predictable, SEO doesn't matter, and what does matter — development speed and understandable auth — is already covered."
+        }
+      },
+      "note": "These verdicts aren't verdicts on you: almost every \"pick something else\" case is buildable on this template. They judge whether the complexity it brings pays for itself."
+    },
+    "architecture": {
+      "title": "How it fits together",
+      "lead": "Two applications and a shared types package in one repository. The frontend talks to the API over HTTP like any other client, so the backend can be split out or reused without a rewrite.",
+      "nodes": {
+        "browser": {
+          "title": "Browser",
+          "desc": "First render arrives from the server"
+        },
+        "nuxt": {
+          "desc": "SSR, pages, middleware, session in an httpOnly cookie"
+        },
+        "nest": {
+          "desc": "REST API, validation, guards, Swagger"
+        },
+        "shared": {
+          "desc": "DTO types and i18n strings — one source for both sides"
+        },
+        "db": {
+          "desc": "Schema and migrations in the repo, accessed via Prisma"
+        }
+      },
+      "links": {
+        "ssr": "HTML + hydration",
+        "api": "HTTP / REST",
+        "prisma": "Prisma + adapter-pg"
+      },
+      "wrapper": "The whole thing starts with one docker compose"
     },
     "branches": {
       "title": "Variants",
