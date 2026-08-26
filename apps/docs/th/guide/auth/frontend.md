@@ -179,7 +179,7 @@ export function createAuthErrorHandler(navigateToLogin) {
 **บน server:** ณ จุดนี้ `server/middleware/auth.ts` ได้อัปเดต cookie ไปแล้ว — `/auth/me` ทำงานด้วย `access_token` ที่เป็นปัจจุบัน ใช้ `useRequestFetch()` แทน `$fetch`: `$fetch` ธรรมดาบน server ทำงานในบริบทของ Node.js และไม่เห็น cookie ของ browser ส่วน `useRequestFetch` จะ forward header ของ request ขาเข้าให้อัตโนมัติ
 
 ::: tip ทำไมไม่อ่าน cookie ด้วยตนเอง
-เดิมตรงนี้เคยเป็น `nuxtApp.ssrContext?.event.headers.get('cookie')` แล้วส่งค่าเข้า `headers` เอง วิธีนั้นใช้งานได้ แต่เปราะบาง: `event.headers` จะ **cache** ค่าไว้ตั้งแต่การอ่านครั้งแรก ดังนั้นหาก middleware ตัวใดก่อนหน้าไปแตะมันก่อน plugin จะได้ token เก่า และผู้ใช้จะถูกเด้งไปหน้า login
+วิธีที่ดูง่ายกว่าคือดึง `nuxtApp.ssrContext?.event.headers.get('cookie')` แล้วส่งเข้า `headers` เอง วิธีนั้นใช้งานได้ แต่เปราะบาง: `event.headers` จะ **cache** ค่าไว้ตั้งแต่การอ่านครั้งแรก ดังนั้นหาก middleware ตัวใดก่อนหน้าไปแตะมันก่อน plugin จะได้ token เก่า และผู้ใช้จะถูกเด้งไปหน้า login
 
 `useRequestFetch()` ไม่มีปัญหานี้: ภายในมันเรียกไปถึง `getRequestHeaders()` ซึ่งอ่าน `event.node.req.headers` โดยตรง ข้าม cache ไป
 :::

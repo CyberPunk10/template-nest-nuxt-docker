@@ -38,8 +38,9 @@ export default defineEventHandler(async (event) => {
       for (const raw of setCookieHeaders) {
         // parseSetCookie отбрасывает атрибуты (Max-Age, Path, HttpOnly...) —
         // в заголовок запроса идут только пары name=value, как их шлёт браузер.
-        const { name, value } = parseSetCookie(raw)
-        if (name) cookieJar[name] = value
+        // Вернёт undefined, если строка не разобралась как Set-Cookie.
+        const cookie = parseSetCookie(raw)
+        if (cookie?.name) cookieJar[cookie.name] = cookie.value ?? ''
       }
 
       event.node.req.headers['cookie'] = Object.entries(cookieJar)

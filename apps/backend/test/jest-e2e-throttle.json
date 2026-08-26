@@ -4,7 +4,7 @@
   "testEnvironment": "node",
   "testMatch": ["<rootDir>/throttle/**/*.e2e-spec.ts"],
   "transform": {
-    "^.+\\.(t|j)s$": ["ts-jest", { "tsconfig": "tsconfig.e2e.json" }]
+    "^.+\\.(t|j)s$": "ts-jest"
   },
   "setupFiles": ["./setup-e2e-throttle.ts"]
 }

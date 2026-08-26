@@ -26,6 +26,7 @@ export class AppController {
     return { status: 'ok' }
   }
 
+  @Public()
   @Get('dev/config')
   devConfig(): DevConfigResponse {
     return {
