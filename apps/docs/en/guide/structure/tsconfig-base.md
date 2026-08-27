@@ -1,6 +1,6 @@
 # tsconfig.base.json
 
-The repository holds seven TypeScript configs. One principle keeps them straight: **all but one exist only to check types**. Compilation is done by other tools — `nest build`, Nuxt, VitePress. The single exception is [`apps/backend/tsconfig.build.json`](/en/guide/structure/apps/backend/tsconfig-build).
+The repository holds eight TypeScript configs. One principle keeps them straight: **all but one exist only to check types**. Compilation is done by other tools — `nest build`, Nuxt, VitePress, `ts-node`. The single exception is [`apps/backend/tsconfig.build.json`](/en/guide/structure/apps/backend/tsconfig-build).
 
 ## How inheritance works
 
@@ -11,7 +11,9 @@ template-nest-nuxt/
 ├── apps/
 │   ├── backend/
 │   │   ├── tsconfig.json
-│   │   └── tsconfig.build.json ← extends the tsconfig.json above, not base
+│   │   ├── tsconfig.build.json ← extends the tsconfig.json above, not base
+│   │   └── prisma/
+│   │       └── tsconfig.seed.json ← extends tsconfig.json too
 │   ├── frontend/
 │   │   └── tsconfig.json
 │   └── docs/
@@ -133,6 +135,7 @@ What each adds on top of the base:
 | --- | --- |
 | [`apps/backend`](/en/guide/structure/apps/backend/tsconfig) | `node16` resolution, decorators, jest types |
 | [`apps/backend/tsconfig.build.json`](/en/guide/structure/apps/backend/tsconfig-build) | the only one that compiles |
+| [`apps/backend/prisma/tsconfig.seed.json`](/en/guide/structure/apps/backend/prisma/tsconfig-seed) | entry point for `prisma db seed` |
 | [`apps/frontend`](/en/guide/structure/apps/frontend/tsconfig) | doesn't extend the base — Nuxt generates its configs |
 | [`apps/docs`](/en/guide/structure/apps/docs/tsconfig) | bundler resolution, DOM lib, VitePress types |
 | [`packages/shared`](/en/guide/structure/packages/shared/tsconfig) | bundler resolution, resolveJsonModule for translations |

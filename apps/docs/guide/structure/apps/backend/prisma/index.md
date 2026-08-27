@@ -1,0 +1,19 @@
+# apps/backend/prisma
+
+Всё, что относится к схеме БД и её жизненному циклу.
+
+```
+prisma/
+├── schema.prisma           модели, связи, enum'ы
+├── migrations/             история изменений схемы
+│   ├── 20260813204454_init/
+│   └── migration_lock.toml
+├── seed.ts                 наполнение БД начальными данными
+└── tsconfig.seed.json      конфиг TypeScript для запуска seed.ts
+```
+
+Каталог читает Prisma CLI, путь задан в `prisma.config.ts` бэкенда. Сгенерированный клиент сюда не попадает — он создаётся в `src/generated/prisma/` и не версионируется.
+
+Как этим пользоваться — миграции, генерация клиента, seed — описано в разделе [База данных](/guide/database).
+
+Отдельная страница есть у [`tsconfig.seed.json`](/guide/structure/apps/backend/prisma/tsconfig-seed) — конфига, который нужен, чтобы `ts-node` мог запустить `seed.ts`.

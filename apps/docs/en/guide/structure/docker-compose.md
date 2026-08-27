@@ -133,3 +133,22 @@ BACKEND_INTERNAL_PORT=3100
 ```
 
 And `PORT` in `apps/backend/.env` has no effect under Docker: the `environment: PORT` line overrides it at startup, because `environment` in Compose always beats `env_file`. That `PORT` serves a different purpose — running via `pnpm dev`, where Docker isn't involved.
+
+### Why ENV in the Dockerfile isn't enough
+
+The port is already set there:
+
+```dockerfile
+ENV PORT=3100
+```
+
+It would seem that this is enough and `environment` in compose is redundant. But the precedence is:
+
+```
+ENV in Dockerfile  →  env_file  →  environment
+     weaker                          stronger
+```
+
+`env_file: apps/backend/.env` overrides `ENV`. Without the `environment: PORT` line, the value from a developer's personal `.env` would end up inside the container — and that file is meant for `pnpm dev` and can hold anything: change it locally to 3300 and Docker breaks.
+
+So `environment: PORT` guards against `env_file`, not against the Dockerfile. `ENV PORT` still pulls its weight: with it the image works without compose too — `docker run` will bring it up on 3100 without a single variable.

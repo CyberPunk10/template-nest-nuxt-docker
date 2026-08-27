@@ -1,6 +1,6 @@
 # tsconfig.base.json
 
-ในโปรเจกต์มีไฟล์ config ของ TypeScript ทั้งหมดเจ็ดไฟล์ หลักการเดียวที่ช่วยไม่ให้สับสนคือ **ทุกไฟล์ยกเว้นไฟล์เดียวมีไว้ตรวจสอบ type เท่านั้น** การ compile เป็นหน้าที่ของเครื่องมืออื่น — `nest build`, Nuxt, VitePress ข้อยกเว้นเดียวคือ [`apps/backend/tsconfig.build.json`](/th/guide/structure/apps/backend/tsconfig-build)
+ในโปรเจกต์มีไฟล์ config ของ TypeScript ทั้งหมดแปดไฟล์ หลักการเดียวที่ช่วยไม่ให้สับสนคือ **ทุกไฟล์ยกเว้นไฟล์เดียวมีไว้ตรวจสอบ type เท่านั้น** การ compile เป็นหน้าที่ของเครื่องมืออื่น — `nest build`, Nuxt, VitePress, `ts-node` ข้อยกเว้นเดียวคือ [`apps/backend/tsconfig.build.json`](/th/guide/structure/apps/backend/tsconfig-build)
 
 ## การสืบทอด config
 
@@ -11,7 +11,9 @@ template-nest-nuxt/
 ├── apps/
 │   ├── backend/
 │   │   ├── tsconfig.json
-│   │   └── tsconfig.build.json ← extends tsconfig.json ด้านบน ไม่ใช่ base
+│   │   ├── tsconfig.build.json ← extends tsconfig.json ด้านบน ไม่ใช่ base
+│   │   └── prisma/
+│   │       └── tsconfig.seed.json ← extends tsconfig.json เช่นกัน
 │   ├── frontend/
 │   │   └── tsconfig.json
 │   └── docs/
@@ -133,6 +135,7 @@ Backend รันบน Node ส่วนแพ็กเกจ Vue รันใ�
 | --- | --- |
 | [`apps/backend`](/th/guide/structure/apps/backend/tsconfig) | resolve แบบ `node16`, decorator, type ของ jest |
 | [`apps/backend/tsconfig.build.json`](/th/guide/structure/apps/backend/tsconfig-build) | ตัวเดียวที่ compile จริง |
+| [`apps/backend/prisma/tsconfig.seed.json`](/th/guide/structure/apps/backend/prisma/tsconfig-seed) | จุดเริ่มต้นสำหรับ `prisma db seed` |
 | [`apps/frontend`](/th/guide/structure/apps/frontend/tsconfig) | ไม่ extends base — Nuxt สร้าง config ให้ |
 | [`apps/docs`](/th/guide/structure/apps/docs/tsconfig) | resolve แบบ bundler, DOM lib, type ของ VitePress |
 | [`packages/shared`](/th/guide/structure/packages/shared/tsconfig) | resolve แบบ bundler, resolveJsonModule สำหรับคำแปล |

@@ -133,3 +133,22 @@ BACKEND_INTERNAL_PORT=3100
 ```
 
 ส่วน `PORT` ใน `apps/backend/.env` ไม่มีผลกับ Docker: บรรทัด `environment: PORT` จะทับมันตอน start เพราะ `environment` ใน Compose ชนะ `env_file` เสมอ ตัว `PORT` นั้นมีไว้เพื่ออย่างอื่น — สำหรับการรันผ่าน `pnpm dev` ที่ Docker ไม่เกี่ยวข้อง
+
+### ทำไม ENV ใน Dockerfile ไม่เพียงพอ
+
+port ถูกตั้งไว้ที่นั่นแล้ว:
+
+```dockerfile
+ENV PORT=3100
+```
+
+ดูเหมือนว่าแค่นี้ก็พอ และ `environment` ใน compose ก็เกินความจำเป็น แต่ลำดับความสำคัญของตัวแปรเป็นแบบนี้:
+
+```
+ENV ใน Dockerfile  →  env_file  →  environment
+      อ่อนกว่า                        แข็งกว่า
+```
+
+`env_file: apps/backend/.env` เขียนทับ `ENV` ถ้าไม่มีบรรทัด `environment: PORT` ค่าจาก `.env` ส่วนตัวของนักพัฒนาจะเข้าไปในคอนเทนเนอร์ — และไฟล์นั้นมีไว้สำหรับ `pnpm dev` จะเป็นค่าอะไรก็ได้: เปลี่ยนเป็น 3300 ในเครื่องตัวเอง แล้ว Docker ก็พัง
+
+นั่นคือ `environment: PORT` ป้องกัน `env_file` ไม่ใช่ป้องกัน Dockerfile ส่วน `ENV PORT` เองก็ยังมีประโยชน์: มีมันแล้ว image ทำงานได้โดยไม่ต้องมี compose — `docker run` จะรันขึ้นที่ 3100 โดยไม่ต้องมีตัวแปรแม้แต่ตัวเดียว

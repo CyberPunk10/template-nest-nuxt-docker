@@ -1,6 +1,6 @@
 # tsconfig.base.json
 
-Конфигов TypeScript в репозитории семь. Чтобы в них не путаться, полезно держать в голове один принцип: **все они, кроме одного, служат только проверке типов**. Компилируют код другие инструменты — `nest build`, Nuxt, VitePress. Единственное исключение — [`apps/backend/tsconfig.build.json`](/guide/structure/apps/backend/tsconfig-build).
+Конфигов TypeScript в репозитории восемь. Чтобы в них не путаться, полезно держать в голове один принцип: **все они, кроме одного, служат только проверке типов**. Компилируют код другие инструменты — `nest build`, Nuxt, VitePress, `ts-node`. Единственное исключение — [`apps/backend/tsconfig.build.json`](/guide/structure/apps/backend/tsconfig-build).
 
 ## Как устроено наследование
 
@@ -11,7 +11,9 @@ template-nest-nuxt/
 ├── apps/
 │   ├── backend/
 │   │   ├── tsconfig.json
-│   │   └── tsconfig.build.json ← наследует tsconfig.json выше, а не base
+│   │   ├── tsconfig.build.json ← наследует tsconfig.json выше, а не base
+│   │   └── prisma/
+│   │       └── tsconfig.seed.json ← тоже наследует tsconfig.json
 │   ├── frontend/
 │   │   └── tsconfig.json
 │   └── docs/
@@ -133,6 +135,7 @@ rootDir '.../apps/backend/src'. 'rootDir' is expected to contain all source file
 | --- | --- |
 | [`apps/backend`](/guide/structure/apps/backend/tsconfig) | резолв `node16`, декораторы, типы jest |
 | [`apps/backend/tsconfig.build.json`](/guide/structure/apps/backend/tsconfig-build) | единственный, кто компилирует |
+| [`apps/backend/prisma/tsconfig.seed.json`](/guide/structure/apps/backend/prisma/tsconfig-seed) | входная точка для `prisma db seed` |
 | [`apps/frontend`](/guide/structure/apps/frontend/tsconfig) | не наследует базовый — конфиги генерирует Nuxt |
 | [`apps/docs`](/guide/structure/apps/docs/tsconfig) | резолв `bundler`, DOM lib, типы VitePress |
 | [`packages/shared`](/guide/structure/packages/shared/tsconfig) | резолв `bundler`, resolveJsonModule для переводов |
