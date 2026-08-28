@@ -131,6 +131,7 @@ const config: LocaleEntry = {
                   { text: 'check-ports.mjs', link: '/en/guide/structure/scripts/check-ports' },
                   { text: 'ensure-network.mjs', link: '/en/guide/structure/scripts/ensure-network' },
                   { text: 'log.mjs', link: '/en/guide/structure/scripts/log' },
+                  { text: 'db.mjs', link: '/en/guide/structure/scripts/db' },
                   { text: 'dev.mjs', link: '/en/guide/structure/scripts/dev' },
                   { text: 'reinstall.mjs', link: '/en/guide/structure/scripts/reinstall' },
                 ],

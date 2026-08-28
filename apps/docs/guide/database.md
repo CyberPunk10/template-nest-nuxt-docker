@@ -4,7 +4,7 @@
 
 ## Стек
 
-- **PostgreSQL 17** — поднимается через Docker в dev-режиме
+- **PostgreSQL 17** — поднимается через Docker
 - **Prisma 7** — ORM, миграции, генерация клиента
 
 ---
@@ -16,8 +16,12 @@
 Поднять PostgreSQL через Docker:
 
 ```bash
-docker compose -f docker-compose.dev.yml up -d
+pnpm db:up
 ```
+
+Отдельная команда нужна редко: `pnpm dev` поднимает БД сам. Остановить контейнер — `pnpm db:down` (данные остаются в volume).
+
+БД описана в общем `docker-compose.yml` без профиля, а сервисы приложения — под профилем `app`. Поэтому `docker compose up` поднимает только postgres, а полный стек поднимается через `pnpm docker:up`.
 
 Применить миграции и сгенерировать клиент:
 
@@ -44,20 +48,29 @@ POSTGRES_DB=template
 
 ### Корневой `.env`
 
-Параметры для Docker Compose:
+Параметры контейнера БД — их читает Docker Compose:
 
 ```
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=template
 POSTGRES_PORT=5432
 ```
 
-### Изменение порта
+Логин, пароль и имя базы дублируются в двух файлах намеренно: корневой `.env` читает Compose, `apps/backend/.env` — Nest при локальном запуске вне Docker. В Docker-режиме backend получает эти значения из корневого `.env` (см. `environment` в `docker-compose.yml`), поэтому разойтись они могут только при `pnpm dev`.
 
-Если порт 5432 занят — нужно поменять в **двух местах**:
+### Если порт 5432 занят
 
-1. `apps/backend/.env` — `POSTGRES_PORT=5435`
-2. Корневой `.env` — `POSTGRES_PORT=5435`
+Поменять нужно в двух файлах — на одно и то же значение:
 
-Первый читает Prisma, второй читает Docker Compose при проксировании порта с хоста в контейнер.
+```
+.env                  POSTGRES_PORT=5435
+apps/backend/.env     POSTGRES_PORT=5435
+```
+
+Корневой `.env` задаёт порт, на котором контейнер БД публикуется на хост-машине. Второй нужен, когда backend поднят через `pnpm dev`: по нему Nest и Prisma узнают, на какой порт подключаться к базе.
+
+Когда backend сам работает в контейнере, второй файл не используется вовсе: compose подставляет ему `postgres:5432`, то есть имя сервиса и порт внутри сети.
 
 ---
 
@@ -69,7 +82,9 @@ POSTGRES_PORT=5432
 apps/backend/
 ├── prisma/
 │   ├── schema.prisma       ← модели
-│   └── migrations/         ← история миграций (коммитится в git)
+│   ├── migrations/         ← история миграций (коммитится в git)
+│   ├── seed.ts             ← создание admin-аккаунта
+│   └── tsconfig.seed.json  ← отдельный tsconfig для сида
 └── prisma.config.ts        ← конфигурация Prisma (datasource URL)
 ```
 

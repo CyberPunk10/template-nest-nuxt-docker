@@ -2,14 +2,17 @@
 
 Запускается автоматически перед `pnpm dev` — через npm `pre*`-конвенцию.
 
-Делает две вещи:
+Делает три вещи:
 
 1. **Копирует `.env.example` → `.env`** для всех четырёх файлов разом (корневой, `apps/backend`, `apps/frontend`, `apps/docs`) — через общую `copyEnvFiles()` из [`copy-env.mjs`](/guide/structure/scripts/copy-env).
 2. **Проверяет порты и разрешает конфликты** — через общую `checkPorts()` из [`check-ports.mjs`](/guide/structure/scripts/check-ports). При конфликте предлагает диалог: убить занявший процесс или прервать запуск.
+3. **Поднимает БД** — через `dbUp()` из [`db.mjs`](/guide/structure/scripts/db). Приложения при `pnpm dev` работают локально, но Postgres нужен из Docker. Повторный вызов на уже поднятом контейнере ничего не меняет.
 
 Проверяются dev-порты: `PORT` из `apps/backend/.env`, `apps/frontend/.env` и `apps/docs/.env`.
 
-Тем же занимается [`predocker.mjs`](/guide/structure/scripts/predocker) — разница только в списке портов и в том, что он дополнительно заводит Docker-сеть.
+Порт БД в список не входит: проверка умеет только убивать процессы на хосте, а этот порт держит Docker. Его занятость поймает шаг 3 — Docker скажет `address already in use`.
+
+Тем же занимается [`predocker.mjs`](/guide/structure/scripts/predocker) — разница в списке портов и в том, что БД он не поднимает отдельно: её поднимает сам `docker compose` вместе с остальными сервисами.
 
 ## Использование
 

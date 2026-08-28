@@ -27,17 +27,14 @@ const groups = computed<CommandGroup[]>(() => {
       label: c.groups.dev,
       commands: [
         { cmd: 'pnpm dev', desc: c.items.pnpmDev },
-        {
-          cmd: 'docker compose -f docker-compose.dev.yml up -d',
-          desc: c.items.dockerDev,
-        },
+        { cmd: 'pnpm db:up', desc: c.items.dockerDev },
       ],
     },
     {
       label: c.groups.prod,
       commands: [
         { cmd: 'pnpm build', desc: c.items.pnpmBuild },
-        { cmd: 'docker compose up --build', desc: c.items.dockerUp },
+        { cmd: 'pnpm docker:up', desc: c.items.dockerUp },
         { cmd: 'docker compose down', desc: c.items.dockerDown },
       ],
     },

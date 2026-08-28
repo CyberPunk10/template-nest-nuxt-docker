@@ -4,7 +4,7 @@
 
 ## Stack
 
-- **PostgreSQL 17** — spun up via Docker in dev mode
+- **PostgreSQL 17** — spun up via Docker
 - **Prisma 7** — ORM, migrations, client generation
 
 ---
@@ -16,8 +16,12 @@
 Spin up PostgreSQL via Docker:
 
 ```bash
-docker compose -f docker-compose.dev.yml up -d
+pnpm db:up
 ```
+
+You rarely need the command on its own: `pnpm dev` brings the database up itself. Stop the container with `pnpm db:down` (data stays in the volume).
+
+The database lives in the shared `docker-compose.yml` with no profile, while the application services sit behind the `app` profile. That way `docker compose up` only touches postgres, and the full stack comes up via `pnpm docker:up`.
 
 Apply migrations and generate the client:
 
@@ -44,20 +48,29 @@ POSTGRES_DB=template
 
 ### Root `.env`
 
-Parameters for Docker Compose:
+Database container parameters — read by Docker Compose:
 
 ```
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=template
 POSTGRES_PORT=5432
 ```
 
-### Changing the port
+The user, password and database name are duplicated across two files on purpose: the root `.env` is read by Compose, `apps/backend/.env` by Nest when it runs on the host. A containerised backend receives the same values from the root `.env` (see `environment` in `docker-compose.yml`), so they can only drift for the host run.
 
-If port 5432 is already in use, you need to change it in **two places**:
+### If port 5432 is taken
 
-1. `apps/backend/.env` — `POSTGRES_PORT=5435`
-2. Root `.env` — `POSTGRES_PORT=5435`
+Change it in two files — to the same value:
 
-The first is read by Prisma, the second is read by Docker Compose when mapping the port from the host into the container.
+```
+.env                  POSTGRES_PORT=5435
+apps/backend/.env     POSTGRES_PORT=5435
+```
+
+The root `.env` sets the port the database container is published on, on the host machine. The second one is needed when the backend runs through `pnpm dev`: it tells Nest and Prisma which port to connect to.
+
+When the backend itself runs in a container, that second file isn't used at all: compose gives it `postgres:5432`, the service name and port inside the network. The host mapping plays no part there.
 
 ---
 
@@ -69,7 +82,9 @@ The first is read by Prisma, the second is read by Docker Compose when mapping t
 apps/backend/
 ├── prisma/
 │   ├── schema.prisma       ← models
-│   └── migrations/         ← migration history (committed to git)
+│   ├── migrations/         ← migration history (committed to git)
+│   ├── seed.ts             ← creates the admin account
+│   └── tsconfig.seed.json  ← separate tsconfig for the seed
 └── prisma.config.ts        ← Prisma configuration (datasource URL)
 ```
 

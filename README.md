@@ -32,7 +32,7 @@ git clone -b auth-session https://github.com/CyberPunk10/template-nest-nuxt.git 
 
 ### `postgres-prisma` — + PostgreSQL + Prisma
 
-Всё из `main`, плюс Prisma 7 + PostgreSQL 17, PrismaModule, миграции, docker-compose с БД.
+Всё из `main`, плюс Prisma 7 + PostgreSQL 17, PrismaModule, миграции. БД живёт в общем `docker-compose.yml` и поднимается в обоих режимах: `pnpm dev` стартует только её, `pnpm docker:up` — весь стек.
 
 ```bash
 git clone -b postgres-prisma https://github.com/CyberPunk10/template-nest-nuxt.git my-app
@@ -66,8 +66,9 @@ git clone -b postgres-prisma https://github.com/CyberPunk10/template-nest-nuxt.g
 ### Инфраструктура
 
 - **Docker** — multi-stage образы для backend и frontend, reverse proxy как единая точка входа; документация собирается в статику и раздаётся им же
-- **docker compose** — поднимает nginx, backend и frontend в общей сети; наружу публикуется только порт nginx, приложения доступны лишь через него
-- **`pnpm docker:up`** — обёртка над `docker compose up`: создаёт корневой `.env` из `.env.example`, проверяет занятость хост-портов
+- **docker compose** — один файл на оба режима: сервисы приложения под профилем `app`, БД без профиля. `pnpm dev` поднимает только Postgres, `pnpm docker:up` — nginx, backend, frontend и БД в общей сети; наружу публикуется порт nginx и порт БД для локальных подключений
+- **`pnpm docker:up`** — обёртка над `docker compose --profile app up`: создаёт корневой `.env` из `.env.example`, проверяет занятость хост-портов, заводит Docker-сеть
+- **`pnpm db:up` / `pnpm db:down`** — управление контейнером БД отдельно от приложений; `up` ждёт healthcheck, `down` оставляет данные в volume
 
 ## Документация
 

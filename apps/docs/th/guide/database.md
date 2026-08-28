@@ -4,7 +4,7 @@
 
 ## Stack
 
-- **PostgreSQL 17** — รันผ่าน Docker ในโหมด dev
+- **PostgreSQL 17** — รันผ่าน Docker
 - **Prisma 7** — ORM, migration, การ generate client
 
 ---
@@ -16,8 +16,12 @@
 รัน PostgreSQL ผ่าน Docker:
 
 ```bash
-docker compose -f docker-compose.dev.yml up -d
+pnpm db:up
 ```
+
+โดยทั่วไปไม่ค่อยต้องใช้คำสั่งนี้เดี่ยว ๆ เพราะ `pnpm dev` จะรันฐานข้อมูลให้เอง หากต้องการหยุด container ใช้ `pnpm db:down` (ข้อมูลยังอยู่ใน volume)
+
+ฐานข้อมูลถูกประกาศไว้ใน `docker-compose.yml` ไฟล์เดียวกันโดยไม่มี profile ส่วน service ของแอปอยู่ภายใต้ profile `app` ดังนั้น `docker compose up` จะแตะเฉพาะ postgres และถ้าต้องการ stack ทั้งหมดให้ใช้ `pnpm docker:up`
 
 รัน migration และ generate client:
 
@@ -44,20 +48,29 @@ POSTGRES_DB=template
 
 ### `.env` ที่ root
 
-พารามิเตอร์สำหรับ Docker Compose:
+พารามิเตอร์ของ container ฐานข้อมูล — Docker Compose เป็นตัวอ่าน:
 
 ```
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=template
 POSTGRES_PORT=5432
 ```
 
-### การเปลี่ยน port
+user, password และชื่อ database ถูกเขียนซ้ำในสองไฟล์อย่างตั้งใจ: `.env` ที่ root ให้ Compose อ่าน ส่วน `apps/backend/.env` ให้ Nest อ่านตอนรันบน host ส่วน backend ที่รันใน container รับค่าชุดเดียวกันจาก `.env` ที่ root (ดู `environment` ใน `docker-compose.yml`) ค่าจึงไม่ตรงกันได้เฉพาะกรณีรันบน host เท่านั้น
 
-ถ้า port 5432 ถูกใช้งานอยู่ — ต้องเปลี่ยนใน **สองที่**:
+### ถ้า port 5432 ถูกใช้อยู่
 
-1. `apps/backend/.env` — `POSTGRES_PORT=5435`
-2. `.env` ที่ root — `POSTGRES_PORT=5435`
+เปลี่ยนในสองไฟล์ — ให้เป็นค่าเดียวกัน:
 
-ที่แรก Prisma เป็นตัวอ่าน ที่สอง Docker Compose เป็นตัวอ่านตอน proxy port จาก host เข้าไปยัง container
+```
+.env                  POSTGRES_PORT=5435
+apps/backend/.env     POSTGRES_PORT=5435
+```
+
+`.env` ที่ root กำหนดพอร์ตที่ container ฐานข้อมูลถูกเปิดออกมาบนเครื่อง host ส่วนไฟล์ที่สองจำเป็นเมื่อ backend รันผ่าน `pnpm dev`: มันบอก Nest และ Prisma ว่าให้เชื่อมต่อไปที่พอร์ตไหน
+
+เมื่อ backend รันใน container เอง ไฟล์ที่สองจะไม่ถูกใช้เลย: compose ส่ง `postgres:5432` ให้ ซึ่งเป็นชื่อ service และพอร์ตภายใน network การ map พอร์ตออก host ไม่เกี่ยวข้องในกรณีนี้
 
 ---
 
@@ -69,7 +82,9 @@ POSTGRES_PORT=5432
 apps/backend/
 ├── prisma/
 │   ├── schema.prisma       ← โมเดล
-│   └── migrations/         ← ประวัติ migration (commit เข้า git)
+│   ├── migrations/         ← ประวัติ migration (commit เข้า git)
+│   ├── seed.ts             ← สร้างบัญชี admin
+│   └── tsconfig.seed.json  ← tsconfig แยกสำหรับ seed
 └── prisma.config.ts        ← การตั้งค่า Prisma (datasource URL)
 ```
 
