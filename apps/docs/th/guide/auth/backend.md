@@ -283,6 +283,24 @@ findAll(): Promise<SafeUser[]> {
 - **`GET /users/:id`** ใช้การตรวจสอบที่ผ่อนปรนกว่าคือ `assertSelfOrAdmin` — เข้าถึงได้ทั้งเจ้าของ profile **หรือ** `admin` คนไหนก็ได้ (เช่น เพื่อ support/moderation) ความไม่สมมาตรนี้ตั้งใจทำ: การอ่านข้อมูลของคนอื่นมีความเสี่ยงต่ำ ในขณะที่การเขียนลง profile ของคนอื่นผ่าน self-service route เป็นความเสี่ยงที่ไม่ควรให้แบบ implicit ถ้าต้องการให้ admin เขียนข้อมูลของผู้ใช้คนอื่นได้เต็มรูปแบบ ต้องทำเป็น feature แยกต่างหาก (เช่น endpoint สำหรับ admin โดยเฉพาะที่มี audit trail ของตัวเอง) ไม่ใช่การขยาย `assertSelf`
 - **`TasksController`** (`PUT/DELETE /tasks/:id`): `TasksService.findOne(id, userId)` ตรวจว่า task เป็นของผู้ใช้คนปัจจุบันจริง และ throw `ForbiddenException` ถ้าไม่ตรงกัน `GET /tasks/all` (เฉพาะ `admin`) เป็นทางเดียวที่จะเห็น task ของผู้ใช้ทุกคน
 
+## Seed: การสร้างบัญชี admin
+
+การสมัครปกติ (`POST /auth/register`) จะให้ role `user` เสมอ — `UsersService.create()` ส่ง `Role.User` ไว้ตายตัว ถ้าไม่มีขั้นตอนแยก ระบบก็จะไม่มี `admin` เลยสักคน และ route ที่อยู่หลัง `@Roles(Role.Admin)` (`GET /users`, `GET /tasks/all`) ก็จะเข้าถึงไม่ได้
+
+`UsersSeedService` มีไว้แก้เรื่องนี้ ต่างจาก branch ที่มีฐานข้อมูลซึ่ง seed เป็นคำสั่งแยก ที่นี่ storage เป็น in-memory และถูกสร้างใหม่ทุกครั้งที่ start — admin จึงถูกสร้างใน `onModuleInit` คือตอนที่แอปเริ่มทำงาน:
+
+```typescript
+const email = this.config.get<string>('ADMIN_EMAIL')
+const password = this.config.get<string>('ADMIN_PASSWORD')
+if (!email || !password) return          // ไม่ได้กำหนด — ข้ามไป
+
+if (await this.usersService.findByEmail(normalizedEmail)) return   // มีอยู่แล้ว
+```
+
+รหัสผ่านถูก hash ด้วย `BCRYPT_ROUNDS` และ email ถูกแปลงเป็นตัวพิมพ์เล็ก การ start ใหม่จะไม่แตะ admin ที่มีอยู่แล้ว
+
+`ADMIN_EMAIL`/`ADMIN_PASSWORD` ใน `.env.example` เป็นค่า placeholder เหมือน `JWT_SECRET`: ควรตั้งค่าของตัวเองก่อนใช้งานจริง
+
 ## การล้าง session ที่หมดอายุ
 
 ทุกครั้งที่ rotate record เดิมจะยังคงอยู่ใน `SessionsStore` โดยมี `isUsed: true` ถ้าผู้ใช้ refresh วันละครั้งตลอด 7 วัน — จะสะสมได้ 7 record ต่อหนึ่งสาย ถ้าไม่ล้าง Map ภายใน `SessionsStore` จะโตขึ้นไม่มีที่สิ้นสุด (memory leak ของ process)

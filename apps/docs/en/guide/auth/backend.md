@@ -283,6 +283,24 @@ Unlike roles, access to a specific resource (a user's own profile, a task) isn't
 - **`GET /users/:id`** uses the looser `assertSelfOrAdmin` check — accessible to the profile owner **or** any `admin` (e.g. for support/moderation). This asymmetry is intentional: reading someone else's data is low-risk, while writing to another user's profile through a self-service route is a risk that shouldn't be granted implicitly. Full admin write-access to other users' profiles is a separate feature (e.g. a dedicated admin endpoint with its own audit trail) that has to be added explicitly, not by widening `assertSelf`.
 - **`TasksController`** (`PUT/DELETE /tasks/:id`): `TasksService.findOne(id, userId)` checks that the task belongs to the current user and throws `ForbiddenException` on a mismatch. `GET /tasks/all` (admin-only) is the only way to see every user's tasks.
 
+## Seed: creating the admin account
+
+Ordinary registration (`POST /auth/register`) always assigns the `user` role — `UsersService.create()` passes `Role.User` explicitly. Without a separate step no `admin` would ever exist, and the routes behind `@Roles(Role.Admin)` (`GET /users`, `GET /tasks/all`) would be unreachable.
+
+`UsersSeedService` covers that. Unlike the database branches, where the seed is a separate command, storage here is in-memory and is recreated on every start — so the admin is created in `onModuleInit`, as the application boots:
+
+```typescript
+const email = this.config.get<string>('ADMIN_EMAIL')
+const password = this.config.get<string>('ADMIN_PASSWORD')
+if (!email || !password) return          // not set — simply skipped
+
+if (await this.usersService.findByEmail(normalizedEmail)) return   // already there
+```
+
+The password is hashed with `BCRYPT_ROUNDS` and the email is lowercased. A restart leaves an existing admin alone.
+
+`ADMIN_EMAIL`/`ADMIN_PASSWORD` in `.env.example` are placeholders, like `JWT_SECRET`: set your own values before real use.
+
 ## Cleaning up expired sessions
 
 On every rotation the old record stays in `SessionsStore` with `isUsed: true`. If a user refreshes once a day for 7 days, that accumulates 7 records for a single chain. Without cleanup the Map inside `SessionsStore` grows without bound (a memory leak in the process).
