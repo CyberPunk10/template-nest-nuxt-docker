@@ -5,7 +5,7 @@
       "title": "NestJS + Nuxt 4",
       "titleAccent": "Monorepo Template",
       "subtitle": "Production-ready starting point for full-stack applications.\nDeploy in minutes, scale to production.",
-      "toDashboard": "Go to dashboard",
+      "demo": "View demo",
       "login": "Sign in",
       "github": "GitHub",
       "docs": "Documentation"
@@ -13,6 +13,8 @@
     "showcase": {
       "title": "What it's built on",
       "lead": "Mature tools with large communities and active releases only. No experimental dependencies you'll have to rip out six months from now.",
+      "optionalBadge": "option",
+      "optionalNote": "Optional modules: enabled by choice when you create a project. The base template runs without them.",
       "items": {
         "nest": {
           "name": "NestJS",
@@ -168,6 +170,85 @@
         }
       },
       "note": "These verdicts aren't verdicts on you: almost every \"pick something else\" case is buildable on this template. They judge whether the complexity it brings pays for itself."
+    },
+    "callout": {
+      "split": {
+        "withoutLabel": "the first weeks usually go to",
+        "without": [
+          "monorepo, builds, linters",
+          "Docker, env, CI",
+          "routing, layers, conventions"
+        ],
+        "withLabel": "here you start with",
+        "with": [
+          "your screens",
+          "your business logic",
+          "your product"
+        ]
+      },
+      "steps": {
+        "stages": [
+          "plumbing",
+          "infrastructure",
+          "conventions",
+          "your ideas"
+        ],
+        "done": "The boring part is already done.",
+        "text": "From here on — only your ideas."
+      },
+      "type": {
+        "call": "Start",
+        "struck": "by configuring the project",
+        "kept": "by building ",
+        "accent": "your ideas"
+      }
+    },
+    "auth": {
+      "title": "Authentication",
+      "lead": "The base template ships without authentication — if you want to build your own, there is nothing to rip out. Ready-made auth comes as a separate option layered on top of the base.",
+      "base": {
+        "label": "base template",
+        "title": "Without auth",
+        "desc": "A clean starting point: Nest, Nuxt and shared types. Plug in your provider or write a scheme that fits your requirements."
+      },
+      "layer": {
+        "label": "option",
+        "title": "With auth",
+        "desc": "Fully working authentication on top of the base option. Do not spend weeks on what is already written and battle-tested."
+      },
+      "pointsTitle": "What the option with auth includes",
+      "points": {
+        "tokens": {
+          "title": "JWT access + refresh.",
+          "desc": "Access lives 15 minutes and is verified without hitting the store, refresh lives 7 days and can be revoked instantly."
+        },
+        "cookies": {
+          "title": "httpOnly cookies.",
+          "desc": "Tokens are unreachable from JavaScript, SameSite=strict closes CSRF. Nothing is kept in localStorage."
+        },
+        "rotation": {
+          "title": "Rotation and reuse detection.",
+          "desc": "Every refresh issues a new token. Reusing an old one counts as theft — the session chain is cut off."
+        },
+        "sessions": {
+          "title": "Server-side sessions.",
+          "desc": "A list of active devices, sign-out on a specific one, and an instant sign-out everywhere on password change."
+        },
+        "roles": {
+          "title": "Roles and guards.",
+          "desc": "user and admin, the @Public() and @Roles() decorators, route protection on the backend and middleware on the frontend."
+        },
+        "ssr": {
+          "title": "Works with SSR.",
+          "desc": "Silent refresh before the page renders: F5 with an expired token neither kicks you to the login page nor causes a hydration mismatch."
+        },
+        "providers": {
+          "title": "Can be extended.",
+          "desc": "OAuth, OIDC or an external provider can be added on top — the current scheme does not stand in the way and needs no rewrite."
+        }
+      },
+      "note": "The scheme is JWT access + refresh with server-side rotation — the same approach most web apps with a separate API use. The alternatives and the reasoning behind the choice are covered ",
+      "noteLink": "in the docs"
     },
     "branches": {
       "title": "Variants",

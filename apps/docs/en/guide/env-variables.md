@@ -144,7 +144,7 @@ Some variables point at a neighbouring application's port. Change a port — fix
 **Frontend port** (`PORT` in `apps/frontend/.env`)
 
 - `CORS_ORIGIN` in `apps/backend/.env` — otherwise the backend rejects requests from a different origin
-- `DASHBOARD_URL` in `apps/docs/.env` — otherwise the "go to dashboard" button leads nowhere
+- `DASHBOARD_URL` in `apps/docs/.env` — otherwise the "View demo" button leads nowhere
 
 **Backend port** (`PORT` in `apps/backend/.env`)
 

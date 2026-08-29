@@ -51,6 +51,24 @@ const currentLayout = computed(() => {
 function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
   return isPublicRoute(r.meta as RouteMeta)
 }
+
+// Схему и хост в списке отбрасываем: в dev это всегда localhost, в проде —
+// один и тот же домен у всех ссылок, различает их только порт и путь.
+// Полный адрес остаётся в href и виден в статусной строке браузера.
+//
+// База для new URL нужна только для разбора относительных адресов (в проде
+// publicUrl пустой, и ссылка выглядит как /api/health). Порт при этом берём
+// исключительно из самого url: иначе относительный адрес унаследовал бы порт
+// фронтенда и показывал бы :3200 там, где никакого порта нет.
+function shortUrl(url: string): string {
+  try {
+    const { pathname, search } = new URL(url, frontendUrl)
+    const port = url.match(/^\w+:\/\/[^/]*?(:\d+)/)?.[1] ?? ''
+    return `${port}${pathname}${search}`
+  } catch {
+    return url
+  }
+}
 </script>
 
 <template>
@@ -87,7 +105,8 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
           :class="backendOnline ? 'service__dot--online' : 'service__dot--offline'"
         />
         <span class="service__name">Backend (NestJS)</span>
-        <code class="service__url">{{ backendHealthUrl }}</code>
+        <code class="service__url">{{ shortUrl(backendHealthUrl) }}</code>
+        <Icon class="service__ext" name="lucide:external-link" size="12" />
       </a>
       <a
         class="service"
@@ -96,7 +115,8 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
       >
         <span class="service__dot service__dot--online" />
         <span class="service__name">Frontend (Nuxt)</span>
-        <code class="service__url">{{ frontendUrl }}/api/health</code>
+        <code class="service__url">{{ shortUrl(`${frontendUrl}/api/health`) }}</code>
+        <Icon class="service__ext" name="lucide:external-link" size="12" />
       </a>
     </div>
 
@@ -116,7 +136,13 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
           Swagger UI
           <span v-if="!swaggerEnabled" class="service__badge">{{ t('devPanel.onlyDev') }}</span>
         </span>
-        <code class="service__url">{{ swaggerUrl }}</code>
+        <code class="service__url">{{ shortUrl(swaggerUrl) }}</code>
+        <Icon
+          v-if="swaggerEnabled"
+          class="service__ext"
+          name="lucide:external-link"
+          size="12"
+        />
       </a>
       <a
         class="service"
@@ -125,7 +151,8 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
       >
         <span class="service__dot service__dot--static" style="background: #38bdf8" />
         <span class="service__name">{{ t('devPanel.docs') }}</span>
-        <code class="service__url">{{ docsUrl }}</code>
+        <code class="service__url">{{ shortUrl(docsUrl) }}</code>
+        <Icon class="service__ext" name="lucide:external-link" size="12" />
       </a>
     </div>
 
@@ -190,7 +217,7 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   text-decoration: none;
-  color: #fff;
+  color: var(--text-primary);
   font-size: 13px;
   transition: border-color 0.2s;
 
@@ -223,12 +250,29 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
 
   &__name {
     flex: 1;
+    white-space: nowrap;
   }
 
   &__url {
     font-family: monospace;
     font-size: 11px;
-    color: #888;
+    color: #64748b;
+    // min-width даёт ellipsis сработать: без него flex-элемент не сжимается
+    // ниже ширины своего содержимого.
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__ext {
+    flex-shrink: 0;
+    color: #334155;
+    transition: color 0.2s;
+  }
+
+  &:hover &__ext {
+    color: var(--accent);
   }
 
   &__badge {
@@ -308,7 +352,7 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   text-decoration: none;
-  color: #94a3b8;
+  color: var(--text-primary);
   font-size: 13px;
   transition:
     border-color 0.2s,
@@ -342,6 +386,16 @@ function isPublic(r: ReturnType<typeof router.getRoutes>[number]): boolean {
     font-family: monospace;
     font-size: 12px;
     flex: 1;
+  }
+
+  &__ext {
+    flex-shrink: 0;
+    color: #334155;
+    transition: color 0.2s;
+  }
+
+  &:hover &__ext {
+    color: var(--accent);
   }
 
   &__badge {

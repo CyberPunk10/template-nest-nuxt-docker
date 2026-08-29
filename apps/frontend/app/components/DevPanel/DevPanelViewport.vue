@@ -122,7 +122,7 @@ function formatPx(entry: PxEntry): string {
     padding: 1px 6px;
     border-radius: 3px;
     background: var(--border-subtle);
-    color: #94a3b8;
+    color: var(--text-primary);
 
     &--on {
       background: #1c3a2a;

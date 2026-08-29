@@ -118,7 +118,7 @@ const groups = computed(() =>
   font-size: var(--home-text-sm);
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.075em;
+  letter-spacing: 0.05em;
   color: var(--home-text-dim);
   margin: 0 0 16px;
 }
@@ -208,7 +208,7 @@ const groups = computed(() =>
   font-size: var(--home-text-sm);
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.075em;
+  letter-spacing: 0.05em;
   margin: 0 0 14px;
 }
 .fit__group--good .fit__group-title {

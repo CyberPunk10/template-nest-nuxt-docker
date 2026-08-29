@@ -20,7 +20,7 @@ export default withNuxt({
     'vue/block-order': ['error', { order: ['script', 'template', 'style'] }],
     'vue/component-api-style': ['error', ['script-setup']],
     'vue/define-macros-order': ['error', { order: ['defineOptions', 'defineProps', 'defineEmits', 'defineSlots'] }],
-    'vue/max-attributes-per-line': ['error', { singleline: { max: 2 }, multiline: { max: 1 } }],
+    'vue/max-attributes-per-line': ['error', { singleline: { max: 3 }, multiline: { max: 1 } }],
     'vue/singleline-html-element-content-newline': 'off',
   },
 })

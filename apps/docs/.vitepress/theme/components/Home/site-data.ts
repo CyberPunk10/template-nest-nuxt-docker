@@ -1,6 +1,13 @@
 export const repoUrl = 'https://github.com/CyberPunk10/template-nest-nuxt-docker'
 export const authorUrl = 'https://github.com/CyberPunk10'
 
+/**
+ * Разбор схемы авторизации. Живёт не в этой сборке доков: страницы
+ * guide/auth/ есть только там, где авторизация реализована, — поэтому
+ * ссылка ведёт в репозиторий, а не внутрь сайта.
+ */
+export const authDocsUrl = `${repoUrl}/blob/auth-session/apps/docs/guide/auth/index.md`
+
 /** Страница спонсорства. TODO: — аккаунт GitHub Sponsors не подключён. */
 export const sponsorUrl = 'https://github.com/sponsors/CyberPunk10'
 

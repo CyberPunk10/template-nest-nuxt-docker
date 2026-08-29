@@ -14,7 +14,7 @@ frontend **ไม่ได้** เก็บ address ของ backend สำห
 
 frontend รู้ address ของเพื่อนบ้านทั้งสองฝั่ง และทั้งสองฝั่งก็อ้างถึงพอร์ตของ frontend เช่นกัน:
 
-- **`PORT`** — `CORS_ORIGIN` ใน `apps/backend/.env` ชี้มาที่ค่านี้ (ไม่งั้น backend จะปฏิเสธ request) และ `DASHBOARD_URL` ใน `apps/docs/.env` ก็เช่นกัน (ไม่งั้นปุ่ม «ไปที่แดชบอร์ด» จะพาไปผิดที่)
+- **`PORT`** — `CORS_ORIGIN` ใน `apps/backend/.env` ชี้มาที่ค่านี้ (ไม่งั้น backend จะปฏิเสธ request) และ `DASHBOARD_URL` ใน `apps/docs/.env` ก็เช่นกัน (ไม่งั้นปุ่ม «ดูตัวอย่างเดโม» จะพาไปผิดที่)
 - **`NUXT_BACKEND_URL`** ต้องชี้ไปที่ `PORT` จาก `apps/backend/.env` — ไม่งั้น SSR จะเรียก API ไม่ได้
 - **`NUXT_PUBLIC_DOCS_URL`** ต้องชี้ไปที่ `PORT` จาก `apps/docs/.env` พร้อมกับ path `/dev/docs/`
 

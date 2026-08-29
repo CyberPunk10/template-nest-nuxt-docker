@@ -111,9 +111,11 @@
   /* тёмные значения — по умолчанию */
   --home-accent: #00dc82;         /* кнопки, ссылки, активные состояния */
   --home-text-primary: #f4f4f6;   /* заголовки, основной контент */
-  --home-text-muted: #52525b;     /* плейсхолдеры, иконки, disabled */
+  --home-text-muted: #545465;     /* плейсхолдеры, иконки, disabled */
   --home-surface-card: #18181b;   /* карточки, секции */
   --home-border-subtle: #6d79b524;  /* разделители */
+  --home-border-strong: #ffffff26;  /* заметная рамка: вторичная кнопка */
+  --home-surface-badge: #ffffff10;  /* подложка бейджа на карточке */
   --home-surface-app: #080f1a;        /* фон приложения (внутри карточек) — пока не используется */
 
   /* градации текста (dark) */
@@ -191,6 +193,8 @@
   --home-text-muted: #a1a1aa;
   --home-surface-card: #f6f6f7;
   --home-border-subtle: #e4e4e7;
+  --home-border-strong: #c9c9cf;
+  --home-surface-badge: #0000000d;
   --home-surface-app: #ffffff;
 
   --home-text-strong: #09090b;

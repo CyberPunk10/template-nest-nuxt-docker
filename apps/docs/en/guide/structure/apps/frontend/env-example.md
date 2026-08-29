@@ -14,7 +14,7 @@ The backend address for DevPanel links and the Swagger flag are **not** stored o
 
 The frontend knows both neighbours' addresses, and they in turn reference its own port:
 
-- **`PORT`** — `CORS_ORIGIN` in `apps/backend/.env` points at it (otherwise the backend rejects requests), and so does `DASHBOARD_URL` in `apps/docs/.env` (otherwise the "go to dashboard" button leads nowhere).
+- **`PORT`** — `CORS_ORIGIN` in `apps/backend/.env` points at it (otherwise the backend rejects requests), and so does `DASHBOARD_URL` in `apps/docs/.env` (otherwise the "View demo" button leads nowhere).
 - **`NUXT_BACKEND_URL`** must point at `PORT` from `apps/backend/.env` — otherwise SSR can't reach the API.
 - **`NUXT_PUBLIC_DOCS_URL`** must point at `PORT` from `apps/docs/.env`, together with the `/dev/docs/` path.
 

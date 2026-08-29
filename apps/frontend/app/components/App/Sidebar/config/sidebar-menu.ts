@@ -109,8 +109,8 @@ export const reports = {
 // url подставляется динамически в useMenu() из runtimeConfig.public.docsUrl
 export const settings = {
   id: 'settings',
-  title: 'nav.about',
-  icon: 'lucide:info',
+  title: 'nav.docs',
+  icon: 'lucide:book-open',
 } satisfies SidebarItem
 
 export const bigSection = {

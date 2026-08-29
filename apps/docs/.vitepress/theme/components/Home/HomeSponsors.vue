@@ -64,7 +64,7 @@ const home = computed(() => theme.value.home!)
   font-size: var(--home-text-2xl);
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.075em;
+  letter-spacing: 0.05em;
   color: var(--home-text-dim);
   margin: 0 0 16px;
 }

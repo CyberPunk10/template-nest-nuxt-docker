@@ -79,7 +79,7 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
   transform: translateX(100%);
   transition: transform 0.3s ease;
   z-index: 9999;
-  background: #0a1120;
+  background: var(--surface-panel);
   border-left: 1px solid var(--border-subtle);
   overflow-y: auto;
   font-family: system-ui, sans-serif;

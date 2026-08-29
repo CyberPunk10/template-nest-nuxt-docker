@@ -82,8 +82,8 @@ const home = computed(() => theme.value.home!)
   letter-spacing: 0.06em;
   background: rgba(0, 220, 130, 0.12);
   color: var(--home-accent);
-  border-radius: 4px;
-  padding: 2px 5px;
+  border-radius: 20px;
+  padding: 2px 10px;
 }
 .branch-card__label {
   font-size: var(--home-text-lg);

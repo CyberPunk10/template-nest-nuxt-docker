@@ -169,7 +169,7 @@ const shapes = Array.from({ length: 18 }, (_, i) => ({
     margin-top: 4px;
 
     &:hover {
-      color: #94a3b8;
+      color: var(--text-primary);
       border-color: #334155;
     }
   }

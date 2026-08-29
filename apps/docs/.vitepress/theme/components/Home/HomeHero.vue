@@ -15,8 +15,9 @@ const docsLink = computed(() => {
   return withBase(`${prefix}/guide/getting-started`)
 })
 
-// Адрес кабинета задаётся при сборке через DASHBOARD_URL (см. config.ts).
-const dashboardLink = computed(() => theme.value.dashboardUrl)
+// Адрес развёрнутого фронтенда задаётся при сборке через DASHBOARD_URL
+// (см. config.ts) — кнопка ведёт туда как на живое демо шаблона.
+const demoLink = computed(() => theme.value.dashboardUrl)
 </script>
 
 <template>
@@ -42,11 +43,11 @@ const dashboardLink = computed(() => theme.value.dashboardUrl)
                у себя вместо перехода на фронтенд. -->
           <a
             class="hero__btn hero__btn--ghost"
-            :href="dashboardLink"
+            :href="demoLink"
             target="_self"
           >
-            <Icon name="lucide:log-in" size="15" />
-            {{ hero.toDashboard }}
+            <Icon name="lucide:circle-play" size="15" />
+            {{ hero.demo }}
           </a>
         </div>
       </div>
@@ -103,7 +104,7 @@ const dashboardLink = computed(() => theme.value.dashboardUrl)
   color: var(--home-accent);
 }
 .hero__subtitle {
-  font-size: var(--home-text-lg);
+  font-size: 18px;
   color: var(--home-text-muted);
   margin: 0 0 32px;
   line-height: var(--home-leading-normal);
@@ -119,8 +120,9 @@ const dashboardLink = computed(() => theme.value.dashboardUrl)
   gap: 7px;
   padding: 10px 18px;
   border-radius: var(--home-radius-lg);
-  font-size: var(--home-text-sm);
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 550;
+  letter-spacing: 0.01em;
   text-decoration: none;
   cursor: pointer;
   transition:
@@ -137,13 +139,14 @@ const dashboardLink = computed(() => theme.value.dashboardUrl)
   opacity: 0.88;
 }
 .hero__btn--ghost {
-  background: transparent;
-  border: 1px solid var(--home-border-subtle);
-  color: var(--home-text-dim);
+  background: var(--home-surface-2);
+  border: 1px solid var(--home-border-strong);
+  color: var(--home-text-soft);
 }
 .hero__btn--ghost:hover {
-  border-color: var(--home-text-dim);
-  color: var(--home-text-hover);
+  border-color: color-mix(in srgb, var(--home-accent) 55%, transparent);
+  background: color-mix(in srgb, var(--home-accent) 8%, transparent);
+  color: var(--home-text-strong);
 }
 
 @media (max-width: 900px) {

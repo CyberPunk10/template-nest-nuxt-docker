@@ -19,16 +19,25 @@ const home = computed(() => theme.value.home!)
         v-for="logo in stackLogos"
         :key="logo.id"
         class="showcase__item"
+        :class="{ 'showcase__item--optional': logo.optional }"
         :style="{ '--logo-color': logo.color }"
       >
+        <span v-if="logo.optional" class="showcase__badge">
+          <Icon name="lucide:plus" size="11" />
+          {{ home.showcase.optionalBadge }}
+        </span>
         <div class="showcase__logo">
           <TechLogo :name="logo.id" :size="38" />
         </div>
         <p class="showcase__name">{{ home.showcase.items[logo.id].name }}</p>
         <p class="showcase__role">{{ home.showcase.items[logo.id].role }}</p>
-        <code v-if="logo.branch" class="showcase__branch">{{ logo.branch }}</code>
       </div>
     </div>
+
+    <p class="showcase__footnote">
+      <span class="showcase__footnote-icon"><Icon name="lucide:plus" size="14" /></span>
+      {{ home.showcase.optionalNote }}
+    </p>
   </section>
 </template>
 
@@ -43,7 +52,7 @@ const home = computed(() => theme.value.home!)
 
 .showcase {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 12px;
 }
 
@@ -95,25 +104,52 @@ const home = computed(() => theme.value.home!)
   color: var(--home-text-soft);
   margin: 0;
 }
-.showcase__branch {
-  font-family: monospace;
+/* Опциональные модули: пунктир вместо сплошной рамки — визуальный сигнал
+   «этого нет в базовом шаблоне». Цвет и hover остаются общими, чтобы
+   карточки читались как часть той же витрины, а не как отключённые. */
+.showcase__item--optional {
+  border-style: dashed;
+}
+.showcase__badge {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 7px 2px 5px;
+  border-radius: 20px;
+  background: var(--home-surface-badge);
+  color: var(--home-text-soft);
   font-size: var(--home-text-xs);
-  color: var(--home-text-dim);
-  border: 1px solid var(--home-border-2);
-  border-radius: 4px;
-  padding: 1px 5px;
-  margin-top: 4px;
+  font-weight: 600;
+  line-height: 1.4;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+.showcase__item--optional:hover .showcase__badge {
+  background: color-mix(in srgb, var(--logo-color) 22%, transparent);
+  color: var(--home-text-strong);
 }
 
-@media (max-width: 900px) {
-  .showcase {
-    grid-template-columns: repeat(3, 1fr);
-  }
+.showcase__footnote {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 0;
+  font-size: var(--home-text-sm);
+  line-height: var(--home-leading-normal);
+  color: var(--home-text-muted);
+}
+.showcase__footnote-icon {
+  line-height: 0;
+  color: var(--home-text-dim);
+  flex-shrink: 0;
 }
 
 @media (max-width: 600px) {
   .showcase {
-    grid-template-columns: repeat(2, 1fr);
     gap: 8px;
   }
   .showcase__item {

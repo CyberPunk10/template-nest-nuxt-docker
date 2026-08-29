@@ -144,7 +144,7 @@ curl -sI -H "Origin: http://localhost:3200" http://localhost:3100/health | grep 
 **Порт frontend** (`PORT` в `apps/frontend/.env`)
 
 - `CORS_ORIGIN` в `apps/backend/.env` — иначе бэкенд отклонит запросы с другого origin
-- `DASHBOARD_URL` в `apps/docs/.env` — иначе кнопка «в кабинет» уведёт не туда
+- `DASHBOARD_URL` в `apps/docs/.env` — иначе кнопка «Посмотреть демо» уведёт не туда
 
 **Порт backend** (`PORT` в `apps/backend/.env`)
 

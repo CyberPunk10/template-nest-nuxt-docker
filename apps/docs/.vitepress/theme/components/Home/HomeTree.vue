@@ -39,7 +39,7 @@ const home = computed(() => theme.value.home!)
 .tree {
   font-family: monospace;
   font-size: 13px;
-  color: var(--home-text-hover);
+  color: var(--home-text-dim);
   /* Не из шкалы: дерево файлов — моноширинный блок, интервал здесь
      структурный (высота строки = шаг вложенности), а не текстовый. */
   line-height: 1.8;

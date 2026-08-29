@@ -100,27 +100,46 @@ export const principles: Principle[] = [
 // ─────────────────────  Витрина стека (логотипы)  ─────────────────────
 
 export interface StackLogo {
-  id: string // ключ в home.showcase.items (подпись под логотипом)
-  /** Фирменный цвет технологии. Используется для логотипа и подсветки при hover. */
+  id: string
   color: string
-  /** Ветка, начиная с которой технология присутствует. Показывается меткой на карточке. */
-  branch?: string
+  optional?: true
 }
 
 /**
  * Порядок намеренный: сначала два фреймворка-героя (Nest, Nuxt), затем язык
- * и рантайм-слой, в конце — инфраструктура. Логотипы рисует StackLogo.vue
- * (inline-SVG, без внешних CDN — доки собираются в статику и раздаются nginx).
+ * и рантайм-слой, потом инфраструктура — и только в конце опциональные
+ * модули. Так шесть карточек базового шаблона читаются как один сплошной
+ * блок, а расширения не разрывают его посередине. Логотипы рисует
+ * TechLogo.vue (inline-SVG, без внешних CDN — доки собираются в статику
+ * и раздаются nginx).
  */
 export const stackLogos: StackLogo[] = [
   { id: 'nest', color: '#e0234e' },
   { id: 'nuxt', color: '#00dc82' },
   { id: 'vue', color: '#42b883' },
   { id: 'typescript', color: '#3178c6' },
-  { id: 'prisma', color: '#5a67d8', branch: 'postgres-prisma' },
-  { id: 'postgres', color: '#4169e1', branch: 'postgres-prisma' },
   { id: 'docker', color: '#2496ed' },
   { id: 'pnpm', color: '#f9ad00' },
+  { id: 'prisma', color: '#5a67d8', optional: true },
+  { id: 'postgres', color: '#4169e1', optional: true },
+]
+
+// ──────────────────────────  Авторизация  ──────────────────────────
+
+export interface AuthPoint {
+  id: string // ключ в home.auth.points
+  icon: string
+}
+
+/** Тезисы о реализации авторизации: от схемы токенов к защите и ролям. */
+export const authPoints: AuthPoint[] = [
+  { id: 'tokens', icon: 'lucide:key-round' },
+  { id: 'cookies', icon: 'lucide:cookie' },
+  { id: 'rotation', icon: 'lucide:refresh-cw' },
+  { id: 'sessions', icon: 'lucide:monitor-smartphone' },
+  { id: 'roles', icon: 'lucide:shield-check' },
+  { id: 'ssr', icon: 'lucide:server' },
+  { id: 'providers', icon: 'lucide:puzzle' },
 ]
 
 // ────────────────────  Кому подходит / не подходит  ────────────────────

@@ -33,7 +33,7 @@ const home = computed(() => theme.value.home!)
 <style scoped>
 .principles {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 12px;
 }
 .principle__icon {
@@ -59,17 +59,5 @@ const home = computed(() => theme.value.home!)
   color: var(--home-text-muted);
   margin: 0;
   line-height: var(--home-leading-normal);
-}
-
-@media (max-width: 900px) {
-  .principles {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-@media (max-width: 600px) {
-  .principles {
-    grid-template-columns: 1fr;
-  }
 }
 </style>

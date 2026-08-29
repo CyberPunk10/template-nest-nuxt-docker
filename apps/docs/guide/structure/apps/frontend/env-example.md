@@ -14,7 +14,7 @@
 
 Часть переменных связана с соседними приложениями:
 
-- **`PORT`** — на него смотрят `CORS_ORIGIN` в `apps/backend/.env` (иначе бэкенд отклонит запросы) и `DASHBOARD_URL` в `apps/docs/.env` (иначе кнопка «в кабинет» уведёт не туда).
+- **`PORT`** — на него смотрят `CORS_ORIGIN` в `apps/backend/.env` (иначе бэкенд отклонит запросы) и `DASHBOARD_URL` в `apps/docs/.env` (иначе кнопка «Посмотреть демо» уведёт не туда).
 - **`NUXT_BACKEND_URL`** должен указывать на `PORT` из `apps/backend/.env` — иначе SSR не достучится до API.
 - **`NUXT_PUBLIC_DOCS_URL`** должен указывать на `PORT` из `apps/docs/.env`, вместе с путём `/dev/docs/`.
 

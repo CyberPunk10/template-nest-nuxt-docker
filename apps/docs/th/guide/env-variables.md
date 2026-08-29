@@ -144,7 +144,7 @@ curl -sI -H "Origin: http://localhost:3200" http://localhost:3100/health | grep 
 **พอร์ตของ frontend** (`PORT` ใน `apps/frontend/.env`)
 
 - `CORS_ORIGIN` ใน `apps/backend/.env` — ไม่งั้น backend จะปฏิเสธ request จาก origin อื่น
-- `DASHBOARD_URL` ใน `apps/docs/.env` — ไม่งั้นปุ่ม «ไปที่แดชบอร์ด» จะพาไปผิดที่
+- `DASHBOARD_URL` ใน `apps/docs/.env` — ไม่งั้นปุ่ม «ดูตัวอย่างเดโม» จะพาไปผิดที่
 
 **พอร์ตของ backend** (`PORT` ใน `apps/backend/.env`)
 

@@ -22,7 +22,7 @@ export interface ThemeConfig extends DefaultTheme.Config {
 // как для backend/frontend.
 loadEnv({ path: resolve(dirname(fileURLToPath(import.meta.url)), '../.env') })
 
-// Куда ведёт кнопка «Перейти в кабинет». Доки — статический сайт, рантайм-конфига
+// Куда ведёт кнопка «Посмотреть демо». Доки — статический сайт, рантайм-конфига
 // у них нет, поэтому адрес вшивается в сборку из переменной окружения:
 //   dev    — http://localhost:3200 из apps/docs/.env (Nuxt на соседнем порту);
 //   Docker — '/' из apps/docs/Dockerfile (фронтенд за тем же reverse proxy);

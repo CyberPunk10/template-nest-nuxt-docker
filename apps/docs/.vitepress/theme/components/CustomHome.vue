@@ -6,6 +6,8 @@ import HomePrinciples from './Home/HomePrinciples.vue'
 import HomeBranches from './Home/HomeBranches.vue'
 import HomeShowcase from './Home/HomeShowcase.vue'
 import HomeFit from './Home/HomeFit.vue'
+import HomeAuth from './Home/HomeAuth.vue'
+import HomeCallout from './Home/HomeCallout.vue'
 import HomeCommands from './Home/HomeCommands.vue'
 import HomeTree from './Home/HomeTree.vue'
 import HomeSponsors from './Home/HomeSponsors.vue'
@@ -30,10 +32,14 @@ provide('copyCmd', copyCmd)
     <HomeHero />
     <div class="home__nav-line" />
     <div class="home__body">
+      <HomeCallout variant="type" />
       <HomeShowcase />
       <HomePrinciples />
       <HomeFit />
+      <HomeCallout variant="split" />
+      <HomeAuth />
       <HomeBranches />
+      <HomeCallout variant="steps" />
       <HomeQuickstart />
       <div class="home__bottom">
         <HomeCommands />
@@ -90,11 +96,27 @@ provide('copyCmd', copyCmd)
   padding: 16px;
   transition:
     border-color 0.2s,
-    background 0.2s;
+    background 0.2s,
+    transform 0.2s;
 }
 .home-card:hover {
   border-color: rgba(0, 220, 130, 0.25);
   background: rgba(0, 220, 130, 0.03);
+  /* Тот же подъём, что у карточек витрины стека — иначе секции ниже
+     выглядят неинтерактивными рядом с ней. */
+  transform: translateY(-2px);
+}
+
+/* Подъём карточки при наведении — декоративный. */
+@media (prefers-reduced-motion: reduce) {
+  .home-card {
+    transition:
+      border-color 0.2s,
+      background 0.2s;
+  }
+  .home-card:hover {
+    transform: none;
+  }
 }
 /* Заголовок-метка секции: uppercase с разрядкой уже даёт достаточный вес,
    поэтому ступень берём среднюю — на 2xl метка начинает спорить с hero. */
@@ -102,7 +124,7 @@ provide('copyCmd', copyCmd)
   font-size: var(--home-text-lg);
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.075em;
+  letter-spacing: 0.05em;
   color: var(--home-text-dim);
   margin: 0 0 16px;
 }
