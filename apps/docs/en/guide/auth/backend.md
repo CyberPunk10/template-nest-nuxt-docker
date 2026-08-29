@@ -10,6 +10,26 @@
 - **Sessions:** each refresh token is stored in the process's memory (`SessionsStore`) as an HMAC hash. On every token renewal the old record is marked `isUsed: true` and a new one is created. Logout removes the active session from the store
 - **Reuse detection:** if an already-used refresh token is presented again, that's a sign of token theft. All sessions in the family (`familyId`) are invalidated
 
+### Cookie flags
+
+Both tokens are set with the same flags:
+
+```ts
+{
+  httpOnly: true,
+  sameSite: 'strict',
+  secure: isProd,     // NODE_ENV === 'production'
+  path: '/',
+}
+```
+
+- `httpOnly` — the cookie is invisible to JavaScript, so XSS can't steal the token.
+- `sameSite: 'strict'` — the browser won't send the cookie on navigation from another site: CSRF protection.
+- `secure` is enabled **only** in production: such a cookie is never sent over plain HTTP, so local development without TLS simply couldn't log in.
+- `path: '/'` is set explicitly for a reason — Express requires the `path` to match between setting and clearing, otherwise `clearCookie()` on logout won't remove it.
+
+Lifetimes come from `JWT_EXPIRES_IN` and `REFRESH_TOKEN_EXPIRES_DAYS` — [backend variables](/en/guide/structure/apps/backend/env-example).
+
 ### Why store sessions at all
 
 A JWT cannot be invalidated before it expires — that is a fundamental property of the standard. If a user logs out or changes their password, the access token remains valid for up to another 15 minutes.
@@ -29,14 +49,14 @@ On every `POST /auth/refresh`, **rotation** happens: the old refresh token is de
 **What the `SessionsStore` records look like for a single user:**
 
 ```
-| Event                     | familyId | hash               | isUsed                            |
-| ------------------------- | -------- | ------------------ | --------------------------------- |
-| Login from phone          | f1       | "A"                | false   ← active                  |
-| Refresh (phone)           | f1       | "A"                | true    ← deactivated             |
-| f1                        | "B"      | false   ← active   |
-| Refresh (phone again)     | f1       | "B"                | true    ← deactivated             |
-| f1                        | "C"      | false   ← active   |
-| Login from laptop         | f2       | "D"                | false   ← active (different family) |
+| Event                 | familyId | hash             | isUsed                              |
+| --------------------- | -------- | ---------------- | ----------------------------------- |
+| Login from phone      | f1       | "A"              | false   ← active                    |
+| Refresh (phone)       | f1       | "A"              | true    ← deactivated               |
+| f1                    | "B"      | false   ← active |
+| Refresh (phone again) | f1       | "B"              | true    ← deactivated               |
+| f1                    | "C"      | false   ← active |
+| Login from laptop     | f2       | "D"              | false   ← active (different family) |
 ```
 
 Within each family (`familyId`) there is always exactly one active record (`isUsed: false`). Records with `isUsed: true` are "traps": if someone presents an old token, the server will detect it.
@@ -164,10 +184,10 @@ By default, if you inject `@Res()`, NestJS hands full control of the response ov
 
 The application is protected against brute force via `@nestjs/throttler`.
 
-| ENV              | Default      | Applies to     |
-| ---------------- | ------------ | -------------- |
-| `THROTTLE_TTL`   | `60000` ms   | Counting window |
-| `THROTTLE_LIMIT` | `100`/min    | Whole app      |
+| ENV              | Default    | Applies to      |
+| ---------------- | ---------- | --------------- |
+| `THROTTLE_TTL`   | `60000` ms | Counting window |
+| `THROTTLE_LIMIT` | `100`/min  | Whole app       |
 
 The limit is counted **per IP separately**.
 
@@ -290,15 +310,15 @@ This removes at the same time:
 
 ## ENV variables
 
-| Variable                     | Description                                    | Default         |
-| ---------------------------- | ---------------------------------------------- | --------------- |
-| `THROTTLE_TTL`               | Rate limiting window (ms)                      | `60000`         |
-| `THROTTLE_LIMIT`             | Max requests per window (global)               | `100`           |
-| `JWT_SECRET`                 | Secret for signing JWTs (min 32 chars)         | — (required)    |
-| `JWT_EXPIRES_IN`             | Access token lifetime                          | `15m`           |
-| `REFRESH_TOKEN_SECRET`       | Secret for the HMAC refresh token (min 32 chars) | — (required)  |
-| `REFRESH_TOKEN_EXPIRES_DAYS` | Refresh token lifetime (days)                  | `7`             |
-| `BCRYPT_ROUNDS`              | bcrypt cost factor for hashing passwords       | `12`            |
+| Variable                     | Description                                      | Default      |
+| ---------------------------- | ------------------------------------------------ | ------------ |
+| `THROTTLE_TTL`               | Rate limiting window (ms)                        | `60000`      |
+| `THROTTLE_LIMIT`             | Max requests per window (global)                 | `100`        |
+| `JWT_SECRET`                 | Secret for signing JWTs (min 32 chars)           | — (required) |
+| `JWT_EXPIRES_IN`             | Access token lifetime                            | `15m`        |
+| `REFRESH_TOKEN_SECRET`       | Secret for the HMAC refresh token (min 32 chars) | — (required) |
+| `REFRESH_TOKEN_EXPIRES_DAYS` | Refresh token lifetime (days)                    | `7`          |
+| `BCRYPT_ROUNDS`              | bcrypt cost factor for hashing passwords         | `12`         |
 
 ## E2E tests
 

@@ -10,6 +10,26 @@
 - **Session:** refresh token แต่ละตัวถูกเก็บไว้ใน memory ของ process (`SessionsStore`) เป็น HMAC hash ทุกครั้งที่ refresh token record เดิมจะถูกทำเครื่องหมาย `isUsed: true` แล้วสร้าง record ใหม่ขึ้นมา การ logout จะลบ session ที่ active อยู่ออกจาก store
 - **Reuse detection:** ถ้า refresh token ที่ถูกใช้ไปแล้วถูกนำมาแสดงซ้ำอีกครั้ง — เป็นสัญญาณว่า token ถูกขโมย session ทั้งหมดในตระกูลเดียวกัน (`familyId`) จะถูก invalidate
 
+### Flag ของ cookie
+
+token ทั้งสองตัวถูกตั้งด้วย flag ชุดเดียวกัน:
+
+```ts
+{
+  httpOnly: true,
+  sameSite: 'strict',
+  secure: isProd,     // NODE_ENV === 'production'
+  path: '/',
+}
+```
+
+- `httpOnly` — JavaScript มองไม่เห็น cookie นี้ XSS จึงขโมย token ไม่ได้
+- `sameSite: 'strict'` — เบราว์เซอร์จะไม่ส่ง cookie เมื่อเข้ามาจากเว็บอื่น: ป้องกัน CSRF
+- `secure` เปิดใช้ **เฉพาะ** ตอน production: cookie แบบนี้จะไม่ถูกส่งผ่าน HTTP ธรรมดาเลย การพัฒนาในเครื่องที่ไม่มี TLS จึงจะ login ไม่ได้
+- `path: '/'` ระบุไว้อย่างชัดเจนด้วยเหตุผล — Express ต้องการให้ `path` ตรงกันทั้งตอนตั้งและตอนลบ ไม่งั้น `clearCookie()` ตอน logout จะลบ cookie ไม่ออก
+
+อายุของ token มาจาก `JWT_EXPIRES_IN` และ `REFRESH_TOKEN_EXPIRES_DAYS` — [ตัวแปรของ backend](/th/guide/structure/apps/backend/env-example)
+
 ### ทำไมต้องเก็บ session ไว้
 
 JWT ไม่สามารถ invalidate ก่อนหมดอายุได้ — นี่คือคุณสมบัติพื้นฐานของมาตรฐาน ถ้าผู้ใช้ logout ออกไปหรือเปลี่ยนรหัสผ่าน access token ก็ยังคง valid อยู่ได้จนถึง 15 นาที
@@ -29,14 +49,14 @@ JWT ไม่สามารถ invalidate ก่อนหมดอายุไ�
 **record ของ `SessionsStore` สำหรับผู้ใช้คนเดียวมีหน้าตาอย่างไร:**
 
 ```
-| เหตุการณ์                | familyId | hash               | isUsed                            |
-| ----------------------- | -------- | ------------------ | --------------------------------- |
-| Login จากโทรศัพท์        | f1       | "A"                | false   ← active                  |
-| Refresh (โทรศัพท์)       | f1       | "A"                | true    ← ถูกปิดใช้งาน             |
-| f1                      | "B"      | false   ← active   |
-| Refresh (โทรศัพท์อีกครั้ง)| f1       | "B"                | true    ← ถูกปิดใช้งาน             |
-| f1                      | "C"      | false   ← active   |
-| Login จากโน้ตบุ๊ก        | f2       | "D"                | false   ← active (คนละตระกูล)      |
+| เหตุการณ์               | familyId | hash             | isUsed                       |
+| --------------------- | -------- | ---------------- | ---------------------------- |
+| Login จากโทรศัพท์       | f1       | "A"              | false   ← active             |
+| Refresh (โทรศัพท์)      | f1       | "A"              | true    ← ถูกปิดใช้งาน          |
+| f1                    | "B"      | false   ← active |
+| Refresh (โทรศัพท์อีกครั้ง) | f1       | "B"              | true    ← ถูกปิดใช้งาน          |
+| f1                    | "C"      | false   ← active |
+| Login จากโน้ตบุ๊ก        | f2       | "D"              | false   ← active (คนละตระกูล) |
 ```
 
 ในแต่ละตระกูล (`familyId`) จะมี record ที่ active (`isUsed: false`) อยู่เพียงหนึ่งเดียวเสมอ record ที่มี `isUsed: true` คือ "กับดัก": ถ้ามีใครนำ token เก่ามาแสดง เซิร์ฟเวอร์จะตรวจจับได้
@@ -164,10 +184,10 @@ health() {
 
 แอปพลิเคชันได้รับการป้องกันจาก brute-force ผ่าน `@nestjs/throttler`
 
-| ENV              | ค่าเริ่มต้น   | ใช้กับ         |
-| ---------------- | ------------ | -------------- |
-| `THROTTLE_TTL`   | `60000` ms   | หน้าต่างการนับ  |
-| `THROTTLE_LIMIT` | `100`/min    | ทั้งแอปพลิเคชัน |
+| ENV              | ค่าเริ่มต้น    | ใช้กับ        |
+| ---------------- | ---------- | ----------- |
+| `THROTTLE_TTL`   | `60000` ms | หน้าต่างการนับ |
+| `THROTTLE_LIMIT` | `100`/min  | ทั้งแอปพลิเคชัน |
 
 Limit นับ **แยกตามแต่ละ IP**
 
@@ -290,15 +310,15 @@ async cleanupExpiredSessions(): Promise<void> {
 
 ## ตัวแปร ENV
 
-| ตัวแปร                        | คำอธิบาย                                        | ค่าเริ่มต้น       |
-| ---------------------------- | ---------------------------------------------- | --------------- |
-| `THROTTLE_TTL`               | หน้าต่าง rate limiting (ms)                     | `60000`         |
-| `THROTTLE_LIMIT`             | จำนวน request สูงสุดต่อหน้าต่าง (global)         | `100`           |
-| `JWT_SECRET`                 | secret สำหรับ sign JWT (อย่างน้อย 32 ตัวอักษร)   | — (บังคับ)      |
-| `JWT_EXPIRES_IN`             | อายุของ access token                            | `15m`           |
-| `REFRESH_TOKEN_SECRET`       | secret สำหรับ HMAC refresh token (อย่างน้อย 32 ตัวอักษร) | — (บังคับ)      |
-| `REFRESH_TOKEN_EXPIRES_DAYS` | อายุของ refresh token (วัน)                     | `7`             |
-| `BCRYPT_ROUNDS`              | cost factor ของ bcrypt สำหรับ hash รหัสผ่าน      | `12`            |
+| ตัวแปร                        | คำอธิบาย                                             | ค่าเริ่มต้น  |
+| ---------------------------- | -------------------------------------------------- | -------- |
+| `THROTTLE_TTL`               | หน้าต่าง rate limiting (ms)                          | `60000`  |
+| `THROTTLE_LIMIT`             | จำนวน request สูงสุดต่อหน้าต่าง (global)                 | `100`    |
+| `JWT_SECRET`                 | secret สำหรับ sign JWT (อย่างน้อย 32 ตัวอักษร)           | — (บังคับ) |
+| `JWT_EXPIRES_IN`             | อายุของ access token                                | `15m`    |
+| `REFRESH_TOKEN_SECRET`       | secret สำหรับ HMAC refresh token (อย่างน้อย 32 ตัวอักษร) | — (บังคับ) |
+| `REFRESH_TOKEN_EXPIRES_DAYS` | อายุของ refresh token (วัน)                          | `7`      |
+| `BCRYPT_ROUNDS`              | cost factor ของ bcrypt สำหรับ hash รหัสผ่าน            | `12`     |
 
 ## E2E test
 
