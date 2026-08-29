@@ -29,20 +29,23 @@ pnpm --filter @repo/backend test tasks.service
 
 flag เขียนได้เลยโดยไม่ต้องมีตัวคั่น `--`: pnpm ส่ง argument ที่มันไม่รู้จักต่อไปให้ script อยู่แล้ว ส่วน `--` ที่ใส่เองจะถูกส่งต่อไปตรง ๆ และ Jest จะอ่านมันเป็น path ของไฟล์
 
-## เทสต์สองชุด
+## เทสต์สามชุด
 
-สองชุดนี้แยกกันทั้งที่ตั้งไฟล์และ config
+สามชุดนี้แยกกันทั้งที่ตั้งไฟล์และ config
 
-|                  | Unit test                          | E2E test                              |
-| ---------------- | ---------------------------------- | ------------------------------------- |
-| อยู่ที่ไหน       | `src/**/*.spec.ts`                 | `test/*.e2e-spec.ts`                  |
-| Config           | ส่วน `jest` ใน `package.json`      | `test/jest-e2e.json`                  |
-| ยกอะไรขึ้นมา     | คลาสเดียวพร้อม stub                | ทั้ง application ผ่าน `AppModule`     |
-| ช่องทาง          | เรียก method ตรง ๆ                 | HTTP ผ่าน Supertest                   |
+|                  | Unit test                          | E2E test                              | E2E rate limiting                   |
+| ---------------- | ---------------------------------- | ------------------------------------- | ----------------------------------- |
+| คำสั่ง            | `pnpm test`                        | `pnpm test:e2e`                       | `pnpm test:e2e:throttle`            |
+| อยู่ที่ไหน       | `src/**/*.spec.ts`                 | `test/default/*.e2e-spec.ts`          | `test/throttle/*.e2e-spec.ts`       |
+| Config           | ส่วน `jest` ใน `package.json`      | `test/jest-e2e.json`                  | `test/jest-e2e-throttle.json`       |
+| ยกอะไรขึ้นมา     | คลาสเดียวพร้อม stub                | ทั้ง application ผ่าน `AppModule`     | application ที่เปิด throttler       |
+| ช่องทาง          | เรียก method ตรง ๆ                 | HTTP ผ่าน Supertest                   | HTTP ผ่าน Supertest                 |
 
 การวางไฟล์เป็นแบบเดียวกันทั้ง repository ([ข้อตกลงร่วม](/th/guide/testing/#conventions)): `tasks.service.ts` → `tasks.service.spec.ts` วางข้างกัน ส่วน e2e อยู่ใน `test/`
 
-สิ่งที่เป็นเรื่องเฉพาะของ Jest ตรงนี้คือ สองชุดนี้ต้องใช้ **config แยกกันสองไฟล์** ไม่ใช่ไฟล์เดียวที่มีสอง project เพราะ `rootDir` ต่างกัน — ชุด unit มองเข้าไปที่ `src` ส่วน e2e มองที่ root ของ package เพื่อให้เห็นทั้ง `test/` และ `src/` ด้วยเหตุนี้ `testRegex` จึงต่างกันด้วย ไม่อย่างนั้นแต่ละชุดจะไปหยิบไฟล์ของอีกชุดมารัน
+สิ่งที่เป็นเรื่องเฉพาะของ Jest ตรงนี้คือ แต่ละชุดต้องใช้ **config แยกกัน** ไม่ใช่ไฟล์เดียวที่มีหลาย project เพราะ `rootDir` ต่างกัน — ชุด unit มองเข้าไปที่ `src` ส่วน e2e มองที่ root ของ package เพื่อให้เห็นทั้ง `test/` และ `src/` กฎการเลือกไฟล์จึงต่างกันด้วย (`testRegex` สำหรับชุด unit, `testMatch` สำหรับ e2e) ไม่อย่างนั้นแต่ละชุดจะไปหยิบไฟล์ของอีกชุดมารัน
+
+เทสต์ rate limiting แยกเป็นชุดที่สามเพราะ environment ในเทสต์ปกติ throttler ถูกปิดไว้ (`APP_ENV=test`) ไม่งั้นตัวนับที่สะสมไว้จะไปพังเทสต์ข้างเคียง แต่เทสต์ `429` ต้องการให้มันเปิด `setupFiles` ของมันจึงตั้ง `APP_ENV=production` และลด `THROTTLE_LIMIT` เหลือ `12` — ลิมิตที่แตะถึงได้ในไม่กี่วินาที สิ่งนี้ใช้ config ร่วมกับ e2e ตัวอื่นไม่ได้ เพราะค่าถูกตั้งก่อนโหลดโมดูลและมีผลกับทั้งการรัน
 
 ## Unit test
 
@@ -113,7 +116,7 @@ CORS กับ Swagger ไม่ได้อยู่ใน `setupApp`: ทั�
 
 ### state ระหว่างเทสต์
 
-`TasksModule` เก็บ task ไว้ในหน่วยความจำ ใน `tasks.e2e-spec.ts` จึงยก application ขึ้นใหม่ใน `beforeEach` — แบบนี้ทุกเทสต์เริ่มจากลิสต์ว่างและไม่ขึ้นกับเทสต์ข้างเคียง ราคาที่จ่ายคือประมาณหนึ่งวินาทีต่อไฟล์ เมื่อไหร่ที่ state ย้ายไปอยู่ในฐานข้อมูล การยก application ครั้งเดียวใน `beforeAll` แล้วล้างข้อมูลระหว่างเทสต์จะถูกกว่า
+`auth.e2e-spec.ts` ยก application ครั้งเดียวใน `beforeAll` และอาศัยข้อมูลในการแยกเทสต์ออกจากกัน: `beforeEach` เรียก `cleanupTestData()` เพื่อลบผู้ใช้ที่ใช้ทดสอบ ซึ่งถูกกว่าการสร้าง application ใหม่ทุกเทสต์อย่างชัดเจน
 
 ส่วน `app.e2e-spec.ts` ไม่มี state เลย จึงใช้ `beforeAll` และยก application ขึ้นครั้งเดียว
 
@@ -135,11 +138,13 @@ process.env.CORS_ORIGIN ??= 'http://localhost:3200'
 
 ตอนนี้ในเทมเพลตมี:
 
-- **`tasks.service.spec.ts`** — CRUD ในหน่วยความจำ: การสร้าง `id` และ timestamp, การอัปเดตบางส่วน, `NotFoundException` เมื่อ `id` ไม่รู้จัก
+- **`tasks.service.spec.ts`** — CRUD ในหน่วยความจำ: การสร้าง `id` และ timestamp, การกรองตามเจ้าของ, การอัปเดตบางส่วนโดยไม่ลบ field อื่น, `NotFoundException` เมื่อ `id` ไม่รู้จัก และ `ForbiddenException` เมื่อเป็น task ของคนอื่น
+- **`users.service.spec.ts`** — CRUD ของผู้ใช้: `NotFoundException` เมื่อ `id` ไม่รู้จัก, `ConflictException` เมื่อ email ซ้ำ — ทั้งตอนสร้างและตอนแก้ไข
 - **`app.controller.spec.ts`** — `/health` กับ `/dev/config` รวมถึงพฤติกรรมของ `publicUrl` ที่ต่างกันระหว่าง dev กับ production
 - **`http-exception.filter.spec.ts`** — การแปลง error ให้เป็น JSON รูปแบบเดียว และการที่ข้อความของ exception ที่ไม่คาดคิดไม่รั่วออกไปถึง client
-- **`tasks.e2e-spec.ts`** — status code และการ validate DTO ผ่าน HTTP: `201`/`204`, `400` เมื่อ body ผิดและเมื่อ path ไม่ใช่ UUID, `404` เมื่อไม่มี task นั้น
+- **`auth.e2e-spec.ts`** — วงจรเต็ม: สมัคร, เข้าสู่ระบบ, refresh พร้อม rotate token, logout, reuse detection, การเข้าถึง route ที่ป้องกันไว้
 - **`app.e2e-spec.ts`** — `/`, `/health`, `/dev/config` และ `404` เมื่อ route ไม่รู้จัก
+- **`throttle.e2e-spec.ts`** — `429` เมื่อเกินลิมิตจำนวน request (เป็นชุดแยก ดูด้านบน)
 
 ## การเพิ่มเทสต์
 
