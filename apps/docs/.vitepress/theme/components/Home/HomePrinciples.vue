@@ -48,16 +48,17 @@ const home = computed(() => theme.value.home!)
   flex-shrink: 0;
 }
 .principle__title {
-  font-size: 16px;
+  font-size: var(--home-text-lg);
   font-weight: 600;
+  letter-spacing: var(--home-tracking-tight);
   color: var(--home-text-soft);
-  margin: 0 0 4px;
+  margin: 0 0 6px;
 }
 .principle__desc {
-  font-size: 14px;
+  font-size: var(--home-text-sm);
   color: var(--home-text-muted);
   margin: 0;
-  line-height: 1.5;
+  line-height: var(--home-leading-normal);
 }
 
 @media (max-width: 900px) {

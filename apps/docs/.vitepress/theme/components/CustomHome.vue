@@ -4,9 +4,7 @@ import HomeHero from './Home/HomeHero.vue'
 import HomeQuickstart from './Home/HomeQuickstart.vue'
 import HomePrinciples from './Home/HomePrinciples.vue'
 import HomeBranches from './Home/HomeBranches.vue'
-import HomeStack from './Home/HomeStack.vue'
 import HomeShowcase from './Home/HomeShowcase.vue'
-import HomeArchitecture from './Home/HomeArchitecture.vue'
 import HomeFit from './Home/HomeFit.vue'
 import HomeCommands from './Home/HomeCommands.vue'
 import HomeTree from './Home/HomeTree.vue'
@@ -35,10 +33,8 @@ provide('copyCmd', copyCmd)
       <HomeShowcase />
       <HomePrinciples />
       <HomeFit />
-      <HomeArchitecture />
       <HomeBranches />
       <HomeQuickstart />
-      <HomeStack />
       <div class="home__bottom">
         <HomeCommands />
         <HomeTree />
@@ -67,7 +63,7 @@ provide('copyCmd', copyCmd)
   z-index: 1;
 }
 .home__body {
-  max-width: 1200px;
+  max-width: var(--home-content-width);
   margin: 0 auto;
   padding: 40px 48px 64px;
   display: flex;
@@ -100,8 +96,10 @@ provide('copyCmd', copyCmd)
   border-color: rgba(0, 220, 130, 0.25);
   background: rgba(0, 220, 130, 0.03);
 }
+/* Заголовок-метка секции: uppercase с разрядкой уже даёт достаточный вес,
+   поэтому ступень берём среднюю — на 2xl метка начинает спорить с hero. */
 .section__title {
-  font-size: 14px;
+  font-size: var(--home-text-lg);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.075em;

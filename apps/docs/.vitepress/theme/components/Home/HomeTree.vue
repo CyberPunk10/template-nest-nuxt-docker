@@ -38,8 +38,10 @@ const home = computed(() => theme.value.home!)
 <style scoped>
 .tree {
   font-family: monospace;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--home-text-hover);
+  /* Не из шкалы: дерево файлов — моноширинный блок, интервал здесь
+     структурный (высота строки = шаг вложенности), а не текстовый. */
   line-height: 1.8;
   background: linear-gradient(
     135deg,

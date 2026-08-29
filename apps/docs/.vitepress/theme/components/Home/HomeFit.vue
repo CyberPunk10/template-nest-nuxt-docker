@@ -13,6 +13,17 @@ const verdictIcons: Record<FitVerdict, string> = {
   bad: 'lucide:x-circle',
   mixed: 'lucide:alert-circle',
 }
+
+// Порядок групп — от «берите смело» к «лучше не надо»: секция читается как
+// рекомендация, а не как перечень.
+const verdictOrder: FitVerdict[] = ['good', 'mixed', 'bad']
+
+const groups = computed(() =>
+  verdictOrder.map(verdict => ({
+    verdict,
+    cases: fitCases.filter(c => c.verdict === verdict),
+  })),
+)
 </script>
 
 <template>
@@ -20,35 +31,64 @@ const verdictIcons: Record<FitVerdict, string> = {
     <h2 class="section__title">{{ fit.title }}</h2>
     <p class="fit__lead">{{ fit.lead }}</p>
 
-    <div class="fit__legend">
-      <span
-        v-for="v in (['good', 'mixed', 'bad'] as const)"
-        :key="v"
-        class="fit__legend-item"
-        :class="`fit__legend-item--${v}`"
-      >
-        <Icon :name="verdictIcons[v]" size="13" />
-        {{ fit.verdicts[v] }}
-      </span>
+    <!-- Быстрый фильтр «про меня / не про меня» до чтения 12 карточек:
+         по списку критериев решение принимается за несколько секунд,
+         а карточки ниже объясняют уже конкретные сценарии. -->
+    <div class="summary">
+      <p class="summary__title">{{ fit.summary.title }}</p>
+      <div class="summary__cols">
+        <div class="summary__col summary__col--for">
+          <p class="summary__col-title">
+            <Icon name="lucide:check-circle" size="15" />
+            {{ fit.summary.forTitle }}
+          </p>
+          <ul class="summary__list">
+            <li v-for="item in fit.summary.for" :key="item">{{ item }}</li>
+          </ul>
+        </div>
+        <div class="summary__col summary__col--against">
+          <p class="summary__col-title">
+            <Icon name="lucide:x-circle" size="15" />
+            {{ fit.summary.againstTitle }}
+          </p>
+          <ul class="summary__list">
+            <li v-for="item in fit.summary.against" :key="item">{{ item }}</li>
+          </ul>
+        </div>
+      </div>
     </div>
 
-    <div class="fit">
-      <div
-        v-for="c in fitCases"
-        :key="c.id"
-        class="fit__card"
-        :class="`fit__card--${c.verdict}`"
-      >
-        <div class="fit__head">
-          <span class="fit__icon"><Icon :name="c.icon" size="16" /></span>
-          <span class="fit__name">{{ fit.cases[c.id].name }}</span>
-          <span class="fit__verdict"><Icon :name="verdictIcons[c.verdict]" size="15" /></span>
+    <!-- Разбивка по вердикту вместо одного списка из 12 карточек: заголовок
+         группы снимает нагрузку с самих карточек — вердикт уже сказан
+         над ними, читателю не нужно считывать его в каждой заново. -->
+    <div
+      v-for="group in groups"
+      :key="group.verdict"
+      class="fit__group"
+      :class="`fit__group--${group.verdict}`"
+    >
+      <h3 class="fit__group-title">
+        <Icon :name="verdictIcons[group.verdict]" size="16" />
+        {{ fit.verdicts[group.verdict] }}
+      </h3>
+
+      <div class="fit">
+        <div
+          v-for="c in group.cases"
+          :key="c.id"
+          class="fit__card"
+          :class="`fit__card--${c.verdict}`"
+        >
+          <div class="fit__head">
+            <span class="fit__icon"><Icon :name="c.icon" size="16" /></span>
+            <span class="fit__name">{{ fit.cases[c.id].name }}</span>
+          </div>
+          <p class="fit__why">{{ fit.cases[c.id].why }}</p>
+          <p v-if="fit.cases[c.id].alt" class="fit__alt">
+            <span class="fit__alt-label">{{ fit.altLabel }}</span>
+            {{ fit.cases[c.id].alt }}
+          </p>
         </div>
-        <p class="fit__why">{{ fit.cases[c.id].why }}</p>
-        <p v-if="fit.cases[c.id].alt" class="fit__alt">
-          <span class="fit__alt-label">{{ fit.altLabel }}</span>
-          {{ fit.cases[c.id].alt }}
-        </p>
       </div>
     </div>
 
@@ -58,34 +98,126 @@ const verdictIcons: Record<FitVerdict, string> = {
 
 <style scoped>
 .fit__lead {
-  font-size: 14px;
-  line-height: 1.6;
+  font-size: var(--home-text-md);
+  line-height: var(--home-leading-relaxed);
   color: var(--home-text-muted);
-  margin: -8px 0 14px;
+  margin: -8px 0 28px;
   max-width: 72ch;
 }
 
-.fit__legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-  margin-bottom: 18px;
+/* ── Сводка «Если коротко» ── */
+.summary {
+  border: 1px solid var(--home-border-subtle);
+  border-radius: 12px;
+  padding: 20px 24px 22px;
+  margin-bottom: 40px;
+  background: var(--home-surface-2);
 }
-.fit__legend-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 11px;
-  font-weight: 600;
+
+.summary__title {
+  font-size: var(--home-text-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.075em;
   color: var(--home-text-dim);
+  margin: 0 0 16px;
 }
-.fit__legend-item--good {
+
+.summary__cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px 40px;
+}
+
+/* Разделитель между колонками вместо рамок вокруг каждой: список читается
+   как два столбца одного текста, а не как две отдельные плашки.
+   Линия рисуется в зазоре grid — column-gap 40px, поэтому отступ до текста
+   ровно половина зазора с каждой стороны. */
+.summary__col--against {
+  border-left: 1px solid var(--home-border-2);
+  padding-left: 20px;
+  margin-left: -20px;
+}
+
+.summary__col-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: var(--home-text-sm);
+  font-weight: 700;
+  margin: 0 0 10px;
+}
+.summary__col--for .summary__col-title {
   color: var(--home-accent);
 }
-.fit__legend-item--mixed {
+.summary__col--against .summary__col-title {
+  color: #f87171;
+}
+
+.summary__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.summary__list li {
+  position: relative;
+  padding-left: 16px;
+  font-size: var(--home-text-sm);
+  line-height: var(--home-leading-normal);
+  color: var(--home-text-soft);
+}
+/* Маркер — точка, а не галочка/крестик: цветной заголовок колонки уже задал
+   знак, повторять его в каждой строке значит спорить с ним. */
+.summary__list li::before {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 0.6em;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--home-text-dim);
+}
+
+@media (max-width: 760px) {
+  .summary__cols {
+    grid-template-columns: 1fr;
+  }
+  /* В одну колонку вертикальный разделитель превращается в горизонтальный. */
+  .summary__col--against {
+    border-left: none;
+    border-top: 1px solid var(--home-border-2);
+    padding-left: 0;
+    margin-left: 0;
+    padding-top: 20px;
+  }
+}
+
+/* ── Группа по вердикту ── */
+.fit__group + .fit__group {
+  margin-top: 36px;
+}
+
+.fit__group-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--home-text-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.075em;
+  margin: 0 0 14px;
+}
+.fit__group--good .fit__group-title {
+  color: var(--home-accent);
+}
+.fit__group--mixed .fit__group-title {
   color: #f59e0b;
 }
-.fit__legend-item--bad {
+.fit__group--bad .fit__group-title {
   color: #f87171;
 }
 
@@ -95,86 +227,84 @@ const verdictIcons: Record<FitVerdict, string> = {
   gap: 12px;
 }
 
+/* ── Карточка ── */
+/* Принадлежность к группе держат заголовок группы и цветная иконка;
+   сама карточка в покое нейтральная — цвет появляется при наведении. */
 .fit__card {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 14px 16px;
+  gap: 10px;
+  padding: 16px 18px;
   border: 1px solid var(--home-border-subtle);
-  /* Цветная полоса слева кодирует вердикт — она читается быстрее иконки
-     и не зависит от цвета для тех, кто его не различает (полоса + иконка). */
-  border-left: 3px solid var(--home-border-subtle);
   border-radius: 10px;
   background: var(--home-surface-2);
   transition:
     border-color 0.2s,
     background 0.2s;
 }
-.fit__card--good {
-  border-left-color: var(--home-accent);
-}
-.fit__card--mixed {
-  border-left-color: #f59e0b;
-}
-.fit__card--bad {
-  border-left-color: #f87171;
-}
+/* Наведение: лёгкая подложка в тон вердикта + цветная рамка. */
 .fit__card--good:hover {
+  border-color: rgba(0, 220, 130, 0.3);
   background: rgba(0, 220, 130, 0.04);
 }
 .fit__card--mixed:hover {
-  background: rgba(245, 158, 11, 0.05);
+  border-color: rgba(245, 158, 11, 0.3);
+  background: rgba(245, 158, 11, 0.04);
 }
 .fit__card--bad:hover {
-  background: rgba(248, 113, 113, 0.05);
+  border-color: rgba(248, 113, 113, 0.3);
+  background: rgba(248, 113, 113, 0.04);
 }
 
 .fit__head {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  /* flex-start, а не center: при заголовке в две строки центрирование
+     уводило иконку вниз, и она «прыгала» между карточками соседних колонок. */
+  align-items: flex-start;
+  gap: 10px;
 }
+/* Иконка в цвет вердикта — вместе с заголовком группы она и держит
+   различие групп: сама карточка в покое нейтральная. */
 .fit__icon {
   display: flex;
-  color: var(--home-text-dim);
   flex-shrink: 0;
+  /* Выравниваем по оптическому центру первой строки заголовка:
+     (высота строки 20px × 1.3 = 26px − иконка 16px) / 2 = 5px. */
+  padding-top: 5px;
 }
-.fit__name {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--home-text-primary);
-  line-height: 1.3;
-  flex: 1;
-}
-.fit__verdict {
-  display: flex;
-  flex-shrink: 0;
-}
-.fit__card--good .fit__verdict {
+.fit__card--good .fit__icon {
   color: var(--home-accent);
 }
-.fit__card--mixed .fit__verdict {
+.fit__card--mixed .fit__icon {
   color: #f59e0b;
 }
-.fit__card--bad .fit__verdict {
+.fit__card--bad .fit__icon {
   color: #f87171;
+}
+.fit__name {
+  font-size: var(--home-text-lg);
+  font-weight: 700;
+  color: var(--home-text-primary);
+  line-height: var(--home-leading-tight);
+  letter-spacing: var(--home-tracking-tight);
+  flex: 1;
 }
 
 .fit__why {
-  font-size: 12px;
-  line-height: 1.55;
-  /* text-soft, а не text-muted: muted (#52525b в тёмной теме) на подложке
-     карточки даёт контраст ниже 4.5:1 — для основного текста мало. */
+  font-size: var(--home-text-sm);
+  line-height: var(--home-leading-relaxed);
   color: var(--home-text-soft);
   margin: 0;
 }
 
+/* Ступенью ниже основного текста карточки: «вместо этого» — сноска,
+   она не должна читаться наравне с разбором. */
 .fit__alt {
-  font-size: 11px;
-  line-height: 1.5;
+  font-size: var(--home-text-xs);
+  line-height: var(--home-leading-normal);
   color: var(--home-text-muted);
   margin: 0;
-  padding-top: 8px;
+  padding-top: 10px;
   border-top: 1px solid var(--home-border-2);
 }
 .fit__alt-label {
@@ -185,15 +315,15 @@ const verdictIcons: Record<FitVerdict, string> = {
 }
 
 .fit__note {
-  font-size: 12px;
-  line-height: 1.6;
+  font-size: var(--home-text-sm);
+  line-height: var(--home-leading-relaxed);
   color: var(--home-text-dim);
-  margin: 16px 0 0;
+  margin: 32px 0 0;
   font-style: italic;
   max-width: 78ch;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 900px) {
   .fit {
     grid-template-columns: repeat(2, 1fr);
   }

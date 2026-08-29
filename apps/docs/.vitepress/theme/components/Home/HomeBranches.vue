@@ -72,11 +72,11 @@ const home = computed(() => theme.value.home!)
 }
 .branch-card__name {
   font-family: monospace;
-  font-size: 12px;
+  font-size: var(--home-text-sm);
   color: var(--home-accent);
 }
 .branch-card__badge {
-  font-size: 9px;
+  font-size: var(--home-text-xs);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -86,21 +86,22 @@ const home = computed(() => theme.value.home!)
   padding: 2px 5px;
 }
 .branch-card__label {
-  font-size: 15px;
+  font-size: var(--home-text-lg);
   font-weight: 700;
+  letter-spacing: var(--home-tracking-tight);
   color: var(--home-text-primary);
 }
 .branch-card__desc {
-  font-size: 12px;
-  color: var(--home-text-muted);
+  font-size: var(--home-text-sm);
+  color: var(--home-text-soft);
   margin: 0;
-  line-height: 1.5;
+  line-height: var(--home-leading-relaxed);
 }
 .branch-card__base {
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 11px;
+  font-size: var(--home-text-sm);
   color: var(--home-text-dim);
   margin-top: 2px;
 }

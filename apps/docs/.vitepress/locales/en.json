@@ -82,6 +82,29 @@
     "fit": {
       "title": "Who it's for — and who it isn't",
       "lead": "An honest breakdown instead of a feature list. The template commits you to a separate API server and an SSR frontend — a win where that architecture is needed, dead weight where it isn't.",
+      "summary": {
+        "title": "In short",
+        "forTitle": "Your case if you need",
+        "againstTitle": "Not your case if",
+        "for": [
+          "user sign-up and login",
+          "roles and access control",
+          "build a new user account area from scratch",
+          "a private area alongside the public one",
+          "data kept in a database",
+          "an API of your own — for web, a mobile app or integrations",
+          "a BFF in front of existing services: aggregate calls and keep secrets out of the frontend",
+          "SSR for fast first paint and SEO",
+          "build alongside an AI assistant: a proven foundation and detailed docs it picks up from the start"
+        ],
+        "against": [
+          "the site has no account area or login",
+          "content lives in files or a headless CMS",
+          "static files on a CDN are enough",
+          "you deploy to serverless or the edge",
+          "you need a plain proxy to an existing API, with no aggregation or logic of your own"
+        ]
+      },
       "verdicts": {
         "good": "Great fit",
         "mixed": "Workable, but think twice",
@@ -135,9 +158,9 @@
           "alt": "Plan Redis, a queue and monitoring before launch, not after."
         },
         "legacy": {
-          "name": "Adding a frontend to an existing backend",
-          "why": "Half the value here is the two apps wired together through shared types and one Docker setup. If the backend already exists and you're not rewriting it, all you'll take is the Nuxt half.",
-          "alt": "A plain nuxi init, porting individual solutions by hand."
+          "name": "A frontend for existing services",
+          "why": "Depends on what Nest does. If it aggregates calls across several services, keeps secrets out of the frontend and adds access rules of its own, that's a BFF and the template works as intended. If it forwards requests one-to-one, the extra process doesn't pay for itself.",
+          "alt": "For plain proxying — Nuxt's Nitro routes, no separate backend."
         },
         "internalTools": {
           "name": "Internal company tools",
@@ -145,34 +168,6 @@
         }
       },
       "note": "These verdicts aren't verdicts on you: almost every \"pick something else\" case is buildable on this template. They judge whether the complexity it brings pays for itself."
-    },
-    "architecture": {
-      "title": "How it fits together",
-      "lead": "Two applications and a shared types package in one repository. The frontend talks to the API over HTTP like any other client, so the backend can be split out or reused without a rewrite.",
-      "nodes": {
-        "browser": {
-          "title": "Browser",
-          "desc": "First render arrives from the server"
-        },
-        "nuxt": {
-          "desc": "SSR, pages, middleware, session in an httpOnly cookie"
-        },
-        "nest": {
-          "desc": "REST API, validation, guards, Swagger"
-        },
-        "shared": {
-          "desc": "DTO types and i18n strings — one source for both sides"
-        },
-        "db": {
-          "desc": "Schema and migrations in the repo, accessed via Prisma"
-        }
-      },
-      "links": {
-        "ssr": "HTML + hydration",
-        "api": "HTTP / REST",
-        "prisma": "Prisma + adapter-pg"
-      },
-      "wrapper": "The whole thing starts with one docker compose"
     },
     "branches": {
       "title": "Variants",
@@ -190,9 +185,6 @@
         "label": "Auth",
         "desc": "The perfect starting point for dashboards and admin panels. JWT authentication on top of the base variant: email + password, httpOnly cookies, sessions in DB."
       }
-    },
-    "stack": {
-      "title": "Stack"
     },
     "commands": {
       "title": "Commands",

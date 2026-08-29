@@ -71,7 +71,7 @@ const dashboardLink = computed(() => theme.value.dashboardUrl)
   pointer-events: none;
 }
 .hero__content {
-  max-width: 1200px;
+  max-width: var(--home-content-width);
   margin: 0 auto;
   position: relative;
 }
@@ -92,20 +92,21 @@ const dashboardLink = computed(() => theme.value.dashboardUrl)
   margin-bottom: 20px;
 }
 .hero__title {
-  font-size: 42px;
+  font-size: var(--home-text-3xl);
   font-weight: 800;
   color: var(--home-text-strong);
   margin: 0 0 16px;
   line-height: 1.15;
+  letter-spacing: var(--home-tracking-tight);
 }
 .hero__title-accent {
   color: var(--home-accent);
 }
 .hero__subtitle {
-  font-size: 16px;
+  font-size: var(--home-text-lg);
   color: var(--home-text-muted);
   margin: 0 0 32px;
-  line-height: 1.7;
+  line-height: var(--home-leading-normal);
 }
 .hero__actions {
   display: flex;
@@ -118,7 +119,7 @@ const dashboardLink = computed(() => theme.value.dashboardUrl)
   gap: 7px;
   padding: 10px 18px;
   border-radius: var(--home-radius-lg);
-  font-size: 14px;
+  font-size: var(--home-text-sm);
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
@@ -150,7 +151,10 @@ const dashboardLink = computed(() => theme.value.dashboardUrl)
     padding: 48px 24px 48px;
   }
   .hero__title {
-    font-size: 36px;
+    font-size: 40px;
+  }
+  .hero__subtitle {
+    font-size: 16px;
   }
   .hero__badge {
     font-size: 10px;

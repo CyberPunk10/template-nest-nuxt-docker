@@ -54,14 +54,14 @@ const home = computed(() => theme.value.home!)
   background: var(--home-surface-app);
 }
 .sponsors__inner {
-  max-width: 1200px;
+  max-width: var(--home-content-width);
   margin: 0 auto;
   padding: 40px 48px 56px;
   border-top: 1px solid var(--home-border-2);
   text-align: center;
 }
 .sponsors__title {
-  font-size: 14px;
+  font-size: var(--home-text-2xl);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.075em;
@@ -69,15 +69,15 @@ const home = computed(() => theme.value.home!)
   margin: 0 0 16px;
 }
 .sponsors__lead {
-  font-size: 20px;
+  font-size: var(--home-text-2xl);
   font-weight: 600;
   color: var(--home-text-strong);
   margin: 0 0 8px;
 }
 .sponsors__desc {
-  font-size: 14px;
+  font-size: var(--home-text-md);
   color: var(--home-text-muted);
-  line-height: 1.6;
+  line-height: var(--home-leading-relaxed);
   margin: 0 auto 24px;
   max-width: 60ch;
 }
@@ -109,7 +109,7 @@ const home = computed(() => theme.value.home!)
   background: rgba(0, 220, 130, 0.03);
 }
 .sponsors__slot-plus {
-  font-size: 20px;
+  font-size: var(--home-text-2xl);
   line-height: 1;
   color: var(--home-text-dim);
   transition: color 0.2s;
@@ -118,7 +118,7 @@ const home = computed(() => theme.value.home!)
   color: var(--home-accent);
 }
 .sponsors__slot-text {
-  font-size: 13px;
+  font-size: var(--home-text-sm);
   color: var(--home-text-muted);
 }
 .sponsors__actions {
@@ -133,7 +133,7 @@ const home = computed(() => theme.value.home!)
   border-radius: var(--home-radius-md);
   background: var(--home-accent);
   color: var(--home-surface-app);
-  font-size: 14px;
+  font-size: var(--home-text-md);
   font-weight: 600;
   text-decoration: none;
   transition: opacity 0.15s;
@@ -142,7 +142,7 @@ const home = computed(() => theme.value.home!)
   opacity: 0.85;
 }
 .sponsors__contact {
-  font-size: 14px;
+  font-size: var(--home-text-md);
   color: var(--home-text-soft);
   text-decoration: none;
   transition: color 0.15s;

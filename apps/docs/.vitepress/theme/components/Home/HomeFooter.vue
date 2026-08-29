@@ -135,7 +135,7 @@ const year = new Date().getFullYear()
   position: relative;
 }
 .footer__inner {
-  max-width: 1200px;
+  max-width: var(--home-content-width);
   margin: 0 auto;
   padding: 48px 48px 32px;
   display: grid;
@@ -147,15 +147,15 @@ const year = new Date().getFullYear()
   grid-column: 1 / -1;
 }
 .footer__name {
-  font-size: 15px;
+  font-size: var(--home-text-lg);
   font-weight: 700;
   color: var(--home-text-strong);
   margin: 0 0 8px;
 }
 .footer__tagline {
-  font-size: 13px;
+  font-size: var(--home-text-md);
   color: var(--home-text-muted);
-  line-height: 1.6;
+  line-height: var(--home-leading-relaxed);
   margin: 0;
   max-width: 40ch;
 }
@@ -165,7 +165,7 @@ const year = new Date().getFullYear()
   gap: 8px;
 }
 .footer__col-title {
-  font-size: 11px;
+  font-size: var(--home-text-xs);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -173,7 +173,7 @@ const year = new Date().getFullYear()
   margin: 0 0 4px;
 }
 .footer__col a {
-  font-size: 13px;
+  font-size: var(--home-text-sm);
   color: var(--home-text-soft);
   text-decoration: none;
   transition: color 0.15s;
@@ -183,9 +183,9 @@ const year = new Date().getFullYear()
 }
 /* Вводная строка колонки «Поддержать» — объясняет, зачем все пункты ниже */
 .footer__support-intro {
-  font-size: 12px;
+  font-size: var(--home-text-sm);
   color: var(--home-text-muted);
-  line-height: 1.5;
+  line-height: var(--home-leading-normal);
   margin: 0 0 4px;
 }
 /* Кнопка-раскрывашка выглядит как остальные ссылки колонки */
@@ -197,7 +197,7 @@ const year = new Date().getFullYear()
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 13px;
+  font-size: var(--home-text-sm);
   font-family: inherit;
   color: var(--home-text-soft);
   transition: color 0.15s;
@@ -218,7 +218,7 @@ const year = new Date().getFullYear()
   margin-top: 2px;
 }
 .footer__crypto-hint {
-  font-size: 11px;
+  font-size: var(--home-text-xs);
   color: var(--home-text-dim);
   margin: 0 0 2px;
 }
@@ -239,13 +239,13 @@ const year = new Date().getFullYear()
   border-color: var(--home-border-subtle);
 }
 .footer__wallet-label {
-  font-size: 11px;
+  font-size: var(--home-text-xs);
   color: var(--home-text-dim);
   white-space: nowrap;
 }
 .footer__wallet-address {
   font-family: monospace;
-  font-size: 11px;
+  font-size: var(--home-text-xs);
   color: var(--home-text-primary);
   margin-left: auto;
   white-space: nowrap;
@@ -270,13 +270,13 @@ const year = new Date().getFullYear()
   gap: 8px;
 }
 .footer__start-hint {
-  font-size: 13px;
+  font-size: var(--home-text-sm);
   color: var(--home-text-muted);
   margin: 0;
 }
 .footer__cmd {
   font-family: monospace;
-  font-size: 12px;
+  font-size: var(--home-text-sm);
   color: var(--home-accent);
   background: var(--home-surface-2);
   border: 1px solid var(--home-border-2);
@@ -286,7 +286,7 @@ const year = new Date().getFullYear()
   overflow-x: auto;
 }
 .footer__bottom {
-  max-width: 1200px;
+  max-width: var(--home-content-width);
   margin: 0 auto;
   padding: 20px 48px;
   border-top: 1px solid var(--home-border-2);
@@ -294,7 +294,7 @@ const year = new Date().getFullYear()
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 8px;
-  font-size: 12px;
+  font-size: var(--home-text-sm);
   color: var(--home-text-dim);
 }
 

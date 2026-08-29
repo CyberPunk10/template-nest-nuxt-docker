@@ -98,7 +98,7 @@ const groups = computed<CommandGroup[]>(() => {
 }
 
 .commands__label {
-  font-size: 11px;
+  font-size: var(--home-text-xs);
   color: var(--home-text-dim);
   margin: 0;
   text-transform: uppercase;
@@ -127,7 +127,7 @@ const groups = computed<CommandGroup[]>(() => {
 }
 .command__cmd {
   font-family: monospace;
-  font-size: 11px;
+  font-size: var(--home-text-xs);
   color: var(--home-text-primary);
   word-break: break-all;
 }
@@ -149,7 +149,7 @@ const groups = computed<CommandGroup[]>(() => {
   transition: none;
 }
 .command__desc {
-  font-size: 11px;
+  font-size: var(--home-text-xs);
   color: var(--home-text-dim);
   white-space: nowrap;
   margin-left: auto;

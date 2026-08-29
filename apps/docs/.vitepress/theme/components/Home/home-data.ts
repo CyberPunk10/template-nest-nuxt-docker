@@ -4,14 +4,10 @@ function cloneCmd(branch: string) {
   return `git clone ${repoUrl} && git checkout ${branch}`
 }
 
-export const layers = ['Backend', 'Frontend', 'Shared', 'Infra'] as const
-export type Layer = (typeof layers)[number]
-
 export interface Branch {
   id: string // ключ в home.branches (main | auth | postgresPrisma)
   name: string
   current: boolean
-  stack: Record<Layer, string[]>
 }
 
 export interface QuickstartStep {
@@ -34,57 +30,16 @@ export const branches: Branch[] = [
     id: 'main',
     name: 'main',
     current: false,
-    stack: {
-      Backend: [
-        'NestJS',
-        'Joi validation',
-        'Swagger/OpenAPI',
-        'Exception filter',
-      ],
-      Frontend: [
-        'Nuxt 4',
-        'Vue 3',
-        'TypeScript',
-      ],
-      Shared: [
-        '@repo/shared',
-        'i18n (ru/en/th)',
-      ],
-      Infra: [
-        'Docker (multi-stage)',
-        'pnpm 11 workspaces',
-      ],
-    },
   },
   {
     id: 'auth',
     name: 'auth-session',
     current: true,
-    stack: {
-      Backend: [
-        'Passport.js',
-        'JWT + bcrypt',
-      ],
-      Frontend: [],
-      Shared: [],
-      Infra: [],
-    },
   },
   {
     id: 'postgresPrisma',
     name: 'postgres-prisma',
     current: false,
-    stack: {
-      Backend: [
-        'Prisma 7',
-        '@prisma/adapter-pg',
-      ],
-      Frontend: [],
-      Shared: [],
-      Infra: [
-        'PostgreSQL 17',
-      ],
-    },
   },
 ]
 
@@ -194,6 +149,6 @@ export const fitCases: FitCase[] = [
   { id: 'serverless', verdict: 'bad', icon: 'lucide:cloud-off' },
   { id: 'learning', verdict: 'good', icon: 'lucide:graduation-cap' },
   { id: 'highLoad', verdict: 'mixed', icon: 'lucide:gauge' },
-  { id: 'legacy', verdict: 'bad', icon: 'lucide:file-clock' },
+  { id: 'legacy', verdict: 'mixed', icon: 'lucide:network' },
   { id: 'internalTools', verdict: 'good', icon: 'lucide:wrench' },
 ]

@@ -34,8 +34,8 @@ const home = computed(() => theme.value.home!)
 
 <style scoped>
 .showcase__lead {
-  font-size: 14px;
-  line-height: 1.6;
+  font-size: var(--home-text-md);
+  line-height: var(--home-leading-relaxed);
   color: var(--home-text-muted);
   margin: -8px 0 20px;
   max-width: 68ch;
@@ -83,20 +83,21 @@ const home = computed(() => theme.value.home!)
 }
 
 .showcase__name {
-  font-size: 14px;
+  font-size: var(--home-text-lg);
   font-weight: 700;
+  letter-spacing: var(--home-tracking-tight);
   color: var(--home-text-primary);
   margin: 0;
 }
 .showcase__role {
-  font-size: 11px;
-  line-height: 1.45;
+  font-size: var(--home-text-sm);
+  line-height: var(--home-leading-normal);
   color: var(--home-text-soft);
   margin: 0;
 }
 .showcase__branch {
   font-family: monospace;
-  font-size: 9px;
+  font-size: var(--home-text-xs);
   color: var(--home-text-dim);
   border: 1px solid var(--home-border-2);
   border-radius: 4px;

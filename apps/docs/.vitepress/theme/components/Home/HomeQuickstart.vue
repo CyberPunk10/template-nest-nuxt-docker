@@ -65,7 +65,7 @@ const activeQs = ref(0)
   gap: 5px;
   padding: 5px 12px;
   border-radius: var(--home-radius-md);
-  font-size: 12px;
+  font-size: var(--home-text-sm);
   font-family: monospace;
   cursor: pointer;
   background: transparent;
@@ -110,7 +110,7 @@ const activeQs = ref(0)
   background: rgba(0, 220, 130, 0.08);
   border: 1px solid rgba(0, 220, 130, 0.2);
   color: var(--home-accent);
-  font-size: 11px;
+  font-size: var(--home-text-xs);
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -124,13 +124,13 @@ const activeQs = ref(0)
   gap: 4px;
 }
 .qs-step__label {
-  font-size: 13px;
+  font-size: var(--home-text-md);
   color: var(--home-text-soft);
   margin: 0;
 }
 .qs-step__cmd {
   font-family: monospace;
-  font-size: 12px;
+  font-size: var(--home-text-sm);
   color: var(--home-text-muted);
 }
 .qs-step__copy {
