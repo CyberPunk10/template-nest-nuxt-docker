@@ -83,8 +83,7 @@ apps/backend/
 ├── prisma/
 │   ├── schema.prisma       ← модели
 │   ├── migrations/         ← история миграций (коммитится в git)
-│   ├── seed.ts             ← создание admin-аккаунта
-│   └── tsconfig.seed.json  ← отдельный tsconfig для сида
+│   └── seed.ts             ← создание admin-аккаунта
 └── prisma.config.ts        ← конфигурация Prisma (datasource URL)
 ```
 
@@ -113,6 +112,35 @@ pnpm prisma generate
 
 Prisma генерирует клиент в `src/generated/prisma` — эта папка в `.gitignore`.
 В Prisma 7 клиент **не генерируется автоматически** при `migrate dev` — нужно запускать `prisma generate` вручную после изменений схемы. Автозапуск можно настроить через `afterApply` в `prisma.config.ts`.
+
+Генератор настроен на CommonJS:
+
+```prisma
+generator client {
+  provider            = "prisma-client"
+  output              = "../src/generated/prisma"
+  moduleFormat        = "cjs"
+  importFileExtension = ""
+}
+```
+
+Обе настройки подобраны под то, как код исполняется в этом шаблоне.
+
+`moduleFormat = "cjs"` — потому что Nest компилирует в CommonJS, а генератор по умолчанию выдаёт ESM. Без этого в собранный клиент попадает `import.meta`, из-за которого Node считает файл ESM-модулем и падает на `exports`:
+
+```
+ReferenceError: exports is not defined in ES module scope
+```
+
+Проявляется только в собранном образе. При `pnpm dev` Nest пересобирает код на лету и запускает его из `dist/` в том же процессе, поэтому несоответствие не всплывает.
+
+`importFileExtension = ""` — потому что генератор создаёт только `.ts`-файлы, а по умолчанию ссылается на них как на `.js`. TypeScript такие импорты понимает, но Jest — нет:
+
+```
+Cannot find module './internal/class.js' from 'generated/prisma/client.ts'
+```
+
+Пустое значение убирает расширение из импортов, и клиент резолвится и сборкой, и тестами.
 
 ### Seed: admin-аккаунт
 

@@ -47,14 +47,7 @@ const config: LocaleEntry = {
                       { text: 'package.json', link: '/guide/structure/apps/backend/package-json' },
                       { text: 'tsconfig.json', link: '/guide/structure/apps/backend/tsconfig' },
                       { text: 'tsconfig.build.json', link: '/guide/structure/apps/backend/tsconfig-build' },
-                      {
-                        text: 'prisma',
-                        link: '/guide/structure/apps/backend/prisma/',
-                        collapsed: true,
-                        items: [
-                          { text: 'tsconfig.seed.json', link: '/guide/structure/apps/backend/prisma/tsconfig-seed' },
-                        ],
-                      },
+                      { text: 'prisma', link: '/guide/structure/apps/backend/prisma/' },
                     ],
                   },
                   {

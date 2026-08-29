@@ -48,17 +48,6 @@ docker run -d -p 3100:3100 \
 
 `POSTGRES_HOST=postgres` is the service name inside the network: for the container `localhost` means itself. The secrets are required — without them Nest fails env validation and dies on startup.
 
-::: danger The image currently doesn't start
-Migrations are applied, but the application dies right after them:
-
-```
-ReferenceError: exports is not defined in ES module scope
-    at file:///app/dist/generated/prisma/client.js
-```
-
-`package.json` isn't copied into the final image, so Node doesn't see the `"type"` field and treats `.js` files in `dist/` as ESM — while the generated Prisma client is CommonJS. This breaks `pnpm docker:up` too, not just standalone runs.
-:::
-
 Check:
 
 ```bash

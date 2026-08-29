@@ -48,17 +48,6 @@ docker run -d -p 3100:3100 \
 
 `POSTGRES_HOST=postgres` คือชื่อ service ภายใน network: สำหรับ container แล้ว `localhost` หมายถึงตัวมันเอง ส่วน secret จำเป็นต้องมี ถ้าไม่มี Nest จะไม่ผ่านการตรวจ env และล้มตอน start
 
-::: danger ตอนนี้ image ยัง start ไม่ได้
-migration ทำงานได้ แต่แอปล้มทันทีหลังจากนั้น:
-
-```
-ReferenceError: exports is not defined in ES module scope
-    at file:///app/dist/generated/prisma/client.js
-```
-
-`package.json` ไม่ได้ถูกคัดลอกเข้า image สุดท้าย Node จึงไม่เห็น field `"type"` และมองไฟล์ `.js` ใน `dist/` เป็น ESM ขณะที่ Prisma client ที่ generate ออกมาเป็น CommonJS เรื่องนี้ทำให้ `pnpm docker:up` พังด้วย ไม่ใช่แค่การรันเดี่ยว ๆ
-:::
-
 ตรวจสอบ:
 
 ```bash

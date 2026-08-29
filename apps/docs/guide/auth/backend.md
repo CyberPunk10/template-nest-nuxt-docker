@@ -320,11 +320,11 @@ pnpm prisma db seed         # затем явно создать admin-акка�
 ```typescript
 migrations: {
   path: 'prisma/migrations',
-  seed: 'ts-node --transpile-only --project prisma/tsconfig.seed.json prisma/seed.ts',
+  seed: 'tsx prisma/seed.ts',
 },
 ```
 
-> **`prisma/tsconfig.seed.json`:** `seed.ts` лежит вне `src/`, а основной `tsconfig.json` включает только `src`/`test` — при прямом запуске `ts-node` для файла вне этих директорий не может определить `rootDir` (ошибка TS5011). Отдельный конфиг для сида решает это, не трогая основной `tsconfig.json`.
+> **`tsx`** — раннер TypeScript, который рекомендует документация Prisma 7 для сида.
 
 ### Продакшен
 

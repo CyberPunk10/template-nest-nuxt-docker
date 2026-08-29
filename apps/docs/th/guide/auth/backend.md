@@ -320,11 +320,11 @@ pnpm prisma db seed         # จากนั้น seed admin account อย่
 ```typescript
 migrations: {
   path: 'prisma/migrations',
-  seed: 'ts-node --transpile-only --project prisma/tsconfig.seed.json prisma/seed.ts',
+  seed: 'tsx prisma/seed.ts',
 },
 ```
 
-> **`prisma/tsconfig.seed.json`:** `seed.ts` อยู่นอก `src/` และ `tsconfig.json` หลักมีแค่ `src`/`test` ใน include — การรัน `ts-node` ตรงกับไฟล์ที่อยู่นอก directory เหล่านี้จะกำหนด `rootDir` ไม่ได้ (error TS5011) config แยกสำหรับ seed แก้ปัญหานี้โดยไม่ต้องแก้ `tsconfig.json` หลัก
+> **`tsx`** — TypeScript runner ที่เอกสารของ Prisma 7 แนะนำสำหรับ seed
 
 ### Production
 

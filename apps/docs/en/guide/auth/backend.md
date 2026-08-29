@@ -320,11 +320,11 @@ The seed command is defined in `prisma.config.ts` — this is exactly what `pris
 ```typescript
 migrations: {
   path: 'prisma/migrations',
-  seed: 'ts-node --transpile-only --project prisma/tsconfig.seed.json prisma/seed.ts',
+  seed: 'tsx prisma/seed.ts',
 },
 ```
 
-> **`prisma/tsconfig.seed.json`:** `seed.ts` lives outside `src/`, and the main `tsconfig.json` only includes `src`/`test` — running `ts-node` directly on a file outside those directories can't determine `rootDir` (TS5011 error). A dedicated config for the seed fixes this without touching the main `tsconfig.json`.
+> **`tsx`** — the TypeScript runner the Prisma 7 docs recommend for seeding.
 
 ### Production
 
