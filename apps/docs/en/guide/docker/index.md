@@ -4,7 +4,7 @@ The project has four independent [Dockerfiles](/en/guide/docker/dockerfiles) —
 
 ## Single entry point
 
-Only **one port** is published — `NGINX_HOST_PORT` (`80` by default). Backend and frontend declare their ports with `expose`: inside the Docker network they reach each other, but nothing is forwarded to the host. All external traffic goes through the reverse proxy.
+All application traffic arrives on **one port** — `NGINX_HOST_PORT` (`80` by default). Backend and frontend declare their ports with `expose`: inside the Docker network they reach each other, but nothing is forwarded to the host. `POSTGRES_PORT` is published separately — not for traffic, but so you can reach the database from the host ([why](/en/guide/database)).
 
 ```
 browser  →  nginx:80

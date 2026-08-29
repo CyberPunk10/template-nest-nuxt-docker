@@ -43,7 +43,7 @@ corepack enable
 
 ## 3. Docker ≥ 23 + Docker Compose ≥ 2.33
 
-Нужны только для Docker-режима — для `pnpm dev` можно пропустить.
+Нужны в обоих случаях: `pnpm docker:up` поднимает в контейнерах всё, а `pnpm dev` — только Postgres, но контейнер ему всё равно нужен.
 
 ```bash
 docker --version
@@ -66,7 +66,7 @@ curl -fsSL https://get.docker.com | sh
 
 ## 4. Docker-сеть
 
-Тоже только для Docker-режима. При запуске через `pnpm docker:up` создаётся автоматически — отдельный шаг не требуется.
+Создаётся автоматически и при `pnpm docker:up`, и при `pnpm dev` (через `pnpm db:up`) — отдельный шаг не требуется.
 
 Если запускаете `docker compose` напрямую, создайте её один раз сами:
 

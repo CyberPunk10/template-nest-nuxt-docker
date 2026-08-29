@@ -10,18 +10,54 @@
 docker build -f apps/backend/Dockerfile -t backend-preview .
 ```
 
-Запустить контейнер на порту 3100:
+## Миграции при старте
+
+Образ запускается через `docker-entrypoint.sh`, а не сразу командой: скрипт применяет миграции и только потом отдаёт управление приложению.
+
+```sh
+npx prisma migrate deploy
+exec "$@"          # → node dist/main
+```
+
+Именно `migrate deploy`, а не `migrate dev`: применяются только pending-миграции, без интерактивных вопросов и без риска пересоздать базу. Поэтому команда безопасна при каждом рестарте контейнера.
+
+Из этого следует, что без доступной БД контейнер не стартует — он упадёт на миграциях. По той же причине `prisma/` и `prisma.config.ts` копируются в финальный образ.
+
+## Одиночный запуск
+
+Сначала поднимаем БД, потом подключаем контейнер к той же сети:
+
+```bash
+pnpm db:up
+```
 
 ```bash
 docker run -d -p 3100:3100 \
+  --network template-nest-nuxt_app \
   -e PORT=3100 \
   -e CORS_ORIGIN=http://localhost:3200 \
+  -e POSTGRES_HOST=postgres \
+  -e POSTGRES_PORT=5432 \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_DB=template \
   -e JWT_SECRET=change-me-to-a-random-string-of-at-least-32-characters \
   -e REFRESH_TOKEN_SECRET=change-me-to-another-random-string-of-at-least-32-chars \
   --name backend-preview backend-preview
 ```
 
-Секреты обязательны: без них Nest не пройдёт валидацию переменных и упадёт на старте.
+`POSTGRES_HOST=postgres` — имя сервиса внутри сети: для контейнера `localhost` означает его самого. Секреты обязательны, без них Nest не пройдёт валидацию переменных и упадёт на старте.
+
+::: danger Сейчас образ не стартует
+Миграции применяются, но сразу после них приложение падает:
+
+```
+ReferenceError: exports is not defined in ES module scope
+    at file:///app/dist/generated/prisma/client.js
+```
+
+В финальный образ не копируется `package.json`, поэтому Node не видит поле `"type"` и считает `.js` из `dist/` модулями ESM — а сгенерированный Prisma-клиент собран в CommonJS. Это ломает и `pnpm docker:up`, не только одиночный запуск.
+:::
 
 Проверить:
 

@@ -14,6 +14,8 @@ pnpm docker:up --build
 
 `pnpm docker:up` — не просто алиас для `docker compose up`: перед стартом отрабатывает [`predocker.mjs`](/guide/structure/scripts/predocker), который создаёт недостающие `.env`, проверяет порт прокси и заводит Docker-сеть. Поэтому команда работает сразу после клонирования.
 
+Под капотом это `docker compose --profile app up`: сервисы приложения помечены профилем `app`, а БД профиля не имеет и поднимается всегда — см. [профили](/guide/structure/docker-compose#профили).
+
 Наружу смотрит только reverse proxy — всё приходит на один порт (`NGINX_HOST_PORT`, по умолчанию `80`):
 
 - Приложение: [http://localhost/](http://localhost/)
@@ -23,13 +25,19 @@ pnpm docker:up --build
 Backend и frontend своих хост-портов не занимают: снаружи они недоступны, только через прокси — [почему](/guide/reverse-proxy#почему-порты-приложении-закрыты).
 
 ::: warning
-Прямой `docker compose up`, минуя `pnpm docker:up`, тоже работает, но без подготовки: без корневого `.env` откажется стартовать (`no port specified`), без `apps/*/.env` — тоже (`env file ... not found`). При занятом порте выдаст обычную Docker-ошибку `address already in use`, без диалога.
+Прямой вызов Compose, минуя `pnpm docker:up`, тоже работает, но требует профиля и идёт без подготовки: `docker compose up` без `--profile app` поднимет только БД, без корневого `.env` откажется стартовать (`no port specified`), без `apps/*/.env` — тоже (`env file ... not found`). При занятом порте выдаст обычную Docker-ошибку `address already in use`, без диалога.
 :::
 
 ## Остановка
 
 ```bash
-docker compose down
+docker compose --profile app down
+```
+
+Профиль нужен и здесь: без него Compose не увидит сервисы приложения и погасит только БД. Чтобы, наоборот, остановить приложения и оставить БД поднятой:
+
+```bash
+docker compose --profile app stop nginx backend frontend
 ```
 
 Сеть `template-nest-nuxt_app` при этом остаётся — она `external`, compose её не создавал. Удалить вручную, если больше не нужна:
