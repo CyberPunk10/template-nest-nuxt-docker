@@ -17,6 +17,8 @@ package นี้ยังเป็นซอร์สโค้ด มีแค�
 
 จะ compile ด้วย `tsc` ธรรมดาก็ไม่ได้อยู่ดี: ไฟล์ `.vue` ต้องใช้ `vue-tsc` และ pipeline เฉพาะของมัน `tsconfig.json` ที่นี่มีไว้สำหรับ `vue-tsc --noEmit` ตอนตรวจ type เท่านั้น
 
+ดังนั้น `main` จึงชี้ไปที่ `src/index.ts` ตรง ๆ — เหมือนกับ [shared](/th/guide/structure/packages/shared/) ต่างกันแค่การตรวจ type: ที่นี่ต้องใช้ `vue-tsc` ส่วนที่นั่น `tsc` ก็พอ
+
 ## การตั้งค่า TypeScript ของตัวเอง
 
 เป็น package เดียวที่ **ไม่ extend** `tsconfig.base.json`: มันต้องการ `jsx` และ lib `DOM` ซึ่ง base config ไม่มี

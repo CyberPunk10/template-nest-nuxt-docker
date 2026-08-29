@@ -3,7 +3,7 @@
 Four independent `Dockerfile`s — one per application plus the reverse proxy. They're built differently because they solve different problems:
 
 | File                       | What it does                                                          |
-| -------------------------- | ----------------------------------------------------------------------- |
+| -------------------------- | --------------------------------------------------------------------- |
 | `apps/backend/Dockerfile`  | builds NestJS, final image — only `dist/` and production dependencies |
 | `apps/frontend/Dockerfile` | builds Nuxt, final image — `.output/` with the Nitro server           |
 | `apps/docs/Dockerfile`     | builds the VitePress static output, nothing to run                    |
@@ -97,11 +97,13 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s \
   CMD wget -qO- http://127.0.0.1:${PORT}/health || exit 1
 ```
 
-| Service  | Checked path                               |
-| -------- | ------------------------------------------ |
-| backend  | `http://127.0.0.1:${PORT}/health`          |
-| frontend | `http://127.0.0.1:${PORT}/api/health`      |
-| nginx    | `http://127.0.0.1:${NGINX_INTERNAL_PORT}/` |
+| Service  | Checked path                               | Interval / start-period |
+| -------- | ------------------------------------------ | ----------------------- |
+| backend  | `http://127.0.0.1:${PORT}/health`          | `5s` / `60s`            |
+| frontend | `http://127.0.0.1:${PORT}/api/health`      | `30s` / `5s`            |
+| nginx    | `http://127.0.0.1:${NGINX_INTERNAL_PORT}/` | `30s` / `5s`            |
+
+The backend polls more often — 5 seconds instead of 30: the frontend's `depends_on: service_healthy` waits on that healthcheck, and a slower interval would add half a minute to every stack start. The 60-second `start-period` leaves room for the first launch while the application warms up.
 
 `docs-builder` has no healthcheck — there's nothing to check, the image ends at the build stage.
 

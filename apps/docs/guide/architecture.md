@@ -35,10 +35,10 @@ template-nest-nuxt/
 
 ```
 @repo/shared
-  Компилируется в dist/ (ESM, tsc).
-  Backend и frontend получают скомпилированный код.
-  Нужна компиляция, потому что backend — CommonJS,
-  frontend — ESM/Rollup; общий dist/ работает для обоих.
+  Source-only: package.json указывает main прямо
+  на src/index.ts, шага сборки нет.
+  Backend компилирует эти исходники вместе со своими
+  (tsc), frontend — через Vite.
 
 @repo/ui
   Source-only. Компиляция не нужна.

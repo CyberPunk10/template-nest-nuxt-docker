@@ -13,30 +13,36 @@ pnpm dev
 
 เปิดที่ [http://localhost:3200](http://localhost:3200) ส่วนที่เหลือในหน้านี้เป็นเรื่องว่าโหมดนี้ต่างจาก Docker อย่างไร และต้องตั้งค่าอะไรถ้ามีอะไรไม่ทำงาน
 
-## สองโหมด
+## รันอย่างไร
 
-รันโปรเจกต์ได้สองแบบ แต่ละแบบมีจุดประสงค์ของตัวเอง:
+แอปรันอยู่ที่ไหน กับเป็น build แบบไหน เป็นคนละเรื่องกัน ในเทมเพลตนี้ตั้งค่าไว้แล้วสามในสี่แบบ:
 
-|                                                    | ใช้ทำอะไร                                                        |
-| -------------------------------------------------- | ------------------------------------------------------------------ |
-| [**pnpm**](/th/guide/getting-started/run-pnpm)     | พัฒนางานประจำวัน: hot reload เริ่มเร็ว ไม่ต้องใช้ container      |
-| [**Docker**](/th/guide/getting-started/run-docker) | ซ้อม production: image และโครงสร้างเดียวกับที่จะขึ้น deploy      |
+|          | บน host                                                                      | ใน container                                             |
+| -------- | ---------------------------------------------------------------------------- | -------------------------------------------------------- |
+| **dev**  | [`pnpm dev`](/th/guide/getting-started/run-pnpm)                             | ยังไม่ได้ตั้งค่า                                               |
+| **prod** | [`pnpm build` + `start:prod`](/th/guide/getting-started/run-pnpm#pnpm-build) | [`pnpm docker:up`](/th/guide/getting-started/run-docker) |
 
-ทั้งสองโหมดรัน application ชุดเดียวกัน ต่างกันแค่วิธีเข้าถึง: ใน pnpm แต่ละตัวฟังพอร์ตของตัวเอง ส่วนใน Docker ทุกอย่างเข้ามาที่ reverse proxy
+- งานประจำวันใช้ `pnpm dev`
+- ถ้าต้องการตรวจสอบ build แบบ production ทั้งชุดพร้อม reverse proxy ให้ใช้ `pnpm docker:up`
+
+วิธีเข้าถึงก็ต่างกันด้วย:
+
+- บน host แต่ละแอปฟังพอร์ตของตัวเอง
+- ใน container traffic ทั้งหมดเข้ามาที่ reverse proxy
 
 ## เริ่มจากตรงไหน
 
 1. [การเตรียมความพร้อม](/th/guide/getting-started/setup) — Node.js, pnpm, Docker, ไฟล์ `.env`
 2. [รันด้วย pnpm](/th/guide/getting-started/run-pnpm) หรือ [ด้วย Docker](/th/guide/getting-started/run-docker)
 
-## ความต่างของสองโหมด
+## ต่างกันอย่างไรในทางปฏิบัติ
 
-| อะไร          | pnpm dev                          | Docker                       |
-| ------------- | --------------------------------- | ---------------------------- |
-| Application   | `http://localhost:3200`           | `http://localhost/`          |
-| เอกสาร        | `http://localhost:5173/dev/docs/` | `http://localhost/dev/docs/` |
-| Swagger       | `http://localhost:3100/api/docs`  | `http://localhost/api/docs`  |
-| Hot reload    | มี                                 | ไม่มี                          |
-| Reverse proxy | ไม่มี                               | มี                            |
+| อะไร          | `pnpm dev`                        | `pnpm docker:up`               |
+| ------------- | --------------------------------- | ------------------------------ |
+| Application   | `http://localhost:3200`           | `http://localhost/`            |
+| เอกสาร        | `http://localhost:5173/dev/docs/` | `http://localhost/dev/docs/`   |
+| Swagger       | `http://localhost:3100/api/docs`  | `http://localhost/api/docs`    |
+| Hot reload    | มี                                 | ไม่มี — เป็น image แบบ production |
+| Reverse proxy | ไม่มี                               | มี                              |
 
 path ตรงกัน ต่างแค่ host กับพอร์ต — address ถูกเก็บไว้ใน environment variable เพื่อให้โค้ดไม่ต้องรู้จักมัน

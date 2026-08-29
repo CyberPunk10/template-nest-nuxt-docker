@@ -35,10 +35,10 @@ Link between the apps:
 
 ```
 @repo/shared
-  Compiled into dist/ (ESM, tsc).
-  Backend and frontend get the compiled code.
-  Compilation is needed because backend is CommonJS,
-  frontend is ESM/Rollup; a shared dist/ works for both.
+  Source-only: package.json points main straight
+  at src/index.ts, there is no build step.
+  Backend compiles these sources along with its own
+  (tsc), frontend goes through Vite.
 
 @repo/ui
   Source-only. No compilation needed.

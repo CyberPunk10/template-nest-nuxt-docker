@@ -35,10 +35,10 @@ Dependencies (workspace:*):
 
 ```
 @repo/shared
-  Compile เป็น dist/ (ESM, tsc)
-  Backend และ frontend ใช้โค้ดที่ compile แล้ว
-  ต้อง compile เพราะ backend เป็น CommonJS
-  ส่วน frontend เป็น ESM/Rollup; dist/ ที่ใช้ร่วมกันทำงานได้กับทั้งสอง
+  Source-only: package.json ชี้ main ไปที่
+  src/index.ts โดยตรง ไม่มีขั้นตอน build
+  Backend compile ซอร์สเหล่านี้ไปพร้อมกับของตัวเอง (tsc)
+  ส่วน frontend ผ่าน Vite
 
 @repo/ui
   Source-only ไม่ต้อง compile

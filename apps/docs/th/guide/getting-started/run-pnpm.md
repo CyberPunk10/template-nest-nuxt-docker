@@ -10,7 +10,7 @@
 pnpm dev
 ```
 
-คำสั่งเดียวยกทั้งสาม application ขึ้นมา ก่อนเริ่ม `predev.mjs` จะทำงานก่อน: สร้างไฟล์ `.env` ที่ขาด และจัดการพอร์ตที่ชนกัน
+คำสั่งเดียวยกทั้งสาม application ขึ้นมา ก่อนเริ่ม [`predev.mjs`](/th/guide/structure/scripts/predev) จะทำงานก่อน: สร้างไฟล์ `.env` ที่ขาด และจัดการพอร์ตที่ชนกัน
 
 | Service  | URL                               | เทคโนโลยี         |
 | -------- | --------------------------------- | ---------------- |
@@ -46,7 +46,7 @@ cd apps/backend && pnpm start:prod
 cd apps/frontend && node .output/server/index.mjs
 ```
 
-แบบนี้ใกล้เคียง production มากกว่า `pnpm dev` แต่ยังไม่เหมือนกันเสียทีเดียว: ไม่มี reverse proxy และ application เข้าถึงได้ตรงๆ ทางพอร์ตของตัวเอง ถ้าอยากซ้อมแบบเต็ม — [รันด้วย Docker](/th/guide/getting-started/run-docker)
+แบบนี้ใกล้เคียง production มากกว่า `pnpm dev` แต่ยังไม่เหมือนกันเสียทีเดียว: ไม่มี reverse proxy และ application เข้าถึงได้ตรงๆ ทางพอร์ตของตัวเอง ถ้าอยากได้โครงสร้างทั้งชุดพร้อม proxy — [รันใน container](/th/guide/getting-started/run-docker)
 
 ## การหยุด
 

@@ -97,11 +97,13 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s \
   CMD wget -qO- http://127.0.0.1:${PORT}/health || exit 1
 ```
 
-| Сервис   | Проверяемый путь                           |
-| -------- | ------------------------------------------ |
-| backend  | `http://127.0.0.1:${PORT}/health`          |
-| frontend | `http://127.0.0.1:${PORT}/api/health`      |
-| nginx    | `http://127.0.0.1:${NGINX_INTERNAL_PORT}/` |
+| Сервис   | Проверяемый путь                           | Интервал / start-period |
+| -------- | ------------------------------------------ | ----------------------- |
+| backend  | `http://127.0.0.1:${PORT}/health`          | `5s` / `60s`            |
+| frontend | `http://127.0.0.1:${PORT}/api/health`      | `30s` / `5s`            |
+| nginx    | `http://127.0.0.1:${NGINX_INTERNAL_PORT}/` | `30s` / `5s`            |
+
+У backend `interval` чаще — 5 секунд вместо 30: от его healthcheck зависит `depends_on: service_healthy` у frontend, и с редким опросом старт всего стека растянулся бы на лишние полминуты. `start-period` в 60 секунд даёт запас на первый запуск, пока приложение прогревается.
 
 У `docs-builder` healthcheck'а нет — там нечего проверять, образ заканчивается сборкой.
 

@@ -10,6 +10,9 @@ The backend application's manifest. Its scripts work only inside their own works
 | `start:prod`                                    | `node dist/main`     | Runs in production mode (what the `Dockerfile` uses) |
 | `lint`                                          | `eslint ... --fix`   | Linter with auto-fix                                 |
 | `type-check`                                    | `tsc --noEmit`       | Type-checks without building                         |
-| `test` / `test:watch` / `test:cov` / `test:e2e` | `jest ...`           | Unit and e2e tests                                   |
+| `start:debug`                                   | `nest start --debug` | The same with the debugger port open                  |
+| `test` / `test:watch` / `test:cov`              | `jest ...`           | Unit tests: once, in watch mode, with coverage        |
+| `test:debug`                                    | `node --inspect-brk` | Tests under the debugger, single-threaded (`--runInBand`) |
+| `test:e2e`                                      | `jest --config ...`  | E2E tests, own config `test/jest-e2e.json`            |
 
 What lives where — [apps/backend](/en/guide/structure/apps/backend/).

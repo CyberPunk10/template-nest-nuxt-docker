@@ -10,7 +10,7 @@ Before the first run — [Setup](/en/guide/getting-started/setup).
 pnpm dev
 ```
 
-One command brings up all three applications. Before it starts, `predev.mjs` runs: it creates missing `.env` files and resolves port conflicts.
+One command brings up all three applications. Before it starts, [`predev.mjs`](/en/guide/structure/scripts/predev) runs: it creates missing `.env` files and resolves port conflicts.
 
 | Service  | URL                               | Technology       |
 | -------- | --------------------------------- | ---------------- |
@@ -46,7 +46,7 @@ cd apps/backend && pnpm start:prod
 cd apps/frontend && node .output/server/index.mjs
 ```
 
-This is closer to production than `pnpm dev`, but still not the same: there's no reverse proxy, and the applications are reachable directly on their own ports. For a full rehearsal — [running with Docker](/en/guide/getting-started/run-docker).
+This is closer to production than `pnpm dev`, but still not the same: there's no reverse proxy, and the applications are reachable directly on their own ports. For the whole layout, proxy included — [running in containers](/en/guide/getting-started/run-docker).
 
 ## Stopping
 

@@ -2,7 +2,7 @@
 
 | Variable                  | Value (dev)        | Comment                                                                                                                                                                                             |
 | ------------------------- | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `NODE_ENV`                | `development`      | App mode. Overridden to `production` in `docker-compose.yml` — the container run is treated as a production rehearsal                                                                               |
+| `NODE_ENV`                | `development`      | App mode. The current `docker-compose.yml` overrides it to `production` — images are built in a production configuration                                                                               |
 | `APP_ENV`                 | `development`      | Application-level mode (`development`/`production`/`prod_qa`/`test`). `production` in Docker                                                                                                        |
 | `SWAGGER_ENABLED`         | not set            | Whether to serve Swagger UI at `/api/docs`. When unset — enabled everywhere except `production`. Kept separate from `NODE_ENV` so you can open Swagger in prod for diagnostics, or hide it locally   |
 | `PORT`                    | `3100`             | Backend port under `pnpm dev`. Overridden by `BACKEND_INTERNAL_PORT` from the root `.env` in Docker                                                                                                 |

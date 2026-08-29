@@ -2,7 +2,7 @@
 
 | ตัวแปร                     | ค่า (dev)           | คอมเมนต์                                                                                                                                                                              |
 | ------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `NODE_ENV`                | `development`      | โหมดของ application ใน Docker จะถูก override เป็น `production` ใน `docker-compose.yml` — การรันด้วย container ถือเป็นการซ้อม production                                                    |
+| `NODE_ENV`                | `development`      | โหมดของ application `docker-compose.yml` ปัจจุบัน override เป็น `production` — image ถูก build ในคอนฟิก production                                                    |
 | `APP_ENV`                 | `development`      | โหมดระดับ application (`development`/`production`/`prod_qa`/`test`) ใน Docker เป็น `production`                                                                                        |
 | `SWAGGER_ENABLED`         | ไม่ได้กำหนด          | จะเปิด Swagger UI ที่ `/api/docs` หรือไม่ ถ้าไม่กำหนด — เปิดทุกที่ยกเว้น `production` แยกจาก `NODE_ENV` เพื่อให้เปิด Swagger บน prod เพื่อ diagnostic ได้ หรือปิดบนเครื่องตัวเองได้           |
 | `PORT`                    | `3100`             | พอร์ต backend ตอน `pnpm dev` ใน Docker จะถูก override ด้วย `BACKEND_INTERNAL_PORT` จาก `.env` ที่ root                                                                                   |

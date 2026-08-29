@@ -7,6 +7,7 @@ Manifest ของ application สคริปต์ทำงานเฉพา�
 | `dev`         | `nuxt dev`       | Develop ในเครื่อง มี hot-reload                                |
 | `build`       | `nuxt build`     | Production build เป็น `.output/`                             |
 | `preview`     | `nuxt preview`   | รัน production build ในเครื่อง                                 |
+| `generate`    | `nuxt generate`  | build แบบ static ไม่ได้ใช้ในเทมเพลตนี้: image รัน SSR             |
 | `postinstall` | `nuxt prepare`   | สร้าง `.nuxt/` (types, aliases) — รันอัตโนมัติหลัง `pnpm install` |
 | `lint`        | `eslint . --fix` | Linter พร้อม auto-fix                                        |
 | `type-check`  | `nuxt typecheck` | ตรวจสอบ type ผ่าน `vue-tsc`                                  |

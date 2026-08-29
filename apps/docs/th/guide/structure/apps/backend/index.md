@@ -14,6 +14,7 @@ apps/backend/
 │   ├── app.controller.ts       /, /health, /dev/config
 │   ├── app.module.ts           root module
 │   ├── app.service.ts
+│   ├── setup-app.ts            การตั้งค่า global ที่ใช้ร่วมกันระหว่าง main กับ e2e
 │   └── main.ts                 bootstrap: CORS, Swagger, ValidationPipe
 ├── test/                       e2e test (jest config แยกต่างหาก)
 ├── nest-cli.json

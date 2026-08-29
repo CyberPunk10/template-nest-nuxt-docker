@@ -14,6 +14,7 @@ apps/backend/
 │   ├── app.controller.ts       /, /health, /dev/config
 │   ├── app.module.ts           root module
 │   ├── app.service.ts
+│   ├── setup-app.ts            shared global setup for main and e2e
 │   └── main.ts                 bootstrap: CORS, Swagger, ValidationPipe
 ├── test/                       e2e tests (separate jest config)
 ├── nest-cli.json

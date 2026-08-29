@@ -10,6 +10,7 @@ scripts/
 ├── copy-env-cli.mjs    CLI wrapper for pnpm env:copy
 ├── check-ports.mjs     port availability check, dialog
 ├── ensure-network.mjs  Docker network creation
+├── log.mjs             prefix for the scripts' own messages
 ├── dev.mjs             runs the three applications in parallel
 └── reinstall.mjs       reinstalls dependencies from scratch
 ```

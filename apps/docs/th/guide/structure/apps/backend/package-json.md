@@ -10,6 +10,9 @@ Manifest ของ application สคริปต์ทำงานเฉพา�
 | `start:prod`                                    | `node dist/main`     | รันในโหมด production (สิ่งที่ `Dockerfile` ใช้) |
 | `lint`                                          | `eslint ... --fix`   | Linter พร้อม auto-fix                      |
 | `type-check`                                    | `tsc --noEmit`       | ตรวจสอบ type โดยไม่ build                  |
-| `test` / `test:watch` / `test:cov` / `test:e2e` | `jest ...`           | Unit test และ e2e test                    |
+| `start:debug`                                   | `nest start --debug` | เหมือนกันแต่เปิดพอร์ต debugger              |
+| `test` / `test:watch` / `test:cov`              | `jest ...`           | Unit test: รันครั้งเดียว, watch mode, พร้อม coverage |
+| `test:debug`                                    | `node --inspect-brk` | รันเทสต์ภายใต้ debugger แบบ thread เดียว (`--runInBand`) |
+| `test:e2e`                                      | `jest --config ...`  | E2E test ใช้ config ของตัวเอง `test/jest-e2e.json` |
 
 อะไรอยู่ที่ไหน — [apps/backend](/th/guide/structure/apps/backend/)

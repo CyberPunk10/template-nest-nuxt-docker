@@ -10,6 +10,7 @@ scripts/
 ├── copy-env-cli.mjs    CLI-обёртка для pnpm env:copy
 ├── check-ports.mjs     проверка занятости портов, диалог
 ├── ensure-network.mjs  создание Docker-сети
+├── log.mjs             префикс для сообщений скриптов
 ├── dev.mjs             параллельный запуск трёх приложений
 └── reinstall.mjs       переустановка зависимостей с нуля
 ```

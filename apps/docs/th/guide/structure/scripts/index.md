@@ -10,6 +10,7 @@ scripts/
 ├── copy-env-cli.mjs    CLI wrapper สำหรับ pnpm env:copy
 ├── check-ports.mjs     ตรวจสอบพอร์ตที่ถูกใช้, dialog
 ├── ensure-network.mjs  สร้าง Docker network
+├── log.mjs             prefix สำหรับข้อความของ script เอง
 ├── dev.mjs             รัน 3 application พร้อมกัน
 └── reinstall.mjs       ติดตั้ง dependency ใหม่ตั้งแต่ต้น
 ```

@@ -17,6 +17,6 @@ packages/shared/
 
 ## ใช้เป็นซอร์สโดยตรง
 
-`main` และ `types` ชี้ไปที่ `src/index.ts` ตรง ๆ และ alias `@repo/shared` ใน `tsconfig.base.json` ก็ชี้ที่เดียวกัน ไม่มีขั้นตอน build: แอปพลิเคชัน compile ซอร์สเป็นส่วนหนึ่งของ build ตัวเอง
+`main` และ `types` ชี้ไปที่ `src/index.ts` ตรง ๆ ไม่มีขั้นตอน build: แอปพลิเคชัน compile ซอร์สเป็นส่วนหนึ่งของ build ตัวเอง — backend ด้วย `tsc` ส่วน frontend ผ่าน Vite การ resolve อาศัย symlink ของ pnpm workspace ไม่ใช่ `paths` ของ TypeScript
 
 Manifest ของ package — [package.json](/th/guide/structure/packages/shared/package-json)

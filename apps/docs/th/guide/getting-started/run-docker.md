@@ -1,6 +1,8 @@
 # รันด้วย Docker
 
-การซ้อม production: image ชุดเดียวกับที่จะขึ้น deploy อยู่หลังจุดเข้าเดียว โหมดนี้ไม่ได้ตั้งมาสำหรับการพัฒนาประจำวัน — ให้ใช้ [`pnpm dev`](/th/guide/getting-started/run-pnpm) แทน
+แอปพลิเคชันรันใน container หลังจุดเข้าเดียว — เป็น image ชุดเดียวกับที่จะขึ้น deploy
+
+เป็น image แบบ production ไม่มี hot reload การแก้โค้ดจะเห็นผลก็ต่อเมื่อ build ใหม่เท่านั้น ถ้าจะทำงานกับโค้ดให้ใช้ [`pnpm dev`](/th/guide/getting-started/run-pnpm)
 
 ก่อนรันครั้งแรก — [การเตรียมความพร้อม](/th/guide/getting-started/setup)
 

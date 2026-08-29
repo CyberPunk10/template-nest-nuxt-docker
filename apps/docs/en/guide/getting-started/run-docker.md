@@ -1,6 +1,8 @@
 # Running with Docker
 
-A production rehearsal: the same images that go to deploy, behind a single entry point. This mode isn't set up for everyday development — use [`pnpm dev`](/en/guide/getting-started/run-pnpm) for that.
+The applications run in containers behind a single entry point — the same images that go to deploy.
+
+These are production builds, there is no hot reload, a code change shows up only after a rebuild. For working on the code use [`pnpm dev`](/en/guide/getting-started/run-pnpm).
 
 Before the first run — [Setup](/en/guide/getting-started/setup).
 

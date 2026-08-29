@@ -2,11 +2,11 @@
 
 `Dockerfile` อิสระสี่ไฟล์ — ไฟล์ละหนึ่ง application บวก reverse proxy สร้างต่างกันเพราะแก้ปัญหาคนละอย่าง:
 
-| ไฟล์                        | ทำอะไร                                                              |
-| -------------------------- | -------------------------------------------------------------------- |
+| ไฟล์                        | ทำอะไร                                                             |
+| -------------------------- | ----------------------------------------------------------------- |
 | `apps/backend/Dockerfile`  | build NestJS, image สุดท้ายมีแค่ `dist/` กับ dependency ของ production |
 | `apps/frontend/Dockerfile` | build Nuxt, image สุดท้ายคือ `.output/` พร้อม Nitro server            |
-| `apps/docs/Dockerfile`     | build static ของ VitePress, ไม่มีอะไรให้รัน                            |
+| `apps/docs/Dockerfile`     | build static ของ VitePress, ไม่มีอะไรให้รัน                           |
 | `infra/nginx/Dockerfile`   | หยิบ `nginx:alpine` มา แล้วใส่ config กับไฟล์เอกสาร                    |
 
 **Multi-stage** สำหรับ backend และ frontend: stage `builder` ติดตั้ง dependency และสร้าง production artifact ส่วน stage `runner` คัดลอกเฉพาะผลลัพธ์ออกมา image สุดท้ายจึงเบา — ไม่มี source ไม่มี dev dependency
@@ -97,11 +97,13 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s \
   CMD wget -qO- http://127.0.0.1:${PORT}/health || exit 1
 ```
 
-| Service  | path ที่ตรวจ                                |
-| -------- | ------------------------------------------ |
-| backend  | `http://127.0.0.1:${PORT}/health`          |
-| frontend | `http://127.0.0.1:${PORT}/api/health`      |
-| nginx    | `http://127.0.0.1:${NGINX_INTERNAL_PORT}/` |
+| Service  | path ที่ตรวจ                                 | Interval / start-period |
+| -------- | ------------------------------------------ | ----------------------- |
+| backend  | `http://127.0.0.1:${PORT}/health`          | `5s` / `60s`            |
+| frontend | `http://127.0.0.1:${PORT}/api/health`      | `30s` / `5s`            |
+| nginx    | `http://127.0.0.1:${NGINX_INTERNAL_PORT}/` | `30s` / `5s`            |
+
+backend ตรวจถี่กว่า — 5 วินาทีแทน 30: `depends_on: service_healthy` ของ frontend รอ healthcheck ตัวนี้อยู่ ถ้าตรวจห่างกว่านี้การ start ทั้ง stack จะยืดออกไปอีกครึ่งนาที ส่วน `start-period` 60 วินาทีเผื่อไว้สำหรับการรันครั้งแรกตอนที่แอปกำลังอุ่นเครื่อง
 
 `docs-builder` ไม่มี healthcheck — ไม่มีอะไรให้ตรวจ image จบที่ stage build
 

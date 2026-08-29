@@ -17,6 +17,6 @@ Anything that must match on the client and the server: request and response shap
 
 ## Consumed as sources
 
-`main` and `types` point straight at `src/index.ts`, and the `@repo/shared` alias in `tsconfig.base.json` does the same. There's no build step: the applications compile the sources as part of their own build.
+`main` and `types` point straight at `src/index.ts`. There's no build step: the applications compile the sources as part of their own build — the backend with `tsc`, the frontend through Vite. Resolution goes through the pnpm workspace symlink, not through TypeScript `paths`.
 
 Package manifest — [package.json](/en/guide/structure/packages/shared/package-json).

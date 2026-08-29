@@ -1,6 +1,9 @@
 import { ROOT_ENV, copyEnvFiles } from './copy-env.mjs'
 import { checkPorts } from './check-ports.mjs'
 import { ensureNetwork } from './ensure-network.mjs'
+import { createLogger } from './log.mjs'
+
+const log = createLogger('predocker.mjs')
 
 async function main() {
   // Шаг 1: создать .env из .env.example если отсутствует
@@ -18,7 +21,6 @@ async function main() {
 }
 
 main().catch((e) => {
-  // eslint-disable-next-line no-console
-  console.error('predocker failed:', e.message)
+  log.error('failed:', e.message)
   process.exit(1)
 })

@@ -3,13 +3,16 @@
 
 import { execFileSync } from 'child_process'
 import { ROOT_ENV, parseEnv } from './copy-env.mjs'
+import { createLogger } from './log.mjs'
+
+const log = createLogger('ensure-network.mjs')
 
 function getNetworkName() {
   const key = 'COMPOSE_NETWORK_NAME'
   const value = parseEnv(ROOT_ENV)[key]
 
   if (!value) {
-    throw new Error(`${key} не задан в ${ROOT_ENV} — проверьте .env.example рядом с ним`)
+    throw new Error(`${key} not set in ${ROOT_ENV} - check .env.example next to it`)
   }
   return value
 }
@@ -39,7 +42,6 @@ export function ensureNetwork() {
     ['network', 'create', name],
     { stdio: ['ignore', 'ignore', 'inherit'] },
   )
-  // eslint-disable-next-line no-console
-  console.log(`Создана Docker-сеть ${name}`)
+  log.log(`Created Docker network ${name}`)
   return true
 }

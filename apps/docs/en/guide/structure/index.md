@@ -26,7 +26,7 @@ How the packages depend on each other — see [Architecture](/en/guide/architect
 | File                    | Purpose                                                                                                                                           |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `pnpm-workspace.yaml`   | Declares which directories are workspaces (`apps/*`, `packages/*`). Without it pnpm won't link the packages together                              |
-| `tsconfig.base.json`    | Shared TypeScript settings and the `@repo/*` aliases. Extended by the app configs                                                                 |
+| `tsconfig.base.json`    | Shared TypeScript settings: strictness and checks. Extended by the app configs                                                                    |
 | `eslint.config.base.js` | The lint rules themselves: rules, style, globals                                                                                                  |
 | `eslint.config.js`      | A one-line re-export of the base. Needed because ESLint looks for a standard filename at the root, while the apps import `base` directly          |
 | `lint-staged.config.js` | What to run on staged files: `eslint --fix` for js/ts/vue                                                                                         |

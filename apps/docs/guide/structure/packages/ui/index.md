@@ -17,7 +17,7 @@ packages/ui/
 
 Скомпилировать его обычным `tsc` и не получилось бы: `.vue`-файлы требуют `vue-tsc` и отдельного пайплайна. `tsconfig.json` здесь нужен лишь для `vue-tsc --noEmit` при проверке типов.
 
-Отсюда и алиас: `@repo/ui` резолвится в `src/index.ts` — прямо в исходник, в отличие от [shared](/guide/structure/packages/shared/).
+Поэтому `main` указывает прямо на `src/index.ts` — так же, как у [shared](/guide/structure/packages/shared/). Отличается только проверка типов: здесь нужен `vue-tsc`, там достаточно `tsc`.
 
 ## Своя настройка TypeScript
 

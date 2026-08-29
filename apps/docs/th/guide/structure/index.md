@@ -26,7 +26,7 @@ package แต่ละตัวขึ้นต่อกันอย่างไ
 | ไฟล์                     | ทำอะไร                                                                                                                                   |
 | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
 | `pnpm-workspace.yaml`   | ประกาศว่าโฟลเดอร์ไหนเป็น workspace (`apps/*`, `packages/*`) ถ้าไม่มี pnpm จะไม่เชื่อม package เข้าด้วยกัน                                           |
-| `tsconfig.base.json`    | การตั้งค่า TypeScript ที่ใช้ร่วมกันและ alias `@repo/*` config ของแต่ละแอป extend จากไฟล์นี้                                                         |
+| `tsconfig.base.json`    | การตั้งค่า TypeScript ที่ใช้ร่วมกัน: ความเข้มงวดและการตรวจสอบ config ของแต่ละแอป extend จากไฟล์นี้                                                   |
 | `eslint.config.base.js` | ตัวกฎของ linter: rule, style, global                                                                                                     |
 | `eslint.config.js`      | re-export ของ base บรรทัดเดียว จำเป็นเพราะ ESLint มองหาไฟล์ชื่อมาตรฐานที่ root ส่วนแอปต่าง ๆ import `base` โดยตรง                                  |
 | `lint-staged.config.js` | สิ่งที่จะรันกับไฟล์ใน staged: `eslint --fix` สำหรับ js/ts/vue                                                                                    |

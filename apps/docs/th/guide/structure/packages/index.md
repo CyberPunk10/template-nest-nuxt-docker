@@ -8,9 +8,9 @@ packages/
 └── ui/          Vue component — สำหรับ frontend เท่านั้น
 ```
 
-| Package | ใครใช้ | การ build |
-| --- | --- | --- |
-| [shared](/th/guide/structure/packages/shared/) | backend, frontend | ใช้เป็นซอร์สโดยตรง |
-| [ui](/th/guide/structure/packages/ui/) | frontend | ใช้เป็นซอร์สโดยตรง |
+| Package                                        | ใครใช้             | การ build       | การตรวจ type                      |
+| ---------------------------------------------- | ----------------- | --------------- | --------------------------------- |
+| [shared](/th/guide/structure/packages/shared/) | backend, frontend | ใช้เป็นซอร์สโดยตรง | `tsc --noEmit`                    |
+| [ui](/th/guide/structure/packages/ui/)         | frontend          | ใช้เป็นซอร์สโดยตรง | `vue-tsc --noEmit` — เพราะ `.vue` |
 
-ทั้งคู่ไม่ต้อง compile: Vite และ Nest จัดการซอร์สโดยตรงผ่าน alias ของ workspace รายละเอียดเต็ม — [สถาปัตยกรรม](/th/guide/architecture#packages-ใช้งานอย่างไร)
+ทั้งคู่ไม่ต้อง compile: `main` ชี้ไปที่ `src/index.ts` ตรง ๆ ส่วนซอร์สนั้นผู้ใช้จัดการเอง — Nest ด้วย `tsc` ส่วน Nuxt ผ่าน Vite รายละเอียดเต็ม — [สถาปัตยกรรม](/th/guide/architecture#packages-ใช้งานอย่างไร)

@@ -7,6 +7,7 @@
 | `dev`         | `nuxt dev`       | Локальная разработка с hot-reload                                                   |
 | `build`       | `nuxt build`     | Production-сборка в `.output/`                                                      |
 | `preview`     | `nuxt preview`   | Локальный запуск production-сборки                                                  |
+| `generate`    | `nuxt generate`  | Статическая сборка. В этом шаблоне не используется: образ запускает SSR             |
 | `postinstall` | `nuxt prepare`   | Генерирует `.nuxt/` (типы, алиасы) — запускается автоматически после `pnpm install` |
 | `lint`        | `eslint . --fix` | Линтер с автофиксом                                                                 |
 | `type-check`  | `nuxt typecheck` | Проверка типов через `vue-tsc`                                                      |

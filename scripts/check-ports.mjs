@@ -37,11 +37,11 @@ export function killPort(port) {
 export function requirePort(envPath, key) {
   const env = parseEnv(envPath)
   if (!(key in env)) {
-    throw new Error(`${key} не задан в ${envPath} — проверьте .env.example рядом с ним`)
+    throw new Error(`${key} not set in ${envPath} - check .env.example next to it`)
   }
   const port = Number(env[key])
   if (!Number.isInteger(port) || port < 0 || port > 65535) {
-    throw new Error(`${key}=${env[key]} в ${envPath} — не корректный номер порта (0-65535)`)
+    throw new Error(`${key}=${env[key]} in ${envPath} - not a valid port number (0-65535)`)
   }
   return port
 }

@@ -8,9 +8,9 @@ packages/
 └── ui/          Vue-компоненты — только для frontend
 ```
 
-| Пакет | Кто использует | Сборка |
-| --- | --- | --- |
-| [shared](/guide/structure/packages/shared/) | backend, frontend | компилируется в `dist/` (ESM) |
-| [ui](/guide/structure/packages/ui/) | frontend | не компилируется, source-only |
+| Пакет                                       | Кто использует    | Сборка      | Проверка типов                    |
+| ------------------------------------------- | ----------------- | ----------- | --------------------------------- |
+| [shared](/guide/structure/packages/shared/) | backend, frontend | source-only | `tsc --noEmit`                    |
+| [ui](/guide/structure/packages/ui/)         | frontend          | source-only | `vue-tsc --noEmit` — из-за `.vue` |
 
-Разница в сборке не случайна: `shared` попадает в два разных рантайма, `ui` — только во frontend, где Vite обрабатывает исходники напрямую. Подробный разбор — [Архитектура](/guide/architecture#пакеты-как-потребляются).
+Ни один не компилируется: `main` указывает прямо на `src/index.ts`, а исходники обрабатывают сами потребители — Nest через `tsc`, Nuxt через Vite. Подробный разбор — [Архитектура](/guide/architecture#пакеты-как-потребляются).
