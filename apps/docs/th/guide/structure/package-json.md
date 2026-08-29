@@ -5,6 +5,7 @@ Manifest ที่ root ของ monorepo สคริปต์ในนี้�
 | สคริปต์          | คำสั่ง                             | ทำอะไร                                                                 |
 | -------------- | ------------------------------- | --------------------------------------------------------------------- |
 | `env:copy`     | `node scripts/copy-env-cli.mjs` | สร้าง `.env` ที่ขาดหายทั้งหมดจาก `.env.example` — ไม่รันหรือตรวจสอบอะไรอย่างอื่น |
+| `env:copy:force` | `node scripts/copy-env-cli.mjs --force` | เหมือนกัน แต่เขียนทับไฟล์ `.env` ที่มีอยู่ — การแก้ในเครื่องจะหายไป |
 | `predev`       | `node scripts/predev.mjs`       | รันอัตโนมัติก่อน `dev` (npm `pre*` convention)                             |
 | `dev`          | `node scripts/dev.mjs`          | เปิด backend, frontend และ docs พร้อมกัน (ผ่าน `concurrently`)            |
 | `predocker:up` | `node scripts/predocker.mjs`    | รันอัตโนมัติก่อน `docker:up`                                               |

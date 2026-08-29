@@ -1,6 +1,6 @@
 # .env[.example]
 
-Variables for docker compose: the names and ports Compose needs to know **before** the containers start. The applications never read this file — they have their own `.env`.
+Variables for docker compose: the names and ports Compose needs to know **before** the containers start. The applications themselves don't read this file — they have their own `.env`. But when running through Docker, values from here reach the containers via `environment` in `docker-compose.yml`, which takes precedence over `apps/*/.env`.
 
 | Variable                 | Value  | Comment                                                                |
 | ------------------------ | ------ | ------------------------------------------------------------------------ |

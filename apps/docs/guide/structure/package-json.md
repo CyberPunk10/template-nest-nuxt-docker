@@ -5,6 +5,7 @@
 | Скрипт         | Команда                         | Что делает                                                                                 |
 | -------------- | ------------------------------- | ------------------------------------------------------------------------------------------ |
 | `env:copy`     | `node scripts/copy-env-cli.mjs` | Создаёт все `.env` из `.env.example`, которых ещё нет — ничего не запускает и не проверяет |
+| `env:copy:force` | `node scripts/copy-env-cli.mjs --force` | То же, но перезаписывает существующие `.env` — локальные правки теряются |
 | `predev`       | `node scripts/predev.mjs`       | Запускается автоматически перед `dev` (npm `pre*`-конвенция)                               |
 | `dev`          | `node scripts/dev.mjs`          | Параллельно поднимает backend, frontend и docs (через `concurrently`)                      |
 | `predocker:up` | `node scripts/predocker.mjs`    | Запускается автоматически перед `docker:up`                                                |

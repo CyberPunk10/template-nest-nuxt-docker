@@ -14,10 +14,9 @@ apps/frontend/
 │   ├── utils/                  helpers (auto-imported)
 │   └── app.vue                 root component
 ├── server/                     server side (Nitro)
-│   ├── api/
-│   │   ├── backend/            BFF proxy to NestJS
-│   │   └── health.get.ts
-│   └── utils/
+│   └── api/
+│       ├── backend/            BFF proxy to NestJS
+│       └── health.get.ts
 ├── i18n/                       @nuxtjs/i18n setup
 ├── public/                     served as-is: favicon, robots.txt
 └── nuxt.config.ts

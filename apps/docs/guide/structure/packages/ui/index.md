@@ -8,7 +8,7 @@ packages/ui/
 │   ├── components/     UiButton, UiBadge, UiCard
 │   └── index.ts
 ├── package.json
-└── tsconfig.json       не наследует base — нужен jsx + DOM
+└── tsconfig.json       наследует base, добавляет DOM
 ```
 
 ## Почему не компилируется
@@ -21,6 +21,6 @@ packages/ui/
 
 ## Своя настройка TypeScript
 
-**Не наследует** `tsconfig.base.json`: ему нужны `jsx` и библиотека `DOM`, которых в базовом конфиге нет.
+Наследует `tsconfig.base.json`, но добавляет библиотеку `DOM` — в базовом конфиге её нет намеренно, он общий и для бэкенда.
 
 Манифест пакета — [package.json](/guide/structure/packages/ui/package-json).

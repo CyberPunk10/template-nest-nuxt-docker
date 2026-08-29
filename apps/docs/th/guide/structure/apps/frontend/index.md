@@ -14,10 +14,9 @@ apps/frontend/
 │   ├── utils/                  ฟังก์ชันช่วย (auto-import)
 │   └── app.vue                 root component
 ├── server/                     ฝั่ง server (Nitro)
-│   ├── api/
-│   │   ├── backend/            BFF proxy ไป NestJS
-│   │   └── health.get.ts
-│   └── utils/
+│   └── api/
+│       ├── backend/            BFF proxy ไป NestJS
+│       └── health.get.ts
 ├── i18n/                       การตั้งค่า @nuxtjs/i18n
 ├── public/                     เสิร์ฟตามเดิม: favicon, robots.txt
 └── nuxt.config.ts

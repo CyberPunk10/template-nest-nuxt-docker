@@ -8,7 +8,7 @@ packages/ui/
 │   ├── components/     UiButton, UiBadge, UiCard
 │   └── index.ts
 ├── package.json
-└── tsconfig.json       ไม่ extend base — ต้องการ jsx + DOM
+└── tsconfig.json       extend base เพิ่ม DOM
 ```
 
 ## ทำไมไม่ compile
@@ -21,6 +21,6 @@ package นี้ยังเป็นซอร์สโค้ด มีแค�
 
 ## การตั้งค่า TypeScript ของตัวเอง
 
-เป็น package เดียวที่ **ไม่ extend** `tsconfig.base.json`: มันต้องการ `jsx` และ lib `DOM` ซึ่ง base config ไม่มี
+extend `tsconfig.base.json` แต่เพิ่ม lib `DOM` เข้ามา — base config ไม่มีมันโดยเจตนา เพราะใช้ร่วมกับ backend ด้วย
 
 Manifest ของ package — [package.json](/th/guide/structure/packages/ui/package-json)

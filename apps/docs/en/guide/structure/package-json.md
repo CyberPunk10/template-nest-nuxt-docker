@@ -5,6 +5,7 @@ The monorepo's root manifest. Its scripts orchestrate the whole repository: `pnp
 | Script         | Command                         | What it does                                                                              |
 | -------------- | ------------------------------- | ----------------------------------------------------------------------------------------- |
 | `env:copy`     | `node scripts/copy-env-cli.mjs` | Creates any missing `.env` files from `.env.example` — doesn't run or check anything else |
+| `env:copy:force` | `node scripts/copy-env-cli.mjs --force` | The same, but overwrites existing `.env` files — local edits are lost |
 | `predev`       | `node scripts/predev.mjs`       | Runs automatically before `dev` (npm `pre*` convention)                                   |
 | `dev`          | `node scripts/dev.mjs`          | Brings up backend, frontend, and docs in parallel (via `concurrently`)                    |
 | `predocker:up` | `node scripts/predocker.mjs`    | Runs automatically before `docker:up`                                                     |

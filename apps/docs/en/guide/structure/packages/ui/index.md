@@ -8,7 +8,7 @@ packages/ui/
 │   ├── components/     UiButton, UiBadge, UiCard
 │   └── index.ts
 ├── package.json
-└── tsconfig.json       doesn't extend base — needs jsx + DOM
+└── tsconfig.json       extends base, adds DOM
 ```
 
 ## Why it isn't compiled
@@ -21,6 +21,6 @@ So `main` points straight at `src/index.ts` — just like [shared](/en/guide/str
 
 ## Its own TypeScript setup
 
-The only package that **doesn't extend** `tsconfig.base.json`: it needs `jsx` and the `DOM` lib, which the base config doesn't have.
+It extends `tsconfig.base.json` but adds the `DOM` lib — the base config leaves it out deliberately, since it is shared with the backend too.
 
 Package manifest — [package.json](/en/guide/structure/packages/ui/package-json).

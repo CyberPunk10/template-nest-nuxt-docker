@@ -14,10 +14,9 @@ apps/frontend/
 │   ├── utils/                  вспомогательные функции (автоимпорт)
 │   └── app.vue                 корневой компонент
 ├── server/                     серверная часть (Nitro)
-│   ├── api/
-│   │   ├── backend/            BFF-прокси в NestJS
-│   │   └── health.get.ts
-│   └── utils/
+│   └── api/
+│       ├── backend/            BFF-прокси в NestJS
+│       └── health.get.ts
 ├── i18n/                       настройка @nuxtjs/i18n
 ├── public/                     отдаётся как есть: favicon, robots.txt
 └── nuxt.config.ts
