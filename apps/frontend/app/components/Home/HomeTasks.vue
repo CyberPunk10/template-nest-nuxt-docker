@@ -19,6 +19,10 @@ const editingId = ref<string | null>(null)
 const editForm = reactive({ title: '', description: '' })
 const error = ref('')
 
+async function refreshTasks(): Promise<void> {
+  await Promise.all([refresh(), refreshNuxtData(QUERY_KEYS.allTasks)])
+}
+
 async function createTask() {
   error.value = ''
   try {
@@ -28,7 +32,7 @@ async function createTask() {
     })
     form.title = ''
     form.description = ''
-    await Promise.all([refresh(), refreshNuxtData(QUERY_KEYS.allTasks)])
+    await refreshTasks()
   } catch {
     error.value = t('tasks.error')
   }
@@ -52,7 +56,7 @@ async function saveEdit(id: string) {
       body: { title: editForm.title, description: editForm.description || undefined },
     })
     editingId.value = null
-    await Promise.all([refresh(), refreshNuxtData(QUERY_KEYS.allTasks)])
+    await refreshTasks()
   } catch {
     error.value = t('tasks.error')
   }
@@ -62,7 +66,7 @@ async function removeTask(id: string) {
   error.value = ''
   try {
     await $api(`/tasks/${id}`, { method: 'DELETE' })
-    await Promise.all([refresh(), refreshNuxtData(QUERY_KEYS.allTasks)])
+    await refreshTasks()
   } catch {
     error.value = t('tasks.error')
   }
