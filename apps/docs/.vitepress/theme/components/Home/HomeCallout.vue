@@ -259,7 +259,7 @@ const v = computed(() => callout.value[props.variant])
   position: absolute;
   left: -0.04em;
   right: -0.04em;
-  top: 52%;
+  top: 55%;
   height: 2px;
   border-radius: 1px;
   background: var(--home-accent);

@@ -197,9 +197,9 @@
         "text": "From here on — only your ideas."
       },
       "type": {
-        "call": "Start",
-        "struck": "by configuring the project",
-        "kept": "by building ",
+        "call": "Start by",
+        "struck": "configuring the project",
+        "kept": "building ",
         "accent": "your ideas"
       }
     },
