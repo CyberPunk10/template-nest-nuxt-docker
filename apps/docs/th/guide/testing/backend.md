@@ -115,7 +115,7 @@ export function setupApp(app: INestApplication): INestApplication {
 
 `Test.createTestingModule` ประกอบให้แค่โมดูล — ทุกอย่างที่ตอนรันจริงถูกติดเข้าไปใน `main.ts` จะไม่มีอยู่ใน application ของเทสต์ ถ้า copy-paste รายการนั้นไปไว้ในเทสต์ e2e จะกลายเป็นการตรวจ application ที่ config ต่างจาก production และทั้งสองฝั่งจะเคลื่อนออกจากกันตั้งแต่การแก้ครั้งแรก: ลองเอา `forbidNonWhitelisted` ออกจาก `main.ts` ดู เทสต์จะยังเขียวอยู่ เพราะในสำเนาของตัวเองยังมีค่านั้นอยู่ การใช้ฟังก์ชันร่วมกันทำให้การเคลื่อนออกจากกันแบบนี้เกิดไม่ได้
 
-CORS กับ Swagger ไม่ได้อยู่ใน `setupApp`: ทั้งคู่ขึ้นกับ `ConfigService` และไม่เกี่ยวกับพฤติกรรมของ endpoint ที่กำลังตรวจ
+CORS, Swagger และ `listen` ไม่ได้อยู่ใน `setupApp`: ไม่เกี่ยวกับพฤติกรรมของ endpoint ที่กำลังตรวจ CORS ทำงานจาก header `Origin` ซึ่ง supertest ไม่ได้ส่ง, Swagger mount route แยกต่างหาก, ส่วน `listen` เปิดพอร์ต — ในเทสต์แอปอยู่ในหน่วยความจำ
 
 ### state ระหว่างเทสต์
 
