@@ -115,7 +115,7 @@ export function setupApp(app: INestApplication): INestApplication {
 
 `Test.createTestingModule` assembles modules only — everything attached in `main.ts` in production is absent from the test application. Copy-pasting that list into the test would leave e2e checking an application configured differently from production, and the two would drift apart at the first edit: drop `forbidNonWhitelisted` from `main.ts` and the tests stay green, because the setting is still there in their own copy. A shared function makes that drift impossible.
 
-CORS and Swagger are not part of `setupApp`: they depend on `ConfigService` and have no bearing on the endpoint behaviour under test.
+CORS, Swagger and `listen` are not part of `setupApp`: they have no bearing on the endpoint behaviour under test. CORS keys off the `Origin` header, which supertest never sends, Swagger mounts a separate route, and `listen` opens a port — in tests the application lives in memory.
 
 ### State between tests
 

@@ -14,7 +14,7 @@ export function useRefreshToken() {
 
   async function refresh(): Promise<boolean> {
     if (import.meta.server) {
-      throw new Error('useRefreshToken() поддерживает только клиент, см. комментарий выше')
+      throw new Error('useRefreshToken() is client-only')
     }
 
     if (refreshPromise) return refreshPromise
