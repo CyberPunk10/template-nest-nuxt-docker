@@ -100,15 +100,18 @@ await app.init()
 
 ### config ของ application ไม่ถูกเขียนซ้ำในเทสต์
 
-global pipe กับ filter ถูกระบุไว้ที่เดียว — ใน `src/setup-app.ts` ซึ่งทั้ง `main.ts` และ e2e test เรียกใช้:
+global middleware, pipe และ filter ถูกระบุไว้ที่เดียว — ใน `src/setup-app.ts` ซึ่งทั้ง `main.ts` และ e2e test ทุกตัวเรียกใช้:
 
 ```ts
 export function setupApp(app: INestApplication): INestApplication {
+  app.use(cookieParser())
   app.useGlobalFilters(new HttpExceptionFilter())
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }))
   return app
 }
 ```
+
+`JwtStrategy` อ่าน token จาก `req.cookies` — ถ้าไม่มี `cookieParser` route ที่ป้องกันไว้ทุกตัวจะตอบ `401` แม้ว่า request จะมี cookie มาด้วยก็ตาม
 
 `Test.createTestingModule` ประกอบให้แค่โมดูล — ทุกอย่างที่ตอนรันจริงถูกติดเข้าไปใน `main.ts` จะไม่มีอยู่ใน application ของเทสต์ ถ้า copy-paste รายการนั้นไปไว้ในเทสต์ e2e จะกลายเป็นการตรวจ application ที่ config ต่างจาก production และทั้งสองฝั่งจะเคลื่อนออกจากกันตั้งแต่การแก้ครั้งแรก: ลองเอา `forbidNonWhitelisted` ออกจาก `main.ts` ดู เทสต์จะยังเขียวอยู่ เพราะในสำเนาของตัวเองยังมีค่านั้นอยู่ การใช้ฟังก์ชันร่วมกันทำให้การเคลื่อนออกจากกันแบบนี้เกิดไม่ได้
 
@@ -151,6 +154,6 @@ process.env.CORS_ORIGIN ??= 'http://localhost:3200'
 สำหรับโมดูลใหม่:
 
 1. unit test ของ service — `src/modules/<ชื่อ>/<ชื่อ>.service.spec.ts` ตรวจลอจิกทางธุรกิจ: คืนค่าอะไร, โยน exception ตัวไหน, state เปลี่ยนอย่างไร
-2. e2e test ของ controller — `test/<ชื่อ>.e2e-spec.ts` ตรวจ contract ของ HTTP: status code, รูปร่างของ body, การ validate และให้ยก application ผ่าน `setupApp` — ไม่อย่างนั้น validation กับ exception filter จะไม่ทำงาน และเทสต์จะไปล็อก status code ที่ server จริงไม่ได้ตอบ
+2. e2e test ของ controller — `test/default/<ชื่อ>.e2e-spec.ts` ตรวจ contract ของ HTTP: status code, รูปร่างของ body, การ validate และให้ยก application ผ่าน `setupApp` — ไม่อย่างนั้น validation กับ exception filter จะไม่ทำงาน และเทสต์จะไปล็อก status code ที่ server จริงไม่ได้ตอบ
 
 unit test แยกสำหรับ controller มักจะเกินจำเป็น: ถ้า controller แค่ส่งต่อไปให้ service ก็ไม่มีอะไรให้ตรวจแบบแยกเดี่ยว — สาระทั้งหมดของมัน (route, pipe, status code) เห็นได้เฉพาะในระดับ e2e

@@ -1,10 +1,9 @@
-import { INestApplication, ValidationPipe } from '@nestjs/common'
+import { INestApplication } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
-import cookieParser from 'cookie-parser'
 import request from 'supertest'
 import { App } from 'supertest/types'
 import { AppModule } from '../../src/app.module'
-import { HttpExceptionFilter } from '../../src/common/filters/http-exception.filter'
+import { setupApp } from '../../src/setup-app'
 import * as bcrypt from 'bcrypt'
 import { SessionsStore } from '../../src/modules/auth/sessions.store'
 import { UsersService } from '../../src/modules/users/users.service'
@@ -51,14 +50,9 @@ describe('Auth (e2e)', () => {
       imports: [AppModule],
     }).compile()
 
-    app = moduleFixture.createNestApplication()
-
-    // Воспроизводим setup из main.ts
-    app.use(cookieParser())
-    app.useGlobalFilters(new HttpExceptionFilter())
-    app.useGlobalPipes(
-      new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }),
-    )
+    // Пайпы, фильтр и cookie-parser берём из той же функции, что и main.ts —
+    // иначе тесты проверяли бы приложение с другой конфигурацией, чем production.
+    app = setupApp(moduleFixture.createNestApplication())
 
     await app.init()
     sessions = moduleFixture.get(SessionsStore)
