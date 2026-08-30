@@ -11,6 +11,8 @@
     ui-sans-serif, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
     'Segoe UI Symbol', 'Noto Color Emoji';
 
+  --vp-sidebar-width: 320px;
+
   --vp-c-brand-1: #0ca678;
   --vp-c-brand-2: #099268;
   --vp-c-brand-3: #0ca678;

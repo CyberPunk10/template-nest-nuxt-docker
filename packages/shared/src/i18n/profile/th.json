@@ -60,7 +60,14 @@
   "sessions": {
     "title": "เซสชันที่ใช้งานอยู่",
     "current": "ปัจจุบัน",
-    "revoke": "ยกเลิก"
+    "revoke": "ยกเลิก",
+    "demo": {
+      "moscow": "มอสโก, RU",
+      "spb": "เซนต์ปีเตอร์สเบิร์ก, RU",
+      "now": "ตอนนี้",
+      "hoursAgo": "{n} ชม. ที่แล้ว",
+      "daysAgo": "{n} วันที่แล้ว"
+    }
   },
   "account": {
     "userId": "User ID",

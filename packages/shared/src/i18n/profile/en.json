@@ -60,7 +60,14 @@
   "sessions": {
     "title": "Active sessions",
     "current": "Current",
-    "revoke": "Revoke"
+    "revoke": "Revoke",
+    "demo": {
+      "moscow": "Moscow, RU",
+      "spb": "Saint Petersburg, RU",
+      "now": "Now",
+      "hoursAgo": "{n}h ago",
+      "daysAgo": "{n}d ago"
+    }
   },
   "account": {
     "userId": "User ID",

@@ -11,16 +11,26 @@ const stats = computed(() => [
   { label: t('profile.stats.devices'), value: '3' },
 ])
 
-const sessions = [
-  { device: 'Chrome · macOS', location: 'Москва, RU', time: 'Сейчас', current: true },
-  { device: 'Safari · iPhone', location: 'Москва, RU', time: '2 ч. назад', current: false },
+const sessions = computed(() => [
   {
-    device: 'Firefox · Linux',
-    location: 'Санкт-Петербург, RU',
-    time: '5 дн. назад',
+    device: 'Chrome · macOS',
+    location: t('profile.sessions.demo.moscow'),
+    time: t('profile.sessions.demo.now'),
+    current: true,
+  },
+  {
+    device: 'Safari · iPhone',
+    location: t('profile.sessions.demo.moscow'),
+    time: t('profile.sessions.demo.hoursAgo', { n: 2 }),
     current: false,
   },
-]
+  {
+    device: 'Firefox · Linux',
+    location: t('profile.sessions.demo.spb'),
+    time: t('profile.sessions.demo.daysAgo', { n: 5 }),
+    current: false,
+  },
+])
 </script>
 
 <template>

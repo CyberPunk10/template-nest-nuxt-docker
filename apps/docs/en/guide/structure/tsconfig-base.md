@@ -49,7 +49,6 @@ Each file carries **only what makes it different** from the base. An option that
 | `strict` | Full strictness, `strictNullChecks` included |
 | `esModuleInterop` | Import CommonJS packages as `import x from` without `* as` |
 | `forceConsistentCasingInFileNames` | Path casing: harmless on macOS, breaks the Docker build |
-| `moduleResolution: bundler` | Resolves like Vite and esbuild: package.json `exports`, extensionless imports |
 | `skipLibCheck` | Skip type-checking `node_modules` — faster, no third-party errors |
 | `noEmit` | Produce nothing |
 | `noImplicitOverride` | Overriding a method requires the `override` keyword |
