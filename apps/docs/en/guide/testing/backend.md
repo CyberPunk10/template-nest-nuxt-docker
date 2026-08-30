@@ -100,15 +100,18 @@ The application must be closed in `afterAll`/`afterEach`: without `app.close()` 
 
 ### The application's configuration is not duplicated in tests
 
-Global pipes and filters are listed once — in `src/setup-app.ts`, which both `main.ts` and the e2e tests call:
+Global middleware, pipes and filters are listed once — in `src/setup-app.ts`, which both `main.ts` and every e2e test call:
 
 ```ts
 export function setupApp(app: INestApplication): INestApplication {
+  app.use(cookieParser())
   app.useGlobalFilters(new HttpExceptionFilter())
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }))
   return app
 }
 ```
+
+`JwtStrategy` reads the token from `req.cookies` — without `cookieParser` every protected route answers `401`, even when the request does carry the cookies.
 
 `Test.createTestingModule` assembles modules only — everything attached in `main.ts` in production is absent from the test application. Copy-pasting that list into the test would leave e2e checking an application configured differently from production, and the two would drift apart at the first edit: drop `forbidNonWhitelisted` from `main.ts` and the tests stay green, because the setting is still there in their own copy. A shared function makes that drift impossible.
 
@@ -151,6 +154,6 @@ Currently in the template:
 For a new module:
 
 1. A unit test for the service — `src/modules/<name>/<name>.service.spec.ts`. Check the business logic: what is returned, which exceptions are thrown, what changes in the state
-2. An e2e test for the controller — `test/<name>.e2e-spec.ts`. Check the HTTP contract: status codes, body shape, validation. Start the application through `setupApp` — otherwise validation and the exception filter are not in place, and the test will lock in status codes the live server does not return
+2. An e2e test for the controller — `test/default/<name>.e2e-spec.ts`. Check the HTTP contract: status codes, body shape, validation. Start the application through `setupApp` — otherwise validation and the exception filter are not in place, and the test will lock in status codes the live server does not return
 
 A separate unit test for a controller is usually redundant: if the controller only delegates to a service, there is nothing to check in isolation — its whole point (routes, pipes, status codes) is visible only at the e2e level.
