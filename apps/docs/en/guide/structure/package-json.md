@@ -8,8 +8,10 @@ The monorepo's root manifest. Its scripts orchestrate the whole repository: `pnp
 | `env:copy:force` | `node scripts/copy-env-cli.mjs --force` | The same, but overwrites existing `.env` files — local edits are lost |
 | `predev`       | `node scripts/predev.mjs`       | Runs automatically before `dev` (npm `pre*` convention)                                   |
 | `dev`          | `node scripts/dev.mjs`          | Brings up backend, frontend, and docs in parallel (via `concurrently`)                    |
+| `db:up`        | `node scripts/db.mjs up`        | Brings up the database container and waits for its healthcheck                             |
+| `db:down`      | `node scripts/db.mjs down`      | Stops the database container, data stays in the volume                                     |
 | `predocker:up` | `node scripts/predocker.mjs`    | Runs automatically before `docker:up`                                                     |
-| `docker:up`    | `docker compose up`             | Brings up all three services in Docker                                                    |
+| `docker:up`    | `docker compose --profile app up` | Brings up the whole stack in Docker: database, backend, frontend, nginx                  |
 | `build`        | `pnpm -r build`                 | Builds all workspace packages (runs `build` in each `apps/*`)                             |
 | `test`         | `pnpm -r test`                  | Unit tests across workspaces (packages without `test` are skipped)                        |
 | `test:e2e`     | `pnpm -r test:e2e`              | E2E tests — they boot the whole app, hence kept out of `test`                             |
