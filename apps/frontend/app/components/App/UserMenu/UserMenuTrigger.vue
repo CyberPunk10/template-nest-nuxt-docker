@@ -103,11 +103,5 @@ defineEmits<{ click: [] }>()
     }
   }
 
-  &.--collapsed {
-    .user-menu__info,
-    .user-menu__chevron {
-      opacity: 0;
-    }
-  }
 }
 </style>

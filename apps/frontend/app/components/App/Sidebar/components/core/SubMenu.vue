@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { onClickOutside } from '@vueuse/core'
 import { useSidebar } from '../../composables/useSidebar'
 import SidebarLink from './SidebarLink.vue'
 import AppCollapseTransition from '~/components/App/CollapseTransition.vue'
@@ -10,7 +9,6 @@ const props = withDefaults(
     notCollapsedItems: Record<string, boolean>
     item: SidebarMenuItem
     level?: number
-    forcePopup?: boolean
   }>(),
   { level: 1 },
 )
@@ -18,7 +16,6 @@ const props = withDefaults(
 const emit = defineEmits<{
   'toggle-collapse': [payload: { id: string, value: boolean }]
   'click-section': [item: SidebarMenuItem]
-  'click-outside-submenu': [item: SidebarMenuItem]
 }>()
 
 const SubMenu = defineAsyncComponent(() => import('./SubMenu.vue'))
@@ -26,7 +23,7 @@ const SubMenu = defineAsyncComponent(() => import('./SubMenu.vue'))
 const { isCollapsed } = useSidebar()
 
 const show = computed(() => !!props.notCollapsedItems[props.item.id!])
-const isPopup = computed(() => (props.forcePopup || isCollapsed.value) && props.level === 1)
+const isPopup = computed(() => isCollapsed.value && props.level === 1)
 
 function onToggleCollapse(item: SidebarMenuItem, value: boolean) {
   if (!props.notCollapsedItems[props.item.id!] && value && !isCollapsed.value) {
@@ -42,16 +39,6 @@ function onClickSection(item: SidebarMenuItem) {
   emit('click-section', item)
 }
 
-const onClickOutsideRef = ref<HTMLElement | null>(null)
-
-onClickOutside(onClickOutsideRef, onClickOutsideSubMenu)
-
-function onClickOutsideSubMenu() {
-  // если меню не открыто, то сразу выходим
-  if (!props.notCollapsedItems[props.item.id!]) return
-  emit('click-outside-submenu', props.item)
-}
-
 function getSubItemKey(item: SidebarMenuItem, subitem: SidebarMenuItem, index: number) {
   if (subitem.spacer) return `app-spacer-${item.id}-${index}`
   if (subitem.items) return `submenu_${subitem.id}_${index}`
@@ -60,64 +47,69 @@ function getSubItemKey(item: SidebarMenuItem, subitem: SidebarMenuItem, index: n
 </script>
 
 <template>
-  <component :is="isPopup ? 'div' : AppCollapseTransition" ref="onClickOutsideRef">
-    <div
-      v-show="isPopup || show"
-      class="sidebar-dropdown"
-      :class="[
-        `--sidebar-item-id--${item.id}`,
-        {
-          '--popup': isPopup,
-          '--show-sub-menu': show,
-        },
-      ]"
-    >
-      <div v-if="isPopup" class="sidebar-dropdown__header">
-        {{ $t(item.title) }}
-      </div>
+  <!-- Подменю рендерится только на клиенте: в popup-режиме (свёрнутый сайдбар) у него
+       другая обёртка — div вместо CollapseTransition, иначе транзишн управляет высотой
+       всплывающей панели и содержимое схлопывается. Режим зависит от ширины экрана,
+       которой сервер не знает, поэтому структуру не согласовать. Сам сайдбар при этом
+       рендерится на сервере, а закрытое подменю до гидратации всё равно не видно -->
+  <ClientOnly>
+    <component :is="isPopup ? 'div' : AppCollapseTransition">
+      <div
+        v-show="isPopup || show"
+        class="sidebar-dropdown"
+        :class="[
+          `--sidebar-item-id--${item.id}`,
+          {
+            '--popup': isPopup,
+            '--show-sub-menu': show,
+          },
+        ]"
+      >
+        <div v-if="isPopup" class="sidebar-dropdown__header">
+          {{ $t(item.title) }}
+        </div>
 
-      <div class="sidebar-dropdown__scroll --custom-css-scrollbar" :class="`--level-${level}`">
-        <template
-          v-for="(subitem, index) in item.items"
-          :key="getSubItemKey(item, subitem, index)"
-        >
-          <app-spacer
-            v-if="subitem.spacer"
-          />
-
-          <SidebarLink
-            v-else
-            :class="subitem.classes"
-            :chevron="!!subitem.items"
-            :external="subitem.external"
-            :newTab="subitem.newTab"
-            :icon="subitem.icon"
-            :levelSidebarLink="level + 1"
-            :opened="notCollapsedItems[subitem.id!]"
-            :to="subitem.url"
-            @click-section="onClickSection(subitem)"
-            @set-active="onToggleCollapse(subitem, $event)"
-            @toggle-collapse="onToggleCollapse(subitem, !notCollapsedItems[subitem.id!])"
+        <div class="sidebar-dropdown__scroll --custom-css-scrollbar" :class="`--level-${level}`">
+          <template
+            v-for="(subitem, index) in item.items"
+            :key="getSubItemKey(item, subitem, index)"
           >
-            {{ $te(subitem.title) ? $t(subitem.title) : subitem.title }}
-          </SidebarLink>
+            <app-spacer
+              v-if="subitem.spacer"
+            />
 
-          <SubMenu
-            v-if="subitem.items"
-            :item="subitem"
-            :level="level + 1"
-            :to="subitem.url"
-            :notCollapsedItems="notCollapsedItems"
-            @click-section="onClickSection"
-            @toggle-collapse="onToggleCollapse(subitem, !notCollapsedItems[subitem.id!])"
-            @click-outside-submenu="$emit('click-outside-submenu', $event)"
-          />
-        </template>
+            <SidebarLink
+              v-else
+              :class="subitem.classes"
+              :chevron="!!subitem.items"
+              :external="subitem.external"
+              :newTab="subitem.newTab"
+              :icon="subitem.icon"
+              :levelSidebarLink="level + 1"
+              :opened="notCollapsedItems[subitem.id!]"
+              :to="subitem.url"
+              @click-section="onClickSection(subitem)"
+              @set-active="onToggleCollapse(subitem, $event)"
+              @toggle-collapse="onToggleCollapse(subitem, !notCollapsedItems[subitem.id!])"
+            >
+              {{ $te(subitem.title) ? $t(subitem.title) : subitem.title }}
+            </SidebarLink>
 
-        <slot />
+            <SubMenu
+              v-if="subitem.items"
+              :item="subitem"
+              :level="level + 1"
+              :notCollapsedItems="notCollapsedItems"
+              @click-section="onClickSection"
+              @toggle-collapse="onToggleCollapse(subitem, !notCollapsedItems[subitem.id!])"
+            />
+          </template>
+
+          <slot />
+        </div>
       </div>
-    </div>
-  </component>
+    </component>
+  </ClientOnly>
 </template>
 
 <style lang="scss">

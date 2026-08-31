@@ -2,13 +2,13 @@
 import { useSidebar } from '../../composables/useSidebar'
 
 const emit = defineEmits(['click'])
-const { isMobileOpen } = useSidebar()
+const { isDrawerOpen } = useSidebar()
 </script>
 
 <template>
   <div
     class="sidebar-shadow"
-    :class="{ '--shadow-mobile-opened': isMobileOpen }"
+    :class="{ '--drawer-open': isDrawerOpen }"
     @click.self="emit('click')"
   />
 </template>
@@ -28,7 +28,7 @@ const { isMobileOpen } = useSidebar()
     opacity var(--app-sidebar-transition),
     background-color var(--app-sidebar-transition);
 
-  &.--shadow-mobile-opened {
+  &.--drawer-open {
     background: rgba(0, 0, 0, 0.2);
   }
 }

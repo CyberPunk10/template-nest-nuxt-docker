@@ -3,7 +3,7 @@
 
 :root {
   --scrollbar-size: 8px;
-  --scrollbar-minlength: 15px;
+  --scrollbar-minlength: 80px;
   --scrollbar-ff-width: thin;
   --scrollbar-track: transparent;
 }
@@ -51,7 +51,6 @@
       background-color: var(--scrollbar-thumb);
       border-radius: 9px;
       border: 2px solid transparent;
-      min-height: 5rem !important; // минимальная высота/длина ползунка
     }
 
     &::-webkit-scrollbar-thumb:vertical {
@@ -71,3 +70,15 @@
 // Чтобы добавить кастомный скролл нужно добавить класс через этот миксин
 // эти includes хранить в одном месте здесь
 @include scrollbarWrap('.--custom-css-scrollbar'); // universal class
+
+/* Компенсация ширины полосы прокрутки при блокировке скролла.
+
+   Пока оверлей открыт, body получает overflow: hidden — полоса исчезает, и без
+   компенсации контент расширяется на её ширину, из-за чего перестраивается текст.
+   Фактическую ширину меряет useBodyScrollLock() перед локом: она зависит от ОС
+   и браузера, поэтому константа здесь дала бы сдвиг на разницу.
+
+   Значение живёт только на время лока, вне его переменной нет и padding равен 0. */
+body {
+  padding-right: var(--scrollbar-compensation, 0);
+}

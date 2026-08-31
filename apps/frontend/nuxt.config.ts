@@ -67,7 +67,6 @@ export default defineNuxtConfig({
     optimizeDeps: {
       include: [
         '@vueuse/core',
-        'mitt',
         'vue-tippy',
       ],
     },
@@ -96,6 +95,15 @@ export default defineNuxtConfig({
   icon: {
     serverBundle: {
       collections: ['lucide'],
+    },
+    clientBundle: {
+      // иконки встраиваются в клиентский бандл: иначе каждая догружается
+      // отдельным запросом к /api/_nuxt_icon уже после гидратации
+      scan: {
+        // к дефолтным шаблонам добавлен ts: имена иконок задаются не только
+        // в разметке, но и в конфигах меню (sidebar-menu.ts, user-menu.ts, icons.ts)
+        globInclude: ['**/*.{vue,jsx,tsx,ts,md,mdc,mdx,yml,yaml}'],
+      },
     },
   },
 })

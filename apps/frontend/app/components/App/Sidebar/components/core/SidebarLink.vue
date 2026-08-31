@@ -31,30 +31,13 @@ const route = useRoute()
 
 const { isCollapsed } = useSidebar()
 
-const linkComponent = computed(() => {
-  if (props.to && props.external) return 'a'
-  if (!props.to) return 'button'
-  return NuxtLink
-})
+const linkComponent = computed(() => (props.to ? NuxtLink : 'button'))
 
-const linkAttrs = computed(() => {
-  const attrs: Record<string, string> = {}
-
-  if (linkComponent.value === 'a') {
-    attrs.href = props.to
-  }
-
-  if (linkComponent.value === NuxtLink) {
-    attrs.to = props.to
-  }
-
-  if (props.newTab) {
-    attrs.target = '_blank'
-    attrs.rel = 'noopener noreferrer'
-  }
-
-  return attrs
-})
+const linkAttrs = computed(() => ({
+  to: props.to,
+  external: props.external,
+  target: props.newTab ? '_blank' : undefined,
+}))
 
 const isActive = computed(() => {
   const isSamePath = route.path === props.to
@@ -94,7 +77,6 @@ function handlerSidebarLink() {
       class="sidebar-link"
       :class="{
         '--active': isActive,
-        '--collapsed': levelSidebarLink === 1 && isCollapsed,
         '--opened': opened,
       }"
       v-bind="linkAttrs"
@@ -115,7 +97,6 @@ function handlerSidebarLink() {
 
       <span
         v-if="chevron"
-        v-show="levelSidebarLink > 1 || !isCollapsed"
         class="sidebar-link__chevron"
       >
         <slot name="chevron">
@@ -156,20 +137,6 @@ function handlerSidebarLink() {
     color: var(--accent);
   }
 
-  &.--collapsed {
-    .sidebar-link {
-      &__text {
-        opacity: 0;
-      }
-      &__chevron {
-        opacity: 0;
-        transition:
-          transform 0.2s ease-in-out,
-          opacity var(--duration-fast) var(--ease-default);
-      }
-    }
-  }
-
   &__component {
     margin: 0 0 var(--space-1);
     padding: 0 var(--space-2);
@@ -199,52 +166,24 @@ function handlerSidebarLink() {
     transition: opacity var(--app-sidebar-transition);
   }
 
-  &__chevron,
-  &__checkmark {
+  &__chevron {
     margin-left: auto;
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-
-  &__chevron {
     color: var(--text-muted);
     width: 1rem;
     height: 1rem;
     order: 3;
     opacity: 1;
     transition:
-      transform 0.2s ease-in-out,
+      transform var(--duration-normal) var(--ease-default),
       opacity var(--duration-slow) var(--ease-default) var(--duration-normal);
 
     svg {
       width: 0.75rem;
       height: 0.75rem;
     }
-
-    .app-badge {
-      cursor: pointer;
-      padding: 0.125rem 0.375rem;
-      height: 1.25rem;
-      margin-right: var(--space-5);
-    }
-  }
-
-  &__tooltip {
-    &.--hidden {
-      display: none;
-    }
-  }
-
-  &__chevron {
-    .app-badge {
-      background-color: var(--surface-card);
-      color: var(--text-secondary);
-    }
-  }
-
-  .sidebar-link__chevron {
-    transition: transform var(--duration-normal) var(--ease-default);
   }
 
   &.--opened {

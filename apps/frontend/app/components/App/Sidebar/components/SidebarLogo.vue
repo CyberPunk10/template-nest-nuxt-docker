@@ -2,8 +2,7 @@
 import { useSidebar } from '../composables/useSidebar'
 import AppLogo from '~/components/App/Logo.vue'
 
-const { isCollapsed } = useSidebar()
-const { $globalEvents } = useNuxtApp()
+const { toggleDrawer } = useSidebar()
 </script>
 
 <template>
@@ -14,8 +13,7 @@ const { $globalEvents } = useNuxtApp()
   <div class="sidebar-logo-wrapper">
     <AppLogo
       class="sidebar-logo"
-      :collapsed="isCollapsed"
-      @click="$globalEvents.emit('toggle-sidebar', { value: false })"
+      @click="toggleDrawer(false)"
     />
   </div>
 </template>

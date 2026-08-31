@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { onClickOutside, useWindowSize } from '@vueuse/core'
-import { APP_BREAKPOINTS } from '~/composables/useAppBreakpoints'
-import { MENU_TYPE, useSidebar, type MenuType } from '../composables/useSidebar'
+import { onClickOutside } from '@vueuse/core'
+import { useSidebar } from '../composables/useSidebar'
 import { useMenu, type MenuItem } from '../composables/useMenu'
-import type ScrollShadow from '~/components/App/ScrollShadow.vue'
 import SidebarLink from './core/SidebarLink.vue'
 import UserMenu from '~/components/App/UserMenu/index.vue'
 import SidebarLogo from './SidebarLogo.vue'
@@ -11,67 +9,37 @@ import SidebarShadow from './core/SidebarShadow.vue'
 import SubMenu from './core/SubMenu.vue'
 import SidebarToggle from './core/SidebarToggle.vue'
 
-const { $globalEvents } = useNuxtApp()
-const { width } = useWindowSize({ initialWidth: 0, initialHeight: 0 })
+const {
+  isDrawerMode,
+  isDrawerOpen,
+  isCollapsed,
+  toggleCollapsed,
+  toggleDrawer,
+} = useSidebar()
 
-const { isCollapsed, isMobileOpen, menuType } = useSidebar()
+const { isLocked: isScrollLocked } = useBodyScrollLock()
 
-const sidebarRef = ref<HTMLElement | null>(null)
-const sidebarScrollRef = ref<InstanceType<typeof ScrollShadow> | null>(null)
 const onClickOutsideRef = ref<HTMLElement | null>(null)
 
-const isSidebarDesktop = computed(() => menuType.value === MENU_TYPE.DESKTOP)
 const triggerScrollHandler = ref(false)
 const notCollapsedItems = ref<Record<string, boolean>>({})
 
 const { sidebarMenu } = useMenu()
 const menu = computed((): MenuItem[] => [...sidebarMenu.value])
 
-watch(width, () => updateSidebarState())
+// при переключении layout компонент монтируется заново — закрываем drawer,
+// иначе он останется открытым от предыдущего layout
+onMounted(() => toggleDrawer(false))
 
-function updateSidebarState(isInit = false) {
-  if (isInit) {
-    // при переключении между разными layout повторно происходит загрузка компонента AppSidebar,
-    // это закроет открытые меню в мобилке при переключении между layouts
-    toggleSidebar({ value: false })
-  }
-
-  isCollapsed.value = width.value > APP_BREAKPOINTS.md && width.value <= APP_BREAKPOINTS.lg
-
-  if (width.value > APP_BREAKPOINTS.lg) {
-    menuType.value = MENU_TYPE.DESKTOP
-    isMobileOpen.value = false
-    $globalEvents.emit('body-overflow', false)
-  } else {
-    menuType.value = MENU_TYPE.MOBILE
-  }
-}
-
-onMounted(() => {
-  updateSidebarState(true)
-  $globalEvents.on('toggle-sidebar', toggleSidebar)
-  $globalEvents.on('collapse-sidebar', setCollapseFromEventBus)
+// вне drawer сайдбар не перекрывает контент — блокировать скролл незачем
+watchEffect(() => {
+  isScrollLocked.value = isDrawerOpen.value && isDrawerMode.value
 })
-
-onBeforeUnmount(() => {
-  $globalEvents.off('toggle-sidebar', toggleSidebar)
-  $globalEvents.off('collapse-sidebar', setCollapseFromEventBus)
-})
-
-function setCollapseFromEventBus({ id, value = false }: { id: string, value?: boolean }) {
-  if (!id) return
-  if (value) scrollSidebar()
-  onClickSection({ id, value })
-}
 
 function onToggleCollapse({ id, value = false }: { id: string, value?: boolean }) {
   if (!id) return
   notCollapsedItems.value[id] = value
   triggerScrollHandler.value = !triggerScrollHandler.value
-}
-
-function scrollSidebar({ y = 0 }: { y?: number } = {}) {
-  sidebarScrollRef.value?.appScrollShadowRef?.scrollTo({ top: y, behavior: 'smooth' })
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -91,7 +59,7 @@ function onClickSection({ id, value }: { id: string, value?: boolean }) {
   const section = getMenuItemById(id)
 
   if (!section?.items?.length) {
-    $globalEvents.emit('toggle-sidebar', { value: false })
+    toggleDrawer(false)
     if (isCollapsed.value) resetCollapsed()
     return
   }
@@ -108,15 +76,13 @@ onClickOutside(onClickOutsideRef, onClickOutsideSidebar)
 
 function onClickOutsideSidebar() {
   requestAnimationFrame(() => {
-    if (!isCollapsed.value) {
-      return
-    }
+    if (!isCollapsed.value) return
     resetCollapsed()
   })
 }
 
 function clickByShadow() {
-  toggleSidebar({ value: false })
+  toggleDrawer(false)
 }
 
 function resetCollapsed() {
@@ -125,44 +91,9 @@ function resetCollapsed() {
   })
 }
 
-function toggleSidebar({ value, type = menuType.value }: { value?: boolean, type?: MenuType }) {
-  const newValue = typeof value === 'boolean' ? value : !isMobileOpen.value
-
-  $globalEvents.emit('body-overflow', newValue)
-  isMobileOpen.value = newValue
-
-  if (!isSidebarDesktop.value) {
-    let direction = 'left'
-    if (type === MENU_TYPE.MOBILE) {
-      direction = 'right'
-    }
-
-    const appSidebarEl = sidebarRef.value
-    if (!appSidebarEl) {
-      menuType.value = type
-    } else if (!newValue) {
-      appSidebarEl.style[direction as 'left' | 'right'] = '0'
-      // После завершения анимации очищаем установленные стили
-      setTimeout(() => {
-        appSidebarEl.style[direction as 'left' | 'right'] = ''
-        menuType.value = type
-      }, 400)
-    } else {
-      appSidebarEl.style[direction as 'left' | 'right'] = 'calc(var(--app-sidebar-width) * -1)'
-      menuType.value = type
-      // После завершения анимации очищаем установленные стили
-      setTimeout(() => {
-        appSidebarEl.style[direction as 'left' | 'right'] = ''
-      }, 400)
-    }
-  }
-}
-
 function toggleSideBarWidth() {
   resetCollapsed()
-  requestAnimationFrame(() => {
-    isCollapsed.value = !isCollapsed.value
-  })
+  toggleCollapsed()
 }
 </script>
 
@@ -171,7 +102,7 @@ function toggleSideBarWidth() {
     ref="onClickOutsideRef"
     class="app-sidebar__wrapper"
     :class="{
-      '--shadow-mobile-opened': isMobileOpen,
+      '--drawer-open': isDrawerOpen,
       '--collapsed': isCollapsed,
     }"
   >
@@ -182,18 +113,13 @@ function toggleSideBarWidth() {
     />
 
     <div
-      ref="sidebarRef"
       class="app-sidebar"
       :class="{ '--collapsed': isCollapsed }"
     >
       <SidebarLogo />
 
       <app-scroll-shadow
-        ref="sidebarScrollRef"
         class="sidebar-menu"
-        :class="{
-          '--collapsed': isCollapsed,
-        }"
         :triggerScrollHandler="triggerScrollHandler"
         withoutIgnoreSwipe
       >
@@ -258,12 +184,35 @@ function toggleSideBarWidth() {
   transition:
     width var(--app-sidebar-transition),
     max-width var(--app-sidebar-transition),
-    left var(--app-sidebar-transition);
+    transform var(--app-sidebar-transition);
 
   &.--collapsed {
     width: var(--app-sidebar-width-collapsed);
     max-width: var(--app-sidebar-width-collapsed);
     overflow: visible;
+
+    .sidebar-link__text,
+    .sidebar-link__chevron,
+    .user-menu__info,
+    .user-menu__chevron {
+      opacity: 0;
+    }
+
+    .sidebar-dropdown {
+      .sidebar-link__text,
+      .sidebar-link__chevron {
+        opacity: 1;
+      }
+    }
+
+    .logo__text {
+      max-width: 0;
+      opacity: 0;
+    }
+
+    .sidebar-menu.app-scroll-shadow {
+      overflow: visible;
+    }
   }
 
   .sidebar-footer {
@@ -302,11 +251,11 @@ function toggleSideBarWidth() {
     padding-top: var(--space-2);
     padding-bottom: var(--space-0-5);
 
-    &.--collapsed {
+    .app-sidebar.--collapsed & {
       overflow: visible;
     }
 
-    &:not(.--collapsed) {
+    .app-sidebar:not(.--collapsed) & {
       display: flex;
       flex-direction: column;
       flex: 1;
@@ -318,74 +267,28 @@ function toggleSideBarWidth() {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .app-sidebar__wrapper {
     width: 0;
 
-    &.--shadow-mobile-opened {
+    /* обёртка растягивается на весь экран, чтобы подложка перехватывала клики */
+    &.--drawer-open {
       width: 100%;
     }
 
-    &:not(.--shadow-mobile-opened) {
+    &:not(.--drawer-open) {
       transition: width 0s ease var(--app-sidebar-transition-duration); // задержка для плавного исчезновения sidebar-shadow
     }
 
     .app-sidebar {
       position: absolute;
-      width: var(--app-sidebar-width);
-
-      .sidebar-link {
-        &__text {
-          font-size: var(--text-sm);
-        }
-      }
-
-      .sidebar-manager {
-        &__name {
-          font-size: var(--text-sm);
-          margin-top: var(--space-4);
-        }
-
-        &__contact-item-text {
-          font-size: var(--text-xs);
-        }
-      }
+      transform: translateX(-100%);
+      overflow: hidden;
     }
 
-    @keyframes fadeInSidebarLeft {
-      from {
-        left: calc(var(--app-sidebar-width) * -1);
-      }
-      to {
-        left: 0;
-      }
-    }
-
-    @keyframes fadeInSidebarRight {
-      from {
-        right: calc(var(--app-sidebar-width) * -1);
-      }
-      to {
-        right: 0;
-      }
-    }
-
-    @keyframes fadeOutSidebarLeft {
-      from {
-        left: 0;
-      }
-      to {
-        left: calc(var(--app-sidebar-width) * -1);
-      }
-    }
-
-    @keyframes fadeOutSidebarRight {
-      from {
-        right: 0;
-      }
-      to {
-        right: calc(var(--app-sidebar-width) * -1);
-      }
+    &.--drawer-open .app-sidebar {
+      overflow: hidden auto;
+      transform: translateX(0);
     }
   }
 }
@@ -400,14 +303,6 @@ function toggleSideBarWidth() {
 .sidebar-menu.--custom-css-scrollbar::-webkit-scrollbar-thumb {
   border-radius: 9px;
   border: 0px;
-}
-
-// Если боковое меню свернуто в полоску, то делаем ширину скролла равной 0
-.layout-scrollbar-obtrusive {
-  .sidebar-menu.--collapsed.--custom-css-scrollbar::-webkit-scrollbar {
-    height: 0;
-    width: 0;
-  }
 }
 
 html.light {

@@ -1,45 +1,48 @@
 <script setup lang="ts">
-import { MENU_TYPE, useSidebar } from '../../composables/useSidebar'
+import { useSidebar } from '../../composables/useSidebar'
 
 const emit = defineEmits(['toggle-sidebar-width'])
 
-const { $globalEvents } = useNuxtApp()
 const { t } = useI18n()
-const { isCollapsed, isMobileOpen, menuType } = useSidebar()
+const {
+  isCollapsed,
+  isDrawerMode,
+  isDrawerOpen,
+  toggleDrawer,
+} = useSidebar()
 
-const isDesktop = computed(() => menuType.value === MENU_TYPE.DESKTOP)
+const isInlineShown = computed(() => !isCollapsed.value)
 
-// единый паттерн для десктопа и мобилки: одна кнопка-панель,
-// иконка отражает текущее состояние (скрыто → open, видно → close)
-const isShown = computed(() => (isDesktop.value ? !isCollapsed.value : isMobileOpen.value))
+const isShown = computed(() => (isDrawerMode.value ? isDrawerOpen.value : isInlineShown.value))
 
-const iconName = computed(() =>
-  isShown.value ? 'lucide:panel-left-close' : 'lucide:panel-left-open',
-)
+const icon = (shown: boolean) => (shown ? 'lucide:panel-left-close' : 'lucide:panel-left-open')
 
 const label = computed(() => (isShown.value ? t('sidebar.collapse') : t('sidebar.expand')))
 
 function handleClick() {
-  if (isDesktop.value) {
-    emit('toggle-sidebar-width')
-  } else {
-    $globalEvents.emit('toggle-sidebar', {})
-  }
+  if (isDrawerMode.value) toggleDrawer()
+  else emit('toggle-sidebar-width')
 }
 </script>
 
 <template>
   <button
-    v-tippy="isDesktop ? label : ''"
+    v-tippy="isDrawerMode ? '' : label"
     class="sidebar-toggle"
     :aria-label="label"
     :aria-expanded="isShown"
     @click="handleClick"
   >
     <Icon
-      :key="iconName"
-      :name="iconName"
-      class="sidebar-toggle__icon"
+      :key="icon(isDrawerOpen)"
+      :name="icon(isDrawerOpen)"
+      class="sidebar-toggle__icon --drawer"
+      size="18"
+    />
+    <Icon
+      :key="icon(isInlineShown)"
+      :name="icon(isInlineShown)"
+      class="sidebar-toggle__icon --inline"
       size="18"
     />
   </button>
@@ -69,6 +72,20 @@ function handleClick() {
 
   &__icon {
     flex-shrink: 0;
+
+    &.--drawer {
+      display: none;
+
+      @media (width <= 1024px) {
+        display: block;
+      }
+    }
+
+    &.--inline {
+      @media (width <= 1024px) {
+        display: none;
+      }
+    }
   }
 }
 </style>

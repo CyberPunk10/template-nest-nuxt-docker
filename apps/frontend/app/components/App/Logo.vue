@@ -1,7 +1,3 @@
-<script setup lang="ts">
-defineProps<{ collapsed?: boolean }>()
-</script>
-
 <template>
   <NuxtLink class="logo" to="/">
     <Icon
@@ -9,7 +5,7 @@ defineProps<{ collapsed?: boolean }>()
       name="lucide:layers"
       size="24"
     />
-    <span class="logo__text" :class="{ 'logo__text--hidden': collapsed }">
+    <span class="logo__text">
       <span class="logo__title">
         Monorepo <span class="logo__accent">Template</span>
       </span>
@@ -40,14 +36,11 @@ defineProps<{ collapsed?: boolean }>()
     white-space: nowrap;
     max-width: 200px;
     opacity: 1;
+    // схлопывание задаёт свёрнутый сайдбар (миксин sidebar-collapsed в AppSidebar.vue),
+    // здесь только развёрнутое состояние и переход между ними
     transition:
       max-width var(--app-sidebar-transition),
       opacity var(--app-sidebar-transition);
-
-    &--hidden {
-      max-width: 0;
-      opacity: 0;
-    }
   }
 
   &__title {

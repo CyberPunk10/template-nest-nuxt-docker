@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useSidebar } from '~/components/App/Sidebar/composables/useSidebar'
 import UserMenuTrigger from './UserMenuTrigger.vue'
 import UserMenuDropdown from './UserMenuDropdown.vue'
 
@@ -8,7 +7,6 @@ withDefaults(defineProps<{ placement?: 'up' | 'down' }>(), {
 })
 
 const { user } = useUserMock()
-const { isCollapsed } = useSidebar()
 
 const avatar = computed(() => user.value?.name.charAt(0).toUpperCase() ?? '?')
 
@@ -33,7 +31,6 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
   <div
     ref="menuRef"
     class="user-menu"
-    :class="{ '--collapsed': isCollapsed }"
   >
     <UserMenuTrigger
       :avatar="avatar"

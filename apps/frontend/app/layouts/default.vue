@@ -9,7 +9,6 @@ const isShowAppHeader = computed(() => !route.meta.hideHeader)
 const isShowAppSidebar = computed(() => !route.meta.hideSidebar)
 const { isCollapsed } = useSidebar()
 
-// размер .app-page меняется динамически (AppSidebar collapse/mobile) — синхронизируем в usePageSize()
 const pageRef = ref<HTMLElement | null>(null)
 const { width, height } = useElementSize(pageRef)
 const { pageWidth, pageHeight } = usePageSize()
@@ -31,9 +30,7 @@ watch(height, (v) => {
   >
     <NuxtRouteAnnouncer />
 
-    <ClientOnly>
-      <AppSidebar v-if="isShowAppSidebar" />
-    </ClientOnly>
+    <AppSidebar v-if="isShowAppSidebar" />
 
     <div
       ref="pageRef"
@@ -59,11 +56,13 @@ watch(height, (v) => {
     &.--sidebar-collapsed {
       margin-left: var(--app-sidebar-width-collapsed);
     }
-  }
 
-  @media (width <= 1024px) {
-    &.--has-sidebar {
+    @media (width <= 1024px) {
       margin-left: 0;
+
+      &.--sidebar-collapsed {
+        margin-left: 0;
+      }
     }
   }
 }

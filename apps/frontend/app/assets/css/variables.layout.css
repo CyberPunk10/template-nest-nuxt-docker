@@ -1,7 +1,7 @@
 :root {
   --breakpoint-xs: 480px;  /* fullscreen threshold: drawer, модалки на 100% */
-  --breakpoint-md: 768px;  /* mobile → tablet: появляется header, sidebar становится drawer */
-  --breakpoint-lg: 1024px; /* tablet → desktop: header скрывается, sidebar постоянный */
+  --breakpoint-md: 768px;  /* mobile → tablet: пороги контента, вёрстка страниц */
+  --breakpoint-lg: 1024px; /* tablet → desktop: header скрывается, sidebar из drawer становится постоянным */
 
   --app-sidebar-width: 15rem;
   --app-sidebar-width-collapsed: 3.25rem;
