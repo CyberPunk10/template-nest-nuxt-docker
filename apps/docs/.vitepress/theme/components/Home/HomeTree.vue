@@ -38,7 +38,7 @@ const home = computed(() => theme.value.home!)
 <style scoped>
 .tree {
   font-family: monospace;
-  font-size: 13px;
+  font-size: var(--text-sm);
   color: var(--home-text-dim);
   /* Не из шкалы: дерево файлов — моноширинный блок, интервал здесь
      структурный (высота строки = шаг вложенности), а не текстовый. */

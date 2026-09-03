@@ -80,7 +80,7 @@ function handleLogout() {
     background: transparent;
     border: none;
     border-radius: var(--radius-md);
-    font-size: 13px;
+    font-size: var(--text-sm);
     color: var(--text-secondary);
     cursor: pointer;
     text-decoration: none;

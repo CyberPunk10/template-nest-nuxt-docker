@@ -94,7 +94,7 @@ $red-dark: #dc2626;
   }
 
   &__name {
-    font-size: 13px;
+    font-size: var(--text-sm);
     color: $text-secondary;
   }
 
@@ -110,7 +110,7 @@ $red-dark: #dc2626;
 
 .btn {
   border-radius: 7px;
-  font-size: 13px;
+  font-size: var(--text-sm);
   font-weight: 600;
   cursor: pointer;
   font-family: inherit;

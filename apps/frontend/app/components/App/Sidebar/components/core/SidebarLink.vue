@@ -39,21 +39,9 @@ const linkAttrs = computed(() => ({
   target: props.newTab ? '_blank' : undefined,
 }))
 
-const isActive = computed(() => {
-  const isSamePath = route.path === props.to
-  return isSamePath
-})
+const isActive = computed(() => route.path === props.to)
 
-watch(
-  () => isActive.value,
-  val => emit('set-active', val),
-)
-
-onMounted(() => {
-  if (isActive.value) {
-    emit('set-active', isActive.value)
-  }
-})
+watch(isActive, val => emit('set-active', val), { immediate: true })
 
 function toggleCollapse() {
   if (props.external) return
@@ -120,7 +108,7 @@ function handlerSidebarLink() {
   padding: 0 var(--space-2-5);
   cursor: pointer;
   color: var(--text-secondary);
-  font-size: 0.8125rem;
+  font-size: var(--text-sm);
   text-decoration: none;
   text-align: left;
   transition:

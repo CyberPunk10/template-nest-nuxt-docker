@@ -117,7 +117,7 @@ $red: #ef4444;
     border: 1px solid var(--border-subtle);
     border-radius: 7px;
     padding: 9px 13px;
-    font-size: 13px;
+    font-size: var(--text-sm);
     color: $text-body;
     outline: none;
     transition: border-color 0.2s;
@@ -136,7 +136,7 @@ $red: #ef4444;
 .btn {
   border: none;
   border-radius: 7px;
-  font-size: 13px;
+  font-size: var(--text-sm);
   font-weight: 600;
   cursor: pointer;
   transition:

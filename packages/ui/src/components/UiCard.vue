@@ -29,7 +29,7 @@ defineProps<{
 }
 
 .ui-card__title {
-  font-size: 13px;
+  font-size: var(--text-sm);
   font-weight: 600;
   color: var(--text-primary);
 }

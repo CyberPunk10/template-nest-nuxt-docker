@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { onClickOutside } from '@vueuse/core'
 import UserMenuTrigger from './UserMenuTrigger.vue'
 import UserMenuDropdown from './UserMenuDropdown.vue'
 
@@ -11,25 +12,20 @@ const { user } = useUserMock()
 const avatar = computed(() => user.value?.name.charAt(0).toUpperCase() ?? '?')
 
 const menuOpen = ref(false)
-const menuRef = ref<HTMLElement | null>(null)
+const menuRef = useTemplateRef('menu')
 
 function toggleMenu() {
   menuOpen.value = !menuOpen.value
 }
 
-function onDocumentClick(e: MouseEvent) {
-  if (menuRef.value && !menuRef.value.contains(e.target as Node)) {
-    menuOpen.value = false
-  }
-}
-
-onMounted(() => document.addEventListener('click', onDocumentClick, true))
-onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
+onClickOutside(menuRef, () => {
+  menuOpen.value = false
+})
 </script>
 
 <template>
   <div
-    ref="menuRef"
+    ref="menu"
     class="user-menu"
   >
     <UserMenuTrigger

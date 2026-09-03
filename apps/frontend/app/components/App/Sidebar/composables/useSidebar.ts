@@ -24,14 +24,31 @@ export const useSidebar = () => {
     isCollapsed.value = !isCollapsed.value
   }
 
+  /* Раскрытые разделы меню. Состояние общее на все уровни вложенности SubMenu. */
+  const expandedSections = useState<Record<string, boolean>>('sidebar:expandedSections', () => ({}))
+
+  const isSectionExpanded = (id: string) => !!expandedSections.value[id]
+
+  function setSectionExpanded(id: string, value: boolean) {
+    expandedSections.value[id] = value
+  }
+
+  function collapseAllSections() {
+    expandedSections.value = {}
+  }
+
   watch(isDrawerMode, () => {
     isDrawerOpen.value = false
   })
 
   return {
+    collapseAllSections,
+    expandedSections,
     isCollapsed,
     isDrawerMode,
     isDrawerOpen,
+    isSectionExpanded,
+    setSectionExpanded,
     toggleCollapsed,
     toggleDrawer,
   }

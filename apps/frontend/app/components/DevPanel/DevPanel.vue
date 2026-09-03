@@ -218,7 +218,7 @@ function shortUrl(url: string): string {
   border-radius: var(--radius-lg);
   text-decoration: none;
   color: var(--text-primary);
-  font-size: 13px;
+  font-size: var(--text-sm);
   transition: border-color 0.2s;
 
   &:hover {
@@ -293,7 +293,7 @@ function shortUrl(url: string): string {
   padding: var(--space-2) 12px;
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
-  font-size: 13px;
+  font-size: var(--text-sm);
 
   &__key {
     flex: 1;
@@ -353,7 +353,7 @@ function shortUrl(url: string): string {
   border-radius: var(--radius-lg);
   text-decoration: none;
   color: var(--text-primary);
-  font-size: 13px;
+  font-size: var(--text-sm);
   transition:
     border-color 0.2s,
     color 0.2s;

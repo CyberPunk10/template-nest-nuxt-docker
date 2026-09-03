@@ -10,6 +10,13 @@ export interface SidebarMenuItem {
   items?: SidebarMenuItem[]
 }
 
+/** Раздел с вложенными пунктами: id обязателен — по нему хранится «раскрыт ли» */
+export type SidebarSection = SidebarMenuItem & { id: string, items: SidebarMenuItem[] }
+
+/** Раскрываемый ли это раздел: только у таких есть вложенные пункты и id */
+export const isSection = (item: SidebarMenuItem): item is SidebarSection =>
+  !!item.items?.length && !!item.id
+
 export const sidebarSections = [
   {
     id: 'dashboard',

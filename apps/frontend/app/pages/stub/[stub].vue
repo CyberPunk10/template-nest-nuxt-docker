@@ -148,7 +148,7 @@ const shapes = Array.from({ length: 18 }, (_, i) => ({
   }
 
   &__meta-value {
-    font-size: 13px;
+    font-size: var(--text-sm);
     font-family: monospace;
     color: var(--accent);
   }
@@ -157,7 +157,7 @@ const shapes = Array.from({ length: 18 }, (_, i) => ({
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-size: 13px;
+    font-size: var(--text-sm);
     color: var(--text-muted);
     text-decoration: none;
     padding: 8px 14px;

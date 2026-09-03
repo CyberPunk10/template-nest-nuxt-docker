@@ -80,7 +80,7 @@ $text-primary: #f1f5f9;
   }
 
   &__email {
-    font-size: 13px;
+    font-size: var(--text-sm);
     color: var(--text-muted);
     margin: 0;
   }

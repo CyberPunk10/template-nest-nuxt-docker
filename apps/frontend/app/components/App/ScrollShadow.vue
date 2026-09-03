@@ -26,7 +26,6 @@ const props = defineProps<{
   ignoreAutoShadowRight?: boolean
   ignoreAutoShadowBottom?: boolean
   scrollWithMouseMovements?: boolean // прокрутка с помощью движений мыши (нажать и перемещать)
-  triggerScrollHandler?: boolean // обновляя значение будет дергаться метод scrollHandler
   withoutIgnoreSwipe?: boolean // по умолчанию игнорирует события свайпа, этот флаг это отменяет
   hideScrollBars?: boolean // скрыть полосу прокрутки
 }>()
@@ -81,7 +80,7 @@ function throttle<T extends (...args: any[]) => void>(
   } as T
 }
 
-const appScrollShadowRef = ref<HTMLElement | null>(null)
+const appScrollShadowRef = useTemplateRef('scrollContainer')
 const prevElem = ref<Element | null>(null)
 const nextElem = ref<Element | null>(null)
 
@@ -108,11 +107,6 @@ watch(shadowRight, val => updateShadowRight(val))
 watch(shadowBottom, val => updateShadowBottom(val))
 watch(widthDiv, () => throttledScrollHandler(null))
 watch(heightDiv, () => throttledScrollHandler(null))
-watch(
-  () => props.triggerScrollHandler,
-  () => scrollHandler(null, true),
-)
-
 useResizeObserver(
   appScrollShadowRef,
   throttle((entries: ResizeObserverEntry[]) => {
@@ -337,12 +331,16 @@ if (props.scrollWithMouseMovements) {
   })
 }
 
-defineExpose({ appScrollShadowRef, shadowTop, scrollTo })
+// пересчитать тени, когда содержимое изменилось не из-за скролла или ресайза
+// (например раскрыли раздел меню) — размеры те же, а прокручиваемая высота другая
+const refreshShadows = () => scrollHandler(null, true)
+
+defineExpose({ appScrollShadowRef, shadowTop, scrollTo, refreshShadows })
 </script>
 
 <template>
   <div
-    ref="appScrollShadowRef"
+    ref="scrollContainer"
     class="app-scroll-shadow --custom-css-scrollbar"
     :class="{
       '--has-h-bar': hasHBar,

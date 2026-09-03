@@ -56,7 +56,7 @@ $text-secondary: #cbd5e1;
   gap: 16px;
 
   &__name {
-    font-size: 13px;
+    font-size: var(--text-sm);
     color: $text-secondary;
     margin: 0 0 3px;
     font-weight: 500;
@@ -71,7 +71,7 @@ $text-secondary: #cbd5e1;
 
 .btn {
   border-radius: 7px;
-  font-size: 13px;
+  font-size: var(--text-sm);
   font-weight: 600;
   cursor: pointer;
   font-family: inherit;

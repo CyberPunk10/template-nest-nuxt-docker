@@ -98,7 +98,7 @@ $text-secondary: #cbd5e1;
   }
 
   &__name {
-    font-size: 13px;
+    font-size: var(--text-sm);
     color: $text-secondary;
   }
   &__desc {

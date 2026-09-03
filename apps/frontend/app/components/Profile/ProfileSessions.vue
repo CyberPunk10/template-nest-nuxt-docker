@@ -118,7 +118,7 @@ $red: #ef4444;
   }
 
   &__device {
-    font-size: 13px;
+    font-size: var(--text-sm);
     color: $text-secondary;
     display: flex;
     align-items: center;

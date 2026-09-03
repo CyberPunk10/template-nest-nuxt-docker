@@ -54,7 +54,7 @@ defineEmits<{ click: [] }>()
     border-radius: 50%;
     background: var(--accent);
     color: var(--surface-app);
-    font-size: 13px;
+    font-size: var(--text-sm);
     font-weight: 700;
     display: flex;
     align-items: center;
@@ -73,7 +73,7 @@ defineEmits<{ click: [] }>()
   }
 
   &__name {
-    font-size: 13px;
+    font-size: var(--text-sm);
     color: var(--text-primary);
     line-height: 1;
     white-space: nowrap;

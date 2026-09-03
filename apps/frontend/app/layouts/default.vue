@@ -9,7 +9,7 @@ const isShowAppHeader = computed(() => !route.meta.hideHeader)
 const isShowAppSidebar = computed(() => !route.meta.hideSidebar)
 const { isCollapsed } = useSidebar()
 
-const pageRef = ref<HTMLElement | null>(null)
+const pageRef = useTemplateRef('appPage')
 const { width, height } = useElementSize(pageRef)
 const { pageWidth, pageHeight } = usePageSize()
 watch(width, (v) => {
@@ -33,7 +33,7 @@ watch(height, (v) => {
     <AppSidebar v-if="isShowAppSidebar" />
 
     <div
-      ref="pageRef"
+      ref="appPage"
       class="app-page"
       :class="{ '--has-app-header': isShowAppHeader }"
     >

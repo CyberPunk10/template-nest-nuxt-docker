@@ -1,22 +1,20 @@
 <script setup lang="ts">
+import { onClickOutside } from '@vueuse/core'
+
 const devOpen = ref(false)
-const panelRef = ref<HTMLElement | null>(null)
-const tabRef = ref<HTMLElement | null>(null)
+const panelRef = useTemplateRef('panel')
+const tabRef = useTemplateRef('tab')
 
-function onDocumentClick(e: MouseEvent) {
-  if (!devOpen.value) return
-  const target = e.target as Node
-  if (panelRef.value?.contains(target) || tabRef.value?.contains(target)) return
+// таб в ignore: клик по нему сам переключает панель, иначе закрытие и открытие
+// сработали бы на одном клике
+onClickOutside(panelRef, () => {
   devOpen.value = false
-}
-
-onMounted(() => document.addEventListener('click', onDocumentClick, true))
-onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
+}, { ignore: [tabRef] })
 </script>
 
 <template>
   <button
-    ref="tabRef"
+    ref="tab"
     class="dev-tab"
     :class="{ 'dev-tab--open': devOpen }"
     @click="devOpen = !devOpen"
@@ -26,7 +24,7 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick, true))
     <Icon :name="devOpen ? 'lucide:chevron-right' : 'lucide:chevron-left'" size="11" />
   </button>
   <aside
-    ref="panelRef"
+    ref="panel"
     class="dev-panel"
     :class="{ 'dev-panel--open': devOpen }"
   >

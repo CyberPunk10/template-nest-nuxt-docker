@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { onClickOutside } from '@vueuse/core'
+import { onClickOutside, onKeyStroke } from '@vueuse/core'
 import { useSidebar } from '../composables/useSidebar'
 import { useMenu, type MenuItem } from '../composables/useMenu'
+import { isSection } from '../config/sidebar-menu'
 import SidebarLink from './core/SidebarLink.vue'
 import UserMenu from '~/components/App/UserMenu/index.vue'
 import SidebarLogo from './SidebarLogo.vue'
@@ -10,19 +11,21 @@ import SubMenu from './core/SubMenu.vue'
 import SidebarToggle from './core/SidebarToggle.vue'
 
 const {
+  collapseAllSections,
+  expandedSections,
   isDrawerMode,
   isDrawerOpen,
   isCollapsed,
+  setSectionExpanded,
   toggleCollapsed,
   toggleDrawer,
 } = useSidebar()
 
 const { isLocked: isScrollLocked } = useBodyScrollLock()
 
-const onClickOutsideRef = ref<HTMLElement | null>(null)
+const onClickOutsideRef = useTemplateRef('sidebarWrapper')
 
-const triggerScrollHandler = ref(false)
-const notCollapsedItems = ref<Record<string, boolean>>({})
+const scrollShadowRef = useTemplateRef('scrollShadow')
 
 const { sidebarMenu } = useMenu()
 const menu = computed((): MenuItem[] => [...sidebarMenu.value])
@@ -38,37 +41,41 @@ watchEffect(() => {
 
 function onToggleCollapse({ id, value = false }: { id: string, value?: boolean }) {
   if (!id) return
-  notCollapsedItems.value[id] = value
-  triggerScrollHandler.value = !triggerScrollHandler.value
+  setSectionExpanded(id, value)
+  scrollShadowRef.value?.refreshShadows()
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function getMenuItemById(id: string, items = menu.value, parent: any = null): any {
-  for (const item of items) {
-    if (item.id === id) return { ...item, parent }
-    if ('items' in item && item.items?.length) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const nested = getMenuItemById(id, item.items as any, item)
-      if (nested) return nested
+// Плоский индекс меню: по id сразу известно, раскрываемый ли это раздел и чей он
+// вложенный. Пересчитывается при смене меню, а не обходом дерева на каждый клик.
+const menuIndex = computed(() => {
+  const index = new Map<string, { hasItems: boolean, parentId?: string }>()
+
+  const walk = (items: MenuItem[], parentId?: string) => {
+    for (const item of items) {
+      const nested = 'items' in item ? item.items : undefined
+      if (item.id) index.set(item.id, { hasItems: !!nested?.length, parentId })
+      if (nested?.length) walk(nested, item.id)
     }
   }
-  return null
-}
+
+  walk(menu.value)
+  return index
+})
 
 function onClickSection({ id, value }: { id: string, value?: boolean }) {
-  const section = getMenuItemById(id)
+  const section = menuIndex.value.get(id)
 
-  if (!section?.items?.length) {
+  if (!section?.hasItems) {
     toggleDrawer(false)
-    if (isCollapsed.value) resetCollapsed()
+    if (isCollapsed.value) collapseAllSections()
     return
   }
 
-  const resultValue = typeof value === 'boolean' ? value : !notCollapsedItems.value[id]
-  resetCollapsed()
+  const resultValue = typeof value === 'boolean' ? value : !expandedSections.value[id]
+  collapseAllSections()
 
   // если меню вложенное, сначала раскрыть родительское
-  if (section?.parent) onToggleCollapse({ id: section.parent.id, value: true })
+  if (section.parentId) onToggleCollapse({ id: section.parentId, value: true })
   onToggleCollapse({ id, value: resultValue })
 }
 
@@ -77,7 +84,7 @@ onClickOutside(onClickOutsideRef, onClickOutsideSidebar)
 function onClickOutsideSidebar() {
   requestAnimationFrame(() => {
     if (!isCollapsed.value) return
-    resetCollapsed()
+    collapseAllSections()
   })
 }
 
@@ -85,21 +92,20 @@ function clickByShadow() {
   toggleDrawer(false)
 }
 
-function resetCollapsed() {
-  Object.keys(notCollapsedItems.value).forEach((id) => {
-    notCollapsedItems.value[id] = false
-  })
-}
+onKeyStroke('Escape', () => {
+  if (!isDrawerOpen.value || !isDrawerMode.value) return
+  toggleDrawer(false)
+})
 
 function toggleSideBarWidth() {
-  resetCollapsed()
+  collapseAllSections()
   toggleCollapsed()
 }
 </script>
 
 <template>
   <div
-    ref="onClickOutsideRef"
+    ref="sidebarWrapper"
     class="app-sidebar__wrapper"
     :class="{
       '--drawer-open': isDrawerOpen,
@@ -112,15 +118,16 @@ function toggleSideBarWidth() {
       @toggle-sidebar-width="toggleSideBarWidth"
     />
 
-    <div
+    <nav
       class="app-sidebar"
       :class="{ '--collapsed': isCollapsed }"
+      :aria-label="$t('sidebar.label')"
     >
       <SidebarLogo />
 
       <app-scroll-shadow
+        ref="scrollShadow"
         class="sidebar-menu"
-        :triggerScrollHandler="triggerScrollHandler"
         withoutIgnoreSwipe
       >
         <!-- Items menu -->
@@ -133,7 +140,7 @@ function toggleSideBarWidth() {
               :external="item.external"
               :newTab="item.newTab"
               :class="item.classes"
-              :opened="notCollapsedItems[item.id!]"
+              :opened="expandedSections[item.id!]"
               :tooltipText="$t(item.title)"
               :icon="item.icon"
               :chevron="!!item.items"
@@ -143,9 +150,8 @@ function toggleSideBarWidth() {
             </SidebarLink>
 
             <SubMenu
-              v-if="item.items"
+              v-if="isSection(item)"
               :item="item"
-              :notCollapsedItems="notCollapsedItems"
               @toggle-collapse="onToggleCollapse"
               @click-section="onClickSection({ id: $event.id! })"
             />
@@ -156,7 +162,7 @@ function toggleSideBarWidth() {
       <div class="sidebar-footer">
         <UserMenu />
       </div>
-    </div>
+    </nav>
   </div>
 </template>
 
