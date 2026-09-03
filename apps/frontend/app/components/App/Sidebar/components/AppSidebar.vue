@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onClickOutside, onKeyStroke } from '@vueuse/core'
 import { useSidebar } from '../composables/useSidebar'
-import { useMenu, type MenuItem } from '../composables/useMenu'
-import { isSection } from '../config/sidebar-menu'
+import { useMenu } from '../composables/useMenu'
+import { isSection, isSpacer, type SidebarMenuItem } from '../config/sidebar-menu'
 import SidebarLink from './core/SidebarLink.vue'
 import UserMenu from '~/components/App/UserMenu/index.vue'
 import SidebarLogo from './SidebarLogo.vue'
@@ -28,7 +28,6 @@ const onClickOutsideRef = useTemplateRef('sidebarWrapper')
 const scrollShadowRef = useTemplateRef('scrollShadow')
 
 const { sidebarMenu } = useMenu()
-const menu = computed((): MenuItem[] => [...sidebarMenu.value])
 
 // при переключении layout компонент монтируется заново — закрываем drawer,
 // иначе он останется открытым от предыдущего layout
@@ -50,7 +49,7 @@ function onToggleCollapse({ id, value = false }: { id: string, value?: boolean }
 const menuIndex = computed(() => {
   const index = new Map<string, { hasItems: boolean, parentId?: string }>()
 
-  const walk = (items: MenuItem[], parentId?: string) => {
+  const walk = (items: SidebarMenuItem[], parentId?: string) => {
     for (const item of items) {
       const nested = 'items' in item ? item.items : undefined
       if (item.id) index.set(item.id, { hasItems: !!nested?.length, parentId })
@@ -58,7 +57,7 @@ const menuIndex = computed(() => {
     }
   }
 
-  walk(menu.value)
+  walk(sidebarMenu.value)
   return index
 })
 
@@ -70,7 +69,7 @@ const route = useRoute()
 const sectionsWithActive = computed(() => {
   const ids = new Set<string>()
 
-  const walk = (items: MenuItem[]): boolean => {
+  const walk = (items: SidebarMenuItem[]): boolean => {
     let hasActive = false
 
     for (const item of items) {
@@ -85,7 +84,7 @@ const sectionsWithActive = computed(() => {
     return hasActive
   }
 
-  walk(menu.value)
+  walk(sidebarMenu.value)
   return ids
 })
 
@@ -158,8 +157,8 @@ function toggleSideBarWidth() {
         withoutIgnoreSwipe
       >
         <!-- Items menu -->
-        <template v-for="(item, index) in menu" :key="`sidebar-item-${index}`">
-          <app-spacer v-if="'spacer' in item" :data-spacer-id="item.id" />
+        <template v-for="(item, index) in sidebarMenu" :key="`sidebar-item-${index}`">
+          <app-spacer v-if="isSpacer(item)" :data-spacer-id="item.id" />
 
           <div v-else class="sidebar-menu__item">
             <SidebarLink
@@ -167,12 +166,12 @@ function toggleSideBarWidth() {
               :external="item.external"
               :newTab="item.newTab"
               :class="item.classes"
-              :opened="expandedSections[item.id!]"
-              :hasActiveInside="sectionsWithActive.has(item.id!)"
+              :opened="expandedSections[item.id]"
+              :hasActiveInside="sectionsWithActive.has(item.id)"
               :tooltipText="$t(item.title)"
               :icon="item.icon"
               :chevron="!!item.items"
-              @click-section="onClickSection({ id: item.id! })"
+              @click-section="onClickSection({ id: item.id })"
             >
               {{ $t(item.title) }}
             </SidebarLink>
@@ -182,7 +181,7 @@ function toggleSideBarWidth() {
               :item="item"
               :sectionsWithActive="sectionsWithActive"
               @toggle-collapse="onToggleCollapse"
-              @click-section="onClickSection({ id: $event.id! })"
+              @click-section="onClickSection({ id: $event.id })"
             />
           </div>
         </template>
@@ -322,7 +321,9 @@ function toggleSideBarWidth() {
     }
 
     &.--drawer-open .app-sidebar {
-      overflow: hidden auto;
+      // не hidden: подменю UserMenu в футере выходит за пределы сайдбара и обрезалось бы.
+      // прокрутку меню обеспечивает .sidebar-menu, здесь она не нужна
+      overflow: visible;
       transform: translateX(0);
     }
   }

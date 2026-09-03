@@ -1,21 +1,33 @@
-export interface SidebarMenuItem {
-  id?: string
+/** Пункт меню: id обязателен — по нему хранится «раскрыт ли» и ищется родитель */
+export interface SidebarLink {
+  id: string
   title: string
   icon?: string
   url?: string
   classes?: string
-  spacer?: boolean
   external?: boolean
   newTab?: boolean
   items?: SidebarMenuItem[]
+  spacer?: never
 }
 
-/** Раздел с вложенными пунктами: id обязателен — по нему хранится «раскрыт ли» */
-export type SidebarSection = SidebarMenuItem & { id: string, items: SidebarMenuItem[] }
+/** Разделитель между группами пунктов — ни заголовка, ни ссылки, ни вложенных */
+export interface SidebarSpacer {
+  spacer: true
+  id: string
+}
 
-/** Раскрываемый ли это раздел: только у таких есть вложенные пункты и id */
+export type SidebarMenuItem = SidebarLink | SidebarSpacer
+
+/** Разделитель это не пункт: у него нет ни title, ни url, ни items */
+export const isSpacer = (item: SidebarMenuItem): item is SidebarSpacer => 'spacer' in item
+
+/** Раздел с вложенными пунктами: id обязателен — по нему хранится «раскрыт ли» */
+export type SidebarSection = SidebarLink & { items: SidebarMenuItem[] }
+
+/** Раскрываемый ли это раздел: только у таких есть вложенные пункты */
 export const isSection = (item: SidebarMenuItem): item is SidebarSection =>
-  !!item.items?.length && !!item.id
+  !isSpacer(item) && !!item.items?.length
 
 export const sidebarSections = [
   {
@@ -48,6 +60,7 @@ export const sidebarSections = [
     icon: 'lucide:users',
     items: [
       {
+        id: 'users-list',
         title: 'nav.usersList',
         url: '/stub/users-list',
         icon: 'lucide:list',
@@ -57,16 +70,28 @@ export const sidebarSections = [
         title: 'nav.usersRoles',
         icon: 'lucide:shield',
         items: [
-          { title: 'nav.usersRolesAdmin', url: '/stub/users-roles-admin', icon: 'lucide:crown' },
           {
+            id: 'users-roles-admin',
+            title: 'nav.usersRolesAdmin',
+            url: '/stub/users-roles-admin',
+            icon: 'lucide:crown',
+          },
+          {
+            id: 'users-roles-manager',
             title: 'nav.usersRolesManager',
             url: '/stub/users-roles-manager',
             icon: 'lucide:user-check',
           },
-          { title: 'nav.usersRolesGuest', url: '/stub/users-roles-guest', icon: 'lucide:user-minus' },
+          {
+            id: 'users-roles-guest',
+            title: 'nav.usersRolesGuest',
+            url: '/stub/users-roles-guest',
+            icon: 'lucide:user-minus',
+          },
         ],
       },
       {
+        id: 'users-invites',
         title: 'nav.usersInvites',
         url: '/stub/users-invites',
         icon: 'lucide:mail',
@@ -79,11 +104,13 @@ export const sidebarSections = [
     icon: 'lucide:layout-grid',
     items: [
       {
+        id: 'catalog-items',
         title: 'nav.catalogItems',
         url: '/stub/catalog-items',
         icon: 'lucide:package',
       },
       {
+        id: 'catalog-categories',
         title: 'nav.catalogCategories',
         url: '/stub/catalog-categories',
         icon: 'lucide:folder',
@@ -109,36 +136,39 @@ export const sidebarSections = [
     title: 'nav.bigSection',
     icon: 'lucide:bar-chart-2',
     items: [
-      { title: 'nav.bs1', url: '/stub/bs-daily', icon: 'lucide:calendar' },
-      { title: 'nav.bs2', url: '/stub/bs-weekly', icon: 'lucide:calendar-days' },
-      { title: 'nav.bs3', url: '/stub/bs-monthly', icon: 'lucide:calendar-range' },
-      { title: 'nav.bs4', url: '/stub/bs-quarterly', icon: 'lucide:trending-up' },
-      { title: 'nav.bs5', url: '/stub/bs-annual', icon: 'lucide:zap' },
-      { title: 'nav.bs6', url: '/stub/bs-revenue', icon: 'lucide:circle-dollar-sign' },
-      { title: 'nav.bs7', url: '/stub/bs-expenses', icon: 'lucide:receipt' },
-      { title: 'nav.bs8', url: '/stub/bs-profit', icon: 'lucide:activity' },
-      { title: 'nav.bs9', url: '/stub/bs-conversion', icon: 'lucide:filter' },
-      { title: 'nav.bs10', url: '/stub/bs-traffic', icon: 'lucide:layers' },
-      { title: 'nav.bs11', url: '/stub/bs-sources', icon: 'lucide:split' },
-      { title: 'nav.bs12', url: '/stub/bs-retention', icon: 'lucide:repeat' },
-      { title: 'nav.bs13', url: '/stub/bs-cohorts', icon: 'lucide:grid-2x2' },
-      { title: 'nav.bs14', url: '/stub/bs-funnels', icon: 'lucide:megaphone' },
-      { title: 'nav.bs15', url: '/stub/bs-heatmap', icon: 'lucide:map' },
-      { title: 'nav.bs16', url: '/stub/bs-segments', icon: 'lucide:puzzle' },
-      { title: 'nav.bs17', url: '/stub/bs-campaigns', icon: 'lucide:bell' },
-      { title: 'nav.bs18', url: '/stub/bs-channels', icon: 'lucide:radio' },
-      { title: 'nav.bs19', url: '/stub/bs-custom', icon: 'lucide:settings' },
-      { title: 'nav.bs20', url: '/stub/bs-export', icon: 'lucide:file-text' },
-      { title: 'nav.bs21', url: '/stub/bs-tags', icon: 'lucide:tag' },
-      { title: 'nav.bs22', url: '/stub/bs-labels', icon: 'lucide:bookmark' },
-      { title: 'nav.bs23', url: '/stub/bs-goals', icon: 'lucide:target' },
-      { title: 'nav.bs24', url: '/stub/bs-alerts', icon: 'lucide:bell' },
-      { title: 'nav.bs25', url: '/stub/bs-webhooks', icon: 'lucide:webhook' },
-      { title: 'nav.bs26', url: '/stub/bs-api', icon: 'lucide:terminal' },
-      { title: 'nav.bs27', url: '/stub/bs-tokens', icon: 'lucide:key-round' },
-      { title: 'nav.bs28', url: '/stub/bs-logs', icon: 'lucide:scroll-text' },
-      { title: 'nav.bs29', url: '/stub/bs-audit', icon: 'lucide:shield' },
-      { title: 'nav.bs30', url: '/stub/bs-archive', icon: 'lucide:archive' },
+      { id: 'bs-daily', title: 'nav.bs1', url: '/stub/bs-daily', icon: 'lucide:calendar' },
+      { id: 'bs-weekly', title: 'nav.bs2', url: '/stub/bs-weekly', icon: 'lucide:calendar-days' },
+      { id: 'bs-monthly', title: 'nav.bs3', url: '/stub/bs-monthly', icon: 'lucide:calendar-range' },
+      { id: 'bs-quarterly', title: 'nav.bs4', url: '/stub/bs-quarterly', icon: 'lucide:trending-up' },
+      { id: 'bs-annual', title: 'nav.bs5', url: '/stub/bs-annual', icon: 'lucide:zap' },
+      { spacer: true, id: 'bs-before-finance' },
+      { id: 'bs-revenue', title: 'nav.bs6', url: '/stub/bs-revenue', icon: 'lucide:circle-dollar-sign' },
+      { id: 'bs-expenses', title: 'nav.bs7', url: '/stub/bs-expenses', icon: 'lucide:receipt' },
+      { id: 'bs-profit', title: 'nav.bs8', url: '/stub/bs-profit', icon: 'lucide:activity' },
+      { id: 'bs-conversion', title: 'nav.bs9', url: '/stub/bs-conversion', icon: 'lucide:filter' },
+      { id: 'bs-traffic', title: 'nav.bs10', url: '/stub/bs-traffic', icon: 'lucide:layers' },
+      { spacer: true, id: 'bs-before-traffic' },
+      { id: 'bs-sources', title: 'nav.bs11', url: '/stub/bs-sources', icon: 'lucide:split' },
+      { id: 'bs-retention', title: 'nav.bs12', url: '/stub/bs-retention', icon: 'lucide:repeat' },
+      { id: 'bs-cohorts', title: 'nav.bs13', url: '/stub/bs-cohorts', icon: 'lucide:grid-2x2' },
+      { id: 'bs-funnels', title: 'nav.bs14', url: '/stub/bs-funnels', icon: 'lucide:megaphone' },
+      { id: 'bs-heatmap', title: 'nav.bs15', url: '/stub/bs-heatmap', icon: 'lucide:map' },
+      { id: 'bs-segments', title: 'nav.bs16', url: '/stub/bs-segments', icon: 'lucide:puzzle' },
+      { id: 'bs-campaigns', title: 'nav.bs17', url: '/stub/bs-campaigns', icon: 'lucide:bell' },
+      { id: 'bs-channels', title: 'nav.bs18', url: '/stub/bs-channels', icon: 'lucide:radio' },
+      { id: 'bs-custom', title: 'nav.bs19', url: '/stub/bs-custom', icon: 'lucide:settings' },
+      { id: 'bs-export', title: 'nav.bs20', url: '/stub/bs-export', icon: 'lucide:file-text' },
+      { spacer: true, id: 'bs-before-meta' },
+      { id: 'bs-tags', title: 'nav.bs21', url: '/stub/bs-tags', icon: 'lucide:tag' },
+      { id: 'bs-labels', title: 'nav.bs22', url: '/stub/bs-labels', icon: 'lucide:bookmark' },
+      { id: 'bs-goals', title: 'nav.bs23', url: '/stub/bs-goals', icon: 'lucide:target' },
+      { id: 'bs-alerts', title: 'nav.bs24', url: '/stub/bs-alerts', icon: 'lucide:bell' },
+      { id: 'bs-webhooks', title: 'nav.bs25', url: '/stub/bs-webhooks', icon: 'lucide:webhook' },
+      { id: 'bs-api', title: 'nav.bs26', url: '/stub/bs-api', icon: 'lucide:terminal' },
+      { id: 'bs-tokens', title: 'nav.bs27', url: '/stub/bs-tokens', icon: 'lucide:key-round' },
+      { id: 'bs-logs', title: 'nav.bs28', url: '/stub/bs-logs', icon: 'lucide:scroll-text' },
+      { id: 'bs-audit', title: 'nav.bs29', url: '/stub/bs-audit', icon: 'lucide:shield' },
+      { id: 'bs-archive', title: 'nav.bs30', url: '/stub/bs-archive', icon: 'lucide:archive' },
     ],
   },
 ] satisfies SidebarMenuItem[]

@@ -2,7 +2,7 @@
 import { useSidebar } from '../../composables/useSidebar'
 import SidebarLink from './SidebarLink.vue'
 import AppCollapseTransition from '~/components/App/CollapseTransition.vue'
-import { isSection, type SidebarMenuItem, type SidebarSection } from '../../config/sidebar-menu'
+import { isSection, isSpacer, type SidebarMenuItem, type SidebarSection } from '../../config/sidebar-menu'
 
 const props = withDefaults(
   defineProps<{
@@ -30,17 +30,17 @@ function onToggleCollapse(item: SidebarMenuItem, value: boolean) {
     emit('toggle-collapse', { id: props.item.id, value: true })
   }
 
-  if (!item.id || !item.items) return
+  if (!isSection(item)) return
   emit('toggle-collapse', { id: item.id, value })
 }
 
 function onClickSection(item: SidebarMenuItem) {
-  if (item?.items) return
+  if (isSection(item)) return
   emit('click-section', item)
 }
 
 function getSubItemKey(item: SidebarMenuItem, subitem: SidebarMenuItem, index: number) {
-  if (subitem.spacer) return `app-spacer-${item.id}-${index}`
+  if (isSpacer(subitem)) return `app-spacer-${subitem.id}`
   if (subitem.items) return `submenu_${subitem.id}_${index}`
   return `subitem_${item.id}_${index}`
 }
@@ -75,7 +75,8 @@ function getSubItemKey(item: SidebarMenuItem, subitem: SidebarMenuItem, index: n
             :key="getSubItemKey(item, subitem, index)"
           >
             <app-spacer
-              v-if="subitem.spacer"
+              v-if="isSpacer(subitem)"
+              :data-spacer-id="subitem.id"
             />
 
             <SidebarLink
@@ -86,12 +87,12 @@ function getSubItemKey(item: SidebarMenuItem, subitem: SidebarMenuItem, index: n
               :newTab="subitem.newTab"
               :icon="subitem.icon"
               :levelSidebarLink="level + 1"
-              :opened="isSectionExpanded(subitem.id!)"
-              :hasActiveInside="sectionsWithActive.has(subitem.id!)"
+              :opened="isSectionExpanded(subitem.id)"
+              :hasActiveInside="sectionsWithActive.has(subitem.id)"
               :to="subitem.url"
               @click-section="onClickSection(subitem)"
               @set-active="onToggleCollapse(subitem, $event)"
-              @toggle-collapse="onToggleCollapse(subitem, !isSectionExpanded(subitem.id!))"
+              @toggle-collapse="onToggleCollapse(subitem, !isSectionExpanded(subitem.id))"
             >
               {{ $te(subitem.title) ? $t(subitem.title) : subitem.title }}
             </SidebarLink>
@@ -102,7 +103,7 @@ function getSubItemKey(item: SidebarMenuItem, subitem: SidebarMenuItem, index: n
               :level="level + 1"
               :sectionsWithActive="sectionsWithActive"
               @click-section="onClickSection"
-              @toggle-collapse="onToggleCollapse(subitem, !isSectionExpanded(subitem.id!))"
+              @toggle-collapse="onToggleCollapse(subitem, !isSectionExpanded(subitem.id))"
             />
           </template>
 
