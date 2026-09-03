@@ -62,6 +62,33 @@ const menuIndex = computed(() => {
   return index
 })
 
+// Разделы, внутри которых лежит текущий маршрут: подсвечиваем их, иначе в свёрнутом
+// разделе не видно, где находишься. Дети внешнего раздела тоже попадают в набор,
+// поэтому подсвечивается вся цепочка предков активного пункта.
+const route = useRoute()
+
+const sectionsWithActive = computed(() => {
+  const ids = new Set<string>()
+
+  const walk = (items: MenuItem[]): boolean => {
+    let hasActive = false
+
+    for (const item of items) {
+      const nested = 'items' in item ? item.items : undefined
+      const isActiveLink = 'url' in item && !item.external && item.url === route.path
+      const activeInside = nested?.length ? walk(nested) : false
+
+      if (activeInside && item.id) ids.add(item.id)
+      if (isActiveLink || activeInside) hasActive = true
+    }
+
+    return hasActive
+  }
+
+  walk(menu.value)
+  return ids
+})
+
 function onClickSection({ id, value }: { id: string, value?: boolean }) {
   const section = menuIndex.value.get(id)
 
@@ -141,6 +168,7 @@ function toggleSideBarWidth() {
               :newTab="item.newTab"
               :class="item.classes"
               :opened="expandedSections[item.id!]"
+              :hasActiveInside="sectionsWithActive.has(item.id!)"
               :tooltipText="$t(item.title)"
               :icon="item.icon"
               :chevron="!!item.items"
@@ -152,6 +180,7 @@ function toggleSideBarWidth() {
             <SubMenu
               v-if="isSection(item)"
               :item="item"
+              :sectionsWithActive="sectionsWithActive"
               @toggle-collapse="onToggleCollapse"
               @click-section="onClickSection({ id: $event.id! })"
             />

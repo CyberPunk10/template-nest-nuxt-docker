@@ -8,6 +8,7 @@ const props = withDefaults(
   defineProps<{
     item: SidebarSection
     level?: number
+    sectionsWithActive: Set<string>
   }>(),
   { level: 1 },
 )
@@ -86,6 +87,7 @@ function getSubItemKey(item: SidebarMenuItem, subitem: SidebarMenuItem, index: n
               :icon="subitem.icon"
               :levelSidebarLink="level + 1"
               :opened="isSectionExpanded(subitem.id!)"
+              :hasActiveInside="sectionsWithActive.has(subitem.id!)"
               :to="subitem.url"
               @click-section="onClickSection(subitem)"
               @set-active="onToggleCollapse(subitem, $event)"
@@ -98,6 +100,7 @@ function getSubItemKey(item: SidebarMenuItem, subitem: SidebarMenuItem, index: n
               v-if="isSection(subitem)"
               :item="subitem"
               :level="level + 1"
+              :sectionsWithActive="sectionsWithActive"
               @click-section="onClickSection"
               @toggle-collapse="onToggleCollapse(subitem, !isSectionExpanded(subitem.id!))"
             />

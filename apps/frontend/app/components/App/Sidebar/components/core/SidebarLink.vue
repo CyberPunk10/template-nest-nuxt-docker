@@ -9,6 +9,9 @@ const props = withDefaults(
     // Рендерить обычный <a> вместо NuxtLink, чтобы переход выполнил браузер,
     // а не Vue Router — тот же смысл, что у одноимённого пропа NuxtLink.
     external?: boolean
+    // внутри этого раздела лежит активный маршрут — подсвечиваем сам раздел,
+    // иначе в свёрнутом виде не видно, где находишься
+    hasActiveInside?: boolean
     icon?: string
     levelSidebarLink?: number
     newTab?: boolean
@@ -64,8 +67,8 @@ function handlerSidebarLink() {
       v-tippy="isCollapsed && levelSidebarLink === 1 && tooltipText ? tooltipText : ''"
       class="sidebar-link"
       :class="{
-        '--active': isActive,
-        '--opened': opened,
+        '--active': isActive || (hasActiveInside && !opened),
+        '--opened': opened || hasActiveInside,
       }"
       v-bind="linkAttrs"
       @click="handlerSidebarLink"
