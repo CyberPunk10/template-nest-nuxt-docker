@@ -1,43 +1,35 @@
 <script setup lang="ts">
-import { useElementSize } from '@vueuse/core'
 import AppSidebar from '~/components/App/Sidebar/components/AppSidebar.vue'
 import { useSidebar } from '~/components/App/Sidebar/composables/useSidebar'
 
 const route = useRoute()
 
-const isShowAppHeader = computed(() => !route.meta.hideHeader)
-const isShowAppSidebar = computed(() => !route.meta.hideSidebar)
 const { isCollapsed } = useSidebar()
 
-const pageRef = useTemplateRef('appPage')
-const { width, height } = useElementSize(pageRef)
-const { pageWidth, pageHeight } = usePageSize()
-watch(width, (v) => {
-  pageWidth.value = v
-})
-watch(height, (v) => {
-  pageHeight.value = v
-})
+const hideHeader = computed(() => route.meta.hideHeader)
+const hideSidebar = computed(() => route.meta.hideSidebar)
+
+useTrackPageSize(useTemplateRef('appPage'))
 </script>
 
 <template>
   <div
     class="template-monorepo-app layout"
     :class="{
-      '--has-sidebar': isShowAppSidebar,
+      '--has-sidebar': !hideSidebar,
       '--sidebar-collapsed': isCollapsed,
     }"
   >
     <NuxtRouteAnnouncer />
 
-    <AppSidebar v-if="isShowAppSidebar" />
+    <AppSidebar v-if="!hideSidebar" />
 
     <div
       ref="appPage"
       class="app-page"
-      :class="{ '--has-app-header': isShowAppHeader }"
+      :class="{ '--has-app-header': !hideHeader }"
     >
-      <AppHeader v-if="isShowAppHeader" />
+      <AppHeader v-if="!hideHeader" />
 
       <div class="app-page__content">
         <slot />

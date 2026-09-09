@@ -302,6 +302,10 @@ function toggleSideBarWidth() {
 }
 
 @media (max-width: 1024px) {
+  .sidebar-footer {
+    display: none;
+  }
+
   .app-sidebar__wrapper {
     width: 0;
 
