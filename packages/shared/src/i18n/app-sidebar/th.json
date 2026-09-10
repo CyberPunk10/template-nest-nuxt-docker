@@ -16,8 +16,6 @@
     "catalogCategories": "หมวดหมู่",
     "orders": "คำสั่งซื้อ",
     "reports": "รายงาน",
-    "settings": "การตั้งค่า",
-    "profile": "โปรไฟล์",
     "docs": "เอกสาร",
     "bigSection": "การวิเคราะห์+",
     "bs1": "รายวัน",
@@ -54,7 +52,6 @@
   "themes": {
     "dark": "มืด",
     "light": "สว่าง",
-    "system": "ระบบ",
     "followSystem": "ตามระบบ",
     "lightSand": "ทราย",
     "lightMist": "หมอก",
@@ -78,12 +75,6 @@
     "ru": "Русский",
     "en": "English",
     "th": "ภาษาไทย"
-  },
-  "app": {
-    "logout": "ออกจากระบบ"
-  },
-  "dashboard": {
-    "myProfile": "โปรไฟล์ของฉัน"
   },
   "sidebar": {
     "label": "การนำทางหลัก",

@@ -1,9 +1,4 @@
 {
-  "errors": {
-    "notFound": "Not found",
-    "unauthorized": "Unauthorized",
-    "validation": "Validation failed"
-  },
   "db": {
     "title": "Database",
     "subtitle": "read-only snapshot",
@@ -11,7 +6,6 @@
       "id": "ID",
       "title": "Title",
       "description": "Description",
-      "author": "Author",
       "createdAt": "Created",
       "updatedAt": "Updated"
     }

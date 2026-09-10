@@ -3,8 +3,8 @@ import { onClickOutside } from '@vueuse/core'
 import UserMenuTrigger from './UserMenuTrigger.vue'
 import UserMenuDropdown from './UserMenuDropdown.vue'
 
-withDefaults(defineProps<{ placement?: 'up' | 'down' }>(), {
-  placement: 'up',
+withDefaults(defineProps<{ context?: 'sidebar' | 'header' }>(), {
+  context: 'sidebar',
 })
 
 const { user } = useUserMock()
@@ -38,7 +38,7 @@ onClickOutside(menuRef, () => {
 
     <UserMenuDropdown
       v-if="menuOpen"
-      :placement="placement"
+      :context="context"
       @close="menuOpen = false"
     />
   </div>

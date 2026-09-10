@@ -2,6 +2,8 @@
 import { resolveIcon } from '~/components/App/Sidebar/config/icons'
 import { themes } from '~/components/App/UserMenu/config/user-menu'
 
+withDefaults(defineProps<{ context?: 'sidebar' | 'header' }>(), { context: 'sidebar' })
+
 const { followSystem, selectedLight, selectedDark, activeTheme, setFollowSystem, selectTheme } = useThemePreference()
 const { t } = useI18n()
 
@@ -34,6 +36,47 @@ function isChecked(id: string, kind: 'light' | 'dark') {
 
 <template>
   <div
+    v-if="context === 'header'"
+    class="user-menu__screen-body"
+  >
+    <button
+      class="user-menu__item user-menu__item--follow-system"
+      :class="{ 'user-menu__item--active': followSystem }"
+      @click="setFollowSystem(!followSystem)"
+    >
+      <Icon name="lucide:monitor" size="14" />
+      {{ t('themes.followSystem') }}
+      <span class="user-menu__switch" :class="{ 'user-menu__switch--on': followSystem }">
+        <span class="user-menu__switch-thumb" />
+      </span>
+    </button>
+
+    <div class="user-menu__divider user-menu__divider--inner" />
+
+    <template v-for="(theme, index) in themes" :key="theme.id">
+      <div
+        v-if="index > 0 && themes[index - 1]?.kind !== theme.kind"
+        class="user-menu__divider user-menu__divider--inner"
+      />
+      <button
+        class="user-menu__item"
+        :class="{ 'user-menu__item--active': isChecked(theme.id, theme.kind) }"
+        @click="selectTheme(theme.id, theme.kind)"
+      >
+        <Icon :name="resolveIcon(theme.icon)" size="14" />
+        {{ t(theme.title) }}
+        <Icon
+          v-if="isChecked(theme.id, theme.kind)"
+          name="lucide:check"
+          size="12"
+          class="user-menu__item-icon"
+        />
+      </button>
+    </template>
+  </div>
+
+  <div
+    v-if="context === 'sidebar'"
     class="user-menu__theme"
     @mouseenter="open"
     @mouseleave="close"

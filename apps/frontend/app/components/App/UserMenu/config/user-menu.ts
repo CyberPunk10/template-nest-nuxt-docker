@@ -1,16 +1,16 @@
 import type { SidebarMenuItem } from '../../Sidebar/config/sidebar-menu'
 
-export interface SidebarDivider {
+export interface UserMenuDivider {
   id: string
   divider: true
 }
 
-export interface SidebarSlot {
+export interface UserMenuSubmenu {
   id: string
-  slot: true
+  submenu: true
 }
 
-export type UserMenuItem = (SidebarMenuItem & { id: string }) | SidebarDivider | SidebarSlot
+export type UserMenuItem = (SidebarMenuItem & { id: string }) | UserMenuDivider | UserMenuSubmenu
 
 export interface ThemeItem {
   id: string
@@ -39,8 +39,8 @@ export const userMenu: UserMenuItem[] = [
     icon: 'lucide:bell',
     url: '/stub/notifications',
   },
-  { id: 'language', slot: true },
-  { id: 'appearance', slot: true },
+  { id: 'language', submenu: true },
+  { id: 'appearance', submenu: true },
   { id: 'divider-preferences', divider: true },
   {
     id: 'changelog',

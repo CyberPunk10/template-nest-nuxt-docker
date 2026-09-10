@@ -1,9 +1,4 @@
 {
-  "errors": {
-    "notFound": "Не найдено",
-    "unauthorized": "Не авторизован",
-    "validation": "Ошибка валидации"
-  },
   "db": {
     "title": "База данных",
     "subtitle": "только чтение",
@@ -11,7 +6,6 @@
       "id": "ID",
       "title": "Название",
       "description": "Описание",
-      "author": "Автор",
       "createdAt": "Создано",
       "updatedAt": "Обновлено"
     }

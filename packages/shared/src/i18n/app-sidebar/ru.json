@@ -16,8 +16,6 @@
     "catalogCategories": "Категории",
     "orders": "Заказы",
     "reports": "Отчёты",
-    "settings": "Настройки",
-    "profile": "Профиль",
     "docs": "Документация",
     "bigSection": "Аналитика+",
     "bs1": "Ежедневный",
@@ -54,7 +52,6 @@
   "themes": {
     "dark": "Тёмная",
     "light": "Светлая",
-    "system": "Системная",
     "followSystem": "Системная",
     "lightSand": "Песок",
     "lightMist": "Туман",
@@ -78,12 +75,6 @@
     "ru": "Русский",
     "en": "English",
     "th": "ภาษาไทย"
-  },
-  "app": {
-    "logout": "Выйти"
-  },
-  "dashboard": {
-    "myProfile": "Мой профиль"
   },
   "sidebar": {
     "label": "Основная навигация",

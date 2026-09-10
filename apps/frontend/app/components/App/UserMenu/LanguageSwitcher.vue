@@ -1,4 +1,6 @@
 <script setup lang="ts">
+withDefaults(defineProps<{ context?: 'sidebar' | 'header' }>(), { context: 'sidebar' })
+
 const { t, locale, locales, setLocale } = useI18n()
 
 const show = ref(false)
@@ -18,6 +20,28 @@ function close() {
 
 <template>
   <div
+    v-if="context === 'header'"
+    class="user-menu__screen-body"
+  >
+    <button
+      v-for="loc in locales"
+      :key="loc.code"
+      class="user-menu__item"
+      :class="{ 'user-menu__item--active': locale === loc.code }"
+      @click="setLocale(loc.code)"
+    >
+      {{ t(`locales.${loc.code}`) }}
+      <Icon
+        v-if="locale === loc.code"
+        name="lucide:check"
+        size="12"
+        class="user-menu__item-icon"
+      />
+    </button>
+  </div>
+
+  <div
+    v-if="context === 'sidebar'"
     class="user-menu__lang"
     @mouseenter="open"
     @mouseleave="close"

@@ -16,8 +16,6 @@
     "catalogCategories": "Categories",
     "orders": "Orders",
     "reports": "Reports",
-    "settings": "Settings",
-    "profile": "Profile",
     "docs": "Documentation",
     "bigSection": "Analytics+",
     "bs1": "Daily",
@@ -54,7 +52,6 @@
   "themes": {
     "dark": "Dark",
     "light": "Light",
-    "system": "System",
     "followSystem": "Follow system",
     "lightSand": "Sand",
     "lightMist": "Mist",
@@ -78,12 +75,6 @@
     "ru": "Русский",
     "en": "English",
     "th": "ภาษาไทย"
-  },
-  "app": {
-    "logout": "Log out"
-  },
-  "dashboard": {
-    "myProfile": "My Profile"
   },
   "sidebar": {
     "label": "Main navigation",
