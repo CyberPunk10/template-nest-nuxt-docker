@@ -28,14 +28,15 @@ defineEmits<{ click: [] }>()
 <style lang="scss">
 .user-menu {
   &__trigger {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
-    gap: 10px;
+    gap: .625rem;
     width: 100%;
     background: transparent;
     border: 1px solid transparent;
     border-radius: var(--radius-lg);
-    padding: 5px 10px 5px 4px;
+    padding: 3px 10px 3px 4px;
     cursor: pointer;
     transition:
       border-color 0.15s,
@@ -48,11 +49,11 @@ defineEmits<{ click: [] }>()
   }
 
   &__avatar {
-    flex: 0 0 1.75rem;
-    width: 1.75rem;
-    height: 1.75rem;
+    width: 2rem;
+    height: 2rem;
     border-radius: 50%;
     background: var(--accent);
+    border: 1px solid var(--surface-panel);
     color: var(--surface-app);
     font-size: var(--text-sm);
     font-weight: 700;
@@ -62,8 +63,6 @@ defineEmits<{ click: [] }>()
   }
 
   &__info {
-    flex: 1 1 0;
-    min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 1px;
@@ -91,7 +90,6 @@ defineEmits<{ click: [] }>()
   }
 
   &__chevron {
-    flex-shrink: 0;
     color: var(--text-muted);
     opacity: 1;
     transition:

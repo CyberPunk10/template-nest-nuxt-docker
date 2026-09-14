@@ -247,6 +247,21 @@ function toggleSideBarWidth() {
     .sidebar-menu.app-scroll-shadow {
       overflow: visible;
     }
+
+    .sidebar-footer {
+      .user-menu {
+        &__trigger {
+          &:hover {
+            border-color: transparent;
+            background: transparent;
+
+            .user-menu__avatar {
+              outline: 4px solid var(--control-hover);
+            }
+          }
+        }
+      }
+    }
   }
 
   .sidebar-footer {
@@ -259,8 +274,7 @@ function toggleSideBarWidth() {
       padding: var(--space-0-5) var(--space-1-5) var(--space-1);
 
       &__trigger {
-        padding-top: var(--space-2);
-        padding-bottom: var(--space-2);
+        padding: var(--space-1) var(--space-2) var(--space-1) 3px;
 
         &:hover {
           border-color: var(--border-subtle);

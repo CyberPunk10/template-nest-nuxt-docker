@@ -47,6 +47,5 @@ onClickOutside(menuRef, () => {
 <style lang="scss">
 .user-menu {
   position: relative;
-  padding: var(--space-0-5) var(--space-2) var(--space-1);
 }
 </style>
