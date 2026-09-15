@@ -27,8 +27,10 @@ onClickOutside(menuRef, () => {
   <div
     ref="menu"
     class="user-menu"
+    :class="`user-menu--${context}`"
   >
     <UserMenuTrigger
+      :context="context"
       :avatar="avatar"
       :name="user?.name"
       :email="user?.email"
@@ -47,5 +49,31 @@ onClickOutside(menuRef, () => {
 <style lang="scss">
 .user-menu {
   position: relative;
+
+  &--header {
+    @media (max-width: 500px) {
+      .user-menu__info,
+      .user-menu__chevron {
+        display: none;
+      }
+
+      .user-menu__trigger {
+        grid-template-columns: auto;
+        gap: 0;
+        width: auto;
+        padding: 0;
+        padding-right: var(--space-1-5);
+
+        &:hover {
+          border-color: transparent;
+          background: transparent;
+
+          .user-menu__avatar {
+            outline: 4px solid var(--control-hover);
+          }
+        }
+      }
+    }
+  }
 }
 </style>

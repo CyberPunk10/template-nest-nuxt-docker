@@ -1,16 +1,21 @@
 <script setup lang="ts">
-defineProps<{
+withDefaults(defineProps<{
   avatar: string
+  context?: 'sidebar' | 'header'
   name?: string
   email?: string
   open: boolean
-}>()
+}>(), { context: 'sidebar' })
 
 defineEmits<{ click: [] }>()
 </script>
 
 <template>
-  <button class="user-menu__trigger" @click="$emit('click')">
+  <button
+    class="user-menu__trigger"
+    :class="`user-menu__trigger--${context}`"
+    @click="$emit('click')"
+  >
     <div class="user-menu__avatar">{{ avatar }}</div>
     <div class="user-menu__info">
       <span class="user-menu__name">{{ name }}</span>
@@ -19,7 +24,13 @@ defineEmits<{ click: [] }>()
     <Icon
       name="lucide:chevron-up"
       size="14"
-      class="user-menu__chevron"
+      class="user-menu__chevron --up"
+      :class="{ 'user-menu__chevron--open': open }"
+    />
+    <Icon
+      name="lucide:chevron-down"
+      size="14"
+      class="user-menu__chevron --down"
       :class="{ 'user-menu__chevron--open': open }"
     />
   </button>
@@ -87,6 +98,11 @@ defineEmits<{ click: [] }>()
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  &__trigger--sidebar .user-menu__chevron.--down,
+  &__trigger--header .user-menu__chevron.--up {
+    display: none;
   }
 
   &__chevron {
