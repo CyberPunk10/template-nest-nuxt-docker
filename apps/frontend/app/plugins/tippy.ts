@@ -7,6 +7,7 @@ import 'tippy.js/animations/shift-away-subtle.css'
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.use(VueTippy, {
     defaultProps: {
+      touch: false,
       theme: 'app',
       placement: 'right',
       arrow: roundArrow + roundArrow,

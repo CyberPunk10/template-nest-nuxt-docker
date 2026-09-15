@@ -250,7 +250,6 @@ function toggleSideBarWidth() {
 
     .sidebar-link__text,
     .sidebar-link__chevron,
-    .sidebar-toggle__label,
     .user-menu__info,
     .user-menu__chevron {
       opacity: 0;
@@ -294,6 +293,13 @@ function toggleSideBarWidth() {
 
     .sidebar-link:not(:hover) {
       color: var(--text-muted);
+    }
+
+    .sidebar-link__icon {
+      flex-basis: 1.125rem;
+      width: 1.125rem;
+      height: 1.125rem;
+      margin-left: -1px;
     }
 
     @include media-down(lg) {

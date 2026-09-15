@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import UserMenu from '~/components/App/UserMenu/index.vue'
-import SidebarToggle from '~/components/App/Sidebar/components/core/SidebarToggle.vue'
+import SidebarOpenButton from '~/components/App/SidebarOpenButton.vue'
 
 const route = useRoute()
 
@@ -9,7 +9,7 @@ const title = computed(() => route.meta.title as string | undefined)
 
 <template>
   <header class="app-header">
-    <SidebarToggle />
+    <SidebarOpenButton />
 
     <span v-if="title" class="app-header__title">{{ $t(title) }}</span>
 

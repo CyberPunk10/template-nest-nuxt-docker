@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useSidebar } from '../../composables/useSidebar'
+import { useSidebar } from './Sidebar/composables/useSidebar'
 
 const { isDrawerOpen, toggleDrawer } = useSidebar()
 </script>
@@ -7,7 +7,7 @@ const { isDrawerOpen, toggleDrawer } = useSidebar()
 <template>
   <button
     v-tippy="{ content: $t('sidebar.expand'), placement: 'bottom' }"
-    class="sidebar-toggle"
+    class="sidebar-open-button"
     :aria-label="$t('sidebar.expand')"
     :aria-expanded="isDrawerOpen"
     @click="toggleDrawer(true)"
@@ -17,7 +17,7 @@ const { isDrawerOpen, toggleDrawer } = useSidebar()
 </template>
 
 <style lang="scss">
-.sidebar-toggle {
+.sidebar-open-button {
   flex-shrink: 0;
   display: flex;
   align-items: center;
