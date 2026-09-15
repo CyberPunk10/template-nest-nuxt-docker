@@ -49,7 +49,7 @@ useTrackPageSize(useTemplateRef('appPage'))
       margin-left: var(--app-sidebar-width-collapsed);
     }
 
-    @media (width <= 1024px) {
+    @include media-down(lg) {
       margin-left: 0;
 
       &.--sidebar-collapsed {
@@ -63,7 +63,7 @@ useTrackPageSize(useTemplateRef('appPage'))
   .app-page__content {
     height: calc(100vh - var(--app-header-height));
 
-    @media (width > 1024px) {
+    @include media-up(lg) {
       height: 100vh;
     }
 

@@ -15,6 +15,14 @@ const { toggleDrawer } = useSidebar()
       class="sidebar-logo"
       @click="toggleDrawer(false)"
     />
+
+    <button
+      class="sidebar-close"
+      :aria-label="$t('sidebar.collapse')"
+      @click="toggleDrawer(false)"
+    >
+      <Icon name="lucide:x" size="18" />
+    </button>
   </div>
 </template>
 
@@ -30,6 +38,30 @@ const { toggleDrawer } = useSidebar()
   .sidebar-logo {
     svg {
       height: 1.5rem;
+    }
+  }
+
+  .sidebar-close {
+    display: none;
+    margin-left: auto;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border: none;
+    border-radius: var(--radius-lg);
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color 0.15s ease;
+
+    &:hover {
+      color: var(--text-primary);
+    }
+
+    @include media-down(xs) {
+      display: flex;
     }
   }
 }

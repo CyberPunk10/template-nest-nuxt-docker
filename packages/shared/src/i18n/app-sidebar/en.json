@@ -79,6 +79,7 @@
   "sidebar": {
     "label": "Main navigation",
     "expand": "Expand sidebar",
-    "collapse": "Collapse sidebar"
+    "collapse": "Collapse sidebar",
+    "collapseShort": "Collapse"
   }
 }

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import UserMenu from '~/components/App/UserMenu/index.vue'
+import SidebarToggle from '~/components/App/Sidebar/components/core/SidebarToggle.vue'
 
 const route = useRoute()
 
@@ -8,10 +9,9 @@ const title = computed(() => route.meta.title as string | undefined)
 
 <template>
   <header class="app-header">
+    <SidebarToggle />
+
     <span v-if="title" class="app-header__title">{{ $t(title) }}</span>
-    <span v-else class="app-header__title --missing">
-      missing route.meta.title
-    </span>
 
     <div class="app-header__right">
       <UserMenu context="header" />
@@ -29,10 +29,10 @@ const title = computed(() => route.meta.title as string | undefined)
   border-bottom: 1px solid var(--border-subtle);
   display: flex;
   align-items: center;
-  padding: 0 var(--space-4);
-  padding-left: var(--space-12);
+  gap: var(--space-3);
+  padding: 0 var(--space-2-5);
 
-  @media (width > 1024px) {
+  @include media-up(lg) {
     display: none;
   }
 
@@ -44,11 +44,6 @@ const title = computed(() => route.meta.title as string | undefined)
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-
-    &.--missing {
-      color: var(--status-warning);
-      font-weight: var(--font-normal);
-    }
   }
 
   &__right {

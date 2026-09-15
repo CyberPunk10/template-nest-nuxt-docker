@@ -8,7 +8,6 @@ import UserMenu from '~/components/App/UserMenu/index.vue'
 import SidebarLogo from './SidebarLogo.vue'
 import SidebarShadow from './core/SidebarShadow.vue'
 import SubMenu from './core/SubMenu.vue'
-import SidebarToggle from './core/SidebarToggle.vue'
 
 const {
   collapseAllSections,
@@ -28,6 +27,10 @@ const onClickOutsideRef = useTemplateRef('sidebarWrapper')
 const scrollShadowRef = useTemplateRef('scrollShadow')
 
 const { sidebarMenu } = useMenu()
+
+const { t } = useI18n()
+
+const collapseTooltip = computed(() => (isCollapsed.value ? t('sidebar.expand') : t('sidebar.collapse')))
 
 // при переключении layout компонент монтируется заново — закрываем drawer,
 // иначе он останется открытым от предыдущего layout
@@ -123,6 +126,20 @@ onKeyStroke('Escape', () => {
   toggleDrawer(false)
 })
 
+// Cmd/Ctrl+B — for toggle sidebar width or drawer open/close. If focus is in input, ignore.
+onKeyStroke('b', (e) => {
+  if (!e.metaKey && !e.ctrlKey) return
+
+  const el = document.activeElement
+  const isTyping = el instanceof HTMLElement
+    && (el.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(el.tagName))
+  if (isTyping) return
+
+  e.preventDefault()
+  if (isDrawerMode.value) toggleDrawer()
+  else toggleSideBarWidth()
+})
+
 function toggleSideBarWidth() {
   collapseAllSections()
   toggleCollapsed()
@@ -139,10 +156,6 @@ function toggleSideBarWidth() {
     }"
   >
     <SidebarShadow @click="clickByShadow" />
-
-    <SidebarToggle
-      @toggle-sidebar-width="toggleSideBarWidth"
-    />
 
     <nav
       class="app-sidebar"
@@ -187,6 +200,16 @@ function toggleSideBarWidth() {
         </template>
       </app-scroll-shadow>
 
+      <div class="sidebar-collapse">
+        <SidebarLink
+          :icon="isCollapsed ? 'lucide:panel-left-open' : 'lucide:panel-left-close'"
+          :tooltipText="collapseTooltip"
+          @click-section="toggleSideBarWidth"
+        >
+          {{ t('sidebar.collapseShort') }}
+        </SidebarLink>
+      </div>
+
       <div class="sidebar-footer">
         <UserMenu />
       </div>
@@ -227,6 +250,7 @@ function toggleSideBarWidth() {
 
     .sidebar-link__text,
     .sidebar-link__chevron,
+    .sidebar-toggle__label,
     .user-menu__info,
     .user-menu__chevron {
       opacity: 0;
@@ -264,8 +288,20 @@ function toggleSideBarWidth() {
     }
   }
 
-  .sidebar-footer {
+  .sidebar-collapse {
     margin-top: auto;
+    padding-bottom: var(--space-0-5);
+
+    .sidebar-link:not(:hover) {
+      color: var(--text-muted);
+    }
+
+    @include media-down(lg) {
+      display: none;
+    }
+  }
+
+  .sidebar-footer {
     border-top: 1px solid var(--border-subtle);
     padding-top: var(--space-1);
     padding-bottom: var(--space-0-5);
@@ -315,7 +351,7 @@ function toggleSideBarWidth() {
   }
 }
 
-@media (max-width: 1024px) {
+@include media-down(lg) {
   .sidebar-footer {
     display: none;
   }

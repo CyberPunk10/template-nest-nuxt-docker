@@ -1,0 +1,27 @@
+@use 'sass:map';
+
+// Same numbers in useAppBreakpoints.ts (JS) — keep both in sync.
+$breakpoints: (
+  xs: 380px,  // drawer and modals go full width
+  md: 768px,  // mobile → tablet: content thresholds, page layout
+  lg: 1024px, // tablet → desktop: header hides, sidebar becomes permanent
+);
+
+@function breakpoint($name) {
+  @if not map.has-key($breakpoints, $name) {
+    @error 'Unknown breakpoint `#{$name}`. Available: #{map.keys($breakpoints)}.';
+  }
+  @return map.get($breakpoints, $name);
+}
+
+@mixin media-down($name) {
+  @media (width <= #{breakpoint($name)}) {
+    @content;
+  }
+}
+
+@mixin media-up($name) {
+  @media (width > #{breakpoint($name)}) {
+    @content;
+  }
+}

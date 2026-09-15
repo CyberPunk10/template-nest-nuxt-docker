@@ -64,6 +64,13 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
 
   vite: {
+    css: {
+      preprocessorOptions: {
+        // миксины медиазапросов доступны во всех <style lang="scss"> без импорта
+        scss: { additionalData: '@use "~/assets/css/breakpoints" as *;' },
+      },
+    },
+
     optimizeDeps: {
       include: [
         '@vueuse/core',

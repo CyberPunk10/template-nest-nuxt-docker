@@ -1,7 +1,7 @@
 import { useBreakpoints } from '@vueuse/core'
 
 export const APP_BREAKPOINTS = {
-  xs: 480, // fullscreen threshold: drawer, модалки на 100%
+  xs: 380, // fullscreen threshold: drawer, модалки на 100%
   md: 768, // mobile → tablet: пороги контента, вёрстка страниц
   lg: 1024, // tablet → desktop: header скрывается, sidebar из drawer становится постоянным
 } as const

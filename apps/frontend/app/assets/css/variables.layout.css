@@ -1,8 +1,4 @@
 :root {
-  --breakpoint-xs: 480px;  /* fullscreen threshold: drawer, модалки на 100% */
-  --breakpoint-md: 768px;  /* mobile → tablet: пороги контента, вёрстка страниц */
-  --breakpoint-lg: 1024px; /* tablet → desktop: header скрывается, sidebar из drawer становится постоянным */
-
   --app-sidebar-width: 15rem;
   --app-sidebar-width-collapsed: 3.25rem;
   --app-sidebar-item-height: 2.5rem;
@@ -15,7 +11,7 @@
   --app-header-height: 3.25rem;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 380px) {
   :root {
     --app-sidebar-width: 100%;
   }
