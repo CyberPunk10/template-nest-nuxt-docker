@@ -15,21 +15,22 @@ const { isDrawerOpen } = useSidebar()
 
 <style lang="scss">
 .sidebar-shadow {
-  position: absolute;
-  top: 0;
-  right: 0;
-  height: 100%;
-  width: 100%;
+  position: fixed;
+  inset: 0;
   background: transparent;
+  pointer-events: none;
   transition:
-    left var(--app-sidebar-transition),
-    height var(--app-sidebar-transition),
-    width var(--app-sidebar-transition),
     opacity var(--app-sidebar-transition),
     background-color var(--app-sidebar-transition);
 
   &.--drawer-open {
     background: rgba(0, 0, 0, 0.2);
+    pointer-events: auto;
+  }
+
+  /* drawer существует только ниже lg */
+  @include media-up(lg) {
+    display: none;
   }
 }
 </style>

@@ -109,7 +109,7 @@ defineEmits<{ click: [] }>()
     color: var(--text-muted);
     opacity: 1;
     transition:
-      transform 0.2s,
+      transform var(--duration-normal),
       opacity var(--app-sidebar-transition);
 
     &--open {

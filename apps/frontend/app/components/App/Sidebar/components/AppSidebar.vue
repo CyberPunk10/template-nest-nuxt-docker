@@ -231,65 +231,15 @@ function toggleSideBarWidth() {
   z-index: var(--z-raised);
   position: relative;
   height: 100%;
-  width: var(--app-sidebar-width);
-  max-width: var(--app-sidebar-width);
   display: flex;
   flex-direction: column;
   background-color: var(--surface-panel);
-  will-change: width;
   font-size: var(--text-xs);
-  transition:
-    width var(--app-sidebar-transition),
-    max-width var(--app-sidebar-transition),
-    transform var(--app-sidebar-transition);
-
-  &.--collapsed {
-    width: var(--app-sidebar-width-collapsed);
-    max-width: var(--app-sidebar-width-collapsed);
-    overflow: visible;
-
-    .sidebar-link__text,
-    .sidebar-link__chevron,
-    .user-menu__info,
-    .user-menu__chevron {
-      opacity: 0;
-    }
-
-    .sidebar-dropdown {
-      .sidebar-link__text,
-      .sidebar-link__chevron {
-        opacity: 1;
-      }
-    }
-
-    .logo__text {
-      max-width: 0;
-      opacity: 0;
-    }
-
-    .sidebar-menu.app-scroll-shadow {
-      overflow: visible;
-    }
-
-    .sidebar-footer {
-      .user-menu {
-        &__trigger {
-          &:hover {
-            border-color: transparent;
-            background: transparent;
-
-            .user-menu__avatar {
-              outline: 4px solid var(--control-hover);
-            }
-          }
-        }
-      }
-    }
-  }
+  transition: width var(--app-sidebar-transition);
 
   .sidebar-collapse {
     margin-top: auto;
-    padding-bottom: var(--space-0-5);
+    padding: var(--space-1) 0 var(--space-0-5);
 
     .sidebar-link:not(:hover) {
       color: var(--text-muted);
@@ -321,6 +271,54 @@ function toggleSideBarWidth() {
         &:hover {
           border-color: var(--border-subtle);
           background: rgba(255, 255, 255, 0.03);
+        }
+      }
+    }
+  }
+
+  &.--collapsed {
+    overflow: visible;
+
+    .sidebar-link__text,
+    .sidebar-link__chevron,
+    .user-menu__info,
+    .user-menu__chevron {
+      opacity: 0;
+    }
+
+    /* transition читается с целевого состояния, поэтому здесь описано
+       СВОРАЧИВАНИЕ. Появление — в базовых правилах этих элементов. */
+    .sidebar-link__chevron {
+      transition: opacity var(--duration-normal) var(--ease-default);
+    }
+
+    .sidebar-dropdown {
+      .sidebar-link__text,
+      .sidebar-link__chevron {
+        opacity: 1;
+      }
+    }
+
+    .logo__text {
+      max-width: 0;
+      opacity: 0;
+    }
+
+    .sidebar-menu.app-scroll-shadow {
+      overflow: visible;
+    }
+
+    .sidebar-footer {
+      .user-menu {
+        &__trigger {
+          &:hover {
+            border-color: transparent;
+            background: transparent;
+
+            .user-menu__avatar {
+              outline: 4px solid var(--control-hover);
+            }
+          }
         }
       }
     }
@@ -360,32 +358,6 @@ function toggleSideBarWidth() {
 @include media-down(lg) {
   .sidebar-footer {
     display: none;
-  }
-
-  .app-sidebar__wrapper {
-    width: 0;
-
-    /* обёртка растягивается на весь экран, чтобы подложка перехватывала клики */
-    &.--drawer-open {
-      width: 100%;
-    }
-
-    &:not(.--drawer-open) {
-      transition: width 0s ease var(--app-sidebar-transition-duration); // задержка для плавного исчезновения sidebar-shadow
-    }
-
-    .app-sidebar {
-      position: absolute;
-      transform: translateX(-100%);
-      overflow: hidden;
-    }
-
-    &.--drawer-open .app-sidebar {
-      // не hidden: подменю UserMenu в футере выходит за пределы сайдбара и обрезалось бы.
-      // прокрутку меню обеспечивает .sidebar-menu, здесь она не нужна
-      overflow: visible;
-      transform: translateX(0);
-    }
   }
 }
 

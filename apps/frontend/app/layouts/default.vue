@@ -40,22 +40,52 @@ useTrackPageSize(useTemplateRef('appPage'))
 
 <style lang="scss">
 .layout {
-  transition: margin var(--app-sidebar-transition);
+  margin-left: 0;
+  transition: margin-left var(--app-sidebar-transition);
 
   &.--has-sidebar {
     margin-left: var(--app-sidebar-width);
 
-    &.--sidebar-collapsed {
-      margin-left: var(--app-sidebar-width-collapsed);
+    .app-sidebar {
+      width: var(--app-sidebar-width);
     }
 
-    @include media-down(lg) {
+    &.--sidebar-collapsed {
+      margin-left: var(--app-sidebar-width-collapsed);
+
+      .app-sidebar {
+        width: var(--app-sidebar-width-collapsed);
+      }
+    }
+  }
+
+  @include media-down(lg) {
+    &.--has-sidebar {
       margin-left: 0;
+
+      .app-sidebar {
+        margin-left: calc(-1 * var(--app-sidebar-width));
+      }
 
       &.--sidebar-collapsed {
         margin-left: 0;
+
+        .app-sidebar {
+          margin-left: calc(-1 * var(--app-sidebar-width-collapsed));
+        }
+      }
+
+      /* drawer открыт — сайдбар выезжает обратно поверх контента */
+      .app-sidebar__wrapper.--drawer-open .app-sidebar {
+        margin-left: 0;
       }
     }
+  }
+
+  .app-sidebar {
+    transition:
+      width var(--app-sidebar-transition),
+      margin-left var(--app-sidebar-transition);
   }
 }
 

@@ -169,7 +169,9 @@ function handlerSidebarLink() {
     opacity: 1;
     transition:
       transform var(--duration-normal) var(--ease-default),
-      opacity var(--duration-slow) var(--ease-default) var(--duration-normal);
+      /* РАЗВОРАЧИВАНИЕ: появляемся с задержкой, когда панель уже поехала.
+         Сворачивание описано в правиле .app-sidebar.--collapsed */
+      opacity var(--duration-normal) var(--ease-default) var(--duration-fast);
 
     svg {
       width: 0.75rem;
