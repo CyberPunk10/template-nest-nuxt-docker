@@ -36,10 +36,9 @@
     white-space: nowrap;
     max-width: 200px;
     opacity: 1;
-    // схлопывание задаёт свёрнутый сайдбар (миксин sidebar-collapsed в AppSidebar.vue),
-    // здесь только развёрнутое состояние и переход между ними
+    // РАЗВОРАЧИВАНИЕ (сворачивание — в .app-sidebar.--collapsed)
     transition:
-      max-width var(--app-sidebar-transition),
+      max-width var(--duration-normal) ease 100ms,
       opacity var(--app-sidebar-transition);
   }
 

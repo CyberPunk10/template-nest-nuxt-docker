@@ -302,6 +302,12 @@ function toggleSideBarWidth() {
     .logo__text {
       max-width: 0;
       opacity: 0;
+      /* СВОРАЧИВАНИЕ: opacity гаснет вместе с остальным содержимым, а
+         max-width схлопывается быстрее — иначе текст упирается в сужающуюся
+         панель. Разворачивание описано в базовом правиле Logo.vue */
+      transition:
+        max-width var(--duration-normal) var(--ease-default),
+        opacity var(--app-sidebar-transition);
     }
 
     .sidebar-menu.app-scroll-shadow {
