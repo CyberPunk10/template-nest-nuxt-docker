@@ -253,8 +253,6 @@ function formatDate(value: string): string {
 .col {
   padding: 8px 6px;
   font-size: var(--text-sm);
-  // color: #cbd5e1;
-  // font-size: 13px;
   color: var(--text-primary);
   // длинный текст переносится на следующую строку внутри ячейки
   overflow-wrap: anywhere;

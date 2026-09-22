@@ -97,9 +97,6 @@ const { t } = useI18n()
 
   &__name {
     font-size: var(--text-sm);
-    // flex: 1 1 auto;
-    // min-width: 0;
-    // font-size: 13px;
     color: var(--text-primary);
     line-height: 1;
     white-space: nowrap;
