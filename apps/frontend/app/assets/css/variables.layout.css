@@ -9,6 +9,8 @@
   --app-sidebar-transition: var(--app-sidebar-transition-duration) ease;
 
   --app-header-height: 3.25rem;
+  --app-header-transition-duration: var(--app-sidebar-transition-duration);
+  --app-header-transition: var(--app-header-transition-duration) ease;
 }
 
 @media (max-width: 380px) {

@@ -6,8 +6,7 @@ const route = useRoute()
 
 const { isCollapsed } = useSidebar()
 
-const hideHeader = computed(() => route.meta.hideHeader)
-const hideSidebar = computed(() => route.meta.hideSidebar)
+const hasSidebar = computed(() => !route.meta.withoutSidebar)
 
 useTrackPageSize(useTemplateRef('appPage'))
 </script>
@@ -16,20 +15,16 @@ useTrackPageSize(useTemplateRef('appPage'))
   <div
     class="template-monorepo-app layout"
     :class="{
-      '--has-sidebar': !hideSidebar,
+      '--has-sidebar': hasSidebar,
       '--sidebar-collapsed': isCollapsed,
     }"
   >
     <NuxtRouteAnnouncer />
 
-    <AppSidebar v-if="!hideSidebar" />
+    <AppSidebar v-if="hasSidebar" />
 
-    <div
-      ref="appPage"
-      class="app-page"
-      :class="{ '--has-app-header': !hideHeader }"
-    >
-      <AppHeader v-if="!hideHeader" />
+    <div ref="appPage" class="app-page">
+      <AppHeader />
 
       <div class="app-page__content">
         <slot />
@@ -89,17 +84,16 @@ useTrackPageSize(useTemplateRef('appPage'))
   }
 }
 
-.app-page.--has-app-header {
-  .app-page__content {
-    height: calc(100vh - var(--app-header-height));
+.app-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 
-    @include media-up(lg) {
-      height: 100vh;
-    }
-
-    & > div {
-      height: 100%;
-    }
+  &__content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
   }
 }
 </style>
