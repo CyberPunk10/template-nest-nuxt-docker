@@ -1,0 +1,89 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+# Новый push в ту же ветку делает предыдущий прогон бессмысленным.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # Версию pnpm берёт из packageManager в package.json.
+      # Ставится до setup-node: тому нужен pnpm для кеша.
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Тот же шаг, что и у пользователя шаблона: без .env не соберутся docs.
+      - run: pnpm env:copy
+
+      # Скрипты lint запускаются с --fix и в CI молча исправили бы ошибки.
+      # Поэтому исправленное считаем провалом: значит, в коммит попал
+      # непроверенный линтером код.
+      - run: pnpm lint
+      - run: git diff --exit-code
+
+      - run: pnpm type-check
+      - run: pnpm build
+      - run: pnpm test
+      - run: pnpm test:e2e
+
+  # Образы собираются здесь, а не на сервере: сборке нужно около 3.5 ГБ
+  # памяти, а работающему стеку — меньше гигабайта. Сервер только
+  # скачивает готовое.
+  images:
+    needs: checks
+    # Публикуем только ветки-варианты шаблона: у каждой свой набор образов.
+    if: github.event_name == 'push' && contains(fromJSON('["main", "auth-session", "postgres-prisma"]'), github.ref_name)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    env:
+      # Фиксированное имя проекта — чтобы знать, как Compose назовёт образы.
+      COMPOSE_PROJECT_NAME: app
+    steps:
+      - uses: actions/checkout@v7
+
+      # Compose требует все env_file, а .env в репозитории нет.
+      # Секреты в образ не попадают: .env исключены в .dockerignore.
+      - run: node scripts/copy-env-cli.mjs
+
+      - uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Dockerfile и контексты сборки Compose берёт из docker-compose.yml.
+      - run: docker compose build backend frontend nginx
+
+      # Два тега: <ветка>-<sha> указывает на конкретный коммит и нужен для
+      # отката, <ветка> — всегда на последнюю сборку.
+      # GHCR принимает имена только в нижнем регистре.
+      - name: Push images
+        run: |
+          prefix="ghcr.io/${GITHUB_REPOSITORY,,}"
+          branch="${GITHUB_REF_NAME}"
+          sha="${GITHUB_SHA::7}"
+          for service in backend frontend nginx; do
+            for tag in "$branch-$sha" "$branch"; do
+              docker tag "app-$service" "$prefix/$service:$tag"
+              docker push "$prefix/$service:$tag"
+            done
+          done
