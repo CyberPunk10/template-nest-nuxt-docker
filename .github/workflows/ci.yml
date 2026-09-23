@@ -45,6 +45,21 @@ jobs:
       - run: pnpm test
       - run: pnpm test:e2e
 
+      # pnpm dev не завершается сам: запускаем в фоне и ждём ответа
+      # от каждого сервера. Процессы остановит раннер по завершении job.
+      - name: Dev mode smoke test
+        run: |
+          pnpm dev > "$RUNNER_TEMP/dev.log" 2>&1 &
+          for url in \
+            http://localhost:3100/health \
+            http://localhost:3200/ \
+            http://localhost:3200/api/backend/health \
+            http://localhost:5173/dev/docs/; do
+            curl -fsS -o /dev/null --retry 60 --retry-delay 2 --retry-all-errors "$url" \
+              || { cat "$RUNNER_TEMP/dev.log"; exit 1; }
+            echo "ok $url"
+          done
+
   # Образы собираются здесь, а не на сервере: сборке нужно около 3.5 ГБ
   # памяти, а работающему стеку — меньше гигабайта. Сервер только
   # скачивает готовое.
