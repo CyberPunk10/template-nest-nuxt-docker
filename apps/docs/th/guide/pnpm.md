@@ -3,7 +3,7 @@
 ## Requirement ของโปรเจกต์
 
 ```json
-"packageManager": "pnpm@11.12.0",
+"packageManager": "pnpm@11.27.1",
 "engines": {
   "node": ">=24",
   "pnpm": ">=11",
@@ -53,7 +53,7 @@ pnpm --version   # มันรายงาน version อะไร
 
 ## Corepack — วิธีที่แนะนำ
 
-[Corepack](https://nodejs.org/api/corepack.html) มากับ Node.js อยู่แล้ว (เสถียรตั้งแต่ v16.9+) และแก้ปัญหาด้วยวิธีที่ต่างออกไป: แทนที่จะติดตั้ง pnpm แบบ global ด้วย version คงที่ มันจะแทน version ที่ระบุใน `packageManager` ของโปรเจกต์ที่เปิดอยู่ **ทุกครั้งที่รัน** เปิดโปรเจกต์ A ที่ใช้ `pnpm@9` — รัน `9`; สลับไปโปรเจกต์ B ที่ใช้ `pnpm@11.12.0` — รัน `11.12.0` ไม่ต้องมี global version ให้ตามดูเอง
+[Corepack](https://nodejs.org/api/corepack.html) มากับ Node.js อยู่แล้ว (เสถียรตั้งแต่ v16.9+) และแก้ปัญหาด้วยวิธีที่ต่างออกไป: แทนที่จะติดตั้ง pnpm แบบ global ด้วย version คงที่ มันจะแทน version ที่ระบุใน `packageManager` ของโปรเจกต์ที่เปิดอยู่ **ทุกครั้งที่รัน** เปิดโปรเจกต์ A ที่ใช้ `pnpm@9` — รัน `9`; สลับไปโปรเจกต์ B ที่ใช้ `pnpm@11.27.1` — รัน `11.27.1` ไม่ต้องมี global version ให้ตามดูเอง
 
 นี่คือวิธีที่แนะนำอย่างเป็นทางการสำหรับโปรเจกต์ที่มี field `packageManager` — ถ้าไม่ใช้ Corepack field นี้จะกลายเป็นแค่ข้อความเฉยๆ ไม่มีผลอะไร version จะเพี้ยนไปเงียบๆ แล้วจะรู้ตัวอีกทีก็ตอนมีอะไรพังแล้ว
 
@@ -69,7 +69,7 @@ corepack use pnpm@9.15.0       # ล็อก version ที่ต้องก�
 corepack install               # ติดตั้ง version ที่ระบุไว้ใน packageManager ของ package.json ปัจจุบัน
 ```
 
-`corepack use pnpm@X` ไม่ได้แค่สลับ version — มันอัปเดต `packageManager` ใน `package.json` ด้วย และเพิ่ม integrity hash ให้ (`pnpm@11.12.0+sha512.<hash>`) ซึ่ง Corepack ใช้ตรวจสอบความถูกต้องของ binary ที่ดาวน์โหลดมาทุกครั้งที่ติดตั้ง
+`corepack use pnpm@X` ไม่ได้แค่สลับ version — มันอัปเดต `packageManager` ใน `package.json` ด้วย และเพิ่ม integrity hash ให้ (`pnpm@11.27.1+sha512.<hash>`) ซึ่ง Corepack ใช้ตรวจสอบความถูกต้องของ binary ที่ดาวน์โหลดมาทุกครั้งที่ติดตั้ง
 
 ### ใน monorepo — ใส่ field แค่ที่ root
 

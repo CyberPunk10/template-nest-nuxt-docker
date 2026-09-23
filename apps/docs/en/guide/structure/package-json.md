@@ -26,7 +26,7 @@ Most commands are backed by [Node scripts](/en/guide/structure/scripts/) in `scr
 ## Tooling versions
 
 ```json
-"packageManager": "pnpm@11.12.0",
+"packageManager": "pnpm@11.27.1",
 "engines": {
   "node": ">=24",
   "pnpm": ">=11",

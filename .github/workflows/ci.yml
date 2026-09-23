@@ -18,8 +18,8 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      # Node ставится первым: pnpm 11 требует Node >= 22.13,
-      # а системный Node раннера ниже.
+      # Node ставится первым, чтобы pnpm работал на версии из .nvmrc,
+      # а не на системном Node раннера.
       - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc

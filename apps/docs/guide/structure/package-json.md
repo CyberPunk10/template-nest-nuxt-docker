@@ -26,7 +26,7 @@
 ## Версии инструментов
 
 ```json
-"packageManager": "pnpm@11.12.0",
+"packageManager": "pnpm@11.27.1",
 "engines": {
   "node": ">=24",
   "pnpm": ">=11",

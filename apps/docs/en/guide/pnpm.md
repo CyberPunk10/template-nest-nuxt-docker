@@ -3,7 +3,7 @@
 ## Project requirements
 
 ```json
-"packageManager": "pnpm@11.12.0",
+"packageManager": "pnpm@11.27.1",
 "engines": {
   "node": ">=24",
   "pnpm": ">=11",
@@ -53,7 +53,7 @@ If the version doesn't match `packageManager` in the open project's `package.jso
 
 ## Corepack — the recommended way
 
-[Corepack](https://nodejs.org/api/corepack.html) is built into Node.js (stable since v16.9+) and solves the problem differently: instead of installing pnpm globally with a fixed version, it substitutes, **on every run**, whichever version is specified in the open project's `packageManager`. Open project A with `pnpm@9` — `9` runs; switch to project B with `pnpm@11.12.0` — `11.12.0` runs. No global version to keep track of by hand.
+[Corepack](https://nodejs.org/api/corepack.html) is built into Node.js (stable since v16.9+) and solves the problem differently: instead of installing pnpm globally with a fixed version, it substitutes, **on every run**, whichever version is specified in the open project's `packageManager`. Open project A with `pnpm@9` — `9` runs; switch to project B with `pnpm@11.27.1` — `11.27.1` runs. No global version to keep track of by hand.
 
 This is the officially recommended approach for projects with a `packageManager` field — without Corepack, that field becomes inert text, the version silently drifts, and you only find out when something breaks.
 
@@ -69,7 +69,7 @@ corepack use pnpm@9.15.0       # pin a specific version
 corepack install               # install the version specified in the current package.json's packageManager
 ```
 
-`corepack use pnpm@X` doesn't just switch the version — it also updates `packageManager` in `package.json` and adds an integrity hash to it (`pnpm@11.12.0+sha512.<hash>`), which Corepack uses to verify the downloaded binary's integrity on every install.
+`corepack use pnpm@X` doesn't just switch the version — it also updates `packageManager` in `package.json` and adds an integrity hash to it (`pnpm@11.27.1+sha512.<hash>`), which Corepack uses to verify the downloaded binary's integrity on every install.
 
 ### In a monorepo — the field only goes in the root
 
