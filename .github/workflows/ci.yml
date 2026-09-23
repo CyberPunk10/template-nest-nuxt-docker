@@ -37,6 +37,9 @@ jobs:
       # Тот же шаг, что и у пользователя шаблона: без .env не соберутся docs.
       - run: pnpm env:copy
 
+      # Клиент Prisma не коммитится, без него не собирается backend.
+      - run: pnpm --filter @repo/backend exec prisma generate
+
       # Скрипты lint запускаются с --fix и в CI молча исправили бы ошибки.
       # Поэтому исправленное считаем провалом: значит, в коммит попал
       # непроверенный линтером код.
@@ -49,6 +52,10 @@ jobs:
       - name: Audit dependencies
         run: pnpm audit
         continue-on-error: true
+
+      # БД для тестов — тем же скриптом, что и при разработке.
+      - run: pnpm db:up
+      - run: pnpm --filter @repo/backend exec prisma migrate deploy
 
       - run: pnpm test
       - run: pnpm test:e2e
@@ -105,6 +112,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       # Dockerfile и контексты сборки Compose берёт из docker-compose.yml.
+      # Сервисы указаны явно: они под профилем app и иначе не соберутся.
       - run: docker compose build backend frontend nginx
 
       # Два тега: <ветка>-<sha> указывает на конкретный коммит и нужен для
