@@ -18,14 +18,16 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      # Версию pnpm берёт из packageManager в package.json.
-      # Ставится до setup-node: тому нужен pnpm для кеша.
-      - uses: pnpm/action-setup@v6
-
+      # Node ставится первым: pnpm 11 требует Node >= 22.13,
+      # а системный Node раннера ниже.
       - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
-          cache: pnpm
+
+      # Версию pnpm берёт из packageManager в package.json.
+      - uses: pnpm/action-setup@v6
+        with:
+          cache: true
 
       - run: pnpm install --frozen-lockfile
 
