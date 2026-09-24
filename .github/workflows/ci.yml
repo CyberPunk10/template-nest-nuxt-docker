@@ -173,10 +173,12 @@ jobs:
 
       # Сервисы перечислены явно: docs-builder публикуется не как образ,
       # а как статика внутри nginx, и compose полез бы собирать его с нуля.
+      # postgres тянется готовым образом с Docker Hub и в профиль не входит,
+      # поэтому его приходится называть вместе с остальными.
       # --wait держит команду до готовности healthcheck'ов, объявленных
       # в Dockerfile каждого сервиса. Таймаут больше start-period бэкенда (60s).
       - name: Start stack
-        run: docker compose up -d --wait --wait-timeout 180 backend frontend nginx
+        run: docker compose --profile app up -d --wait --wait-timeout 180 postgres backend frontend nginx
 
       # Все адреса идут через nginx — так же, как к ним придёт пользователь.
       - name: Check routes
@@ -190,8 +192,8 @@ jobs:
 
       - name: Show logs on failure
         if: failure()
-        run: docker compose logs --tail 200
+        run: docker compose --profile app logs --tail 200
 
       - name: Stop stack
         if: always()
-        run: docker compose down -v
+        run: docker compose --profile app down -v
