@@ -2,6 +2,8 @@
 
 Переиспользуемый шаблон монорепозитория NestJS + Nuxt 4, завёрнутый в Docker
 
+[![CI](https://github.com/CyberPunk10/template-nest-nuxt-docker/actions/workflows/ci.yml/badge.svg)](https://github.com/CyberPunk10/template-nest-nuxt-docker/actions/workflows/ci.yml)
+
 ![NestJS](https://img.shields.io/badge/NestJS-11-E0234E?style=flat-square&logo=nestjs&logoColor=white)
 ![Nuxt](https://img.shields.io/badge/Nuxt-4-00DC82?style=flat-square&logo=nuxt&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?style=flat-square&logo=typescript&logoColor=white)
