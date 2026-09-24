@@ -118,3 +118,61 @@ jobs:
               docker push "$prefix/$service:$tag"
             done
           done
+
+  # Отдельным job, а не шагом в images: проверка запуска нестабильнее сборки
+  # по своей природе, и «Re-run failed jobs» должен перезапускать только её.
+  docker-smoke:
+    needs: images
+    if: github.event_name == 'push'
+    name: "Docker smoke: prod stack boots & healthy"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    env:
+      COMPOSE_PROJECT_NAME: app
+    steps:
+      - uses: actions/checkout@v7
+
+      # Те же env, что и при сборке: без них Compose не примет конфигурацию.
+      - run: node scripts/copy-env-cli.mjs
+
+      - uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Проверяем то, что опубликовали, а не собственную пересборку: образы
+      # подменяются в локальном теге, которого ждёт Compose.
+      - name: Pull published images
+        run: |
+          prefix="ghcr.io/${GITHUB_REPOSITORY,,}"
+          tag="${GITHUB_REF_NAME}-${GITHUB_SHA::7}"
+          for service in backend frontend nginx; do
+            docker pull "$prefix/$service:$tag"
+            docker tag "$prefix/$service:$tag" "app-$service"
+          done
+
+      # --wait держит команду до готовности healthcheck'ов, объявленных
+      # в Dockerfile каждого сервиса. Таймаут больше start-period бэкенда (60s).
+      - name: Start stack
+        run: docker compose up -d --wait --wait-timeout 180
+
+      # Все адреса идут через nginx — так же, как к ним придёт пользователь.
+      - name: Check routes
+        run: |
+          port="$(grep '^NGINX_HOST_PORT=' .env | cut -d= -f2-)"
+          base="http://localhost:$port"
+          for path in / /api/backend/health /dev/docs/; do
+            curl -fsS -o /dev/null --retry 20 --retry-delay 2 --retry-all-errors "$base$path"
+            echo "ok $base$path"
+          done
+
+      - name: Show logs on failure
+        if: failure()
+        run: docker compose logs --tail 200
+
+      - name: Stop stack
+        if: always()
+        run: docker compose down -v
