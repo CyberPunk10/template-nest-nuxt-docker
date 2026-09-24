@@ -175,7 +175,7 @@ jobs:
         run: |
           port="$(grep '^NGINX_HOST_PORT=' .env | cut -d= -f2-)"
           base="http://localhost:$port"
-          for path in / /api/backend/health /dev/docs/; do
+          for path in / /login /api/backend/health /dev/docs/; do
             curl -fsS -o /dev/null --retry 20 --retry-delay 2 --retry-all-errors "$base$path"
             echo "ok $base$path"
           done
