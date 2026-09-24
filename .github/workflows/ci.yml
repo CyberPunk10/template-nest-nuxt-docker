@@ -45,6 +45,11 @@ jobs:
 
       - run: pnpm type-check
       - run: pnpm build
+
+      - name: Audit dependencies
+        run: pnpm audit
+        continue-on-error: true
+
       - run: pnpm test
       - run: pnpm test:e2e
 
