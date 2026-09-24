@@ -137,6 +137,12 @@ jobs:
       # Те же env, что и при сборке: без них Compose не примет конфигурацию.
       - run: node scripts/copy-env-cli.mjs
 
+      # Сеть объявлена в compose как external, то есть создаётся снаружи.
+      # Локально это делает predocker, но его целиком звать нельзя: там
+      # интерактивная проверка портов, которой в CI некому отвечать.
+      - name: Create external network
+        run: node -e "import('./scripts/ensure-network.mjs').then(m => m.ensureNetwork())"
+
       - uses: docker/login-action@v4
         with:
           registry: ghcr.io
@@ -154,10 +160,12 @@ jobs:
             docker tag "$prefix/$service:$tag" "app-$service"
           done
 
+      # Сервисы перечислены явно: docs-builder публикуется не как образ,
+      # а как статика внутри nginx, и compose полез бы собирать его с нуля.
       # --wait держит команду до готовности healthcheck'ов, объявленных
       # в Dockerfile каждого сервиса. Таймаут больше start-period бэкенда (60s).
       - name: Start stack
-        run: docker compose up -d --wait --wait-timeout 180
+        run: docker compose up -d --wait --wait-timeout 180 backend frontend nginx
 
       # Все адреса идут через nginx — так же, как к ним придёт пользователь.
       - name: Check routes
