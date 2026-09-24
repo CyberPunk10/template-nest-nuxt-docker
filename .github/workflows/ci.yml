@@ -1,7 +1,10 @@
 name: CI
 
 on:
+  # Push — только по веткам-вариантам шаблона. Для остальных веток прогон
+  # даёт PR-триггер: иначе на один и тот же код CI запускался бы дважды.
   push:
+    branches: [main, auth-session, postgres-prisma]
   pull_request:
 
 # Новый push в ту же ветку делает предыдущий прогон бессмысленным.
@@ -70,8 +73,9 @@ jobs:
   # скачивает готовое.
   images:
     needs: checks
-    # Публикуем только ветки-варианты шаблона: у каждой свой набор образов.
-    if: github.event_name == 'push' && contains(fromJSON('["main", "auth-session", "postgres-prisma"]'), github.ref_name)
+    # Только push: список веток задан в триггере выше, а на PR образы
+    # публиковать незачем — ветка ещё не слита.
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     permissions:
       contents: read
