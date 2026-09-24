@@ -20,7 +20,13 @@ export interface ThemeConfig extends DefaultTheme.Config {
 // apps/docs/.env не грузится автоматически (в отличие от Nest ConfigModule
 // и Nuxt) — читаем его явно, чтобы PORT управлял портом `vitepress dev` так же,
 // как для backend/frontend.
-loadEnv({ path: resolve(dirname(fileURLToPath(import.meta.url)), '../.env') })
+// quiet: с 17-й версии dotenv печатает в вывод рекламные подсказки сторонних
+// сервисов. Факт загрузки .env и без того виден: без PORT доки не поднимутся
+// на своём порту.
+loadEnv({
+  path: resolve(dirname(fileURLToPath(import.meta.url)), '../.env'),
+  quiet: true,
+})
 
 // Куда ведёт кнопка «Посмотреть демо». Доки — статический сайт, рантайм-конфига
 // у них нет, поэтому адрес вшивается в сборку из переменной окружения:
