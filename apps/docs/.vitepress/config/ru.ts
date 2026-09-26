@@ -47,6 +47,7 @@ const config: LocaleEntry = {
                       { text: 'package.json', link: '/guide/structure/apps/backend/package-json' },
                       { text: 'tsconfig.json', link: '/guide/structure/apps/backend/tsconfig' },
                       { text: 'tsconfig.build.json', link: '/guide/structure/apps/backend/tsconfig-build' },
+                      { text: 'prisma', link: '/guide/structure/apps/backend/prisma/' },
                     ],
                   },
                   {
@@ -125,6 +126,7 @@ const config: LocaleEntry = {
                   { text: 'check-ports.mjs', link: '/guide/structure/scripts/check-ports' },
                   { text: 'ensure-network.mjs', link: '/guide/structure/scripts/ensure-network' },
                   { text: 'log.mjs', link: '/guide/structure/scripts/log' },
+                  { text: 'db.mjs', link: '/guide/structure/scripts/db' },
                   { text: 'dev.mjs', link: '/guide/structure/scripts/dev' },
                   { text: 'reinstall.mjs', link: '/guide/structure/scripts/reinstall' },
                 ],
@@ -164,6 +166,7 @@ const config: LocaleEntry = {
               { text: 'Фронтенд', link: '/guide/auth/frontend' },
             ],
           },
+          { text: 'База данных', link: '/guide/database' },
         ],
       },
       {

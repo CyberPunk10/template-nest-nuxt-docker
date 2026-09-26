@@ -14,6 +14,8 @@ pnpm docker:up --build
 
 `pnpm docker:up` isn't just an alias for `docker compose up`: before starting, [`predocker.mjs`](/en/guide/structure/scripts/predocker) runs and creates missing `.env` files, checks the proxy port and sets up the Docker network. That's why the command works right after cloning.
 
+Under the hood it's `docker compose --profile app up`: the application services carry the `app` profile, while the database has none and always comes up — see [profiles](/en/guide/structure/docker-compose#profiles).
+
 Only the reverse proxy faces outward — everything arrives on a single port (`NGINX_HOST_PORT`, `80` by default):
 
 - Application: [http://localhost/](http://localhost/)
@@ -23,13 +25,19 @@ Only the reverse proxy faces outward — everything arrives on a single port (`N
 The backend and frontend take no host ports of their own: they aren't reachable from outside, only through the proxy — [why](/en/guide/reverse-proxy#why-the-app-ports-are-closed).
 
 ::: warning
-A plain `docker compose up`, bypassing `pnpm docker:up`, works too, but without the prep: without the root `.env` it refuses to start (`no port specified`), without `apps/*/.env` it also refuses (`env file ... not found`). If the port is taken, you get a plain Docker `address already in use` error, with no dialog.
+Calling Compose directly, bypassing `pnpm docker:up`, works too, but it needs the profile and skips the prep: `docker compose up` without `--profile app` brings up only the database, without the root `.env` it refuses to start (`no port specified`), without `apps/*/.env` it also refuses (`env file ... not found`). If the port is taken, you get a plain Docker `address already in use` error, with no dialog.
 :::
 
 ## Stopping
 
 ```bash
-docker compose down
+docker compose --profile app down
+```
+
+The profile is needed here as well: without it Compose doesn't see the application services and only shuts the database down. To do the opposite — stop the applications and leave the database running:
+
+```bash
+docker compose --profile app stop nginx backend frontend
 ```
 
 The `template-nest-nuxt_app` network survives — it's `external`, compose didn't create it. Remove it manually if you no longer need it:

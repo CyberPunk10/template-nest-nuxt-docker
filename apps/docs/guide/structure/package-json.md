@@ -8,8 +8,10 @@
 | `env:copy:force` | `node scripts/copy-env-cli.mjs --force` | То же, но перезаписывает существующие `.env` — локальные правки теряются |
 | `predev`       | `node scripts/predev.mjs`       | Запускается автоматически перед `dev` (npm `pre*`-конвенция)                               |
 | `dev`          | `node scripts/dev.mjs`          | Параллельно поднимает backend, frontend и docs (через `concurrently`)                      |
+| `db:up`        | `node scripts/db.mjs up`        | Поднимает контейнер БД и ждёт healthcheck                                                  |
+| `db:down`      | `node scripts/db.mjs down`      | Останавливает контейнер БД, данные остаются в volume                                       |
 | `predocker:up` | `node scripts/predocker.mjs`    | Запускается автоматически перед `docker:up`                                                |
-| `docker:up`    | `docker compose up`             | Поднимает все три сервиса в Docker                                                         |
+| `docker:up`    | `docker compose --profile app up` | Поднимает весь стек в Docker: БД, backend, frontend, nginx                               |
 | `build`        | `pnpm -r build`                 | Собирает все workspace-пакеты (запускает `build` в каждом `apps/*`)                        |
 | `test`         | `pnpm -r test`                  | Юнит-тесты по всем воркспейсам (пакеты без `test` пропускаются)                            |
 | `test:e2e`     | `pnpm -r test:e2e`              | E2E-тесты — поднимают приложение целиком, поэтому вынесены из `test`                       |

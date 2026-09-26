@@ -43,7 +43,7 @@ From then on, `pnpm` in this project is the version listed in `packageManager`. 
 
 ## 3. Docker >= 23 + Docker Compose >= 2.33
 
-Needed only for Docker mode — skip it for `pnpm dev`.
+Needed either way: `pnpm docker:up` runs everything in containers, and `pnpm dev` runs only Postgres — but it still needs a container for it.
 
 ```bash
 docker --version
@@ -66,7 +66,7 @@ curl -fsSL https://get.docker.com | sh
 
 ## 4. Docker network
 
-Also Docker-only. When you start with `pnpm docker:up` it is created automatically — no separate step needed.
+Created automatically both by `pnpm docker:up` and by `pnpm dev` (through `pnpm db:up`) — no separate step needed.
 
 If you run `docker compose` directly, create it once yourself:
 

@@ -79,7 +79,7 @@ export const quickstarts: Quickstart[] = [
       },
       {
         id: 'postgres',
-        cmd: 'docker compose -f docker-compose.dev.yml up -d',
+        cmd: 'pnpm db:up',
       },
       {
         id: 'migrate',

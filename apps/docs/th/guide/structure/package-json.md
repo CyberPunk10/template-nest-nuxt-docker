@@ -8,8 +8,10 @@ Manifest ที่ root ของ monorepo สคริปต์ในนี้�
 | `env:copy:force` | `node scripts/copy-env-cli.mjs --force` | เหมือนกัน แต่เขียนทับไฟล์ `.env` ที่มีอยู่ — การแก้ในเครื่องจะหายไป |
 | `predev`       | `node scripts/predev.mjs`       | รันอัตโนมัติก่อน `dev` (npm `pre*` convention)                             |
 | `dev`          | `node scripts/dev.mjs`          | เปิด backend, frontend และ docs พร้อมกัน (ผ่าน `concurrently`)            |
+| `db:up`        | `node scripts/db.mjs up`        | เปิด container ของฐานข้อมูลและรอ healthcheck                              |
+| `db:down`      | `node scripts/db.mjs down`      | หยุด container ของฐานข้อมูล ข้อมูลยังอยู่ใน volume                          |
 | `predocker:up` | `node scripts/predocker.mjs`    | รันอัตโนมัติก่อน `docker:up`                                               |
-| `docker:up`    | `docker compose up`             | เปิดทั้งสาม service ใน Docker                                            |
+| `docker:up`    | `docker compose --profile app up` | เปิดทั้ง stack ใน Docker: ฐานข้อมูล, backend, frontend, nginx            |
 | `build`        | `pnpm -r build`                 | Build workspace package ทั้งหมด (รัน `build` ใน `apps/*` แต่ละตัว)         |
 | `test`         | `pnpm -r test`                  | Unit test ทุก workspace (แพ็กเกจที่ไม่มี `test` จะถูกข้าม)                  |
 | `test:e2e`     | `pnpm -r test:e2e`              | E2E test — ต้องรันแอปทั้งตัว จึงแยกออกจาก `test`                            |

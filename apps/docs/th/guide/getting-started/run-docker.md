@@ -14,6 +14,8 @@ pnpm docker:up --build
 
 `pnpm docker:up` ไม่ใช่แค่ alias ของ `docker compose up`: ก่อนเริ่ม [`predocker.mjs`](/th/guide/structure/scripts/predocker) จะทำงานก่อน สร้างไฟล์ `.env` ที่ขาด ตรวจสอบพอร์ตของ proxy และสร้าง Docker network ด้วยเหตุนี้คำสั่งจึงใช้ได้ทันทีหลัง clone
 
+เบื้องหลังคือ `docker compose --profile app up`: service ของแอปกำกับด้วย profile `app` ส่วนฐานข้อมูลไม่มี profile และถูกยกขึ้นมาเสมอ — ดู [profile](/th/guide/structure/docker-compose#profile)
+
 มีแค่ reverse proxy ที่หันออกสู่ภายนอก — ทุกอย่างเข้ามาที่พอร์ตเดียว (`NGINX_HOST_PORT` ค่าเริ่มต้น `80`):
 
 - Application: [http://localhost/](http://localhost/)
@@ -23,13 +25,19 @@ pnpm docker:up --build
 backend กับ frontend ไม่ได้ใช้ host port ของตัวเอง: เข้าถึงจากภายนอกไม่ได้ ต้องผ่าน proxy เท่านั้น — [ทำไม](/th/guide/reverse-proxy#ทําไมพอร์ตของ-application-ถึงปิด)
 
 ::: warning
-`docker compose up` ตรงๆ โดยข้าม `pnpm docker:up` ก็ทำงานได้ แต่ไม่มีการเตรียมให้: ถ้าไม่มี `.env` ที่ root จะไม่ยอม start (`no port specified`) ถ้าไม่มี `apps/*/.env` ก็ไม่ยอมเช่นกัน (`env file ... not found`) และถ้าพอร์ตถูกใช้อยู่จะได้ Docker error ธรรมดา `address already in use` โดยไม่มี dialog
+การเรียก Compose ตรงๆ โดยข้าม `pnpm docker:up` ก็ทำงานได้ แต่ต้องระบุ profile และไม่มีการเตรียมให้: `docker compose up` ที่ไม่มี `--profile app` จะยกขึ้นมาแค่ฐานข้อมูล ถ้าไม่มี `.env` ที่ root จะไม่ยอม start (`no port specified`) ถ้าไม่มี `apps/*/.env` ก็ไม่ยอมเช่นกัน (`env file ... not found`) และถ้าพอร์ตถูกใช้อยู่จะได้ Docker error ธรรมดา `address already in use` โดยไม่มี dialog
 :::
 
 ## การหยุด
 
 ```bash
-docker compose down
+docker compose --profile app down
+```
+
+ที่นี่ก็ต้องมี profile ด้วย: ถ้าไม่ใส่ Compose จะมองไม่เห็น service ของแอป และจะปิดแค่ฐานข้อมูล ถ้าต้องการทำตรงกันข้าม — หยุดแอปแล้วให้ฐานข้อมูลยังรันอยู่:
+
+```bash
+docker compose --profile app stop nginx backend frontend
 ```
 
 Network `template-nest-nuxt_app` จะยังอยู่ — มันเป็น `external` compose ไม่ได้สร้างมันขึ้นมา ลบเองถ้าไม่ต้องการแล้ว:

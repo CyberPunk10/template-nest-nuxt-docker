@@ -45,6 +45,7 @@ const config: LocaleEntry = {
                       { text: 'package.json', link: '/th/guide/structure/apps/backend/package-json' },
                       { text: 'tsconfig.json', link: '/th/guide/structure/apps/backend/tsconfig' },
                       { text: 'tsconfig.build.json', link: '/th/guide/structure/apps/backend/tsconfig-build' },
+                      { text: 'prisma', link: '/th/guide/structure/apps/backend/prisma/' },
                     ],
                   },
                   {
@@ -123,6 +124,7 @@ const config: LocaleEntry = {
                   { text: 'check-ports.mjs', link: '/th/guide/structure/scripts/check-ports' },
                   { text: 'ensure-network.mjs', link: '/th/guide/structure/scripts/ensure-network' },
                   { text: 'log.mjs', link: '/th/guide/structure/scripts/log' },
+                  { text: 'db.mjs', link: '/th/guide/structure/scripts/db' },
                   { text: 'dev.mjs', link: '/th/guide/structure/scripts/dev' },
                   { text: 'reinstall.mjs', link: '/th/guide/structure/scripts/reinstall' },
                 ],
@@ -162,6 +164,7 @@ const config: LocaleEntry = {
               { text: 'Frontend', link: '/th/guide/auth/frontend' },
             ],
           },
+          { text: 'ฐานข้อมูล', link: '/th/guide/database' },
         ],
       },
       {
