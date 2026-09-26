@@ -1,4 +1,4 @@
-export const repoUrl = 'https://github.com/CyberPunk10/template-nest-nuxt-docker'
+export const repoUrl = 'https://github.com/CyberPunk10/template-nest-nuxt'
 export const authorUrl = 'https://github.com/CyberPunk10'
 
 /**

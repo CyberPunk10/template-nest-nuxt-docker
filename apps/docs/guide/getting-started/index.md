@@ -5,8 +5,8 @@
 Нужны [Node.js ≥ 24 и pnpm](/guide/getting-started/setup) — остальное скрипт сделает сам:
 
 ```bash
-git clone git@github.com:CyberPunk10/template-nest-nuxt-docker.git
-cd template-nest-nuxt-docker
+git clone git@github.com:CyberPunk10/template-nest-nuxt.git
+cd template-nest-nuxt
 pnpm install
 pnpm dev
 ```

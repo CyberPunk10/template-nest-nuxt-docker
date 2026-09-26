@@ -130,7 +130,7 @@ export default defineConfigWithTheme<ThemeConfig>({
 
     // Ссылка на репозиторий — штатная иконка в шапке (общая для всех локалей).
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/CyberPunk10/template-nest-nuxt-docker' },
+      { icon: 'github', link: 'https://github.com/CyberPunk10/template-nest-nuxt' },
     ],
   },
 

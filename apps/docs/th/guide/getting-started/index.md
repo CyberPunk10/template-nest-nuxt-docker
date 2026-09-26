@@ -5,8 +5,8 @@
 ต้องมี [Node.js >= 24 และ pnpm](/th/guide/getting-started/setup) — ที่เหลือ script จัดการให้:
 
 ```bash
-git clone git@github.com:CyberPunk10/template-nest-nuxt-docker.git
-cd template-nest-nuxt-docker
+git clone git@github.com:CyberPunk10/template-nest-nuxt.git
+cd template-nest-nuxt
 pnpm install
 pnpm dev
 ```
