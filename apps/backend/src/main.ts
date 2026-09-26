@@ -7,8 +7,13 @@ import { setupApp } from './setup-app'
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
   const config = app.get(ConfigService)
+
   setupApp(app)
-  app.enableCors({ origin: config.get<string>('CORS_ORIGIN') })
+
+  app.enableCors({
+    origin: config.get<string>('CORS_ORIGIN'),
+    credentials: true,
+  })
 
   if (config.get<boolean>('SWAGGER_ENABLED')) {
     const document = SwaggerModule.createDocument(
